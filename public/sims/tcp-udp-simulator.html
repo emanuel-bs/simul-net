@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>try{if(window.top!==window.self)document.documentElement.classList.add('embedded');}catch(e){document.documentElement.classList.add('embedded');}</script>
 <style>
   :root{
     --bg:#0B2447;
@@ -252,6 +253,65 @@
     .workspace{flex:1 0 620px;min-height:620px;}
     .footer-credit br{display:none;}
   }
+
+  /* ===== Bancada de trabalho: tela única, diagrama em destaque, explicação ao lado ===== */
+  .play-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .play-bar button{padding:7px 14px;font-size:14px;}
+  .play-bar label.speed{flex-direction:row;align-items:center;gap:6px;font-size:12.5px;}
+  .play-bar label.speed select{width:auto;padding:6px 8px;font-size:13px;}
+  details.cfg{padding:0;}
+  details.cfg>summary{cursor:pointer;list-style:none;padding:11px 16px;font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:0.06em;}
+  details.cfg>summary::-webkit-details-marker{display:none;}
+  details.cfg>summary::before{content:'\25B8  ';color:var(--teal);}
+  details.cfg[open]>summary::before{content:'\25BE  ';}
+  details.cfg[open]>summary{border-bottom:1px solid var(--border-soft);}
+  .tabs-toggle{margin-left:auto;flex:none;background:transparent !important;border:1px solid var(--border-soft) !important;color:var(--muted);font-size:12.5px !important;padding:4px 10px !important;border-radius:8px !important;align-self:center;}
+  .tabs-panel.collapsed .tab-content{display:none !important;}
+  .tabs-panel.collapsed{height:auto !important;min-height:0 !important;}
+  .tabs-panel.collapsed .tab-bar{border-bottom:0;}
+
+  @media (min-width:961px) and (min-height:620px){
+    html,body{height:100%;overflow:hidden;}
+    .app{max-width:none;height:100vh;height:100dvh;min-height:0;padding:8px 12px 6px;gap:8px;}
+    .topbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px 14px 10px;}
+    .topbar-row,.title-wrap,.topbar-options,.proto-row,.proto-wrap{display:contents;}
+    .back-link{order:1;padding:3px 10px;}
+    .topbar-row h1{order:2;font-size:19px;margin:0;}
+    #protoSeg{order:3;}
+    #subSeg{order:4;}
+    .rfc-chips{order:5;margin-left:auto;}
+    .rfc-chip{font-size:11.5px;padding:2px 9px;}
+    .scen-row{order:6;flex:1 1 100%;min-height:0;margin:0;gap:5px 7px;}
+    button.chip{padding:4px 11px;font-size:12.5px;}
+    .metro{order:7;flex:1 1 100%;overflow-x:auto;padding:2px 0 0;}
+    .dot{width:13px;height:13px;}
+    .stop{flex-direction:row;gap:7px;}
+    .stop-label{max-width:none;text-align:left;font-size:12px;white-space:nowrap;}
+    .stop-label b{display:inline;font-size:12.5px;margin-right:5px;}
+    .seg{top:0;margin:0 10px;min-width:16px;}
+    .workspace{flex:1 1 0;min-height:0;grid-template-columns:minmax(0,1fr) clamp(320px,27vw,430px);gap:10px;}
+    .stage-header{padding:8px 14px;gap:10px 16px;}
+    .stage-header h2{font-size:13.5px;flex:1 1 220px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-weight:600;}
+    .legend-inline{gap:6px 12px;}
+    .side-col{gap:10px;}
+    .inspector{flex:1 1 auto;min-height:160px;overflow-y:auto;border-color:var(--teal);}
+    .state-panel{padding:10px 14px;gap:6px;}
+    .controls{padding:12px 16px 14px;}
+    .tabs-panel{height:clamp(190px,30vh,330px);min-height:0;max-height:none;}
+    .footer-credit{font-size:11px;line-height:1.35;}
+    .footer-credit br{display:none;}
+    html.embedded .back-link,html.embedded .topbar-row h1{display:none;}
+    .play-bar button{white-space:nowrap;}
+  }
+  @media (min-width:961px) and (max-width:1500px){
+    .stage-header h2{display:none;}
+  }
+  @media (min-width:961px) and (min-height:620px) and (max-height:820px){
+    .tabs-panel{height:clamp(150px,26vh,330px);}
+  }
+  @media (max-width:960px){
+    html.embedded .back-link{display:none;}
+  }
 </style>
 </head>
 
@@ -292,6 +352,20 @@
   <main class="workspace">
     <section class="panel stage-panel">
       <div class="stage-header">
+        <div class="play-bar" role="group" aria-label="Controle da simulação">
+          <button class="primary" id="btnPlay" type="button">Simular</button>
+          <button id="btnStep" type="button">Passo</button>
+          <button id="btnRestart" type="button">Voltar ao início</button>
+          <label class="field speed">Velocidade
+            <select id="speedSelect">
+              <option value="0.2" selected>Super lenta</option>
+              <option value="0.5">Lenta</option>
+              <option value="1">Normal</option>
+              <option value="4">Rápida</option>
+              <option value="16">Muito rápida</option>
+            </select>
+          </label>
+        </div>
         <h2 id="stageTitle">Diagrama de sequência</h2>
         <div class="legend-inline">
           <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>conexão (SYN, FIN)</span>
@@ -306,22 +380,10 @@
     </section>
 
     <aside class="side-col">
-      <div class="panel controls">
-        <div class="row">
-          <button class="primary" id="btnPlay" type="button">Simular</button>
-          <button id="btnStep" type="button">Passo</button>
-        </div>
-        <div class="row"><button id="btnRestart" type="button">Voltar ao início</button></div>
-        <label class="field">Velocidade da animação
-          <select id="speedSelect">
-            <option value="0.2" selected>Super lenta</option>
-            <option value="0.5">Lenta</option>
-            <option value="1">Normal</option>
-            <option value="4">Rápida</option>
-            <option value="16">Muito rápida</option>
-          </select>
-        </label>
-        <div class="sep"></div>
+      <div class="panel inspector" id="inspector"></div>
+      <div class="panel state-panel" id="statePanel"></div>
+      <details class="panel cfg" id="cfgBox" open><summary>Configuração da simulação</summary>
+      <div class="controls">
         <div class="sub-title">Rede</div>
         <div class="grid2">
           <label class="field" data-app="file stream">Segmentos
@@ -382,13 +444,11 @@
         </label>
         <label class="check" data-app="file"><input type="checkbox" id="fAckLoss">Perda também nos ACKs</label>
         </details>
-      </div>
-      <div class="panel state-panel" id="statePanel"></div>
-      <div class="panel inspector" id="inspector"></div>
+      </div></details>
     </aside>
   </main>
 
-  <section class="panel tabs-panel">
+  <section class="panel tabs-panel" id="tabsPanel">
     <div class="tab-bar" role="tablist">
       <button class="tab-btn active" data-tab="scen" type="button" role="tab" aria-selected="true">Cenário</button>
       <button class="tab-btn" data-tab="cap" type="button" role="tab" aria-selected="false">Captura</button>
@@ -398,6 +458,7 @@
       <button class="tab-btn" data-tab="exp" type="button" role="tab" aria-selected="false">Experimento</button>
       <button class="tab-btn" data-tab="ref" type="button" role="tab" aria-selected="false">Referência</button>
       <button class="tab-btn" data-tab="log" type="button" role="tab" aria-selected="false">Log de eventos</button>
+      <button class="tabs-toggle" id="tabsToggle" type="button" aria-expanded="true">Recolher painel</button>
     </div>
     <div class="tab-content active" data-tab-content="scen">
       <div class="tab-scroll"><article class="ref-body scen-body" id="scenBody" aria-live="polite"></article></div>
@@ -2253,6 +2314,17 @@
   attachHelp();
   renderScenarios();
   applyScenario(SCENARIOS[0]);
+})();
+</script>
+
+<script>
+(function(){
+  var panel=document.getElementById('tabsPanel'), btn=document.getElementById('tabsToggle');
+  if(!panel||!btn) return;
+  function set(c){ panel.classList.toggle('collapsed',c); btn.setAttribute('aria-expanded',String(!c)); btn.textContent=c?'Expandir painel':'Recolher painel'; }
+  btn.addEventListener('click',function(){ set(!panel.classList.contains('collapsed')); });
+  if(window.innerHeight<800) set(true);
+  panel.querySelectorAll('.tab-btn').forEach(function(b){ b.addEventListener('click',function(){ set(false); }); });
 })();
 </script>
 </body>
