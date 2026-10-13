@@ -57,4 +57,16 @@ describe('simuladores legados em public/sims', () => {
     expect(html).toContain('href="../#/" target="_top"');
     expect(FORBIDDEN_DASHES.test(html)).toBe(false);
   });
+
+  it.each(files.filter((f) => f !== 'tcp-udp-simulator.html'))('%s usa a bancada de trabalho compartilhada', (file) => {
+    const html = readFileSync(join(root, 'public', 'sims', file), 'utf-8');
+    expect(html).toContain('href="bench/bench.css"');
+    expect(html).toContain('src="bench/bench.js"');
+  });
+
+  it.each(['bench/bench.css', 'bench/bench.js'])('%s existe e não tem travessões', (name) => {
+    const path = join(root, 'public', 'sims', name);
+    expect(existsSync(path)).toBe(true);
+    expect(FORBIDDEN_DASHES.test(readFileSync(path, 'utf-8'))).toBe(false);
+  });
 });
