@@ -1,5 +1,5 @@
 import { MotionConfig } from 'motion/react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from './layouts/AppLayout';
 import { Category } from './pages/Category';
 import { Home } from './pages/Home';
@@ -13,6 +13,8 @@ export function AppRoutes() {
       <Route element={<AppLayout />}>
         <Route index element={<Home />} />
         <Route path="categoria/:id" element={<Category />} />
+        {/* endereço antigo, de quando SSH e HTTPS eram um único simulador */}
+        <Route path="sim/protocolos-seguros" element={<Navigate to="/categoria/protocolos-seguros" replace />} />
         <Route path="sim/:id" element={<SimPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>

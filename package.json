@@ -10,6 +10,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "build:sims": "node scripts/build-protocolos.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

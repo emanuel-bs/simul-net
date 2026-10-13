@@ -45,7 +45,8 @@ describe('página inicial e categorias', () => {
   it('lista os simuladores de uma categoria', () => {
     renderAt('/categoria/protocolos-seguros');
     expect(screen.getByRole('heading', { level: 1, name: 'Protocolos de rede seguros' })).toBeTruthy();
-    expect(screen.getByRole('heading', { level: 2, name: 'SSH e HTTPS' })).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 2, name: 'SSH' })).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 2, name: 'HTTPS e TLS' })).toBeTruthy();
     expect(screen.getByRole('heading', { level: 2, name: 'DNS e DNSSEC' })).toBeTruthy();
   });
 

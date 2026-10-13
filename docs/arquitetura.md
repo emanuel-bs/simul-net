@@ -33,7 +33,7 @@ Simul-Net/
 
 ## 5. Contrato do motor de simulação
 
-O núcleo comum já existe, em forma experimental, no simulador `protocolos-seguros-simulator.html` (objeto `SecureSim`). O contrato a ser extraído para `src/sim-core/`:
+O núcleo comum já existe, em forma experimental, nos simuladores de SSH e HTTPS (objeto `SecureSim`, em `sources/protocolos/core.js`; as páginas são geradas por `npm run build:sims`). O contrato a ser extraído para `src/sim-core/`:
 
 1. **Motor puro:** uma função `build(parâmetros, modo)` devolve um *trace* e não toca na tela. O mesmo parâmetro e a mesma semente produzem o mesmo trace.
 2. **Trace:** colunas (atores), mensagens (origem, destino, instantes de envio e chegada, rótulo, campos, se vai cifrada), eventos anotados por ator, estados por ator, fases, marcos e métricas. O núcleo converte os tempos em linhas, de modo que o diagrama é compacto e a animação tem ritmo constante.
