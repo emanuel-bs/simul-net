@@ -108,10 +108,10 @@
   .telemetry{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin:0;border-top:1px solid var(--border-soft);}
   .measure{padding:8px 14px;border-right:1px solid var(--border-soft);}
   .measure:last-child{border-right:0;}
-  .measure dt{color:var(--muted);font-size:12px;}
-  .measure dd{margin:2px 0 0;font:600 17px 'IBM Plex Mono',monospace;color:var(--ink);}
+  .measure dt{color:var(--muted);font-size:14px;}
+  .measure dd{margin:2px 0 0;font:600 21px 'IBM Plex Mono',monospace;color:var(--ink);}
   .measure dd{display:inline-block;}
-  .measure .m-note{display:inline;margin-left:6px;font-size:11px;color:var(--muted);white-space:nowrap;}
+  .measure .m-note{display:inline;margin-left:6px;font-size:13px;color:var(--muted);white-space:nowrap;}
   .v-good{color:var(--teal) !important;}
   .v-warn{color:var(--amber) !important;}
   .v-bad{color:var(--red) !important;}
@@ -929,7 +929,9 @@
       // Fator de escala: nós, textos e pacotes crescem com o canvas (referência: 820 x 380)
       function kf() {
         const w = canvas.clientWidth || 760, h = canvas.clientHeight || 300;
-        return Math.max(1, Math.min(1.7, Math.min(w / 820, h / 380)));
+        // referência 760 x 300; o zoom da bancada (window.__simZoom) amplia nós, textos e pacotes
+        const fit = Math.max(1, Math.min(2, Math.min(w / 760, h / 300)));
+        return Math.min(2.4, fit * (window.__simZoom || 1));
       }
       function nodes() {
         const K = kf();
@@ -941,11 +943,11 @@
           client: { x: 80, y: h * .74, name: 'Cliente', ip: '198.51.100.77' },
           edge: { x: w * .3, y: h * .2, name: 'ISP', ip: 'borda da origem' },
           firewall: { x: w * .48, y: h * .55, name: 'FW / IDS', ip: 'borda da vítima' },
-          reflector: { x: w * .72, y: Math.max(h * .2, 58), name: 'Refletor', ip: '192.0.2.53' },
+          reflector: { x: w - 90, y: Math.max(h * .2, 58), name: 'Refletor', ip: '192.0.2.53' },
           server: { x: w - 90, y: h * .6, name: 'Vítima', ip: VICTIM }
         };
         n.upstream = reflect
-          ? { x: (n.reflector.x + n.firewall.x) / 2 + 40, y: (n.reflector.y + n.firewall.y) / 2, name: 'Operadora', ip: 'upstream' }
+          ? { x: n.firewall.x + (n.reflector.x - n.firewall.x) * .4, y: (n.reflector.y + n.firewall.y) / 2, name: 'Operadora', ip: 'upstream' }
           : { x: (n.attacker.x + n.firewall.x) / 2 + 20, y: (n.attacker.y + n.firewall.y) / 2 - 22, name: 'Operadora', ip: 'upstream' };
         return n;
       }

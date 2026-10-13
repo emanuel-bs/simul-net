@@ -128,14 +128,18 @@
   }
   // zoom da topologia: 1 = ajustada ao painel; acima disso o desenho cresce e a área rola
   var svg = document.getElementById('topology'), wrap = svg && svg.closest('.stage-svg-wrap');
-  if (stage && header && svg && wrap) {
-    var steps = [1, 1.25, 1.5, 2, 2.5], zi = 0;
+  var cvs = !svg && document.getElementById('network');
+  if (stage && header && ((svg && wrap) || cvs)) {
+    var steps = cvs ? [1, 1.1, 1.2] : [1, 1.25, 1.5, 2, 2.5], zi = 0;
     var zb = document.createElement('div'); zb.className = 'zoom-bar'; zb.setAttribute('role', 'group'); zb.setAttribute('aria-label', 'Zoom da topologia');
     var zOut = mk('Zoom -'), zFit = mk('Ajustar'), zIn = mk('Zoom +');
     zOut.title = 'Diminuir a topologia'; zIn.title = 'Aumentar a topologia'; zFit.title = 'Ajustar a topologia ao painel';
     [zOut, zFit, zIn].forEach(function (b) { zb.appendChild(b); });
     var applyZoom = function () {
-      if (steps[zi] === 1) { svg.style.removeProperty('height'); svg.style.removeProperty('min-height'); }
+      if (cvs) {
+        // simulador em canvas: o próprio simulador amplia nós, textos e pacotes
+        window.__simZoom = steps[zi]; window.dispatchEvent(new Event('resize'));
+      } else if (steps[zi] === 1) { svg.style.removeProperty('height'); svg.style.removeProperty('min-height'); }
       else { var h = Math.round(wrap.clientHeight * steps[zi]); svg.style.setProperty('height', h + 'px', 'important'); svg.style.setProperty('min-height', h + 'px', 'important'); }
       zOut.disabled = zi === 0; zIn.disabled = zi === steps.length - 1; zFit.textContent = zi === 0 ? 'Ajustada' : 'Ajustar (' + Math.round(steps[zi] * 100) + '%)';
     };
@@ -143,7 +147,7 @@
     zIn.addEventListener('click', function () { if (zi < steps.length - 1) { zi++; applyZoom(); } });
     zFit.addEventListener('click', function () { zi = 0; applyZoom(); });
     header.appendChild(zb); applyZoom();
-    if (window.ResizeObserver) new ResizeObserver(function () { if (zi > 0) applyZoom(); }).observe(wrap);
+    if (window.ResizeObserver && wrap) new ResizeObserver(function () { if (zi > 0) applyZoom(); }).observe(wrap);
   }
   setup(stage, header);
 
