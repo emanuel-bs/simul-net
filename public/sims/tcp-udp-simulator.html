@@ -312,6 +312,39 @@
   @media (max-width:960px){
     html.embedded .back-link{display:none;}
   }
+
+  /* ===== Quadros flutuantes: destacar, mover, redimensionar e maximizar ===== */
+  .fpanel{display:flex;flex-direction:column;flex:0 0 auto;}
+  .fpanel>.inspector{flex:0 0 auto;min-height:160px;overflow:visible;}
+  .fpanel.is-floating>.inspector{flex:1 1 auto;min-height:0;overflow:auto;}
+  .fbar{display:flex;align-items:center;gap:6px;padding:2px 2px 4px;}
+  .fbar .ftitle{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-right:auto;}
+  .fbtn{flex:none;font-size:12px !important;padding:3px 9px !important;border-radius:8px !important;background:transparent !important;border:1px solid var(--border-soft) !important;color:var(--muted);font-weight:600;transform:none !important;}
+  .fbtn:hover:not(:disabled){color:var(--ink);border-color:var(--teal) !important;}
+  .fbtn[hidden]{display:none !important;}
+  details.cfg>summary{display:flex;align-items:center;gap:6px;font-size:11.5px;letter-spacing:0.04em;}
+  details.cfg>summary .fbtn{font-size:11.5px !important;padding:3px 7px !important;}
+  details.cfg>summary .fbtn{margin-left:auto;}
+  .tabs-grip{display:none;flex:0 0 8px;cursor:ns-resize;position:relative;touch-action:none;}
+  .tabs-grip::after{content:'';position:absolute;left:50%;top:3px;width:44px;height:3px;margin-left:-22px;border-radius:2px;background:var(--muted-line);}
+  .tabs-grip:hover::after,.tabs-grip:focus-visible::after{background:var(--teal);}
+  .is-floating{position:fixed !important;z-index:60;display:flex !important;flex-direction:column;overflow:hidden;min-width:300px;min-height:150px;max-height:none !important;box-shadow:0 22px 60px -12px rgba(0,0,0,0.75);border-color:var(--teal) !important;background:var(--panel);}
+  .is-floating.tabs-panel{max-width:none;}
+  .is-floating .tabs-grip{display:none !important;}
+  .is-floating>.controls{overflow:auto;flex:1 1 auto;min-height:0;}
+  .is-floating>.inspector{overflow:auto;border-color:var(--border);}
+  .is-floating>.fbar,.is-floating>.tab-bar,.is-floating>summary{cursor:move;touch-action:none;}
+  .is-floating>.fbar{padding:6px 10px;border-bottom:1px solid var(--border-soft);background:var(--panel-2);}
+  .fresize{position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:nwse-resize;touch-action:none;z-index:2;background:linear-gradient(135deg,transparent 52%,var(--teal) 52%,var(--teal) 60%,transparent 60%,transparent 72%,var(--teal) 72%,var(--teal) 80%,transparent 80%);}
+  @media (min-width:961px){ .tabs-grip{display:block;} }
+  @media (max-width:960px){ .fbtn,.fbar,.fresize{display:none !important;} }
+  .controls>.inspector{flex:0 0 auto;min-height:0;padding:12px 14px;background:var(--panel-2);border-color:var(--teal);box-shadow:none;}
+  .fpanel.is-floating>.state-panel{flex:1 1 auto;min-height:0;overflow:auto;border-color:var(--border);}
+  .body-collapsed>.ladder-wrap,.body-collapsed>.state-panel{display:none;}
+  .stage-panel.body-collapsed{align-self:start;}
+  .is-floating.body-collapsed,details.cfg.is-floating:not([open]){height:auto !important;min-height:0 !important;}
+  .is-floating.body-collapsed>.fresize,details.cfg.is-floating:not([open])>.fresize{display:none;}
+  .stage-header .fbtn{align-self:center;}
 </style>
 </head>
 
@@ -380,10 +413,10 @@
     </section>
 
     <aside class="side-col">
-      <div class="panel inspector" id="inspector"></div>
-      <div class="panel state-panel" id="statePanel"></div>
-      <details class="panel cfg" id="cfgBox" open><summary>Configuração da simulação</summary>
+            <div class="fpanel" id="fpState"><div class="fbar"><span class="ftitle">Estados do protocolo</span></div><div class="panel state-panel" id="statePanel"></div></div>
+      <details class="panel cfg" id="cfgBox" open><summary>Configurações do simulador</summary>
       <div class="controls">
+        <div class="panel inspector" id="inspector" aria-live="polite"></div>
         <div class="sub-title">Rede</div>
         <div class="grid2">
           <label class="field" data-app="file stream">Segmentos
@@ -449,6 +482,7 @@
   </main>
 
   <section class="panel tabs-panel" id="tabsPanel">
+    <div class="tabs-grip" id="tabsGrip" role="separator" aria-orientation="horizontal" tabindex="0" aria-label="Ajustar a altura do painel de abas (setas para cima e para baixo)"></div>
     <div class="tab-bar" role="tablist">
       <button class="tab-btn active" data-tab="scen" type="button" role="tab" aria-selected="true">Cenário</button>
       <button class="tab-btn" data-tab="cap" type="button" role="tab" aria-selected="false">Captura</button>
@@ -2325,6 +2359,106 @@
   btn.addEventListener('click',function(){ set(!panel.classList.contains('collapsed')); });
   if(window.innerHeight<800) set(true);
   panel.querySelectorAll('.tab-btn').forEach(function(b){ b.addEventListener('click',function(){ set(false); }); });
+})();
+</script>
+
+<script>
+(function(){
+  var mq=window.matchMedia('(min-width:961px)');
+  var all=[];
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  function mk(t){ var b=document.createElement('button'); b.type='button'; b.className='fbtn'; b.textContent=t; return b; }
+  function setup(el,bar,col){
+    if(!el||!bar) return;
+    var st={floating:false,maxed:false,rect:null,prev:null};
+    var bF=mk('Destacar'), bM=mk('Maximizar'); bM.hidden=true;
+    bF.setAttribute('aria-pressed','false');
+    var bC=null;
+    if(col){
+      bC=mk(col.get()?'Expandir painel':'Recolher painel');
+      bC.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); col.set(!col.get()); bC.textContent=col.get()?'Expandir painel':'Recolher painel'; });
+      if(col.sync) col.sync(function(){ bC.textContent=col.get()?'Expandir painel':'Recolher painel'; });
+    }
+    var ref=bar.querySelector('.tabs-toggle');
+    if(ref) { bar.insertBefore(bM,ref); bar.insertBefore(bF,bM); } else { bar.appendChild(bF); bar.appendChild(bM); if(bC) bar.appendChild(bC); }
+    var handle=null;
+    function place(r){ el.style.left=r.left+'px'; el.style.top=r.top+'px'; el.style.width=r.width+'px'; el.style.height=r.height+'px'; el.style.right='auto'; el.style.bottom='auto'; }
+    function cur(){ var r=el.getBoundingClientRect(); return {left:r.left,top:r.top,width:r.width,height:r.height}; }
+    function undock(){
+      st.floating=false; st.maxed=false; el.classList.remove('is-floating');
+      ['left','top','width','height','right','bottom'].forEach(function(k){el.style[k]='';});
+      if(handle){handle.remove();handle=null;}
+      bF.textContent='Destacar'; bF.setAttribute('aria-pressed','false'); bM.hidden=true; bM.textContent='Maximizar';
+    }
+    function float(){
+      var r=st.rect||cur();
+      if(!st.rect && el.id==='tabsPanel'){ r.width=Math.round(window.innerWidth*0.72); r.left=Math.round((window.innerWidth-r.width)/2); r.height=Math.max(r.height,260); r.top=window.innerHeight-r.height-30; }
+      r.width=clamp(r.width,320,window.innerWidth-16); r.height=clamp(r.height,170,window.innerHeight-16);
+      r.left=clamp(r.left,8,window.innerWidth-r.width-8); r.top=clamp(r.top,8,window.innerHeight-r.height-8);
+      el.classList.remove('collapsed');
+      var tg=el.querySelector('.tabs-toggle'); if(tg){ tg.textContent='Recolher painel'; tg.setAttribute('aria-expanded','true'); }
+      el.classList.add('is-floating'); place(r); st.floating=true;
+      handle=document.createElement('div'); handle.className='fresize'; el.appendChild(handle); bindResize(handle);
+      bF.textContent='Encaixar'; bF.setAttribute('aria-pressed','true'); bM.hidden=false;
+    }
+    function toggle(){ if(st.floating){ st.rect=cur(); undock(); } else { st.t=Date.now(); float(); } }
+    bF.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); toggle(); });
+    // clique duplo na barra de um quadro flutuante o encaixa de volta
+    bar.addEventListener('dblclick',function(e){ if(st.floating && !e.target.closest('button,select,input,a')){ e.preventDefault(); toggle(); } });
+    bM.addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation(); if(!st.floating) return;
+      if(st.maxed){ place(st.prev); st.maxed=false; bM.textContent='Maximizar'; }
+      else { st.prev=cur(); place({left:12,top:12,width:window.innerWidth-24,height:window.innerHeight-24}); st.maxed=true; bM.textContent='Restaurar'; }
+    });
+    // arrastar pela barra
+    bar.addEventListener('pointerdown',function(e){
+      if(!st.floating||st.maxed||e.button>0||e.target.closest('button,select,input,a')) return;
+      var sx=e.clientX, sy=e.clientY, r=cur(), moved=false;
+      bar.setPointerCapture(e.pointerId);
+      function mv(ev){ var dx=ev.clientX-sx, dy=ev.clientY-sy; if(Math.abs(dx)+Math.abs(dy)>3) moved=true;
+        el.style.left=clamp(r.left+dx,0,window.innerWidth-80)+'px'; el.style.top=clamp(r.top+dy,0,window.innerHeight-40)+'px'; }
+      function up(ev){ bar.removeEventListener('pointermove',mv); bar.removeEventListener('pointerup',up); bar.removeEventListener('pointercancel',up);
+        try{bar.releasePointerCapture(ev.pointerId);}catch(x){}
+        if(moved){ var sup=function(c){ c.preventDefault(); c.stopPropagation(); bar.removeEventListener('click',sup,true); }; bar.addEventListener('click',sup,true); setTimeout(function(){bar.removeEventListener('click',sup,true);},0); } }
+      bar.addEventListener('pointermove',mv); bar.addEventListener('pointerup',up); bar.addEventListener('pointercancel',up);
+    });
+    function bindResize(h){
+      h.addEventListener('pointerdown',function(e){
+        if(e.button>0) return; e.preventDefault(); e.stopPropagation();
+        var sx=e.clientX, sy=e.clientY, r=cur(); h.setPointerCapture(e.pointerId); st.maxed=false; bM.textContent='Maximizar';
+        function mv(ev){ el.style.width=clamp(r.width+ev.clientX-sx,300,window.innerWidth-r.left)+'px'; el.style.height=clamp(r.height+ev.clientY-sy,150,window.innerHeight-r.top)+'px'; }
+        function up(ev){ h.removeEventListener('pointermove',mv); h.removeEventListener('pointerup',up); h.removeEventListener('pointercancel',up); try{h.releasePointerCapture(ev.pointerId);}catch(x){} }
+        h.addEventListener('pointermove',mv); h.addEventListener('pointerup',up); h.addEventListener('pointercancel',up);
+      });
+    }
+    all.push({undock:function(){ st.rect=cur(); undock(); },isFloating:function(){return st.floating;},time:function(){return st.t||0;}});
+  }
+  setup(document.getElementById('tabsPanel'), document.querySelector('#tabsPanel .tab-bar'));
+  var stg=document.querySelector('.stage-panel'), cfg=document.getElementById('cfgBox'), stp=document.getElementById('fpState');
+  setup(stg, document.querySelector('.stage-header'), {get:function(){return stg.classList.contains('body-collapsed');}, set:function(c){stg.classList.toggle('body-collapsed',c);}});
+  setup(stp, document.querySelector('#fpState .fbar'), {get:function(){return stp.classList.contains('body-collapsed');}, set:function(c){stp.classList.toggle('body-collapsed',c);}});
+  setup(cfg, document.querySelector('#cfgBox>summary'), {get:function(){return !cfg.open;}, set:function(c){cfg.open=!c;}, sync:function(fn){cfg.addEventListener('toggle',fn);}});
+  // Esc encaixa o quadro flutuante mais recente
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    var fl=all.filter(function(a){return a.isFloating();}).sort(function(a,b){return b.time()-a.time();});
+    if(fl.length){ fl[0].undock(); }
+  });
+  mq.addEventListener('change',function(){ if(!mq.matches) all.forEach(function(a){ if(a.isFloating()) a.undock(); }); });
+
+  // alça de altura do painel de abas
+  var panel=document.getElementById('tabsPanel'), grip=document.getElementById('tabsGrip');
+  function setH(h){ panel.classList.remove('collapsed'); var tg=document.getElementById('tabsToggle'); if(tg){tg.textContent='Recolher painel'; tg.setAttribute('aria-expanded','true');} panel.style.height=clamp(h,110,window.innerHeight*0.75)+'px'; }
+  grip.addEventListener('pointerdown',function(e){
+    if(e.button>0) return; e.preventDefault(); var sy=e.clientY, h0=panel.getBoundingClientRect().height; grip.setPointerCapture(e.pointerId);
+    function mv(ev){ setH(h0+(sy-ev.clientY)); }
+    function up(ev){ grip.removeEventListener('pointermove',mv); grip.removeEventListener('pointerup',up); grip.removeEventListener('pointercancel',up); try{grip.releasePointerCapture(ev.pointerId);}catch(x){} }
+    grip.addEventListener('pointermove',mv); grip.addEventListener('pointerup',up); grip.addEventListener('pointercancel',up);
+  });
+  grip.addEventListener('keydown',function(e){
+    var h=panel.getBoundingClientRect().height;
+    if(e.key==='ArrowUp'){ e.preventDefault(); setH(h+30); } else if(e.key==='ArrowDown'){ e.preventDefault(); setH(h-30); }
+  });
 })();
 </script>
 </body>
