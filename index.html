@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Simul-Net: simuladores visuais de redes e protocolos seguros (roteamento, DHCP, ICMP, BGP, MPLS, TCP e UDP, SSH e HTTPS), da Universidade de Brasília (UnB)." />
+    <link rel="canonical" href="https://peotta.github.io/Simul-Net/" />
+    <meta property="og:title" content="Simul-Net" />
+    <meta property="og:description" content="Simuladores visuais de redes e protocolos seguros, passo a passo, no navegador." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://peotta.github.io/Simul-Net/" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <title>Simul-Net: simuladores de redes e protocolos seguros</title>
+    <script>
+      // Aplica o tema salvo antes da renderização para evitar piscar. O padrão é o tema escuro.
+      try {
+        var t = localStorage.getItem('simulnet-theme');
+        var dark = t ? t === 'dark' : true;
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Este site requer JavaScript.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

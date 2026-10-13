@@ -1,0 +1,22 @@
+# Node / Vite
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Arquivos de agentes (não são publicados)
+.agents/
+.claude/
+AGENTS.md
+agentes.md
