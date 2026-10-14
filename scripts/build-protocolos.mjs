@@ -36,6 +36,16 @@ const PAGES = [
     ogTitle: 'Simulador Visual de HTTPS e TLS',
     ogDescription: 'Veja o HTTPS por dentro: handshake TLS, certificados, retomada, HSTS e a comparação entre HTTP e HTTPS.',
   },
+  {
+    file: 'ftp-simulator.html',
+    modules: ['ftp'],
+    title: 'Simulador Visual de FTP, FTPS e SFTP',
+    h1: 'Simulador Visual de FTP, FTPS e SFTP',
+    description:
+      'Simulador interativo de transferência de arquivos: FTP com canais de controle e de dados (modos ativo e passivo, NAT e firewall), FTPS explícito e implícito, SFTP sobre SSH e a comparação do que um observador na rede enxerga em cada um.',
+    ogTitle: 'Simulador Visual de FTP, FTPS e SFTP',
+    ogDescription: 'Veja o FTP, o FTPS e o SFTP por dentro: canais de controle e dados, modos ativo e passivo, TLS e SSH.',
+  },
 ];
 
 for (const p of PAGES) {
