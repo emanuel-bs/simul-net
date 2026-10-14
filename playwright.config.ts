@@ -24,6 +24,8 @@ export default defineConfig({
   },
   webServer: {
     command: `npm run preview -- --port ${port} --strictPort`,
+    // o preview lê o caminho base da configuração do Vite, então precisa da mesma variável do build
+    env: { VITE_BASE: base },
     url: `http://localhost:${port}${base}`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
