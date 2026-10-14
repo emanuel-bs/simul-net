@@ -355,6 +355,12 @@
   .frz-sw{bottom:0;left:0;width:14px;height:14px;cursor:nesw-resize;}
 
   .stage-header .fbtn{align-self:center;}
+
+  /* zoom do diagrama de sequência */
+  .zoom-bar{display:flex;align-items:center;gap:4px;}
+  .zoom-bar .fbtn:disabled{opacity:.4;cursor:not-allowed;}
+  .stage-header .fbtn{align-self:center;}
+  @media (max-width:960px){ .zoom-bar{display:none;} }
 </style>
 </head>
 
@@ -2476,6 +2482,33 @@
     var h=panel.getBoundingClientRect().height;
     if(e.key==='ArrowUp'){ e.preventDefault(); setH(h+30); } else if(e.key==='ArrowDown'){ e.preventDefault(); setH(h-30); }
   });
+})();
+</script>
+
+<script>
+(function(){
+  var lad=document.getElementById('ladder'), header=document.querySelector('.stage-header');
+  if(!lad||!header) return;
+  var steps=[0.5,0.65,0.8,1,1.25,1.5,2], z1=steps.indexOf(1), zi=z1;
+  var zb=document.createElement('div'); zb.className='zoom-bar'; zb.setAttribute('role','group'); zb.setAttribute('aria-label','Zoom do diagrama');
+  function mk(t,title){ var b=document.createElement('button'); b.type='button'; b.className='fbtn'; b.textContent=t; b.title=title; return b; }
+  var zOut=mk('Zoom -','Diminuir o diagrama'), zFit=mk('Ajustar','Ajustar o diagrama ao painel'), zIn=mk('Zoom +','Aumentar o diagrama');
+  [zOut,zFit,zIn].forEach(function(b){ zb.appendChild(b); });
+  function apply(){
+    var z=steps[zi];
+    if(z===1){ lad.style.removeProperty('width'); lad.style.removeProperty('min-width'); lad.style.removeProperty('margin'); }
+    else {
+      lad.style.setProperty('width',Math.round(z*100)+'%','important');
+      if(z<1){ lad.style.setProperty('min-width','0','important'); lad.style.setProperty('margin','0 auto','important'); }
+      else { lad.style.removeProperty('min-width'); lad.style.removeProperty('margin'); }
+    }
+    zOut.disabled=zi===0; zIn.disabled=zi===steps.length-1; zFit.textContent=zi===z1?'Ajustada':'Ajustar ('+Math.round(z*100)+'%)';
+  }
+  zOut.addEventListener('click',function(){ if(zi>0){ zi--; apply(); } });
+  zIn.addEventListener('click',function(){ if(zi<steps.length-1){ zi++; apply(); } });
+  zFit.addEventListener('click',function(){ zi=z1; apply(); });
+  var first=header.querySelector('.fbtn'); header.insertBefore(zb,first||null);
+  apply();
 })();
 </script>
 </body>

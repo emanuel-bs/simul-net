@@ -129,25 +129,32 @@
   // zoom da topologia: 1 = ajustada ao painel; acima disso o desenho cresce e a área rola
   var svg = document.getElementById('topology'), wrap = svg && svg.closest('.stage-svg-wrap');
   var cvs = !svg && document.getElementById('network');
-  if (stage && header && ((svg && wrap) || cvs)) {
-    var steps = cvs ? [1, 1.1, 1.2] : [1, 1.25, 1.5, 2, 2.5], zi = 0;
-    var zb = document.createElement('div'); zb.className = 'zoom-bar'; zb.setAttribute('role', 'group'); zb.setAttribute('aria-label', 'Zoom da topologia');
+  var lad = !svg && !cvs && document.getElementById('ladder');   // diagrama de sequência (SSH, HTTPS, FTP)
+  if (stage && header && ((svg && wrap) || cvs || lad)) {
+    var steps = cvs ? [0.8, 0.9, 1, 1.1, 1.2] : (lad ? [0.5, 0.65, 0.8, 1, 1.25, 1.5, 2] : [0.5, 0.65, 0.8, 1, 1.25, 1.5, 2, 2.5]);
+    var z1 = steps.indexOf(1), zi = z1;   // z1 = tamanho normal (ajustado ao painel)
+    var zb = document.createElement('div'); zb.className = 'zoom-bar'; zb.setAttribute('role', 'group'); zb.setAttribute('aria-label', lad ? 'Zoom do diagrama' : 'Zoom da topologia');
     var zOut = mk('Zoom -'), zFit = mk('Ajustar'), zIn = mk('Zoom +');
-    zOut.title = 'Diminuir a topologia'; zIn.title = 'Aumentar a topologia'; zFit.title = 'Ajustar a topologia ao painel';
+    var what = lad ? 'o diagrama' : 'a topologia';
+    zOut.title = 'Diminuir ' + what; zIn.title = 'Aumentar ' + what; zFit.title = 'Ajustar ' + what + ' ao painel';
     [zOut, zFit, zIn].forEach(function (b) { zb.appendChild(b); });
     var applyZoom = function () {
       if (cvs) {
         // simulador em canvas: o próprio simulador amplia nós, textos e pacotes
         window.__simZoom = steps[zi]; window.dispatchEvent(new Event('resize'));
+      } else if (lad) {
+        // o diagrama cresce em largura (e em altura, pela proporção) e a área rola
+        if (steps[zi] === 1) { lad.style.removeProperty('width'); lad.style.removeProperty('min-width'); lad.style.removeProperty('margin'); }
+        else { lad.style.setProperty('width', Math.round(steps[zi] * 100) + '%', 'important'); if (steps[zi] < 1) { lad.style.setProperty('min-width', '0', 'important'); lad.style.setProperty('margin', '0 auto', 'important'); } else { lad.style.removeProperty('min-width'); lad.style.removeProperty('margin'); } }
       } else if (steps[zi] === 1) { svg.style.removeProperty('height'); svg.style.removeProperty('min-height'); }
       else { var h = Math.round(wrap.clientHeight * steps[zi]); svg.style.setProperty('height', h + 'px', 'important'); svg.style.setProperty('min-height', h + 'px', 'important'); }
-      zOut.disabled = zi === 0; zIn.disabled = zi === steps.length - 1; zFit.textContent = zi === 0 ? 'Ajustada' : 'Ajustar (' + Math.round(steps[zi] * 100) + '%)';
+      zOut.disabled = zi === 0; zIn.disabled = zi === steps.length - 1; zFit.textContent = zi === z1 ? 'Ajustada' : 'Ajustar (' + Math.round(steps[zi] * 100) + '%)';
     };
     zOut.addEventListener('click', function () { if (zi > 0) { zi--; applyZoom(); } });
     zIn.addEventListener('click', function () { if (zi < steps.length - 1) { zi++; applyZoom(); } });
-    zFit.addEventListener('click', function () { zi = 0; applyZoom(); });
+    zFit.addEventListener('click', function () { zi = z1; applyZoom(); });
     header.appendChild(zb); applyZoom();
-    if (window.ResizeObserver && wrap) new ResizeObserver(function () { if (zi > 0) applyZoom(); }).observe(wrap);
+    if (window.ResizeObserver && wrap) new ResizeObserver(function () { if (zi !== z1) applyZoom(); }).observe(wrap);
   }
   setup(stage, header);
 
