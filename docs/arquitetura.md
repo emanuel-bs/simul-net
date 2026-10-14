@@ -57,7 +57,8 @@ Em cada migração, o simulador legado só é removido depois de a versão nativ
 - **Registro:** identificadores únicos, categorias válidas, arquivos existentes, ausência de travessão longo e de meia-risca.
 - **Páginas legadas:** título, descrição, canônica, crédito e link de volta ao Simul-Net.
 - **Interface:** páginas inicial, de categoria e de simulador, com verificação de acessibilidade (axe-core).
-- **A criar:** testes unitários dos motores nativos e teste de fumaça em navegador (todos os cenários de cada simulador, sem erro de JavaScript).
+- **Ponta a ponta (Playwright, em `e2e/`):** todos os cenários de cada simulador sem erro de JavaScript, layout da bancada e quadros destacáveis, e o hub. Roda no fluxo de publicação.
+- **A criar:** testes unitários dos motores nativos.
 
 ## 8. Publicação
 

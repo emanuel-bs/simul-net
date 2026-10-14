@@ -29,6 +29,20 @@ jobs:
         env:
           # O base path acompanha o nome do repositório: https://usuario.github.io/<repositório>/
           VITE_BASE: /${{ github.event.repository.name }}/
+      # Testes de ponta a ponta: percorrem todos os cenários de todos os simuladores em um Chrome real (já instalado no runner).
+      - name: Testes de ponta a ponta
+        run: npx playwright test
+        env:
+          E2E_BASE: /${{ github.event.repository.name }}/
+      - name: Guardar o relatório se os testes falharem
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: relatorio-e2e
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
