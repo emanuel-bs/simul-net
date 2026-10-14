@@ -31,6 +31,7 @@ jobs:
           VITE_BASE: /${{ github.event.repository.name }}/
       # Testes de ponta a ponta: percorrem todos os cenários de todos os simuladores em um Chrome real (já instalado no runner).
       - name: Testes de ponta a ponta
+        timeout-minutes: 20
         run: npx playwright test
         env:
           E2E_BASE: /${{ github.event.repository.name }}/

@@ -71,25 +71,32 @@ async function forEachMode(page: Page, fn: () => Promise<void>) {
   }
 }
 
+// Os cenários de cada simulador são divididos em partes que rodam em paralelo (o cenário de número i vai para a parte i % SHARDS).
+const SHARDS = 4;
+
 for (const sim of available) {
   test.describe(`${sim.id}`, () => {
-    test('todos os cenários rodam sem erro de JavaScript', async ({ page }) => {
-      test.setTimeout(300_000);
-      const errors = watchErrors(page);
-      await open(page, sim.file!);
-      let scenarios = 0;
-      await forEachMode(page, async () => {
-        const chips = page.locator('#scenRow button.chip');
-        const n = await chips.count();
-        for (let i = 0; i < n; i++) {
-          await chips.nth(i).click();
-          await exercise(page);
-          scenarios++;
-        }
+    for (let shard = 0; shard < SHARDS; shard++) {
+      test(`todos os cenários rodam sem erro de JavaScript (parte ${shard + 1} de ${SHARDS})`, async ({ page }) => {
+        test.setTimeout(240_000);
+        const errors = watchErrors(page);
+        await open(page, sim.file!);
+        let seen = 0;
+        let ran = 0;
+        await forEachMode(page, async () => {
+          const chips = page.locator('#scenRow button.chip');
+          const n = await chips.count();
+          for (let i = 0; i < n; i++) {
+            if (seen++ % SHARDS !== shard) continue;
+            await chips.nth(i).click();
+            await exercise(page);
+            ran++;
+          }
+        });
+        if (shard === 0) expect(ran, 'o simulador precisa ter cenários prontos').toBeGreaterThan(0);
+        expect(errors).toEqual([]);
       });
-      expect(scenarios, 'o simulador precisa ter cenários prontos').toBeGreaterThan(0);
-      expect(errors).toEqual([]);
-    });
+    }
 
     test('a bancada cabe na tela e os quadros destacam e encaixam', async ({ page }) => {
       const errors = watchErrors(page);
