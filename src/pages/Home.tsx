@@ -26,12 +26,15 @@ export function Home() {
         <div className="grid gap-4 md:grid-cols-3">
           {CATEGORIES.map((c) => {
             const list = simsByCategory(c.id);
+            const ready = list.filter((s) => s.status === 'available').length;
+            const planned = list.filter((s) => s.status === 'planned').length;
             return (
               <Link key={c.id} to={`/categoria/${c.id}`} className="block rounded-xl border border-line bg-surface p-5 hover:bg-surface2">
                 <h3 className="text-xl font-bold">{c.title}</h3>
                 <p className="mt-1 text-base">{c.description}</p>
                 <p className="mt-2 text-base font-semibold text-accent">
-                  {list.filter((s) => s.status === 'available').length} disponível(is) · {list.filter((s) => s.status === 'planned').length} em breve
+                  {ready} {ready === 1 ? 'disponível' : 'disponíveis'}
+                  {planned > 0 && ` · ${planned} em breve`}
                 </p>
               </Link>
             );
