@@ -602,7 +602,7 @@ const REFERENCE=`<h3>Os três protocolos</h3>
 <p>As chaves, os hashes e os conteúdos são ilustrativos. Os tempos são didáticos, o certificado e o TLS são simplificados e não há criptografia real.</p>`;
 
 SS.register({
-  id:'ftp',showBase:true,label:'FTP, FTPS e SFTP',stateTitle:'Estado da transferência',
+  id:'ftp',label:'FTP, FTPS e SFTP',stateTitle:'Estado da transferência',
   rfcs:[[959,'FTP'],[4217,'FTP sobre TLS'],[2428,'EPSV e EPRT'],[4253,'SSH (SFTP)']],
   subs:[{key:'ftp',label:'FTP',default:'f-pasv'},{key:'ftps',label:'FTPS',default:'s-exp'},{key:'sftp',label:'SFTP',default:'p-get'},{key:'cmp',label:'Comparação',default:'k-get'}],
   controls:[

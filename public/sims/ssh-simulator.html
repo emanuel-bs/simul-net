@@ -740,7 +740,7 @@ function changedCtls(s){
 }
 function renderScenarioTab(){
   const body=$('scenBody'), list=proto.scenarios, s=list.find(x=>x.id===activeScen), D=proto.scenDoc;
-  const base=!s&&proto.showBase&&baseScen?list.find(x=>x.id===baseScen):null;
+  const base=!s&&baseScen?list.find(x=>x.id===baseScen):null;
   let left;
   if(base){
     const ch=changedCtls(base);
@@ -829,7 +829,7 @@ function stepOnce(){
 function refreshAfterChange(){
   activeScen=null;
   // se o aluno desfez a mudança, a configuração volta a coincidir com o cenário e ele é reativado
-  const b=proto.showBase&&baseScen&&proto.scenarios.find(x=>x.id===baseScen); if(b&&!changedCtls(b).length) activeScen=b.id;
+  const b=baseScen&&proto.scenarios.find(x=>x.id===baseScen); if(b&&!changedCtls(b).length) activeScen=b.id;
   renderScenarios(); build(); renderScenarioTab(); }
 
 function applyScenario(s){
