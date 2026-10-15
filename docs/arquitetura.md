@@ -34,7 +34,7 @@ Simul-Net/
 
 - **Nativo:** componente React com motor de simulação separado da interface e testado, na rota `/sim/:id`. SSH, HTTPS e TLS, FTP, FTPS e SFTP são nativos. Seguem o padrão visual e didático dos demais (abas, ajuda nos campos, rodapé de crédito) e têm a bancada de trabalho: tela única, quadros que destacam, movem, redimensionam, maximizam e recolhem, zoom do diagrama e alça de altura das abas.
 - **Legado:** página autônoma em `public/sims/`, incorporada por `iframe` na rota `/sim/:id` e acessível em tela cheia. São os demais simuladores (roteamento, DHCP, ICMP, BGP, MPLS, TCP e UDP, ataques e defesas). Cada página mantém título, descrição, URL canônica, tags de compartilhamento e o rodapé de crédito padrão. O link de volta usa `target="_top"` para funcionar dentro e fora do `iframe`.
-- **Modelo misto de propósito:** os simuladores legados continuam como estão. Migrar os que têm a lógica misturada à tela (80 a 160 referências ao DOM em 1.100 a 1.900 linhas de JavaScript cada) custaria muito e não muda o que o aluno vê. A camada nativa é usada nos simuladores novos (DNS e DNSSEC, VPN) e nos já migrados.
+- **Modelo misto de propósito:** os simuladores legados continuam como estão. Migrar os que têm a lógica misturada à tela (80 a 160 referências ao DOM em 1.100 a 1.900 linhas de JavaScript cada) custaria muito e não muda o que o aluno vê. A camada nativa é usada nos simuladores novos (DNS e DNSSEC, VPN, SMTP, IS-IS, SNMP) e nos já migrados.
 - **Endereços antigos:** `public/sims/ssh-simulator.html`, `https-simulator.html` e `ftp-simulator.html` são páginas de redirecionamento para a rota nativa (`noindex`, fora do registro e do sitemap), para não quebrar links existentes.
 
 ## 5. Contrato do motor de simulação
@@ -54,7 +54,7 @@ O núcleo está em `src/sim-core/` (`trace.ts`, `hash.ts`, `types.ts`) e a banca
 | 1 | Hub com registro e simuladores legados incorporados | concluída |
 | 2 | Núcleo (`src/sim-core`), bancada React e migração do SSH, HTTPS e FTP para módulos TypeScript, com paridade verificada contra o legado antes de sua remoção | concluída; os legados desses três foram removidos |
 | 3 | Migração dos demais simuladores legados | **não prevista**: o custo é alto e o ganho para o aluno é pequeno (seção 4) |
-| 4 | Novos simuladores já nativos (DNS e DNSSEC, VPN) | prevista; usam o núcleo e a bancada desde o início |
+| 4 | Novos simuladores já nativos (DNS e DNSSEC, VPN, SMTP, IS-IS, SNMP) | prevista; usam o núcleo e a bancada desde o início |
 
 A verificação de paridade foi feita enquanto os dois lados coexistiam: cada cenário e milhares de combinações de parâmetros produziram o mesmo trace, o mesmo Experimento e as mesmas abas. Depois da remoção do legado, essa garantia passou para as impressões digitais (seção 7).
 

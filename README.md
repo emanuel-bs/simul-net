@@ -12,7 +12,7 @@ Projeto acadêmico do curso de Engenharia de Redes de Comunicação, sob respons
 | Camada de transporte e segurança | TCP e UDP (com SACK, download TCP e vídeo UDP), Ataques e defesas TCP/UDP |
 | Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH) |
 
-Em preparação: DNS e DNSSEC, VPN (IPsec e WireGuard).
+Em preparação: DNS e DNSSEC, VPN (IPsec e WireGuard), SMTP e segurança de e-mail, IS-IS, SNMP.
 
 > Os simuladores têm finalidade didática. Valores de chaves, hashes e assinaturas são ilustrativos e não oferecem segurança real.
 

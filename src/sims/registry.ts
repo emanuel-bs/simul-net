@@ -173,6 +173,33 @@ export const SIMS: SimMeta[] = [
     rfcs: ['RFC 7296', 'RFC 4303'],
     status: 'planned',
   },
+  {
+    id: 'smtp',
+    category: 'protocolos-seguros',
+    title: 'SMTP e segurança de e-mail',
+    summary: 'Entrega de e-mail passo a passo: diálogo SMTP, STARTTLS e a autenticação de domínio com SPF, DKIM e DMARC.',
+    topics: [],
+    rfcs: ['RFC 5321', 'RFC 3207', 'RFC 7208', 'RFC 6376', 'RFC 7489'],
+    status: 'planned',
+  },
+  {
+    id: 'is-is',
+    category: 'camada-de-rede',
+    title: 'IS-IS',
+    summary: 'Roteamento por estado de enlace no IS-IS: adjacências, PDUs Hello, LSPs, níveis 1 e 2 e o cálculo SPF.',
+    topics: [],
+    rfcs: ['RFC 1195', 'ISO/IEC 10589'],
+    status: 'planned',
+  },
+  {
+    id: 'snmp',
+    category: 'camada-de-rede',
+    title: 'SNMP',
+    summary: 'Gerência de redes com SNMP: GET, SET, GETNEXT, traps, a MIB e o modelo de segurança SNMPv3.',
+    topics: [],
+    rfcs: ['RFC 3411', 'RFC 3416', 'RFC 3414'],
+    status: 'planned',
+  },
 ];
 
 export const simsByCategory = (id: CategoryId) => SIMS.filter((s) => s.category === id);
