@@ -62,7 +62,7 @@ const PROTOCOLS={}, ORDER=[];
 function register(def){ PROTOCOLS[def.id]=def; ORDER.push(def.id); }
 
 // ---------- Estado ----------
-let proto=null, sub=null, tr=null, P={}, activeScen=null, selMsg=null;
+let proto=null, sub=null, tr=null, P={}, activeScen=null, baseScen=null, selMsg=null;
 let clock=0, endR=0, playing=false, lastTs=0, speed=1.8;
 let segEls=[], evEls=[], layout=null, capShown=0, logShown=0, logAll=[], protoTabs=[], lastTabHtml={};
 let helpId=null;
@@ -332,18 +332,37 @@ function renderProtoTabs(){
 }
 
 // ---------- Aba Cenário ----------
+function scenText(s){
+  const d=proto.scenDoc[s.id];
+  return '<div class="sc-kicker">'+esc(s.g)+'</div><h3 class="sc-title">'+esc(s.label)+'</h3>'+(proto.setup?'<p class="sc-cmd">'+proto.setup(s)+'</p>':'')+
+    '<h4>O que é</h4><p>'+d.concept+'</p><h4>Neste cenário</h4>'+s.what+
+    '<h4>O que observar</h4><ul>'+d.observe.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+    '<h4>'+(d.msgsTitle||'Mensagens envolvidas')+'</h4><table class="sc-msgs"><thead><tr><th>'+(d.cols?d.cols[0]:'Mensagem')+'</th><th>'+(d.cols?d.cols[1]:'Função')+'</th><th>'+(d.cols?d.cols[2]:'Quem envia')+'</th></tr></thead><tbody>'+
+    d.msgs.map(m=>'<tr><td>'+m[0]+'</td><td>'+m[1]+'</td><td class="meaning">'+m[2]+'</td></tr>').join('')+'</tbody></table><h4>Por que importa</h4><p>'+d.why+'</p>';
+}
+// Campos que hoje diferem da configuração pronta do cenário (os controles ocultos no modo atual não contam).
+function changedCtls(s){
+  const out=[], lbl=(c,v)=>c.type==='check'?(v?'sim':'não'):((c.opts.find(o=>String(o[0])===String(v))||[0,String(v)])[1]);
+  proto.controls.filter(visibleCtl).forEach(c=>{
+    const el=ctlEl(c.id); if(!el) return;
+    const cur=c.type==='check'?el.checked:el.value, exp=(s.set&&c.id in s.set)?s.set[c.id]:c.def;
+    if(String(cur)!==String(exp)) out.push({label:c.label,from:lbl(c,exp),to:lbl(c,cur)});
+  });
+  return out;
+}
 function renderScenarioTab(){
   const body=$('scenBody'), list=proto.scenarios, s=list.find(x=>x.id===activeScen), D=proto.scenDoc;
+  const base=!s&&proto.showBase&&baseScen?list.find(x=>x.id===baseScen):null;
   let left;
-  if(!s) left='<h3>Nenhum cenário selecionado</h3><p>A configuração foi alterada manualmente. Escolha um cenário à direita ou no topo para carregar a configuração pronta, ou continue explorando: a aba <b>Experimento</b> descreve cada execução.</p>';
-  else {
-    const d=D[s.id];
-    left='<div class="sc-kicker">'+esc(s.g)+'</div><h3 class="sc-title">'+esc(s.label)+'</h3>'+(proto.setup?'<p class="sc-cmd">'+proto.setup(s)+'</p>':'')+
-      '<h4>O que é</h4><p>'+d.concept+'</p><h4>Neste cenário</h4>'+s.what+
-      '<h4>O que observar</h4><ul>'+d.observe.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
-      '<h4>'+(d.msgsTitle||'Mensagens envolvidas')+'</h4><table class="sc-msgs"><thead><tr><th>'+(d.cols?d.cols[0]:'Mensagem')+'</th><th>'+(d.cols?d.cols[1]:'Função')+'</th><th>'+(d.cols?d.cols[2]:'Quem envia')+'</th></tr></thead><tbody>'+
-      d.msgs.map(m=>'<tr><td>'+m[0]+'</td><td>'+m[1]+'</td><td class="meaning">'+m[2]+'</td></tr>').join('')+'</tbody></table><h4>Por que importa</h4><p>'+d.why+'</p>';
+  if(base){
+    const ch=changedCtls(base);
+    left='<div class="sc-kicker">Baseado em</div><h3 class="sc-title">'+esc(base.label)+' <span class="sc-badge">modificado</span></h3>'+
+      '<p>Você alterou a configuração. O texto do cenário descreve a configuração original, então o resultado desta simulação pode ser diferente: confira a aba <b>Experimento</b>. <button type="button" class="sc-restore">Restaurar o cenário</button></p>'+
+      '<h4>O que mudou</h4><ul class="sc-diff">'+ch.map(x=>'<li><b>'+esc(x.label)+':</b> '+esc(x.from)+' &rarr; '+esc(x.to)+'</li>').join('')+'</ul>'+
+      '<details class="sc-orig"><summary>Ver o texto do cenário original</summary>'+scenText(base)+'</details>';
   }
+  else if(!s) left='<h3>Nenhum cenário selecionado</h3><p>A configuração foi alterada manualmente. Escolha um cenário à direita ou no topo para carregar a configuração pronta, ou continue explorando: a aba <b>Experimento</b> descreve cada execução.</p>';
+  else left=scenText(s);
   let right='<h3>Tipos de cenário</h3>', group=null;
   list.filter(x=>x.sub===sub).forEach(x=>{
     if(x.g!==group){ if(group!==null) right+='</ul>'; group=x.g; right+='<h4>'+esc(x.g)+'</h4><p class="sc-gdoc">'+(proto.groupDoc[x.g]||'')+'</p><ul class="sc-list">'; }
@@ -352,6 +371,7 @@ function renderScenarioTab(){
   right+='</ul>';
   body.innerHTML='<div class="sc-main">'+left+'</div><aside class="sc-side">'+right+'</aside>';
   body.querySelectorAll('.sc-link').forEach(b=>b.addEventListener('click',()=>applyScenario(list.find(x=>x.id===b.dataset.scen))));
+  const rs=body.querySelector('.sc-restore'); if(rs) rs.addEventListener('click',()=>applyScenario(base));
 }
 function renderExplain(){
   const scen=proto.scenarios.find(x=>x.id===activeScen);
@@ -418,12 +438,16 @@ function stepOnce(){
   clock=n===undefined?endR:n; update();
   const k=ladder.getBoundingClientRect().width/layout.W; ladderWrap.scrollTop=Math.max(0,layout.y(clock)*k-ladderWrap.clientHeight*0.5);
 }
-function refreshAfterChange(){ activeScen=null; renderScenarios(); build(); renderScenarioTab(); }
+function refreshAfterChange(){
+  activeScen=null;
+  // se o aluno desfez a mudança, a configuração volta a coincidir com o cenário e ele é reativado
+  const b=proto.showBase&&baseScen&&proto.scenarios.find(x=>x.id===baseScen); if(b&&!changedCtls(b).length) activeScen=b.id;
+  renderScenarios(); build(); renderScenarioTab(); }
 
 function applyScenario(s){
   sub=s.sub; resetCtls();
   Object.keys(s.set||{}).forEach(k=>setCtl(k,s.set[k]));
-  activeScen=s.id;
+  activeScen=s.id; baseScen=s.id;
   const adv=$('advBox'); if(adv) adv.open=!!s.openAdv;
   renderSubSeg(); renderScenarios(); applyVisibility(); syncTabs(); build(); renderScenarioTab(); activateTab('scen');
 }

@@ -200,6 +200,10 @@
   .scen-body .sc-title{margin:2px 0 6px;font-size:17px;}
   .scen-body .sc-cmd code{color:var(--teal);}
   .scen-body .sc-msgs{margin:4px 0 8px;}
+  .scen-body .sc-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--amber);border:1px solid var(--amber);border-radius:20px;padding:1px 8px;vertical-align:middle;letter-spacing:0.04em;text-transform:uppercase;}
+  .scen-body .sc-diff{margin:4px 0 10px;padding-left:20px;}
+  .scen-body .sc-orig{margin-top:14px;border-top:1px solid var(--border-soft);padding-top:10px;}
+  .scen-body .sc-orig summary{cursor:pointer;color:var(--teal);font-weight:600;}
   .sc-side{border-left:1px solid var(--border-soft);padding-left:24px;}
   .sc-side h4:first-of-type{margin-top:6px;}
   .sc-gdoc{font-size:13.5px;}
