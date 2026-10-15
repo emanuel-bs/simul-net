@@ -16,7 +16,7 @@ export function AppLayout() {
   const simMatch = useMatch('/sim/:id');
   const found = findSim(simMatch?.params.id);
   // Em um simulador disponível a tela vira bancada de trabalho: sem rolagem da página e sem rodapé (o crédito está no simulador).
-  const workbench = found?.status === 'available' && !!found.file;
+  const workbench = found?.status === 'available' && (!!found.file || found.engine === 'nativo');
   return (
     <div className={workbench ? 'flex h-dvh flex-col overflow-hidden' : 'flex min-h-screen flex-col'}>
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-ink">

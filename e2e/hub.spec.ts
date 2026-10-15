@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { CATEGORIES, SIMS } from '../src/sims/registry';
 
-// O hub: página inicial, categorias e a página de cada simulador (que incorpora a página legada por iframe).
+// O hub: página inicial, categorias e a página de cada simulador (legados por iframe, nativos direto).
 
 test('a página inicial lista as categorias e os simuladores disponíveis', async ({ page }) => {
   const errors: string[] = [];
@@ -14,8 +14,8 @@ test('a página inicial lista as categorias e os simuladores disponíveis', asyn
   expect(errors).toEqual([]);
 });
 
-for (const sim of SIMS.filter((s) => s.status === 'available')) {
-  test(`o hub incorpora o simulador ${sim.id}`, async ({ page }) => {
+for (const sim of SIMS.filter((s) => s.status === 'available' && s.engine === 'legado')) {
+  test(`o hub incorpora o simulador legado ${sim.id}`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
@@ -29,7 +29,13 @@ for (const sim of SIMS.filter((s) => s.status === 'available')) {
   });
 }
 
-test('o endereço antigo do simulador de protocolos seguros leva à categoria', async ({ page }) => {
-  await page.goto('./#/sim/protocolos-seguros');
-  await expect(page).toHaveURL(/#\/categoria\/protocolos-seguros$/);
-});
+for (const sim of SIMS.filter((s) => s.status === 'available' && s.engine === 'nativo')) {
+  test(`o hub abre o simulador nativo ${sim.id} sem iframe`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(`./#/sim/${sim.id}`);
+    await expect(page.getByRole('tab', { name: 'Cenário' })).toBeVisible();
+    await expect(page.locator('iframe')).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+}

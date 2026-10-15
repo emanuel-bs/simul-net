@@ -9,60 +9,70 @@ O Simul-Net reúne simuladores visuais de redes e protocolos seguros em um únic
 ```text
 Simul-Net/
   public/
-    sims/                 simuladores legados (HTML autônomo, um arquivo por simulador)
+    sims/                 simuladores legados (HTML autônomo) e redirecionamentos de endereços antigos
     favicon.svg
   src/
+    sim-core/             núcleo dos simuladores nativos: trace, valores determinísticos e, em ui/, a bancada React
     sims/registry.ts      registro de categorias e simuladores (fonte única)
-    pages/                Home, Category, SimPage, NotFound
+    sims/native.ts        mapa dos módulos nativos (carregados sob demanda)
+    sims/ssh, https, ftp  motor (engine) e conteúdo (content) de cada simulador nativo
+    pages/                Home, Category, SimPage, NativeSim, NotFound
     components/           SimCard
     layouts/              AppLayout (cabeçalho, navegação, tema, rodapé de crédito)
     hooks/                useTheme
-  tests/                  registro, páginas legadas e acessibilidade da interface
+  tests/                  registro, interface, núcleo, motores, integridade e impressões digitais dos módulos
+  e2e/                    testes ponta a ponta (Playwright)
   docs/                   esta documentação
   .github/workflows/      testes e publicação no GitHub Pages
 ```
 
 ## 3. Registro de simuladores
 
-`src/sims/registry.ts` é a única fonte de verdade. A página inicial, as categorias, os links de navegação e os testes leem dele. Cada entrada tem identificador (kebab-case), categoria, título, resumo, tópicos, especificações (RFCs), situação (`available` ou `planned`) e, quando disponível, o motor (`legado` ou `nativo`) e o arquivo.
+`src/sims/registry.ts` é a única fonte de verdade. A página inicial, as categorias, os links de navegação e os testes leem dele. Cada entrada tem identificador (kebab-case), categoria, título, resumo, tópicos, especificações (RFCs), situação (`available` ou `planned`) e, quando disponível, o motor (`legado` ou `nativo`) e, no caso dos legados, o arquivo.
 
 ## 4. Simuladores legados e nativos
 
-- **Legado:** página autônoma em `public/sims/`, incorporada por `iframe` na rota `/sim/:id` e acessível em tela cheia. É o estado atual de todos os simuladores. Cada página mantém título, descrição, URL canônica, tags de compartilhamento e o rodapé de crédito padrão. O link de volta usa `target="_top"` para funcionar dentro e fora do `iframe`.
-- **Nativo:** componente React com motor de simulação separado da interface e testado. É o destino da migração.
+- **Nativo:** componente React com motor de simulação separado da interface e testado, na rota `/sim/:id`. SSH, HTTPS e TLS, FTP, FTPS e SFTP são nativos. Seguem o padrão visual e didático dos demais (abas, ajuda nos campos, rodapé de crédito) e têm a bancada de trabalho: tela única, quadros que destacam, movem, redimensionam, maximizam e recolhem, zoom do diagrama e alça de altura das abas.
+- **Legado:** página autônoma em `public/sims/`, incorporada por `iframe` na rota `/sim/:id` e acessível em tela cheia. São os demais simuladores (roteamento, DHCP, ICMP, BGP, MPLS, TCP e UDP, ataques e defesas). Cada página mantém título, descrição, URL canônica, tags de compartilhamento e o rodapé de crédito padrão. O link de volta usa `target="_top"` para funcionar dentro e fora do `iframe`.
+- **Modelo misto de propósito:** os simuladores legados continuam como estão. Migrar os que têm a lógica misturada à tela (80 a 160 referências ao DOM em 1.100 a 1.900 linhas de JavaScript cada) custaria muito e não muda o que o aluno vê. A camada nativa é usada nos simuladores novos (DNS e DNSSEC, VPN) e nos já migrados.
+- **Endereços antigos:** `public/sims/ssh-simulator.html`, `https-simulator.html` e `ftp-simulator.html` são páginas de redirecionamento para a rota nativa (`noindex`, fora do registro e do sitemap), para não quebrar links existentes.
 
 ## 5. Contrato do motor de simulação
 
-O núcleo comum já existe, em forma experimental, nos simuladores de SSH e HTTPS (objeto `SecureSim`, em `sources/protocolos/core.js`; as páginas são geradas por `npm run build:sims`). O contrato a ser extraído para `src/sim-core/`:
+O núcleo está em `src/sim-core/` (`trace.ts`, `hash.ts`, `types.ts`) e a bancada em `src/sim-core/ui/`. O contrato:
 
-1. **Motor puro:** uma função `build(parâmetros, modo)` devolve um *trace* e não toca na tela. O mesmo parâmetro e a mesma semente produzem o mesmo trace.
-2. **Trace:** colunas (atores), mensagens (origem, destino, instantes de envio e chegada, rótulo, campos, se vai cifrada), eventos anotados por ator, estados por ator, fases, marcos e métricas. O núcleo converte os tempos em linhas, de modo que o diagrama é compacto e a animação tem ritmo constante.
-3. **Módulo de simulador:** declara controles do painel, cenários, documentação de cada cenário, abas extras, texto do Experimento e Referência. O núcleo cuida do diagrama, da captura, do detalhe da mensagem, do log, do estado e da reprodução (Simular, Passo, velocidade).
+1. **Motor puro:** uma função `build(parâmetros, modo)` devolve um *trace* e não toca na tela. O mesmo parâmetro produz o mesmo trace (valores como chaves e hashes são determinísticos e ilustrativos).
+2. **Trace:** colunas (atores), mensagens (origem, destino, instantes de envio e chegada, rótulo, campos, se vai cifrada), eventos anotados por ator, estados por ator, fases, marcos e métricas. `prepare()` converte os tempos em linhas, de modo que o diagrama é compacto e a animação tem ritmo constante.
+3. **Módulo de simulador (`ProtocolDef`, em `src/sim-core/ui/module.ts`):** declara controles do painel, cenários, documentação de cada cenário, abas extras, texto do Experimento e Referência. A bancada (`Workbench`) cuida do diagrama, da captura, do detalhe da mensagem, do log, do estado e da reprodução (Simular, Passo, velocidade).
 4. **Padrão visual e didático:** abas Cenário, Captura, Mensagem, abas próprias, Experimento, Referência e Log; ajuda em cada campo; uma informação em um único lugar.
+5. **Estilo:** `src/sim-core/ui/simnet.css`, com todos os seletores restritos a `.simnet`, para não interferir no hub (Tailwind).
 
 ## 6. Plano de migração
 
-| Fase | Entrega | Verificação |
+| Fase | Entrega | Situação |
 | --- | --- | --- |
-| 1 | Hub com registro e simuladores legados incorporados (concluída: 10 simuladores, ponta a ponta no fluxo de publicação) | testes do registro e acessibilidade da interface |
-| 2 | (próxima) Extração do núcleo (`src/sim-core`) a partir do `SecureSim` e migração do SSH e HTTPS para módulos TypeScript | testes unitários dos motores e comparação de saída com a versão legada |
-| 3 | Migração de TCP e UDP e do laboratório de ataques e defesas | comparação de saída por cenário (mesma semente, mesmos resultados) |
-| 4 | Migração de roteamento, DHCP, ICMP, BGP e MPLS | idem |
-| 5 | Novos simuladores já nativos (DNS e DNSSEC, VPN) | testes do motor desde o início |
+| 1 | Hub com registro e simuladores legados incorporados | concluída |
+| 2 | Núcleo (`src/sim-core`), bancada React e migração do SSH, HTTPS e FTP para módulos TypeScript, com paridade verificada contra o legado antes de sua remoção | concluída; os legados desses três foram removidos |
+| 3 | Migração dos demais simuladores legados | **não prevista**: o custo é alto e o ganho para o aluno é pequeno (seção 4) |
+| 4 | Novos simuladores já nativos (DNS e DNSSEC, VPN) | prevista; usam o núcleo e a bancada desde o início |
 
-Em cada migração, o simulador legado só é removido depois de a versão nativa reproduzir os resultados de todos os cenários.
+A verificação de paridade foi feita enquanto os dois lados coexistiam: cada cenário e milhares de combinações de parâmetros produziram o mesmo trace, o mesmo Experimento e as mesmas abas. Depois da remoção do legado, essa garantia passou para as impressões digitais (seção 7).
 
 ## 7. Testes
 
-- **Registro:** identificadores únicos, categorias válidas, arquivos existentes, ausência de travessão longo e de meia-risca.
+- **Registro:** identificadores únicos, categorias válidas, arquivos existentes, ausência de travessão longo e de meia-risca, e redirecionamentos dos endereços antigos.
 - **Páginas legadas:** título, descrição, canônica, crédito e link de volta ao Simul-Net.
 - **Interface:** páginas inicial, de categoria e de simulador, com verificação de acessibilidade (axe-core).
-- **Ponta a ponta (Playwright, em `e2e/`):** todos os cenários de cada simulador sem erro de JavaScript, layout da bancada e quadros destacáveis, e o hub. Roda no fluxo de publicação.
-- **A criar:** testes unitários dos motores nativos.
+- **Núcleo e bancada (`tests/sim-core/`):** valores determinísticos e trace (`core.test.ts`); geometria do diagrama, reprodução e cenários (`ui-logic.test.ts`); e a bancada completa com um protocolo de exemplo, incluindo destacar, maximizar, recolher, Esc, zoom e a alça de altura, com axe-core em todas as abas (`workbench.test.tsx`).
+- **Motores (`ssh-engine`, `https-engine`, `ftp-engine`):** regras específicas de cada protocolo (negociação, downgrade, adulteração, política de encaminhamento, modos ativo e passivo, certificado inválido).
+- **Integridade (`protocol-integrity.test.ts`):** vale para qualquer módulo registrado em `src/sims/native.ts`: ids únicos, parâmetros dos cenários existentes e com valores permitidos, documentação completa de cada cenário e modo, e ausência de travessão nos textos.
+- **Impressões digitais (`golden.test.ts` e `golden.json`):** hash SHA-256 do trace, do Experimento, do texto do cenário e das abas de cada cenário, e de 300 combinações aleatórias por modo (semente fixa). Qualquer mudança de comportamento falha o teste. Quando a mudança é intencional: `UPDATE_GOLDEN=1 npx vitest run tests/sim-core/golden.test.ts`, e revisar o diff de `golden.json` antes de versionar.
+- **Páginas nativas (`tests/native-page.test.tsx`):** cada simulador nativo carrega, percorre todos os modos e passa no axe-core.
+- **Ponta a ponta (Playwright, em `e2e/`):** todos os cenários de cada simulador sem erro de JavaScript, layout da bancada, quadros destacáveis, redirecionamento dos endereços antigos e o hub. Roda no fluxo de publicação.
 
 ## 8. Publicação
 
-O fluxo `.github/workflows/deploy.yml` roda `npm ci`, `npm test` e `npm run build` com `VITE_BASE=/<repositório>/` e publica `dist/` no GitHub Pages. Endereço previsto: `https://peotta.github.io/Simul-Net/`.
+O fluxo `.github/workflows/deploy.yml` roda `npm ci`, `npm test`, `npm run build` com `VITE_BASE=/<repositório>/`, os testes ponta a ponta e publica `dist/` no GitHub Pages. Endereço previsto: `https://peotta.github.io/Simul-Net/`.
 
 ## 9. Relação com o portal (peotta.github.io)
 
@@ -70,9 +80,13 @@ O portal continua com suas páginas de simuladores até o Simul-Net estar public
 
 ## 10. Como adicionar um simulador
 
-1. Coloque o arquivo em `public/sims/` (legado) ou crie o componente em `src/sims/<nome>/` (nativo).
-2. Acrescente a entrada em `src/sims/registry.ts`.
-3. Rode `npm test`: o registro verifica o arquivo e os requisitos da página.
+**Nativo (recomendado para simuladores novos):**
+
+1. Crie `src/sims/<nome>/` com o motor (`engine`, função pura que devolve um `Trace`), o conteúdo (`content`: controles, cenários, textos, abas, Experimento e Referência) e `protocol.ts`, que exporta um `ProtocolDef`.
+2. Registre o módulo em `src/sims/native.ts` e acrescente a entrada em `src/sims/registry.ts` com `engine: 'nativo'`.
+3. Inclua o módulo em `tests/sim-core/golden.test.ts`, grave as impressões digitais com `UPDATE_GOLDEN=1`, e rode `npm test` (integridade, páginas e registro são verificados) e `npm run test:e2e`.
+
+**Legado:** coloque o arquivo em `public/sims/` e acrescente a entrada em `src/sims/registry.ts` com `engine: 'legado'`; o registro verifica o arquivo e os requisitos da página.
 
 ## 11. Limitações
 

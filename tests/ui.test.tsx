@@ -32,7 +32,7 @@ describe('página inicial e categorias', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Simul-Net' })).toBeTruthy();
     expect(screen.getByText('Simuladores visuais de redes e protocolos seguros')).toBeTruthy();
     SIMS.filter((s) => s.status === 'available').forEach((s) => {
-      expect(screen.getAllByRole('link', { name: new RegExp(`Abrir simulador\\s*: ${s.title.replace(/[()]/g, '\\$&')}`) }).length).toBe(1);
+      expect(screen.getAllByRole('link', { name: new RegExp(`Abrir simulador\\s*: ${s.title.replace(/[()]/g, '\\$&')}$`) }).length).toBe(1);
     });
     expect(screen.getByText('Simuladores futuros')).toBeTruthy();
   });

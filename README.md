@@ -59,7 +59,7 @@ Para publicar no GitHub Pages: em *Settings > Pages*, escolha *Source: GitHub Ac
 
 ## Documentação
 
-A arquitetura, o contrato do motor de simulação e o plano de migração dos simuladores legados para componentes nativos estão em [docs/arquitetura.md](docs/arquitetura.md).
+A arquitetura, o contrato do motor de simulação, o modelo misto (simuladores nativos em React e TypeScript e simuladores legados em HTML) e os testes estão em [docs/arquitetura.md](docs/arquitetura.md).
 
 ## Licença
 

@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { CATEGORIES, findSim, simUrl } from '../sims/registry';
+import { NativeSim } from './NativeSim';
 import { NotFound } from './NotFound';
 
 export function SimPage() {
@@ -8,7 +9,9 @@ export function SimPage() {
   if (!sim) return <NotFound />;
   const category = CATEGORIES.find((c) => c.id === sim.category);
 
-  if (sim.status !== 'available' || !sim.file) {
+  const native = sim.engine === 'nativo';
+
+  if (sim.status !== 'available' || (!sim.file && !native)) {
     return (
       <div className="mx-auto w-full max-w-7xl space-y-4 px-4 py-8">
         <h1 className="text-3xl font-bold">{sim.title}</h1>
@@ -50,11 +53,19 @@ export function SimPage() {
             )}
           </div>
         </details>
-        <a href={simUrl(sim)} className="rounded-md bg-accent px-3 py-1 text-sm font-semibold text-accent-ink hover:opacity-90">
-          Abrir em tela cheia<span className="sr-only">: {sim.title}</span>
-        </a>
+        {!native && (
+          <a href={simUrl(sim)} className="rounded-md bg-accent px-3 py-1 text-sm font-semibold text-accent-ink hover:opacity-90">
+            Abrir em tela cheia<span className="sr-only">: {sim.title}</span>
+          </a>
+        )}
       </div>
-      <iframe title={`Simulador: ${sim.title}`} src={simUrl(sim)} className="min-h-0 w-full flex-1 border-0 bg-bg" />
+      {native ? (
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <NativeSim id={sim.id} />
+        </div>
+      ) : (
+        <iframe title={`Simulador: ${sim.title}`} src={simUrl(sim)} className="min-h-0 w-full flex-1 border-0 bg-bg" />
+      )}
     </div>
   );
 }

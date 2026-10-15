@@ -133,8 +133,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Negociação e troca de chaves', 'known_hosts e autenticação', 'Canais e SFTP', 'Túneis e encaminhamento'],
     rfcs: ['RFC 4253', 'RFC 4252', 'RFC 4254', 'RFC 8709'],
     status: 'available',
-    engine: 'legado',
-    file: 'ssh-simulator.html',
+    engine: 'nativo',
   },
   {
     id: 'https',
@@ -144,8 +143,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Handshake TLS 1.3 e 1.2', 'Certificados e validação', 'Retomada, 0-RTT e HSTS', 'Comparação HTTP x HTTPS'],
     rfcs: ['RFC 8446', 'RFC 5246', 'RFC 6797', 'RFC 5280'],
     status: 'available',
-    engine: 'legado',
-    file: 'https-simulator.html',
+    engine: 'nativo',
   },
   {
     id: 'ftp',
@@ -155,8 +153,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Canais de controle e de dados', 'Modos ativo e passivo atrás de NAT', 'FTPS: AUTH TLS, PROT P e PROT C', 'SFTP e comparação dos três'],
     rfcs: ['RFC 959', 'RFC 4217', 'RFC 2428', 'RFC 4253'],
     status: 'available',
-    engine: 'legado',
-    file: 'ftp-simulator.html',
+    engine: 'nativo',
   },
   {
     id: 'dnssec',
