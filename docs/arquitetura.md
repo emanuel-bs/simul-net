@@ -44,8 +44,8 @@ O núcleo comum já existe, em forma experimental, nos simuladores de SSH e HTTP
 
 | Fase | Entrega | Verificação |
 | --- | --- | --- |
-| 1 | Hub com registro e simuladores legados incorporados (esta versão) | testes do registro e acessibilidade da interface |
-| 2 | Extração do núcleo (`src/sim-core`) a partir do `SecureSim` e migração do SSH e HTTPS para módulos TypeScript | testes unitários dos motores e comparação de saída com a versão legada |
+| 1 | Hub com registro e simuladores legados incorporados (concluída: 10 simuladores, ponta a ponta no fluxo de publicação) | testes do registro e acessibilidade da interface |
+| 2 | (próxima) Extração do núcleo (`src/sim-core`) a partir do `SecureSim` e migração do SSH e HTTPS para módulos TypeScript | testes unitários dos motores e comparação de saída com a versão legada |
 | 3 | Migração de TCP e UDP e do laboratório de ataques e defesas | comparação de saída por cenário (mesma semente, mesmos resultados) |
 | 4 | Migração de roteamento, DHCP, ICMP, BGP e MPLS | idem |
 | 5 | Novos simuladores já nativos (DNS e DNSSEC, VPN) | testes do motor desde o início |
