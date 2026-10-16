@@ -200,6 +200,42 @@ export const SIMS: SimMeta[] = [
     rfcs: ['RFC 3411', 'RFC 3416', 'RFC 3414'],
     status: 'planned',
   },
+  {
+    id: 'arp',
+    category: 'camada-de-rede',
+    title: 'ARP',
+    summary: 'Resolução de endereços na rede local: requisição e resposta ARP, tabela ARP, ARP gratuito e o envenenamento de cache (ARP spoofing) com as defesas.',
+    topics: [],
+    rfcs: ['RFC 826', 'RFC 5227'],
+    status: 'planned',
+  },
+  {
+    id: 'http-versoes',
+    category: 'transporte',
+    title: 'HTTP/1.1, HTTP/2 e HTTP/3',
+    summary: 'As três versões do HTTP lado a lado: conexões e pipeline no HTTP/1.1, multiplexação de fluxos no HTTP/2 e o fim do bloqueio de cabeça de fila com o HTTP/3 sobre QUIC.',
+    topics: [],
+    rfcs: ['RFC 9110', 'RFC 9112', 'RFC 9113', 'RFC 9114'],
+    status: 'planned',
+  },
+  {
+    id: 'congestionamento',
+    category: 'transporte',
+    title: 'Controle de congestionamento (Reno, CUBIC e BBR)',
+    summary: 'Como cada algoritmo ajusta a janela de congestionamento diante de perdas e de atraso: Reno, CUBIC e BBR comparados no mesmo cenário. Estende o simulador de TCP.',
+    topics: [],
+    rfcs: ['RFC 5681', 'RFC 9438', 'RFC 6582'],
+    status: 'planned',
+  },
+  {
+    id: '802-1x',
+    category: 'protocolos-seguros',
+    title: '802.1X e RADIUS (EAP)',
+    summary: 'Autenticação de acesso à rede: suplicante, autenticador e servidor RADIUS trocando mensagens EAP até liberar ou bloquear a porta.',
+    topics: [],
+    rfcs: ['RFC 3748', 'RFC 2865', 'IEEE 802.1X'],
+    status: 'planned',
+  },
 ];
 
 export const simsByCategory = (id: CategoryId) => SIMS.filter((s) => s.category === id);
