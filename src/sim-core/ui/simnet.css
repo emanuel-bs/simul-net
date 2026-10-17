@@ -13,6 +13,8 @@
     --amber:#F2A65A;
     --teal:#5FD4C0;
     --red:#E2574C;
+    --red-text:#F2776C;
+    --red-fill:#C93A30;
     --blue:#6FB8E8;
     --purple:#B48EF0;
     --chart-cwnd:#D07A2A;
@@ -150,7 +152,7 @@
 .simnet .tag-conn{color:var(--teal);}
 .simnet .tag-data{color:var(--amber);}
 .simnet .tag-cc{color:var(--purple);}
-.simnet .tag-loss{color:var(--red);}
+.simnet .tag-loss{color:var(--red-text);}
 .simnet .tag-udp{color:var(--blue);}
 .simnet .tag-sys{color:var(--muted);}
 .simnet .footer-credit{flex:0 0 auto;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;letter-spacing:0.01em;}
@@ -206,19 +208,19 @@
 .simnet .workspace{flex:1 0 620px;min-height:620px;}
 .simnet .footer-credit br{display:none;}
 }
-.simnet .spill.bad{background:var(--red);border-color:var(--red);color:#fff;}
+.simnet .spill.bad{background:var(--red-fill);border-color:var(--red-fill);color:#fff;}
 .simnet .spill.warn{background:var(--amber);border-color:var(--amber);}
-.simnet .ev-label.warn{fill:var(--red);font-weight:600;}
+.simnet .ev-label.warn{fill:var(--red-text);font-weight:600;}
 .simnet .ev-label.ok{fill:var(--teal);}
 .simnet .phase-label{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:700;fill:var(--teal);letter-spacing:0.04em;}
 .simnet .key-box{font-family:'IBM Plex Mono',monospace;font-size:12.5px;word-break:break-all;color:var(--ink);background:var(--panel-2);border:1px solid var(--border-soft);border-radius:8px;padding:6px 10px;margin:2px 0 8px;}
 .simnet .chk-ok{color:var(--teal);font-weight:700;}
-.simnet .chk-bad{color:var(--red);font-weight:700;}
+.simnet .chk-bad{color:var(--red-text);font-weight:700;}
 .simnet .grade{display:inline-block;font-size:26px;font-weight:700;padding:2px 14px;border-radius:10px;border:1px solid var(--border);margin-right:10px;}
 .simnet .grade.A{color:var(--teal);border-color:var(--teal);}
 .simnet .grade.B{color:var(--blue);border-color:var(--blue);}
 .simnet .grade.C{color:var(--amber);border-color:var(--amber);}
-.simnet .grade.D{color:var(--red);border-color:var(--red);}
+.simnet .grade.D{color:var(--red-text);border-color:var(--red-text);}
 .simnet pre.conf{font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.55;background:var(--panel-2);border:1px solid var(--border-soft);border-radius:8px;padding:10px 12px;margin:4px 0 10px;white-space:pre-wrap;word-break:break-word;color:var(--ink);}
 .simnet .cfg-two{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 @media (max-width:960px){.simnet .cfg-two{grid-template-columns:1fr;}

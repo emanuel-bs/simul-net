@@ -42,6 +42,7 @@ Os testes unitários verificam a integridade do registro de simuladores (arquivo
 
 - percorre todos os modos e todos os cenários prontos, clicando nos botões de ação e abrindo todas as abas, e falha se houver qualquer erro de JavaScript;
 - confere que a bancada de trabalho cabe na tela (sem rolagem da página em 1366x768 e 1600x900) e que cada quadro destaca e encaixa de volta na posição original;
+- mede o contraste de cores (WCAG AA) no hub, nos dois temas, e em cada simulador nativo;
 - confere o hub: as categorias, a página de cada simulador com o iframe e o redirecionamento do endereço antigo.
 
 Usa o Chrome instalado na máquina (sem baixar navegadores). No GitHub Actions o teste roda antes da publicação, com o build feito com `VITE_BASE=/Simul-Net/`; a variável `E2E_BASE` acompanha esse caminho. Se falhar, o relatório fica como artefato da execução.
