@@ -115,9 +115,14 @@ for (const sim of natives) {
       for (const sel of ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', '.simnet .cfg']) {
         const el = page.locator(sel).first();
         const before = await el.boundingBox();
+        // os outros quadros não se movem quando um é destacado
+        const others = ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', '.simnet .cfg'].filter((o) => o !== sel);
+        const othersBefore = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
         const toggle = el.getByRole('button', { name: /Destacar|Encaixar/ }).first();
         await toggle.click();
         await expect(el).toHaveClass(/is-floating/);
+        const othersAfter = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
+        expect(othersAfter, `os outros quadros se moveram ao destacar ${sel}`).toEqual(othersBefore);
         await toggle.click();
         await expect(el).not.toHaveClass(/is-floating/);
         expect(await el.boundingBox(), `posição de ${sel} depois de encaixar`).toEqual(before);

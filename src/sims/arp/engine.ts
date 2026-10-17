@@ -22,6 +22,7 @@ export const HOSTS = {
   a: { ip: '192.168.1.10', mac: '00:00:5e:00:53:0a', name: 'Host A' },
   b: { ip: '192.168.1.20', mac: '00:00:5e:00:53:14', name: 'Host B' },
   g: { ip: '192.168.1.1', mac: '00:00:5e:00:53:01', name: 'Gateway' },
+  m: { ip: '192.168.1.66', mac: '00:00:5e:00:53:42', name: 'Host M' },
 } as const;
 export const REMOTE = '192.0.2.50';
 export const TRIES = 3;
@@ -44,16 +45,16 @@ type X = Record<string, any>;
 const fl = (...f: Field[]): Field[] => f;
 
 /** Estados da entrada de vizinho, como o Linux os mostra em "ip neigh". */
-export type NeighState = 'INCOMPLETE' | 'REACHABLE' | 'STALE' | 'FAILED';
+export type NeighState = 'INCOMPLETE' | 'REACHABLE' | 'STALE' | 'FAILED' | 'PERMANENT';
 export interface NeighEvent {
-  host: 'a' | 'b' | 'g';
+  host: HostKey;
   ip: string;
   mac: string | null;
   state: NeighState;
   t: number;
 }
 
-export type HostKey = 'a' | 'b' | 'g';
+export type HostKey = 'a' | 'b' | 'g' | 'm';
 export interface FrameOpts {
   sha: string;
   spa: string;

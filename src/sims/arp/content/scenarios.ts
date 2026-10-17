@@ -1,6 +1,7 @@
 // Cenários e documentação do ARP (modo Resolução).
 import type { ScenarioDef, ScenarioDoc } from '../../../sim-core/ui';
 
+const ebase = { attack: true, eboth: true, etraffic: 'http', edefense: 'none' };
 const gbase = { gkind: 'announce', gold: true, yield: true, gsend: true };
 const base = { dest: 'local', cache: 'empty', online: true, proxy: false, loss: false };
 
@@ -21,6 +22,13 @@ export const scenarios: ScenarioDef[] = [
   { id: 'g-fight', g: 'Conflito de endereço', sub: 'gra', label: 'Disputa: os dois defendem', set: { ...gbase, gkind: 'dispute', yield: false }, what: '<p>B também defende o endereço. A recebe um <b>segundo conflito em menos de 10 s</b> e abandona o endereço.</p>' },
   { id: 'g-fail-grat', g: 'Failover de IP', sub: 'gra', label: 'Failover com ARP gratuito', set: { ...gbase, gkind: 'failover', gsend: true }, what: '<p>O principal cai e o reserva assume o IP. O reserva envia um <b>ARP gratuito</b>, o gateway atualiza a tabela e o serviço volta em cerca de um RTT.</p>' },
   { id: 'g-fail-slow', g: 'Failover de IP', sub: 'gra', label: 'Failover sem ARP gratuito', set: { ...gbase, gkind: 'failover', gsend: false }, what: '<p>O reserva assume o IP e <b>não avisa ninguém</b>. O gateway continua mandando ao MAC do host que caiu, até a entrada expirar e ser revalidada.</p>' },
+  { id: 'e-normal', g: 'Referência', sub: 'env', label: 'Sem ataque (referência)', set: { ...ebase, attack: false }, what: '<p>A situação normal: as tabelas de A e do gateway estão corretas e o tráfego vai direto, sem passar pelo host M.</p>' },
+  { id: 'e-poison', g: 'O ataque e seu efeito', sub: 'env', label: 'Cache envenenado (HTTP)', set: { ...ebase }, what: '<p>O host M envia respostas ARP que ninguém pediu. A e o gateway as aceitam, e o tráfego <b>HTTP</b> passa a atravessar M, que lê o conteúdo.</p>' },
+  { id: 'e-oneway', g: 'O ataque e seu efeito', sub: 'env', label: 'Só a vítima é enganada', set: { ...ebase, eboth: false }, what: '<p>Só A recebe a resposta forjada. M vê <b>só a requisição</b>; a resposta do servidor volta direto para A.</p>' },
+  { id: 'e-https', g: 'O ataque e seu efeito', sub: 'env', label: 'Mesmo desvio, tráfego HTTPS', set: { ...ebase, etraffic: 'https' }, what: '<p>O desvio acontece do mesmo jeito, mas o tráfego é <b>HTTPS</b>: M recebe os quadros e não consegue ler o conteúdo.</p>' },
+  { id: 'e-static', g: 'Defesas', sub: 'env', label: 'Defesa: entradas estáticas', set: { ...ebase, edefense: 'static' }, what: '<p>Com <b>entradas ARP estáticas</b> no host e no gateway, as respostas forjadas são ignoradas e as tabelas não mudam.</p>' },
+  { id: 'e-dai', g: 'Defesas', sub: 'env', label: 'Defesa: DAI no switch', set: { ...ebase, edefense: 'dai' }, what: '<p>O <b>switch com DAI</b> confere cada resposta ARP com a tabela do DHCP snooping e descarta as forjadas antes que cheguem aos hosts.</p>' },
+  { id: 'e-monitor', g: 'Defesas', sub: 'env', label: 'Detecção: MAC do gateway mudou', set: { ...ebase, edefense: 'monitor' }, what: '<p>O <b>monitoramento</b> percebe que o MAC do gateway mudou e gera um alerta. Detecta, mas não impede o desvio.</p>' },
 ];
 
 export const groupDoc: Record<string, string> = {
@@ -29,6 +37,9 @@ export const groupDoc: Record<string, string> = {
   'Anúncio de endereço': 'Antes de usar um endereço, o host verifica se há conflito (ARP Probe) e depois o anuncia (ARP Announce), como define a RFC 5227. Os dois usam pacotes ARP comuns, com o IP do remetente e o do alvo escolhidos de propósito.',
   'Conflito de endereço': 'Dois hosts com o mesmo IP quebram a comunicação dos dois. O ARP é o meio de descobrir e de defender o endereço.',
   'Failover de IP': 'Quando um host reserva assume o IP do principal, os vizinhos ainda guardam o MAC do host antigo. O ARP gratuito corrige as tabelas na hora.',
+  'Referência': 'Antes de olhar o ataque, convém ver o fluxo normal, com as duas tabelas ARP corretas.',
+  'O ataque e seu efeito': 'O ARP aceita respostas sem verificar quem as enviou. Dentro da rede local, isso permite que um host se coloque no caminho do tráfego de outros. O que ele consegue ler depende do protocolo usado.',
+  Defesas: 'As defesas atuam em pontos diferentes: no host (entrada estática), no switch (DAI) e na observação da rede (monitoramento). Nenhuma substitui a cifra de ponta a ponta.',
   Falhas: 'Sem resposta ARP o pacote IP nem chega a ser montado. A perda, o host desligado e a entrada desatualizada têm sintomas diferentes.',
 };
 
@@ -54,7 +65,18 @@ Object.assign(scenDoc, {
   'g-fail-slow': { short: 'Sem aviso, o gateway só corrige quando a entrada expira.', concept: 'Sem ARP gratuito, o gateway continua enviando ao MAC de B. Só quando a entrada expira e a revalidação falha ele pergunta em broadcast e descobre o novo dono. O tempo de espera depende do equipamento.', observe: ['O primeiro ping fica sem resposta.', 'As sondas unicast para B também ficam sem resposta e a entrada vira FAILED.'], msgs: [['Echo Request', 'sem resposta', 'gateway'], ['ARP Request (unicast)', 'revalidação, 3 vezes', 'gateway'], ['ARP Request e Reply', 'o novo dono responde', 'gateway e A']], why: 'Sem o ARP gratuito, o failover pode levar de dezenas de segundos a horas para chegar a todos os vizinhos.' },
 });
 
+Object.assign(scenDoc, {
+  'e-normal': { short: 'As duas tabelas estão corretas e o tráfego vai direto.', concept: 'Em condições normais, cada host associa o IP do outro ao MAC correto, e o tráfego entre A e o gateway não passa por mais ninguém.', observe: ['O MAC de destino dos quadros é sempre o do gateway ou o de A.', 'O host M não aparece no caminho.'], msgs: [['HTTP GET e HTTP 200', 'requisição e resposta', 'A e gateway']], why: 'É a referência para comparar com os cenários de ataque e de defesa.' },
+  'e-poison': { short: 'Respostas forjadas colocam M no caminho do tráfego.', concept: 'O ARP não autentica quem responde. O host M envia a A uma resposta que ninguém pediu, dizendo que o IP do gateway está no MAC dele, e envia ao gateway uma resposta equivalente sobre A. Quem aceita passa a enviar a M o tráfego do outro, e M o repassa ao destino verdadeiro, de modo que nada parece errado.', observe: ['A resposta forjada traz o MAC de M como remetente e o IP do gateway como endereço declarado.', 'A tabela de A passa a associar o IP do gateway ao MAC de M.', 'M repassa os quadros, e por isso a comunicação continua funcionando.'], msgs: [['ARP Reply (forjada)', 'o IP do gateway estaria no MAC de M', 'M para A e gateway'], ['HTTP GET e HTTP 200', 'o tráfego passa por M, que o lê', 'A, M e gateway']], why: 'Em HTTP, quem fica no meio do caminho lê tudo, inclusive cookies de sessão. É um risco de redes locais compartilhadas, como Wi-Fi público.' },
+  'e-oneway': { short: 'Com só a vítima enganada, M vê só um sentido.', concept: 'Se só A é enganado, os quadros de A passam por M, mas a resposta do gateway volta direto para A, que continua com o MAC correto na tabela do gateway.', observe: ['A resposta do servidor não passa por M.', 'O estado diz "ida por M, volta direta".'], msgs: [['ARP Reply (forjada)', 'só para A', 'M para A'], ['HTTP GET', 'passa por M', 'A, M e gateway'], ['HTTP 200', 'volta direto', 'gateway para A']], why: 'Mostra que o desvio pode ser parcial: nem sempre o intermediário vê a conversa inteira.' },
+  'e-https': { short: 'O desvio ocorre, mas o conteúdo cifrado continua protegido.', concept: 'O envenenamento atua na camada 2 e não depende do protocolo de cima. Com HTTPS, o conteúdo é cifrado entre A e o servidor: M recebe os quadros, mas só enxerga tamanhos e momentos dos registros. Ele ainda poderia atrasar ou descartar o tráfego.', observe: ['A tabela de A continua envenenada.', 'M vê só dados cifrados (TLS).'], msgs: [['ARP Reply (forjada)', 'mesmo ataque', 'M para A e gateway'], ['TLS dados', 'cifrado de ponta a ponta', 'A, M e gateway']], why: 'A cifra de ponta a ponta (HTTPS, SSH) limita o dano de um desvio na camada 2, o que liga este simulador ao de HTTPS e ao de SSH.' },
+  'e-static': { short: 'A entrada estática não aceita a resposta forjada.', concept: 'Uma entrada estática (PERMANENT no Linux) não é alterada por respostas ARP. É uma defesa simples e eficaz, mas trabalhosa de manter em muitos hosts.', observe: ['Os dois hosts ignoram a resposta forjada.', 'As tabelas ficam como estavam.'], msgs: [['ARP Reply (forjada)', 'ignorada', 'M para A e gateway'], ['HTTP GET e HTTP 200', 'tráfego direto', 'A e gateway']], why: 'Faz sentido em poucos hosts críticos, como servidores e gateways, em que o endereço físico quase não muda.' },
+  'e-dai': { short: 'O switch descarta a resposta antes de chegar aos hosts.', concept: 'Com a Dynamic ARP Inspection, o switch compara o par IP e MAC de cada resposta ARP com a tabela de DHCP snooping, que registra quem recebeu qual endereço por qual porta. Respostas que não conferem são descartadas.', observe: ['A resposta forjada para no switch (✕ no caminho).', 'As tabelas dos hosts continuam corretas.'], msgs: [['ARP Reply (forjada)', 'descartada pelo switch', 'M para A e gateway'], ['HTTP GET e HTTP 200', 'tráfego direto', 'A e gateway']], why: 'Protege toda a rede sem configurar cada host, desde que o DHCP snooping esteja ativo e as portas de uplink estejam marcadas como confiáveis.' },
+  'e-monitor': { short: 'O monitoramento detecta a mudança de MAC, mas não bloqueia.', concept: 'Ferramentas de monitoramento registram o par IP e MAC de cada host e alertam quando um deles muda sem motivo. Servem para detectar o problema e agir, mas o desvio acontece até alguém reagir.', observe: ['O alerta aparece no estado e no Log.', 'O tráfego já foi desviado.'], msgs: [['ARP Reply (forjada)', 'aceita', 'M para A e gateway'], ['HTTP GET e HTTP 200', 'passa por M', 'A, M e gateway']], why: 'Detecção sem bloqueio é complementar: avisa a equipe, que pode isolar a porta do host suspeito.' },
+});
+
 export const stageTitles: Record<string, string> = {
-  gra: 'Diagrama de sequência: ARP gratuito, conflito de endereço e failover (RFC 5227)',
+  env: 'Diagrama de sequência: envenenamento do cache ARP',
+  gra: 'Diagrama de sequência: ARP gratuito e conflito (RFC 5227)',
   res: 'Diagrama de sequência: resolução de endereço pelo ARP (rede local Ethernet)',
 };

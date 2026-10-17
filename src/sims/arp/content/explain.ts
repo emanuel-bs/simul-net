@@ -2,10 +2,18 @@
 import { esc, fmtMs, type Trace } from '../../../sim-core';
 import type { ScenarioDef } from '../../../sim-core/ui';
 import type { ArpParams } from '../engine';
+import type { EnvParams } from '../envenenamento';
 import type { GraParams } from '../gratuito';
 
 /** Texto "Configuração do cenário": só o que o cenário define (o restante vem dos padrões). */
 export function setup(s: ScenarioDef): string {
+  if (s.sub === 'env') {
+    const V = (s.set || {}) as Partial<EnvParams>;
+    if (V.attack === false) return 'sem ataque; tráfego ' + (V.etraffic === 'https' ? 'HTTPS' : 'HTTP');
+    const e: string[] = [V.eboth === false ? 'só a vítima é enganada' : 'vítima e gateway enganados', 'tráfego ' + (V.etraffic === 'https' ? 'HTTPS' : 'HTTP')];
+    if (V.edefense && V.edefense !== 'none') e.push({ static: 'entradas ARP estáticas', dai: 'DAI no switch', monitor: 'monitoramento da tabela ARP' }[V.edefense]);
+    return e.join('; ');
+  }
   if (s.sub === 'gra') {
     const G = (s.set || {}) as Partial<GraParams>;
     const g: string[] = [{ announce: 'endereço novo', inuse: 'endereço já em uso por outro host', dispute: 'dois hosts com o mesmo endereço', failover: 'failover de IP' }[G.gkind || 'announce']];
@@ -22,6 +30,21 @@ export function setup(s: ScenarioDef): string {
   if (P.online === false) p.push('próximo salto desligado');
   if (P.loss) p.push('a primeira requisição se perde');
   return p.join('; ');
+}
+
+function explainEnv(R: Record<string, any>): string {
+  let h = '<ul>';
+  if (!R.attack) h += '<li>Sem ataque: as tabelas ficaram corretas e o tráfego foi direto entre A e o gateway.</li>';
+  else if (R.result === 'blocked-dai') h += '<li><span class="chk-ok">Bloqueado pelo DAI:</span> o switch descartou as respostas forjadas, e as tabelas não mudaram.</li>';
+  else if (R.result === 'blocked-static') h += '<li><span class="chk-ok">Bloqueado pelas entradas estáticas:</span> os hosts ignoraram as respostas forjadas.</li>';
+  else {
+    h += '<li><span class="chk-bad">Cache envenenado:</span> ' + (R.poisonedG ? 'a tabela de A e a do gateway apontaram para o MAC de M' : 'só a tabela de A apontou para o MAC de M') + ', e o tráfego passou por ele.</li>';
+    if (R.traffic === 'https') h += '<li><span class="chk-ok">O conteúdo continuou protegido:</span> com HTTPS, M viu só dados cifrados (tamanhos e momentos).</li>';
+    else h += '<li><span class="chk-bad">O conteúdo foi lido em texto puro:</span> ' + (R.readResp ? 'a requisição e a resposta' : 'só a requisição') + ', incluindo o cookie de sessão.</li>';
+    if (R.alert) h += '<li>O monitoramento gerou um alerta de mudança de MAC, mas não impediu o desvio.</li>';
+  }
+  h += '<li>Lição: o ARP não autentica respostas, então a proteção vem de fora dele (DAI, entradas estáticas, monitoramento) e da cifra de ponta a ponta.</li></ul>';
+  return h;
 }
 
 function explainGra(R: Record<string, any>): string {
@@ -51,6 +74,7 @@ function explainGra(R: Record<string, any>): string {
 export function explain(tr: Trace, _P: ArpParams): string {
   const R = tr.raw;
   if (R && R.sub === 'gra') return explainGra(R);
+  if (R && R.sub === 'env') return explainEnv(R);
   if (!R || R.sub !== 'res') return '';
   let h = '<ul>';
   if (R.cacheHit) h += '<li>Acerto na tabela: o MAC de <b>' + esc(R.askIp) + '</b> já era conhecido, e nenhuma mensagem ARP foi enviada.</li>';

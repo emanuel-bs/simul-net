@@ -103,8 +103,16 @@
     "g-fight": "1cf9d41e18583930",
     "g-fail-grat": "2ef64b6ce7714ecb",
     "g-fail-slow": "5d4931a21d3dc7d3",
+    "e-normal": "003b94980fb19bec",
+    "e-poison": "a35523866f464d7d",
+    "e-oneway": "daed8f3915cd6b18",
+    "e-https": "f0c55ec789b0f383",
+    "e-static": "0abb6f490b81fea0",
+    "e-dai": "691f303cb2f7bd94",
+    "e-monitor": "db228d849892d173",
     "amostra:res": "1fd4fe708683768e",
     "amostra:gra": "d56e59d0a05403df",
-    "textos": "d424aa5e16eef6da"
+    "amostra:env": "9fa161abec580417",
+    "textos": "ab87e2fec11c0ea8"
   }
 }

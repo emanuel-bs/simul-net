@@ -350,7 +350,17 @@
 .simnet .topo-node.attacker .topo-box{stroke:var(--red);}
 .simnet .topo-node.cloud .topo-box{stroke-dasharray:5,4;}
 .simnet .topo-notes{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--muted);}
+.simnet .mode-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.simnet .mode-seg{border:2px solid var(--teal);}
+.simnet .mode-seg button{padding:8px 18px;font-size:15px;font-weight:700;}
 .simnet .view-pick{display:flex;align-items:center;gap:10px;flex:0 0 auto;}
 .simnet .view-label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;}
 .simnet .view-seg{border:2px solid var(--teal);}
 .simnet .view-seg button{padding:7px 16px;font-size:14px;font-weight:700;}
+
+/* Marcador no lugar de um quadro destacado: o resto da bancada não se move até o quadro ser encaixado. */
+.simnet .frame-ph{flex:0 0 auto;height:var(--ph-h);border:2px dashed var(--border);border-radius:14px;display:grid;place-items:center;color:var(--muted);font-size:13px;}
+.simnet .workspace>.frame-ph{height:auto;grid-column:1;grid-row:1;}
+.simnet .workspace>.side-col{grid-column:2;grid-row:1;}
+.simnet .workspace>.stage-panel{grid-column:1;grid-row:1;}
+@media (max-width:960px){.simnet .workspace>.frame-ph,.simnet .workspace>.side-col,.simnet .workspace>.stage-panel{grid-column:auto;grid-row:auto;}}

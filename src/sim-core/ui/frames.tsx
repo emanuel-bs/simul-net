@@ -67,6 +67,8 @@ export function useFrame(opts: FrameOptions = {}) {
   const mgr = useContext(FloatContext);
   const el = useRef<HTMLElement | null>(null);
   const [floating, setFloating] = useState(false);
+  // tamanho que o quadro ocupava no fluxo antes de destacar: um marcador guarda o lugar para os outros quadros não se moverem
+  const [flow, setFlow] = useState<{ height: number } | null>(null);
   const [maxed, setMaxed] = useState(false);
   const [collapsed, setCollapsed] = useState(!!opts.collapsedInitial);
   const saved = useRef<Rect | null>(null);
@@ -99,11 +101,13 @@ export function useFrame(opts: FrameOptions = {}) {
     }
     mgr?.floating.delete(key.current);
     setFloating(false);
+    setFlow(null);
     setMaxed(false);
   }, [mgr]);
 
   const float = () => {
     if (!el.current) return;
+    setFlow({ height: Math.round(el.current.getBoundingClientRect().height) });
     const r = saved.current ? { ...saved.current } : cur();
     if (!saved.current && opts.tabsPanel) {
       r.width = Math.round(window.innerWidth * 0.72);
@@ -213,6 +217,12 @@ export function useFrame(opts: FrameOptions = {}) {
     floating,
     collapsed,
     setCollapsed,
+    /** Marcador que ocupa o lugar do quadro enquanto ele está destacado; vai logo antes do elemento do quadro. */
+    placeholder: floating && flow ? (
+      <div className="frame-ph" aria-hidden="true" style={{ '--ph-h': flow.height + 'px' } as React.CSSProperties}>
+        <span>Quadro destacado</span>
+      </div>
+    ) : null,
     /** Classes do elemento do quadro, somadas às de `base`. */
     className: (base: string) => base + (floating ? ' is-floating' : '') + (collapsed ? ' body-collapsed' : ''),
     rootProps: {

@@ -11,7 +11,7 @@ const tabela: TabDef = {
     const ev = (R.neigh || []) as NeighEvent[];
     const now = ctx.timeAt(ctx.c);
     let h = '<h3>Tabela de vizinhos de cada host (como o <code>ip neigh</code> do Linux a mostra)</h3>';
-    (['a', 'b', 'g'] as const).forEach((k) => {
+    (['a', 'b', 'g', 'm'] as const).filter((k) => tr.cols.some((c) => c.key === k) && k !== 'm').forEach((k) => {
       const last = new Map<string, NeighEvent>();
       ev.filter((e) => e.host === k && e.t <= now).forEach((e) => last.set(e.ip, e));
       const lines = Array.from(last.values()).map((e) => e.ip + ' dev eth0 ' + (e.mac ? 'lladdr ' + e.mac + ' ' : ' ') + e.state);

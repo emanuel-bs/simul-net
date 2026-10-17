@@ -5,6 +5,7 @@ import { reference } from './content/reference';
 import { groupDoc, scenDoc, scenarios, stageTitles } from './content/scenarios';
 import { tabs } from './content/tabs';
 import { buildArp, type ArpParams } from './engine';
+import { buildEnvenenamento, type EnvParams } from './envenenamento';
 import { buildGratuito, type GraParams } from './gratuito';
 import { topology } from './topology';
 
@@ -17,6 +18,7 @@ export const arpProtocol: ProtocolDef = {
   subs: [
     { key: 'res', label: 'Resolução', default: 'r-local' },
     { key: 'gra', label: 'ARP gratuito e conflito', default: 'g-announce' },
+    { key: 'env', label: 'Envenenamento de cache', default: 'e-normal' },
   ],
   controls,
   scenarios,
@@ -26,7 +28,8 @@ export const arpProtocol: ProtocolDef = {
   stageTitle: (sub) => stageTitles[sub],
   topology,
   topologyTitle: 'Topologia: rede local com switch e gateway',
-  build: (P, sub) => (sub === 'gra' ? buildGratuito(P as unknown as GraParams) : buildArp(P as unknown as ArpParams, sub)),
+  build: (P, sub) =>
+    sub === 'env' ? buildEnvenenamento(P as unknown as EnvParams) : sub === 'gra' ? buildGratuito(P as unknown as GraParams) : buildArp(P as unknown as ArpParams, sub),
   explain: (tr, P) => explain(tr, P as unknown as ArpParams),
   reference,
   setup,

@@ -245,12 +245,17 @@ function Bench({ def }: Props) {
           <div className="topbar-row">
             <div className="proto-wrap">
               {def.subs.length > 1 && (
-                <div className="optseg sub" role="group" aria-label="Modo de simulação">
-                  {def.subs.map((x) => (
-                    <button key={x.key} type="button" className={x.key === sub ? 'active' : ''} aria-pressed={x.key === sub} onClick={() => x.key !== sub && applyScenario(byId(x.default)!)}>
-                      {x.label}
-                    </button>
-                  ))}
+                <div className="mode-pick">
+                  <span className="view-label" aria-hidden="true">
+                    Simulação
+                  </span>
+                  <div className="optseg mode-seg" role="group" aria-label="Modo de simulação">
+                    {def.subs.map((x) => (
+                      <button key={x.key} type="button" className={x.key === sub ? 'active' : ''} aria-pressed={x.key === sub} onClick={() => x.key !== sub && applyScenario(byId(x.default)!)}>
+                        {x.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -291,6 +296,7 @@ function Bench({ def }: Props) {
         </header>
 
         <div className="workspace">
+          {stageF.placeholder}
           <section {...stageF.rootProps} className={stageF.className('panel stage-panel')}>
             <div className="stage-header" {...stageF.barProps}>
               {topoDef && (
@@ -371,6 +377,7 @@ function Bench({ def }: Props) {
           </section>
 
           <aside className="side-col">
+            {stateF.placeholder}
             <div {...stateF.rootProps} className={stateF.className('fpanel')}>
               <div className="fbar" {...stateF.barProps}>
                 <span className="ftitle">Estados do protocolo</span>
@@ -394,6 +401,7 @@ function Bench({ def }: Props) {
               {stateF.handles}
             </div>
 
+            {cfgF.placeholder}
             <section {...cfgF.rootProps} className={cfgF.className('panel cfg')}>
               <div className="fbar cfg-head" {...cfgF.barProps}>
                 <button type="button" className="cfg-title" data-drag aria-expanded={!cfgF.collapsed} onClick={() => cfgF.setCollapsed(!cfgF.collapsed)}>
@@ -423,6 +431,7 @@ function Bench({ def }: Props) {
           </aside>
         </div>
 
+        {tabsF.placeholder}
         <section {...tabsRootProps} className={tabsF.className('panel tabs-panel')}>
           <div
             ref={gripEl}
