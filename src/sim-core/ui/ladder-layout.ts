@@ -66,7 +66,6 @@ export function layoutLadder(tr: Trace, endR: number): LadderLayout {
     return k * HH;
   };
   const y = (r: number) => TOP + r * ROW_H + offs(r);
-  const height = y(endR) + 36;
 
   const seen = new Set<number>();
   const timeLabels: LadderLayout['timeLabels'] = [];
@@ -91,6 +90,9 @@ export function layoutLadder(tr: Trace, endR: number): LadderLayout {
       return { r: e.r!, x: xs[e.who] + (right ? 12 : -12), y: ey, anchor: right ? 'start' : 'end', lines, kind: e.kind };
     });
 
+  // os textos de evento podem passar do fim da linha do tempo: a altura os acompanha
+  const evBottom = events.reduce((m, e) => Math.max(m, e.y + 13 * (e.lines.length - 1)), 0);
+  const height = Math.max(y(endR) + 36, evBottom + 24);
   return {
     width: W,
     height,

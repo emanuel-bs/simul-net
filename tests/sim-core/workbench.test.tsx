@@ -34,6 +34,18 @@ const def: ProtocolDef = {
     'a-loss': { short: 'perde a resposta', concept: 'Conceito perda.', observe: ['olhe o X'], msgs: [['Resposta', 'responde', 'servidor']], why: 'Perdas existem.' },
     'b-ok': { short: 'modo B', concept: 'Conceito B.', observe: ['nada'], msgs: [['Msg', 'f', 'x']], why: 'B.' },
   },
+  topology: () => ({
+    width: 400,
+    height: 160,
+    nodes: [
+      { key: 'c', label: 'Cliente', x: 80, y: 60, kind: 'host' },
+      { key: 'sw', label: 'Switch', x: 200, y: 60, kind: 'switch' },
+      { key: 's', label: 'Servidor', x: 320, y: 60, kind: 'host' },
+    ],
+    links: [['c', 'sw'], ['sw', 's']],
+    route: (m) => [m.from, 'sw', m.to],
+    notes: () => ({ c: ['nota do cliente'] }),
+  }),
   tabs: [{ id: 'extra', label: 'Aba do modo B', subs: ['b'], render: (tr) => `<p>Mensagens: ${tr.msgs.length}</p>` }],
   build: (P, sub) => {
     const tr = newTrace([{ key: 'c', label: 'Cliente', addr: '10.0.0.1' }, { key: 's', label: 'Servidor', addr: '10.0.0.2' }], [{ key: 'estado', label: 'Estado' }], Number(P.rtt));
@@ -230,13 +242,36 @@ describe('Workbench', () => {
     expect(grip.getAttribute('aria-valuenow')).toBe(String(Math.round(parseFloat(tabs.style.getPropertyValue('--tabs-h')))));
   });
 
+  it('o seletor alterna entre o diagrama de sequência e a topologia, que anima os pacotes e seleciona mensagens', () => {
+    const { container } = render(<Workbench def={def} />);
+    expect(container.querySelector('svg.ladder')).toBeTruthy();
+    expect(container.querySelector('svg.topo')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Topologia' }));
+    expect(screen.getByRole('button', { name: 'Topologia', pressed: true })).toBeTruthy();
+    expect(container.querySelector('svg.ladder')).toBeNull();
+    expect(container.querySelector('svg.topo')).toBeTruthy();
+    ['Cliente', 'Switch', 'Servidor', 'nota do cliente'].forEach((t) => expect(screen.getByText(t)).toBeTruthy());
+    // em t = 0 o primeiro pacote já saiu e é um botão
+    const pkt = screen.getByRole('button', { name: /Mensagem 1: Pedido/ });
+    fireEvent.click(pkt);
+    expect(tab('Mensagem').getAttribute('aria-selected')).toBe('true');
+    // o zoom e o Passo valem para a topologia
+    fireEvent.click(screen.getByRole('button', { name: 'Zoom +' }));
+    for (let i = 0; i < 40; i++) fireEvent.click(screen.getByRole('button', { name: 'Passo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Diagrama de sequência' }));
+    expect(container.querySelector('svg.ladder')).toBeTruthy();
+  });
+
   it('não tem violações de acessibilidade em nenhuma aba', async () => {
     const { container } = render(<Workbench def={def} />);
     for (let i = 0; i < 40; i++) fireEvent.click(screen.getByRole('button', { name: 'Passo' }));
-    for (const name of ['Cenário', 'Captura', 'Mensagem', 'Experimento', 'Referência', 'Log de eventos']) {
-      fireEvent.click(tab(name));
-      const r = await axe.run(container, { rules: { 'color-contrast': { enabled: false } } });
-      expect(r.violations.map((v) => `${name}: ${v.id} ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`)).toEqual([]);
+    for (const view of ['Diagrama de sequência', 'Topologia']) {
+      fireEvent.click(screen.getByRole('button', { name: view }));
+      for (const name of ['Cenário', 'Captura', 'Mensagem', 'Experimento', 'Referência', 'Log de eventos']) {
+        fireEvent.click(tab(name));
+        const r = await axe.run(container, { rules: { 'color-contrast': { enabled: false } } });
+        expect(r.violations.map((v) => `${view}, ${name}: ${v.id} ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`)).toEqual([]);
+      }
     }
   });
 });

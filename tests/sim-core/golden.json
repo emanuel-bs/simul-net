@@ -85,5 +85,18 @@
     "amostra:sftp": "88713049133d9aa2",
     "amostra:cmp": "19a85f7982fad508",
     "textos": "215e86ec0aa1952d"
+  },
+  "arp": {
+    "r-local": "5ffe0c8c68dcf339",
+    "r-cache": "2e7c1227059553d7",
+    "r-stale": "cc50fdbc40770887",
+    "r-gw": "b2345f5291bf7432",
+    "r-proxy": "83a5304a80628f43",
+    "r-noproxy": "579b7a968325b17a",
+    "r-off": "dc0518e73bd0e0ba",
+    "r-lost": "193c9dbc725a8d3f",
+    "r-dead": "1c0d3e34e08ae322",
+    "amostra:res": "1fd4fe708683768e",
+    "textos": "2462007e361d7d07"
   }
 }

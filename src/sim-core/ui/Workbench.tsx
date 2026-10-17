@@ -5,11 +5,12 @@ import { prepare, timeAt } from '../trace';
 import { Controls } from './Controls';
 import { FloatProvider, useFrame } from './frames';
 import { Ladder, ZOOM_FIT, ZOOM_STEPS } from './Ladder';
+import { Topology } from './Topology';
 import { layoutLadder } from './ladder-layout';
 import type { ParamValue, Params, ProtocolDef, ScenarioDef } from './module';
 import { milestoneIndex, nextStep, stateAt, visibleLog, visibleMessages } from './playback';
 import { changedControls, scenarioParams } from './scenarios';
-import { usePlayer } from './usePlayer';
+import { usePlayer, TOPO_SLOW } from './usePlayer';
 import './simnet.css';
 
 const DEFAULT_INSPECTOR = (
@@ -94,6 +95,7 @@ function Bench({ def }: Props) {
   const [tab, setTab] = useState('scen');
   const [selId, setSelId] = useState<number | null>(null);
   const [zi, setZi] = useState(ZOOM_FIT);
+  const [view, setView] = useState<'seq' | 'topo'>('seq');
 
   // Quadros da bancada: diagrama, estados, configurações e abas (o painel de abas começa recolhido em telas baixas).
   const stageF = useFrame();
@@ -153,7 +155,10 @@ function Bench({ def }: Props) {
     return { tr, endR, layout: layoutLadder(tr, endR) };
   }, [def, P, sub]);
   const { tr, endR, layout } = built;
-  const player = usePlayer(endR);
+  const topoDef = useMemo(() => (def.topology ? def.topology(sub, tr) : null), [def, sub, tr]);
+  const showTopo = !!topoDef && view === 'topo';
+  // na topologia o pacote percorre vários enlaces: a animação anda mais devagar para dar tempo de acompanhar
+  const player = usePlayer(endR, showTopo ? TOPO_SLOW : 1);
   const { clock } = player;
 
   // Um trace novo recomeça a reprodução e limpa a mensagem selecionada.
@@ -288,6 +293,21 @@ function Bench({ def }: Props) {
         <div className="workspace">
           <section {...stageF.rootProps} className={stageF.className('panel stage-panel')}>
             <div className="stage-header" {...stageF.barProps}>
+              {topoDef && (
+                <div className="view-pick">
+                  <span className="view-label" id="view-label">
+                    Ver como
+                  </span>
+                  <div className="optseg view-seg" role="group" aria-labelledby="view-label">
+                    <button type="button" className={showTopo ? '' : 'active'} aria-pressed={!showTopo} title="Mensagens em ordem no tempo" onClick={() => setView('seq')}>
+                      Diagrama de sequência
+                    </button>
+                    <button type="button" className={showTopo ? 'active' : ''} aria-pressed={showTopo} title="Os pacotes percorrendo a rede" onClick={() => setView('topo')}>
+                      Topologia
+                    </button>
+                  </div>
+                </div>
+              )}
               <div className="play-bar" role="group" aria-label="Controle da simulação">
                 <button
                   className="primary"
@@ -322,7 +342,7 @@ function Bench({ def }: Props) {
                   </select>
                 </label>
               </div>
-              <h2>{def.stageTitle ? def.stageTitle(sub) : 'Diagrama de sequência'}</h2>
+              <h2>{showTopo ? def.topologyTitle || 'Topologia da rede' : def.stageTitle ? def.stageTitle(sub) : 'Diagrama de sequência'}</h2>
               <div className="legend-inline">
                 <span className="legend-item"><span className="legend-dot" style={{ background: 'var(--amber)' }} />em claro</span>
                 <span className="legend-item"><span className="legend-dot" style={{ background: 'var(--teal)' }} />cifrado e autenticado</span>
@@ -342,7 +362,11 @@ function Bench({ def }: Props) {
               </div>
               {stageF.buttons}
             </div>
-            <Ladder ref={ladderRef} layout={layout} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
+            {showTopo ? (
+              <Topology def={topoDef} tr={tr} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
+            ) : (
+              <Ladder ref={ladderRef} layout={layout} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
+            )}
             {stageF.handles}
           </section>
 

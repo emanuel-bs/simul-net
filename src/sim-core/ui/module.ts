@@ -1,6 +1,6 @@
 // Contrato de um simulador nativo (docs/arquitetura.md, seção 5). A forma é a mesma dos módulos
 // legados (SecureSim.register), para que os textos e controles possam ser portados sem reescrita.
-import type { Trace } from '../types';
+import type { Message, Trace } from '../types';
 
 export type ParamValue = string | number | boolean;
 export type Params = Record<string, ParamValue>;
@@ -74,6 +74,30 @@ export interface SubDef {
   default: string;
 }
 
+export type TopoKind = 'host' | 'switch' | 'router' | 'cloud' | 'attacker';
+
+export interface TopoNode {
+  key: string;
+  label: string;
+  sub?: string;
+  /** Posição do centro no quadro (unidades do viewBox). */
+  x: number;
+  y: number;
+  kind: TopoKind;
+}
+
+/** Visão de topologia, opcional: nós, enlaces e o caminho que cada mensagem percorre. */
+export interface TopologyDef {
+  width: number;
+  height: number;
+  nodes: TopoNode[];
+  links: [string, string][];
+  /** Nós por onde a mensagem passa, na ordem. Padrão: origem e destino. */
+  route?: (m: Message) => string[];
+  /** Linhas de texto sob cada nó no instante dado (ms), por exemplo a tabela ARP de cada host. */
+  notes?: (tr: Trace, nowMs: number) => Record<string, string[]>;
+}
+
 export interface ProtocolDef {
   id: string;
   label: string;
@@ -86,6 +110,9 @@ export interface ProtocolDef {
   scenDoc: Record<string, ScenarioDoc>;
   tabs?: TabDef[];
   stageTitle?: (sub: string) => string;
+  /** Visão de topologia ao lado do diagrama de sequência (seletor no quadro principal). */
+  topology?: (sub: string, tr: Trace) => TopologyDef;
+  topologyTitle?: string;
   /** Motor puro: o mesmo parâmetro produz o mesmo trace. */
   build: (P: Params, sub: string) => Trace;
   explain: (tr: Trace, P: Params, scen: ScenarioDef | undefined) => string;

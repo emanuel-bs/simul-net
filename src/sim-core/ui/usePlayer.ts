@@ -9,6 +9,9 @@ export function prefersReducedMotion(): boolean {
   }
 }
 
+/** Fator de velocidade da topologia, em relação ao diagrama de sequência. */
+export const TOPO_SLOW = 0.4;
+
 export interface Player {
   clock: number;
   playing: boolean;
@@ -23,13 +26,13 @@ export interface Player {
 }
 
 /** Relógio da simulação, em linhas do trace. `endR` é a linha final; a troca de trace deve usar `key` no chamador. */
-export function usePlayer(endR: number): Player {
+export function usePlayer(endR: number, factor = 1): Player {
   const [clock, setClock] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1.8);
   const clockRef = useRef(0);
   const speedRef = useRef(speed);
-  speedRef.current = speed;
+  speedRef.current = speed * factor;
 
   const set = useCallback((c: number) => {
     clockRef.current = c;

@@ -9,7 +9,7 @@ const OUTLINE = { stroke: '#0B2447', strokeWidth: '4px', paintOrder: 'stroke', s
 export const ZOOM_STEPS = [0.5, 0.65, 0.8, 1, 1.25, 1.5, 2];
 export const ZOOM_FIT = ZOOM_STEPS.indexOf(1);
 
-function zoomStyle(zoom: number, minWidth: number): CSSProperties {
+export function zoomStyle(zoom: number, minWidth: number): CSSProperties {
   if (zoom === 1) return { minWidth };
   return zoom < 1 ? { width: `${Math.round(zoom * 100)}%`, minWidth: 0, margin: '0 auto' } : { width: `${Math.round(zoom * 100)}%`, minWidth };
 }

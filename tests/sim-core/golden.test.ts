@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { arpProtocol } from '../../src/sims/arp/protocol';
 import { ftpProtocol } from '../../src/sims/ftp/protocol';
 import { httpsProtocol } from '../../src/sims/https/protocol';
 import { sshProtocol } from '../../src/sims/ssh/protocol';
@@ -54,6 +55,7 @@ const SIMS: [string, ProtocolDef][] = [
   ['ssh', sshProtocol],
   ['https', httpsProtocol],
   ['ftp', ftpProtocol],
+  ['arp', arpProtocol],
 ];
 
 describe.each(SIMS)('impressões digitais: %s', (name, def) => {
@@ -98,7 +100,7 @@ describe('gravação', () => {
     if (UPDATE) {
       writeFileSync(FILE, JSON.stringify(fresh, null, 2) + '\n', 'utf-8');
     } else {
-      expect(Object.keys(stored).sort()).toEqual(['ftp', 'https', 'ssh']);
+      expect(Object.keys(stored).sort()).toEqual(SIMS.map(([name]) => name).sort());
     }
   });
 });

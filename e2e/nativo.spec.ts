@@ -80,6 +80,34 @@ for (const sim of natives) {
       expect(errors).toEqual([]);
     });
 
+    test('a topologia (quando existe) cabe no quadro, anima e não gera erro', async ({ page }) => {
+      const errors = watchErrors(page);
+      for (const size of [{ width: 1366, height: 768 }, { width: 1600, height: 900 }]) {
+        await page.setViewportSize(size);
+        await open(page, sim.id);
+        const toggle = page.getByRole('button', { name: 'Topologia' });
+        if (!(await toggle.count())) return;
+        await toggle.click();
+        const svg = page.locator('.simnet svg.topo');
+        await expect(svg).toBeVisible();
+        for (let i = 0; i < 6; i++) await page.getByRole('button', { name: 'Passo' }).click();
+        // a topologia inteira cabe no quadro: nada de rolagem e o desenho dentro da área visível
+        const fit = await page.evaluate(() => {
+          const wrap = document.querySelector('.simnet .topo-wrap') as HTMLElement;
+          const s = document.querySelector('.simnet svg.topo') as SVGElement;
+          const a = wrap.getBoundingClientRect();
+          const b = s.getBoundingClientRect();
+          return { dx: wrap.scrollWidth - wrap.clientWidth, dy: wrap.scrollHeight - wrap.clientHeight, inside: b.top >= a.top - 1 && b.bottom <= a.bottom + 1 && b.left >= a.left - 1 && b.right <= a.right + 1 };
+        });
+        expect(fit.dx, `rolagem horizontal da topologia em ${size.width}x${size.height}`).toBeLessThanOrEqual(1);
+        expect(fit.dy, `rolagem vertical da topologia em ${size.width}x${size.height}`).toBeLessThanOrEqual(1);
+        expect(fit.inside).toBe(true);
+        await page.getByRole('button', { name: 'Diagrama de sequência' }).click();
+        await expect(page.locator('.simnet svg.ladder')).toBeVisible();
+      }
+      expect(errors).toEqual([]);
+    });
+
     test('os quadros destacam e encaixam na posição de origem, e Esc encaixa', async ({ page }) => {
       const errors = watchErrors(page);
       await page.setViewportSize({ width: 1600, height: 900 });

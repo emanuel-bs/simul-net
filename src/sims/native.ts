@@ -8,4 +8,5 @@ export const NATIVE: Record<string, () => Promise<{ default: ProtocolDef }>> = {
   'ssh': () => import('./ssh/protocol'),
   'https': () => import('./https/protocol'),
   'ftp': () => import('./ftp/protocol'),
+  'arp': () => import('./arp/protocol'),
 };

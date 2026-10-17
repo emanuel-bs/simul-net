@@ -8,11 +8,11 @@ Projeto acadêmico do curso de Engenharia de Redes de Comunicação, sob respons
 
 | Categoria | Simulador |
 | --- | --- |
-| Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN) |
+| Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), ARP (resolução de endereços, proxy ARP e falhas), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN) |
 | Camada de transporte e segurança | TCP e UDP (com SACK, download TCP e vídeo UDP), Ataques e defesas TCP/UDP |
 | Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH) |
 
-Em preparação: DNS e DNSSEC, VPN (IPsec e WireGuard), SMTP e segurança de e-mail, IS-IS, SNMP, ARP, HTTP/1.1, 2 e 3, controle de congestionamento (Reno, CUBIC e BBR), 802.1X e RADIUS.
+Em preparação: DNS e DNSSEC, VPN (IPsec e WireGuard), SMTP e segurança de e-mail, IS-IS, SNMP, HTTP/1.1, 2 e 3, controle de congestionamento (Reno, CUBIC e BBR), 802.1X e RADIUS.
 
 > Os simuladores têm finalidade didática. Valores de chaves, hashes e assinaturas são ilustrativos e não oferecem segurança real.
 
