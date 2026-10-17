@@ -19,6 +19,7 @@
     var isDet = el.tagName === 'DETAILS';
     var st = { floating: false, maxed: false, rect: null, prev: null, t: 0 };
     var handles = [];
+    var ph = null; // marcador que guarda o lugar do quadro enquanto ele está destacado
     var bF = mk('Destacar'), bM = mk('Maximizar'), bC = mk('Recolher painel');
     bM.hidden = true; bF.setAttribute('aria-pressed', 'false'); bF.className += ' fpush';
     function isCol() { return isDet ? !el.open : el.classList.contains('body-collapsed'); }
@@ -34,12 +35,16 @@
     function cur() { var r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; }
     function undock() {
       st.floating = false; st.maxed = false; el.classList.remove('is-floating');
+      if (ph) { ph.remove(); ph = null; }
       ['left', 'top', 'width', 'height', 'right', 'bottom', 'zIndex'].forEach(function (k) { el.style[k] = ''; });
       handles.forEach(function (x) { x.remove(); }); handles = [];
       bF.textContent = 'Destacar'; bF.setAttribute('aria-pressed', 'false'); bM.hidden = true; bM.textContent = 'Maximizar';
     }
     function float() {
       var r = st.rect || cur();
+      var flowH = Math.round(el.getBoundingClientRect().height);
+      ph = document.createElement('div'); ph.className = 'frame-ph'; ph.setAttribute('aria-hidden', 'true'); ph.style.setProperty('--ph-h', flowH + 'px');
+      ph.innerHTML = '<span>Quadro destacado</span>'; el.parentNode.insertBefore(ph, el);
       if (!st.rect && el.classList.contains('tabs-panel')) { r.width = Math.round(window.innerWidth * 0.72); r.left = Math.round((window.innerWidth - r.width) / 2); r.height = Math.max(r.height, 260); r.top = window.innerHeight - r.height - 30; }
       r.width = clamp(r.width, 320, window.innerWidth - 16); r.height = clamp(r.height, 170, window.innerHeight - 16);
       r.left = clamp(r.left, 8, window.innerWidth - r.width - 8); r.top = clamp(r.top, 8, window.innerHeight - r.height - 8);

@@ -107,3 +107,11 @@ details.cfg.is-floating:not([open])>.fresize{display:none;}
 .zoom-bar{display:flex;align-items:center;gap:4px;}
 .zoom-bar .fbtn:disabled{opacity:.4;cursor:not-allowed;}
 @media (max-width:960px){ .zoom-bar{display:none;} }
+
+/* Marcador no lugar de um quadro destacado: o resto da bancada não se move até o quadro ser encaixado. */
+.frame-ph{flex:0 0 auto;height:var(--ph-h);border:2px dashed var(--border);border-radius:14px;display:grid;place-items:center;color:var(--muted);font-size:13px;}
+.workspace>.frame-ph{height:auto;}
+@media (min-width:961px){
+  .workspace>.frame-ph,.workspace>.stage-panel{grid-column:1;grid-row:1;}
+  .workspace>.side-col{grid-column:2;grid-row:1;}
+}

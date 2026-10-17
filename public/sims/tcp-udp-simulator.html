@@ -361,6 +361,13 @@
   .zoom-bar .fbtn:disabled{opacity:.4;cursor:not-allowed;}
   .stage-header .fbtn{align-self:center;}
   @media (max-width:960px){ .zoom-bar{display:none;} }
+/* Marcador no lugar de um quadro destacado: o resto da bancada não se move até o quadro ser encaixado. */
+.frame-ph{flex:0 0 auto;height:var(--ph-h);border:2px dashed var(--border);border-radius:14px;display:grid;place-items:center;color:var(--muted);font-size:13px;}
+.workspace>.frame-ph{height:auto;}
+@media (min-width:961px){
+  .workspace>.frame-ph,.workspace>.stage-panel{grid-column:1;grid-row:1;}
+  .workspace>.side-col{grid-column:2;grid-row:1;}
+}
 </style>
 </head>
 
@@ -2399,16 +2406,21 @@
     var ref=bar.querySelector('.tabs-toggle');
     if(ref) { bar.insertBefore(bM,ref); bar.insertBefore(bF,bM); } else { bar.appendChild(bF); bar.appendChild(bM); if(bC) bar.appendChild(bC); }
     var handles=[];
+    var ph=null; // marcador que guarda o lugar do quadro enquanto ele está destacado
     function place(r){ el.style.left=r.left+'px'; el.style.top=r.top+'px'; el.style.width=r.width+'px'; el.style.height=r.height+'px'; el.style.right='auto'; el.style.bottom='auto'; }
     function cur(){ var r=el.getBoundingClientRect(); return {left:r.left,top:r.top,width:r.width,height:r.height}; }
     function undock(){
       st.floating=false; st.maxed=false; el.classList.remove('is-floating');
+      if(ph){ ph.remove(); ph=null; }
       ['left','top','width','height','right','bottom','zIndex'].forEach(function(k){el.style[k]='';});
       handles.forEach(function(x){x.remove();}); handles=[];
       bF.textContent='Destacar'; bF.setAttribute('aria-pressed','false'); bM.hidden=true; bM.textContent='Maximizar';
     }
     function float(){
       var r=st.rect||cur();
+      var flowH = Math.round(el.getBoundingClientRect().height);
+      ph = document.createElement('div'); ph.className = 'frame-ph'; ph.setAttribute('aria-hidden', 'true'); ph.style.setProperty('--ph-h', flowH + 'px');
+      ph.innerHTML = '<span>Quadro destacado</span>'; el.parentNode.insertBefore(ph, el);
       if(!st.rect && el.id==='tabsPanel'){ r.width=Math.round(window.innerWidth*0.72); r.left=Math.round((window.innerWidth-r.width)/2); r.height=Math.max(r.height,260); r.top=window.innerHeight-r.height-30; }
       r.width=clamp(r.width,320,window.innerWidth-16); r.height=clamp(r.height,170,window.innerHeight-16);
       r.left=clamp(r.left,8,window.innerWidth-r.width-8); r.top=clamp(r.top,8,window.innerHeight-r.height-8);

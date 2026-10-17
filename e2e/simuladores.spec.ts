@@ -111,14 +111,21 @@ for (const sim of available) {
         expect(overflow.w, `rolagem horizontal da página em ${size.width}x${size.height}`).toBeLessThanOrEqual(1);
       }
       // destacar e encaixar: cada quadro volta exatamente à posição de origem
-      const panels = ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', 'details.cfg'];
+      const candidates = ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', 'details.cfg'];
+      const panels: string[] = [];
+      for (const c of candidates) if ((await page.locator(c).count()) > 0) panels.push(c);
       for (const sel of panels) {
         const el = page.locator(sel).first();
         if ((await el.count()) === 0) continue;
         const before = await el.boundingBox();
+        // os outros quadros não se movem quando um é destacado
+        const others = panels.filter((o) => o !== sel);
+        const othersBefore = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
         const toggle = el.locator('.fbtn', { hasText: /Destacar|Encaixar/ }).first();
         await toggle.click();
         await expect(el).toHaveClass(/is-floating/);
+        const othersAfter = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
+        expect(othersAfter, `os outros quadros se moveram ao destacar ${sel}`).toEqual(othersBefore);
         await toggle.click();
         await expect(el).not.toHaveClass(/is-floating/);
         expect(await el.boundingBox(), `posição de ${sel} depois de encaixar`).toEqual(before);
