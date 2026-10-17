@@ -84,6 +84,14 @@ export interface TopoNode {
   x: number;
   y: number;
   kind: TopoKind;
+  /** Largura da caixa (padrão 128). */
+  w?: number;
+}
+
+export interface TopoLinkOpts {
+  label?: string;
+  dashed?: boolean;
+  down?: boolean;
 }
 
 /** Visão de topologia, opcional: nós, enlaces e o caminho que cada mensagem percorre. */
@@ -91,7 +99,8 @@ export interface TopologyDef {
   width: number;
   height: number;
   nodes: TopoNode[];
-  links: [string, string][];
+  /** Enlaces entre nós, com rótulo, tracejado e estado caído opcionais. */
+  links: ([string, string] | [string, string, TopoLinkOpts])[];
   /** Nós por onde a mensagem passa, na ordem. Padrão: origem e destino. */
   route?: (m: Message) => string[];
   /** Linhas de texto sob cada nó no instante dado (ms), por exemplo a tabela ARP de cada host. */
@@ -113,6 +122,8 @@ export interface ProtocolDef {
   /** Visão de topologia ao lado do diagrama de sequência (seletor no quadro principal). */
   topology?: (sub: string, tr: Trace) => TopologyDef;
   topologyTitle?: string;
+  /** Legenda das cores do diagrama (padrão: em claro, cifrado, dados e falha). */
+  legend?: { color: string; label: string }[];
   /** Motor puro: o mesmo parâmetro produz o mesmo trace. */
   build: (P: Params, sub: string) => Trace;
   explain: (tr: Trace, P: Params, scen: ScenarioDef | undefined) => string;

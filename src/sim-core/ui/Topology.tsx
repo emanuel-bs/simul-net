@@ -83,10 +83,20 @@ export const Topology = forwardRef<HTMLDivElement, Props>(function Topology({ de
   return (
     <div className="topo-wrap" ref={ref}>
       <svg className="topo" xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${def.width} ${def.height}`} style={topoStyle(zoom)} role="group" aria-label="Topologia da rede">
-        {def.links.map(([a, b], i) => {
+        {def.links.map(([a, b, o], i) => {
           const A = at.get(a);
           const B = at.get(b);
-          return A && B ? <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y} className="topo-link" /> : null;
+          if (!A || !B) return null;
+          return (
+            <g key={i}>
+              <line x1={A.x} y1={A.y} x2={B.x} y2={B.y} className={'topo-link' + (o && o.down ? ' down' : '') + (o && o.dashed ? ' dashed' : '')} />
+              {o && o.label && (
+                <text x={(A.x + B.x) / 2} y={(A.y + B.y) / 2 - 8} textAnchor="middle" className={'topo-linklabel' + (o.down ? ' down' : '')}>
+                  {o.label}
+                </text>
+              )}
+            </g>
+          );
         })}
         {latest && (
           <polyline points={path(routePoints(def, latest))} fill="none" style={{ stroke: latest.color, strokeWidth: '4px', opacity: 0.35, strokeLinecap: 'round', strokeLinejoin: 'round' }} />
@@ -98,9 +108,9 @@ export const Topology = forwardRef<HTMLDivElement, Props>(function Topology({ de
           return (
             <g key={n.key} className={'topo-node ' + n.kind}>
               {n.kind === 'cloud' ? (
-                <ellipse cx={n.x} cy={n.y} rx={NODE_W / 2} ry={NODE_H / 2 + 4} className="topo-box" />
+                <ellipse cx={n.x} cy={n.y} rx={(n.w || NODE_W) / 2} ry={NODE_H / 2 + 4} className="topo-box" />
               ) : (
-                <rect x={n.x - NODE_W / 2} y={n.y - NODE_H / 2} width={NODE_W} height={NODE_H} rx={n.kind === 'switch' ? 4 : 10} className="topo-box" />
+                <rect x={n.x - (n.w || NODE_W) / 2} y={n.y - NODE_H / 2} width={n.w || NODE_W} height={NODE_H} rx={n.kind === 'switch' ? 4 : 10} className="topo-box" />
               )}
               <text x={n.x} y={n.y - 4} textAnchor="middle" className="col-title">
                 {n.label}

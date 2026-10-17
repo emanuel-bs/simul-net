@@ -76,10 +76,9 @@ export const SIMS: SimMeta[] = [
     title: 'ICMP (ping e traceroute)',
     summary: 'ping, traceroute, tracert e hping3 em uma rede simulada: Echo, Time Exceeded, Destination Unreachable, fragmentação, PMTUD, ACLs e loops, com captura e hex dump.',
     topics: ['Echo e Time Exceeded', 'Fragmentação e PMTUD', 'ACLs e loops de roteamento', 'Captura e hex dump'],
-    rfcs: ['RFC 792'],
+    rfcs: ['RFC 792', 'RFC 1191', 'RFC 1812', 'RFC 2923'],
     status: 'available',
-    engine: 'legado',
-    file: 'icmp-simulator.html',
+    engine: 'nativo',
   },
   {
     id: 'bgp',

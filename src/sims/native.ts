@@ -9,4 +9,5 @@ export const NATIVE: Record<string, () => Promise<{ default: ProtocolDef }>> = {
   'https': () => import('./https/protocol'),
   'ftp': () => import('./ftp/protocol'),
   'arp': () => import('./arp/protocol'),
+  'icmp': () => import('./icmp/protocol'),
 };

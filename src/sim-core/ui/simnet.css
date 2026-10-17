@@ -366,3 +366,20 @@
 .simnet .workspace>.side-col{grid-column:2;grid-row:1;}
 .simnet .workspace>.stage-panel{grid-column:1;grid-row:1;}
 @media (max-width:960px){.simnet .workspace>.frame-ph,.simnet .workspace>.side-col,.simnet .workspace>.stage-panel{grid-column:auto;grid-row:auto;}}
+
+/* ICMP: terminal, enlaces com estado e etiquetas do log. */
+.simnet pre.term{background:#050f1f;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.5;color:#d6e6f5;white-space:pre-wrap;margin:0;overflow:auto;}
+.simnet .t-prompt{color:var(--teal);}
+.simnet .t-err{color:var(--red-text);}
+.simnet .t-dim{color:var(--muted);}
+.simnet .topo-link.dashed{stroke-dasharray:6,5;}
+.simnet .topo-link.down{stroke:var(--red);stroke-dasharray:3,6;}
+.simnet .topo-linklabel{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--muted);}
+.simnet .topo-linklabel.down{fill:var(--red-text);font-weight:700;}
+.simnet .tag-req{color:var(--amber);}
+.simnet .tag-rep{color:var(--teal);}
+.simnet .tag-ttl{color:var(--purple);}
+.simnet .tag-unreach,.simnet .tag-fail{color:var(--red-text);}
+.simnet .tag-acl{color:var(--amber);}
+.simnet .tag-frag{color:var(--blue);}
+.simnet .tag-arp{color:var(--ink);}

@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { arpProtocol } from '../../src/sims/arp/protocol';
 import { ftpProtocol } from '../../src/sims/ftp/protocol';
+import { icmpProtocol } from '../../src/sims/icmp/protocol';
 import { httpsProtocol } from '../../src/sims/https/protocol';
 import { sshProtocol } from '../../src/sims/ssh/protocol';
 import { prepare } from '../../src/sim-core';
@@ -56,6 +57,7 @@ const SIMS: [string, ProtocolDef][] = [
   ['https', httpsProtocol],
   ['ftp', ftpProtocol],
   ['arp', arpProtocol],
+  ['icmp', icmpProtocol],
 ];
 
 describe.each(SIMS)('impressões digitais: %s', (name, def) => {

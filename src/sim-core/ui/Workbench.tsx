@@ -350,10 +350,14 @@ function Bench({ def }: Props) {
               </div>
               <h2>{showTopo ? def.topologyTitle || 'Topologia da rede' : def.stageTitle ? def.stageTitle(sub) : 'Diagrama de sequência'}</h2>
               <div className="legend-inline">
-                <span className="legend-item"><span className="legend-dot" style={{ background: 'var(--amber)' }} />em claro</span>
-                <span className="legend-item"><span className="legend-dot" style={{ background: 'var(--teal)' }} />cifrado e autenticado</span>
-                <span className="legend-item"><span className="legend-dot" style={{ background: 'var(--blue)' }} />dados do canal</span>
-                <span className="legend-item"><span className="legend-dot" style={{ background: 'var(--red)' }} />falha, aviso ou recusa</span>
+                {(def.legend || [
+                  { color: 'var(--amber)', label: 'em claro' },
+                  { color: 'var(--teal)', label: 'cifrado e autenticado' },
+                  { color: 'var(--blue)', label: 'dados do canal' },
+                  { color: 'var(--red)', label: 'falha, aviso ou recusa' },
+                ]).map((l) => (
+                  <span key={l.label} className="legend-item"><span className="legend-dot" style={{ background: l.color }} />{l.label}</span>
+                ))}
               </div>
               <div className="zoom-bar" role="group" aria-label="Zoom do diagrama">
                 <button type="button" className="fbtn" title="Diminuir o diagrama" disabled={zi === 0} onClick={() => setZi(zi - 1)}>

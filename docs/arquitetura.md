@@ -32,10 +32,10 @@ Simul-Net/
 
 ## 4. Simuladores legados e nativos
 
-- **Nativo:** componente React com motor de simulação separado da interface e testado, na rota `/sim/:id`. SSH, HTTPS e TLS, FTP, FTPS e SFTP e ARP são nativos. Seguem o padrão visual e didático dos demais (abas, ajuda nos campos, rodapé de crédito) e têm a bancada de trabalho: tela única, quadros que destacam, movem, redimensionam, maximizam e recolhem, zoom do diagrama e alça de altura das abas.
-- **Legado:** página autônoma em `public/sims/`, incorporada por `iframe` na rota `/sim/:id` e acessível em tela cheia. São os demais simuladores (roteamento, DHCP, ICMP, BGP, MPLS, TCP e UDP, ataques e defesas). Cada página mantém título, descrição, URL canônica, tags de compartilhamento e o rodapé de crédito padrão. O link de volta usa `target="_top"` para funcionar dentro e fora do `iframe`.
+- **Nativo:** componente React com motor de simulação separado da interface e testado, na rota `/sim/:id`. SSH, HTTPS e TLS, FTP, FTPS e SFTP, ARP e ICMP são nativos. Seguem o padrão visual e didático dos demais (abas, ajuda nos campos, rodapé de crédito) e têm a bancada de trabalho: tela única, quadros que destacam, movem, redimensionam, maximizam e recolhem, zoom do diagrama e alça de altura das abas.
+- **Legado:** página autônoma em `public/sims/`, incorporada por `iframe` na rota `/sim/:id` e acessível em tela cheia. São os demais simuladores (roteamento, DHCP, BGP, MPLS, TCP e UDP, ataques e defesas). Cada página mantém título, descrição, URL canônica, tags de compartilhamento e o rodapé de crédito padrão. O link de volta usa `target="_top"` para funcionar dentro e fora do `iframe`.
 - **Modelo misto de propósito:** os simuladores legados continuam como estão. Migrar os que têm a lógica misturada à tela (80 a 160 referências ao DOM em 1.100 a 1.900 linhas de JavaScript cada) custaria muito e não muda o que o aluno vê. A camada nativa é usada nos simuladores novos (DNS e DNSSEC, VPN, SMTP, IS-IS, SNMP, HTTP, congestionamento, 802.1X; o ARP já foi entregue, com três modos: resolução, ARP gratuito e conflito, e envenenamento de cache) e nos já migrados.
-- **Endereços antigos:** `public/sims/ssh-simulator.html`, `https-simulator.html` e `ftp-simulator.html` são páginas de redirecionamento para a rota nativa (`noindex`, fora do registro e do sitemap), para não quebrar links existentes.
+- **Endereços antigos:** `public/sims/ssh-simulator.html`, `https-simulator.html`, `ftp-simulator.html` e `icmp-simulator.html` são páginas de redirecionamento para a rota nativa (`noindex`, fora do registro e do sitemap), para não quebrar links existentes.
 
 ## 5. Contrato do motor de simulação
 

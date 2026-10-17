@@ -114,5 +114,24 @@
     "amostra:gra": "d56e59d0a05403df",
     "amostra:env": "9fa161abec580417",
     "textos": "ab87e2fec11c0ea8"
+  },
+  "icmp": {
+    "i-echo": "43437c4c6c654a33",
+    "i-ttl": "0fa27dbe62583f26",
+    "i-trace": "dd721f5ff7e111ce",
+    "i-tracert": "1fedd3c5ceb56a43",
+    "i-net": "2352a362fe03669b",
+    "i-host": "e48804fe262480f9",
+    "i-port": "d6411b260faa3c60",
+    "i-frag": "eddf17b0f4bc32c3",
+    "i-pmtud": "c174060573993220",
+    "i-prohib": "858943cdf1e3cae6",
+    "i-silent": "d11c4f4a7972daf9",
+    "i-blackhole": "3461e387430ac585",
+    "i-loop": "8ddbb9e3af738f2a",
+    "amostra:ping": "af96ac6a9497c5d0",
+    "amostra:trace": "8fff31cccc3d9d8f",
+    "amostra:hping": "b675cb0d34ddaa13",
+    "textos": "be8d641e3bbce584"
   }
 }
