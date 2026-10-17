@@ -29,4 +29,11 @@ const def: TopologyDef = {
   },
 };
 
-export const topology = (): TopologyDef => def;
+/** Os endereços mostrados em cada nó acompanham as colunas do cenário (no modo de conflito, o IP em disputa). */
+export const topology = (_sub: string, tr: Trace): TopologyDef => ({
+  ...def,
+  nodes: def.nodes.map((n) => {
+    const c = tr.cols.find((x) => x.key === n.key);
+    return c && c.addr ? { ...n, sub: c.addr } : n;
+  }),
+});

@@ -96,7 +96,15 @@
     "r-off": "dc0518e73bd0e0ba",
     "r-lost": "193c9dbc725a8d3f",
     "r-dead": "1c0d3e34e08ae322",
+    "g-announce": "9e09fee2b5880048",
+    "g-announce-new": "375b183a35a71e35",
+    "g-inuse": "998502167b5a8dfc",
+    "g-dispute": "614a728c41a64655",
+    "g-fight": "1cf9d41e18583930",
+    "g-fail-grat": "2ef64b6ce7714ecb",
+    "g-fail-slow": "5d4931a21d3dc7d3",
     "amostra:res": "1fd4fe708683768e",
-    "textos": "2462007e361d7d07"
+    "amostra:gra": "d56e59d0a05403df",
+    "textos": "d424aa5e16eef6da"
   }
 }

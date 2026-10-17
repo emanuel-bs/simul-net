@@ -53,11 +53,35 @@ export interface NeighEvent {
   t: number;
 }
 
-function ethHeader(dst: string, src: string, type: string): Field[] {
+export type HostKey = 'a' | 'b' | 'g';
+export interface FrameOpts {
+  sha: string;
+  spa: string;
+  tha: string;
+  tpa: string;
+  dmac: string;
+  label: string;
+  info: string;
+  about: string;
+  lost?: boolean;
+  par?: boolean;
+  bad?: boolean;
+  tags?: string[];
+}
+
+/** Quadro ARP (requisição ou resposta) entre dois hosts do trace. */
+export function arpFrame(tr: Trace, from: HostKey, to: HostKey, op: 1 | 2, o: FrameOpts): Message {
+  return tr.add(from, to, {
+    label: o.label, proto: 'ARP', color: o.bad ? C0.bad : op === 1 ? C0.plain : C0.data, len: 42, info: o.info, phaseName: op === 1 ? 'Requisição' : 'Resposta',
+    fields: [...ethHeader(o.dmac, o.sha, '0x0806 (ARP)'), ...arpBody(op, o.sha, o.spa, o.tha, o.tpa)], about: o.about, lost: !!o.lost, par: !!o.par, tags: o.tags || [],
+  });
+}
+
+export function ethHeader(dst: string, src: string, type: string): Field[] {
   return fl({ sec: 'Ethernet II' }, ['Destino', dst, dst === BCAST ? 'broadcast: todos os hosts da rede local recebem' : 'endereço físico do destino'], ['Origem', src, 'endereço físico de quem envia'], ['Tipo', type, type.startsWith('0x0806') ? 'ARP' : 'IPv4']);
 }
 
-function arpBody(op: 1 | 2, sha: string, spa: string, tha: string, tpa: string): Field[] {
+export function arpBody(op: 1 | 2, sha: string, spa: string, tha: string, tpa: string): Field[] {
   return fl(
     { sec: 'ARP (RFC 826)' },
     ['Tipo de hardware', '1 (Ethernet)', ''],
@@ -90,11 +114,7 @@ export function buildArp(P: ArpParams, _sub: string): Trace {
   R.neigh = neigh;
   const ne = (host: 'a' | 'b' | 'g', ip: string, mac: string | null, state: NeighState, t: number) => neigh.push({ host, ip, mac, state, t });
 
-  const arpMsg = (from: 'a' | 'b' | 'g', to: 'a' | 'b' | 'g', op: 1 | 2, o: { sha: string; spa: string; tha: string; tpa: string; dmac: string; label: string; info: string; about: string; lost?: boolean; par?: boolean; bad?: boolean; tags?: string[] }): Message =>
-    tr.add(from, to, {
-      label: o.label, proto: 'ARP', color: o.bad ? C0.bad : op === 1 ? C0.plain : C0.data, len: 42, info: o.info, phaseName: op === 1 ? 'Requisição' : 'Resposta',
-      fields: [...ethHeader(o.dmac, o.sha, '0x0806 (ARP)'), ...arpBody(op, o.sha, o.spa, o.tha, o.tpa)], about: o.about, lost: !!o.lost, par: !!o.par, tags: o.tags || [],
-    });
+  const arpMsg = (from: HostKey, to: HostKey, op: 1 | 2, o: FrameOpts): Message => arpFrame(tr, from, to, op, o);
 
   // 0. A quer enviar um pacote IP
   tr.phase('1. Consulta à tabela ARP', 'look');
