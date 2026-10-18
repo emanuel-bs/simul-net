@@ -51,7 +51,7 @@ export function wrapText(text: string, max: number): string[] {
   return lines;
 }
 
-export function layoutLadder(tr: Trace, endR: number): LadderLayout {
+export function layoutLadder(tr: Trace, endR: number, fmtTime?: (ms: number) => string): LadderLayout {
   const N = tr.cols.length;
   const x0 = N <= 2 ? 230 : N === 3 ? 200 : 150;
   const xs: Record<string, number> = {};
@@ -72,7 +72,7 @@ export function layoutLadder(tr: Trace, endR: number): LadderLayout {
   tr.msgs.forEach((m) => {
     if (seen.has(m.rS!)) return;
     seen.add(m.rS!);
-    timeLabels.push({ y: y(m.rS!) + 4, text: Math.round(m.tSend * 10) / 10 + ' ms' });
+    timeLabels.push({ y: y(m.rS!) + 4, text: fmtTime ? fmtTime(m.tSend) : Math.round(m.tSend * 10) / 10 + ' ms' });
   });
 
   // por coluna: onde terminou o último texto, para os eventos não se sobreporem

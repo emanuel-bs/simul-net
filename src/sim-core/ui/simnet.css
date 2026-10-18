@@ -383,3 +383,9 @@
 .simnet .tag-acl{color:var(--amber);}
 .simnet .tag-frag{color:var(--blue);}
 .simnet .tag-arp{color:var(--ink);}
+
+/* DHCP: etiquetas do log. */
+.simnet .tag-discover{color:var(--amber);}
+.simnet .tag-offer{color:var(--blue);}
+.simnet .tag-request{color:var(--purple);}
+.simnet .tag-ack{color:var(--teal);}

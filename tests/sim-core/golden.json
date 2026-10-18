@@ -133,5 +133,18 @@
     "amostra:trace": "8fff31cccc3d9d8f",
     "amostra:hping": "b675cb0d34ddaa13",
     "textos": "be8d641e3bbce584"
+  },
+  "dhcp": {
+    "d-dora": "0482ab838a4ea55d",
+    "d-two": "f8c5bfaf339dfcd6",
+    "d-short": "b89d6ed6297edfca",
+    "d-conflict": "684b243d75e6e7cc",
+    "d-down": "78b81395dced4d51",
+    "d-renew": "b07bdc09947724d2",
+    "d-rebind": "99d3e0e9b3f2e43b",
+    "d-release": "298f62f55a5bd9de",
+    "amostra:dora": "1b1e69c6b559b065",
+    "amostra:lease": "bfc4ce29ac71d7c2",
+    "textos": "ba9b3a2f4c1f759c"
   }
 }

@@ -73,7 +73,7 @@ describe('simuladores legados em public/sims', () => {
 
 describe('endereços antigos dos simuladores migrados para o motor nativo', () => {
   // Estes arquivos ficam em public/sims só para redirecionar links antigos, e não constam do registro.
-  const MOVED = ['ssh', 'https', 'ftp', 'icmp'];
+  const MOVED = ['ssh', 'https', 'ftp', 'icmp', 'dhcp'];
   it.each(MOVED)('%s-simulator.html redireciona para a rota do simulador e não é indexado', (id) => {
     const html = readFileSync(join(root, 'public', 'sims', `${id}-simulator.html`), 'utf-8');
     expect(html).toContain(`<meta http-equiv="refresh" content="0; url=../#/sim/${id}">`);

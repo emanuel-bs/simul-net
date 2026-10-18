@@ -152,7 +152,7 @@ function Bench({ def }: Props) {
   const built = useMemo(() => {
     const tr = def.build(P, sub);
     const endR = prepare(tr);
-    return { tr, endR, layout: layoutLadder(tr, endR) };
+    return { tr, endR, layout: layoutLadder(tr, endR, def.timeLabel) };
   }, [def, P, sub]);
   const { tr, endR, layout } = built;
   const topoDef = useMemo(() => (def.topology ? def.topology(sub, tr) : null), [def, sub, tr]);
@@ -399,7 +399,7 @@ function Bench({ def }: Props) {
                   );
                 })}
                 <div className="cfg-line">
-                  Relógio<b>{timeAt(tr, clock).toFixed(1)} ms</b>
+                  Relógio<b>{def.timeLabel ? def.timeLabel(timeAt(tr, clock)) : timeAt(tr, clock).toFixed(1) + ' ms'}</b>
                 </div>
               </div>
               {stateF.handles}

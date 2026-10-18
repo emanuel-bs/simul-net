@@ -124,6 +124,8 @@ export interface ProtocolDef {
   topologyTitle?: string;
   /** Legenda das cores do diagrama (padrão: em claro, cifrado, dados e falha). */
   legend?: { color: string; label: string }[];
+  /** Formata um instante (ms) nos rótulos de tempo e no relógio; o padrão é em milissegundos. */
+  timeLabel?: (ms: number) => string;
   /** Motor puro: o mesmo parâmetro produz o mesmo trace. */
   build: (P: Params, sub: string) => Trace;
   explain: (tr: Trace, P: Params, scen: ScenarioDef | undefined) => string;

@@ -60,6 +60,8 @@ describe('páginas dos simuladores nativos', () => {
   it('HTTPS e TLS: carrega, percorre os quatro modos e não tem violações de acessibilidade', () => checkSim('https', /^HTTPS e TLS$/), 60000);
   it('FTP, FTPS e SFTP: carrega, percorre os quatro modos e não tem violações de acessibilidade', () => checkSim('ftp', /^FTP, FTPS e SFTP$/), 60000);
 
+  it('DHCP: carrega, percorre os dois modos e não tem violações de acessibilidade', () => checkSim('dhcp', /^DHCP \(DORA\)$/), 120000);
+
   it('ICMP: carrega, percorre os três modos e não tem violações de acessibilidade', () => checkSim('icmp', /^ICMP \(ping e traceroute\)$/), 120000);
 
   it('ARP: carrega, percorre todos os cenários e não tem violações de acessibilidade', () => checkSim('arp', /^ARP$/), 60000);

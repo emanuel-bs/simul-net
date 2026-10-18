@@ -65,10 +65,9 @@ export const SIMS: SimMeta[] = [
     title: 'DHCP (DORA)',
     summary: 'Simulação interativa do DHCP: Discover, Offer, Request e Acknowledge, com gestão de leases e prevenção de conflitos por ARP.',
     topics: ['DORA', 'Leases e renovação', 'Conflitos de endereço (ARP)'],
-    rfcs: ['RFC 2131'],
+    rfcs: ['RFC 2131', 'RFC 2132', 'RFC 5227'],
     status: 'available',
-    engine: 'legado',
-    file: 'dhcp-simulator.html',
+    engine: 'nativo',
   },
   {
     id: 'icmp',
