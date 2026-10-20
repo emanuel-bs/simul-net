@@ -146,5 +146,26 @@
     "amostra:dora": "1b1e69c6b559b065",
     "amostra:lease": "bfc4ce29ac71d7c2",
     "textos": "ba9b3a2f4c1f759c"
+  },
+  "http-versoes": {
+    "h1-six": "747f97d1f0e67a0a",
+    "h1-serial": "3b3c1d5fcb393b4e",
+    "h1-hol": "b12f3e68d1eddb08",
+    "h1-plain": "8195a03a8318a58c",
+    "h1-loss": "af0b2955a460d18f",
+    "h2-mux": "0858ae997f712948",
+    "h2-many": "6630edcd7c05bb58",
+    "h2-big": "56d9d98c393467e7",
+    "h2-far": "5107bf25abb005c4",
+    "h2-loss": "a64904d8c0a54139",
+    "h3-1rtt": "55f12adea5887daf",
+    "h3-0rtt": "2ecbdee322c6979e",
+    "h3-far": "c8fefefbc2f6b9a2",
+    "h3-loss": "796dd4835d6ca029",
+    "h3-blocked": "e9b8d10b1b6f18c8",
+    "amostra:h1": "890fff4542fa34a5",
+    "amostra:h2": "9007b0ceae20b7c8",
+    "amostra:h3": "f152c1c56556394a",
+    "textos": "f659d48b5f0b14eb"
   }
 }
