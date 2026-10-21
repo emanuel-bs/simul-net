@@ -21,6 +21,8 @@ export interface SimMeta {
   topics: string[];
   rfcs: string[];
   status: 'available' | 'planned';
+  /** Destaque "Novo" na página inicial: marcar no máximo os 3 simuladores publicados mais recentemente. */
+  novo?: boolean;
   /** Presentes somente em simuladores disponíveis. */
   engine?: Engine;
   /** Nome do arquivo em public/sims (engine 'legado'). */
@@ -67,6 +69,7 @@ export const SIMS: SimMeta[] = [
     topics: ['DORA', 'Leases e renovação', 'Conflitos de endereço (ARP)'],
     rfcs: ['RFC 2131', 'RFC 2132', 'RFC 5227'],
     status: 'available',
+    novo: true,
     engine: 'nativo',
   },
   {
@@ -77,6 +80,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Echo e Time Exceeded', 'Fragmentação e PMTUD', 'ACLs e loops de roteamento', 'Captura e hex dump'],
     rfcs: ['RFC 792', 'RFC 1191', 'RFC 1812', 'RFC 2923'],
     status: 'available',
+    novo: true,
     engine: 'nativo',
   },
   {
@@ -216,6 +220,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Conexões e fila no HTTP/1.1', 'Fluxos e HPACK no HTTP/2', 'QUIC, 0-RTT e fallback no HTTP/3', 'Perda de pacote e bloqueio de cabeça de fila'],
     rfcs: ['RFC 9110', 'RFC 9112', 'RFC 9113', 'RFC 9114', 'RFC 9000'],
     status: 'available',
+    novo: true,
     engine: 'nativo',
   },
   {

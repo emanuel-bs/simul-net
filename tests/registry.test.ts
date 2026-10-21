@@ -40,6 +40,12 @@ describe('registro de simuladores', () => {
     });
   });
 
+  it('marca "novo" em no máximo 3 simuladores, todos disponíveis', () => {
+    const novos = SIMS.filter((s) => s.novo);
+    expect(novos.length).toBeLessThanOrEqual(3);
+    novos.forEach((s) => expect(s.status, s.id).toBe('available'));
+  });
+
   it('não usa travessão longo nem meia-risca nos textos', () => {
     expect(FORBIDDEN_DASHES.test(JSON.stringify({ CATEGORIES, SIMS }))).toBe(false);
   });

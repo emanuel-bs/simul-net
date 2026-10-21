@@ -7,9 +7,19 @@ export function SimCard({ sim, headingLevel = 3 }: { sim: SimMeta; headingLevel?
   return (
     <article className={`flex flex-col rounded-xl border bg-surface p-5 ${available ? 'border-line' : 'border-dashed border-line'}`}>
       <Heading className="text-xl font-bold">{sim.title}</Heading>
-      <p className={`mt-1 inline-block self-start rounded-md px-2 py-0.5 text-base font-semibold ${available ? 'bg-ok/15 text-ok' : 'bg-surface2 text-muted'}`}>
-        {available ? 'Disponível' : 'Em breve'}
-      </p>
+      <div className="mt-1 flex flex-wrap items-center gap-2">
+        <p className={`rounded-md px-2 py-0.5 text-base font-semibold ${available ? 'bg-ok/15 text-ok' : 'bg-surface2 text-muted'}`}>
+          {available ? 'Disponível' : 'Em breve'}
+        </p>
+        {available && sim.novo && (
+          <p className="inline-flex items-center gap-1 rounded-md bg-warn/15 px-2 py-0.5 text-base font-semibold text-ink">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" className="text-warn" fill="currentColor">
+              <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" />
+            </svg>
+            Novo
+          </p>
+        )}
+      </div>
       <p className="mt-2 flex-1 text-base">{sim.summary}</p>
       {sim.rfcs.length > 0 && (
         <ul aria-label="Especificações" className="mt-3 flex flex-wrap gap-2">
