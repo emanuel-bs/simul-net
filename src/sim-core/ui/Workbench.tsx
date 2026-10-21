@@ -668,7 +668,7 @@ function Bench({ def }: Props) {
         </section>
 
         <footer className="footer-credit">
-          Simulador desenvolvido pelo <strong>Prof. Dr. Laerte Peotta de Melo</strong>.<br /> Conteúdo elaborado com apoio de IA generativa, sob revisão do autor.<br /> Uso exclusivo para fins de ensino e pesquisa.
+          Simulador desenvolvido pelo <strong>Prof. Dr. Laerte Peotta de Melo</strong>, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica.
         </footer>
       </div>
     </div>

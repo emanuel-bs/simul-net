@@ -155,8 +155,8 @@
 .simnet .tag-loss{color:var(--red-text);}
 .simnet .tag-udp{color:var(--blue);}
 .simnet .tag-sys{color:var(--muted);}
-.simnet .footer-credit{flex:0 0 auto;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;letter-spacing:0.01em;}
-.simnet .footer-credit strong{color:var(--ink);font-weight:600;}
+.simnet .footer-credit{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;flex:0 0 auto;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;letter-spacing:0.01em;}
+.simnet .footer-credit strong{color:var(--ink);font-weight:700;}
 @media (max-width:960px){.simnet .app{height:auto;padding:12px 16px;}
 .simnet .workspace{grid-template-columns:1fr;grid-template-rows:none;}
 .simnet .ladder-wrap{height:460px;flex:none;}

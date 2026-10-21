@@ -52,9 +52,9 @@ export function AppLayout() {
       </main>
       {!workbench && (
       <footer className="border-t border-line bg-surface">
-        <p className="mx-auto max-w-7xl px-4 py-4 text-center text-base text-muted">
-          Simulador desenvolvido pelo <strong className="text-ink">Prof. Dr. Laerte Peotta de Melo</strong>. Conteúdo elaborado com apoio de IA generativa, sob revisão do autor. Uso exclusivo para fins de
-          ensino e pesquisa. Universidade de Brasília (UnB), Departamento de Engenharia Elétrica. Código aberto (licença MIT).
+        <p className="mx-auto max-w-7xl px-4 py-4 text-center font-mono text-base text-muted">
+          Simul-Net é um projeto mantido pelo <strong className="font-bold text-ink">Prof. Dr. Laerte Peotta de Melo</strong>, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa.
+          Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).
         </p>
       </footer>
       )}
