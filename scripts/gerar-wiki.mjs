@@ -96,6 +96,30 @@ function toMermaid(topo) {
   return L.join('\n');
 }
 
+const mmMsg = (s) => String(s ?? '').replace(/<[^>]*>/g, '').replace(/;/g, ',').replace(/#/g, 'nº ').replace(/\s+/g, ' ').trim().slice(0, 90);
+
+/** Diagrama de sequência Mermaid de um cenário, a partir das mensagens do trace (mesma fonte do diagrama da bancada). */
+function sequenceDiagram(def, s, base) {
+  const tr = def.build({ ...base, ...(s.set ?? {}) }, s.sub);
+  const L = ['sequenceDiagram'];
+  for (const c of tr.cols) L.push(`  participant ${mmId(c.key)} as ${mmMsg(c.label)}${c.sub ? '<br/>' + mmMsg(c.sub) : ''}`);
+  const msgs = [...tr.msgs].sort((a, b) => a.tSend - b.tSend || a.id - b.id);
+  const phases = [...tr.phases].sort((a, b) => a.t - b.t);
+  const first = mmId(tr.cols[0].key);
+  const last = mmId(tr.cols[tr.cols.length - 1].key);
+  let p = 0;
+  for (const m of msgs) {
+    while (p < phases.length && phases[p].t <= m.tSend + 1e-9) {
+      L.push(`  Note over ${first},${last}: ${mmMsg(phases[p].label)}`);
+      p++;
+    }
+    const text = mmMsg(m.label ?? m.info ?? m.proto) || 'mensagem';
+    const arrow = m.lost ? '-x' : '->>';
+    L.push(`  ${mmId(m.from)} ${arrow} ${mmId(m.to)}: ${m.enc ? '[cifrado] ' : ''}${text}`);
+  }
+  return '```mermaid\n' + L.join('\n') + '\n```';
+}
+
 /** Um diagrama por topologia distinta: percorre os cenários de cada modo e agrupa os que compartilham o mesmo desenho. */
 function topologySection(def) {
   const L = ['## Topologia\n', 'Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.\n'];
@@ -192,6 +216,7 @@ function nativePage(sim, def) {
         if (s.what) L.push(`${md(s.what)}\n`);
         if (d?.concept) L.push(`**Conceito.** ${md(d.concept)}\n`);
         if (d?.observe?.length) { L.push('**O que observar**\n'); for (const o of d.observe) L.push(`- ${md(o)}`); L.push(''); }
+        try { L.push(`**Diagrama de sequência**\n`, sequenceDiagram(def, s, Object.fromEntries(def.controls.map((c) => [c.id, c.def]))), ''); } catch { /* sem diagrama */ }
         if (d?.msgs?.length) {
           L.push(`**${d.msgsTitle ?? 'Mensagens'}**\n`);
           L.push('| Mensagem | Significado | Origem |', '| --- | --- | --- |');
