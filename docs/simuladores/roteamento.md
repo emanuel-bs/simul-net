@@ -7,11 +7,11 @@ Roteamento dinâmico passo a passo: OSPF em área única e multiárea (Hello, ad
 - **RFCs e padrões:** [RFC 2328](https://www.rfc-editor.org/rfc/rfc2328), [RFC 2453](https://www.rfc-editor.org/rfc/rfc2453)
 - **Tópicos:** Hello e adjacências; LSAs e SPF; Bellman-Ford e split horizon; Falhas de enlace
 
-## Abas
+## 1. Abas
 
 Cenário, Vetores / LSDB, Tabela de roteamento, Experimento, Referência, Log de eventos.
 
-## Configurações (campos do painel)
+## 2. Configurações (campos do painel)
 
 - **Protocolo**. Valores: OSPF (estado de enlace); RIPv2 (vetor de distância). Padrão: OSPF (estado de enlace).
   - **OSPF:** estado de enlace. Cada roteador recebe a descrição de todos os enlaces (LSDB) e calcula o caminho de menor custo com Dijkstra.
@@ -33,13 +33,13 @@ Cenário, Vetores / LSDB, Tabela de roteamento, Experimento, Referência, Log de
   - Muda só a velocidade de exibição; rotas, custos e rodadas são os mesmos.
   - Use Avançar fase para acompanhar a convergência passo a passo.
 
-## Cenários
+## 3. Cenários
 
-### OSPF
+> **Grupo:** OSPF
 
 Estado de enlace: cada roteador conhece o mapa inteiro da rede e calcula sozinho o caminho de menor custo, com Dijkstra.
 
-#### Convergência OSPF
+### 3.1 Convergência OSPF
 
 Configuração do cenário: OSPF, área única
 
@@ -71,7 +71,7 @@ O caminho escolhido é R1 → R2 → R3 → R6, com custo total 30.
 
 Converge rápido e sem laços, porque todos calculam sobre o mesmo mapa. O custo, ligado à banda, permite preferir enlaces rápidos.
 
-#### Custo e melhor caminho
+### 3.2 Custo e melhor caminho
 
 Configuração do cenário: OSPF, área única
 
@@ -102,7 +102,7 @@ Simule de novo: o tráfego passa a ir por R2 → R5 → R6.
 
 É assim que o administrador faz engenharia de tráfego com o OSPF: ajusta custos para preferir ou evitar enlaces.
 
-#### Falha de enlace
+### 3.3 Falha de enlace
 
 Configuração do cenário: OSPF, área única
 
@@ -133,7 +133,7 @@ Só R2 e R3 originam novos LSAs; todos recalculam o SPF e a comunicação segue 
 
 A convergência rápida limita o tempo em que o tráfego se perde. Em produção, o BFD detecta a falha em milissegundos.
 
-#### OSPF multi-área
+### 3.4 OSPF multi-área
 
 Configuração do cenário: OSPF, multi-área
 
@@ -165,11 +165,11 @@ O caminho atravessa o backbone pelos ABRs.
 
 A hierarquia permite ao OSPF escalar: uma falha dentro de uma área não obriga as outras a recalcular tudo.
 
-### RIPv2
+> **Grupo:** RIPv2
 
 Vetor de distância: cada roteador só conhece o que os vizinhos anunciam e escolhe o caminho com menos saltos.
 
-#### Convergência RIPv2
+### 3.5 Convergência RIPv2
 
 Configuração do cenário: RIPv2, split horizon ligado
 
@@ -199,7 +199,7 @@ O caminho é R1 → R2 → R3 → R6, com 3 saltos.
 
 É simples e leve, mas lento para convergir e limitado a 15 saltos. Ainda aparece em redes pequenas e em equipamentos antigos.
 
-#### Saltos, não custo
+### 3.6 Saltos, não custo
 
 Configuração do cenário: RIPv2, split horizon ligado
 
@@ -230,7 +230,7 @@ Nada muda nas tabelas: o RIP só conta saltos.
 
 Contar saltos pode levar o tráfego por enlaces lentos. É uma das razões para o RIP ter dado lugar ao OSPF em redes maiores.
 
-#### Contagem ao infinito
+### 3.7 Contagem ao infinito
 
 Configuração do cenário: RIPv2, split horizon desligado
 
@@ -261,7 +261,7 @@ Conte no log as rodadas até a rede perceber. Depois repita no cenário Converg�
 
 Enquanto a contagem não termina, os pacotes ficam em laço e se perdem. Split horizon, poison reverse e triggered updates reduzem o problema, mas não o eliminam em topologias com ciclos; o limite de 16 garante que ele termina. Essa é uma das razões para protocolos de estado de enlace, como o OSPF, que não têm contagem ao infinito.
 
-## Referência
+## 4. Referência
 
 ### Roteamento dinâmico
 

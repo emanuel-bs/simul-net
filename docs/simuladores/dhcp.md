@@ -8,20 +8,66 @@ Simulação interativa do DHCP: Discover, Offer, Request e Acknowledge, com gest
 - **RFCs e padrões:** [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131) (DHCP), [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132) (Opções DHCP), [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) (ARP Probe)
 - **Tópicos:** DORA; Leases e renovação; Conflitos de endereço (ARP)
 
-## Modos
+## 1. Modos
 
-| Modo | Cenário inicial |
-| --- | --- |
-| Concessão (DORA) | DORA básico |
-| Ciclo do lease | Renovação (T1) |
+| Modo | Cenário inicial | Cenários |
+| --- | --- | --- |
+| Concessão (DORA) | DORA básico | 6.1.1 a 6.1.5 |
+| Ciclo do lease | Renovação (T1) | 6.2.1 a 6.2.3 |
 
-## Topologia
+## 2. Como ler os diagramas
 
-Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.
+Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.
 
-### Concessão (DORA)
+| Tipo | O que é | Vale para | Equivale, no simulador, a |
+| --- | --- | --- | --- |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
-**Cenários: Dois servidores; DORA básico; Lease curto; Conflito de IP**
+### 2.1 Legenda dos diagramas
+
+**Tipo A (topologia)**
+
+- Retângulo: host (computador ou servidor final).
+- Hexágono: switch.
+- Retângulo arredondado: roteador, ou dispositivo que encaminha ou traduz.
+- Estádio (cantos bem arredondados): servidor ou rede externa.
+- Retângulo vermelho: atacante (quando existe no modo).
+- Linha contínua: enlace. Linha tracejada: enlace alternativo, forjado ou caído, conforme o rótulo e o cenário.
+- O Mermaid posiciona os elementos automaticamente: o layout difere do simulador, as ligações não.
+
+**Tipo B (sequência)**
+
+- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.
+- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.
+- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.
+- Faixa horizontal com texto: início de uma fase do cenário.
+- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.
+
+### 2.2 Lista de figuras
+
+**Tipo A (topologia)**
+
+- [Figura 3.1a](#31-concessão-dora): topologia do modo "Concessão (DORA)", variante a
+- [Figura 3.1b](#31-concessão-dora): topologia do modo "Concessão (DORA)", variante b
+- [Figura 3.2](#32-ciclo-do-lease): topologia do modo "Ciclo do lease"
+
+**Tipo B (sequência)**
+
+- [Figura 6.1.1](#611-dora-básico): sequência de "DORA básico"
+- [Figura 6.1.2](#612-dois-servidores): sequência de "Dois servidores"
+- [Figura 6.1.3](#613-lease-curto): sequência de "Lease curto"
+- [Figura 6.1.4](#614-conflito-de-ip): sequência de "Conflito de IP"
+- [Figura 6.1.5](#615-servidor-indisponível): sequência de "Servidor indisponível"
+- [Figura 6.2.1](#621-renovação-t1): sequência de "Renovação (T1)"
+- [Figura 6.2.2](#622-falha-na-renovação): sequência de "Falha na renovação"
+- [Figura 6.2.3](#623-release): sequência de "RELEASE"
+
+## 3. Topologia
+
+Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
+
+### 3.1 Concessão (DORA)
 
 ```mermaid
 flowchart LR
@@ -36,7 +82,7 @@ flowchart LR
   n_sw -- "Gi0/2" --- n_s2
 ```
 
-**Cenários: Servidor indisponível**
+*Figura 3.1a (Tipo A, topologia).* Elementos do modo "Concessão (DORA)": PC-A (cliente DHCP); SW1 (switch L2); PC-B (IP estático); DHCP-1 (192.168.10.1); DHCP-2 (192.168.10.2). Vale para os cenários (6.1.1 a 6.1.4).
 
 ```mermaid
 flowchart LR
@@ -49,10 +95,9 @@ flowchart LR
   n_sw -. "Gi0/1" .- n_s1
 ```
 
-*Em alguns cenários, parte dos elementos do desenho não existe ou não participa da troca (por exemplo, o segundo host ou o segundo servidor).*
+*Figura 3.1b (Tipo A, topologia).* Elementos do modo "Concessão (DORA)": PC-A (cliente DHCP); SW1 (switch L2); PC-B (IP estático); DHCP-1 (192.168.10.1). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.1.5).
 
-### Ciclo do lease
-
+### 3.2 Ciclo do lease
 
 ```mermaid
 flowchart LR
@@ -65,13 +110,15 @@ flowchart LR
   n_sw -- "Gi0/1" --- n_s1
 ```
 
-## Abas da bancada
+*Figura 3.2 (Tipo A, topologia).* Elementos do modo "Ciclo do lease": PC-A (cliente DHCP); SW1 (switch L2); PC-B (IP estático); DHCP-1 (192.168.10.1). Vale para todos os cenários do modo (6.2.1 a 6.2.3).
+
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, Leases, Experimento, Referência e Log.
 
-## Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### Servidores
+### 5.1 Servidores
 
 - **Servidores DHCP**. Valores: 1 servidor; 2 servidores. Padrão: 1 servidor. Modos: todos.
   - Quantos servidores respondem na rede.
@@ -84,7 +131,7 @@ Cenário, Captura, Mensagem, Leases, Experimento, Referência e Log.
   - Vale para as próximas concessões.
   - Leases curtos devolvem endereços ao pool mais rápido, ao custo de mais renovações.
 
-### Falhas
+### 5.2 Falhas
 
 - **Simular conflito de IP**. Valores: caixa de seleção. Padrão: não. Modos: Concessão (DORA).
   - O PC-B passa a usar o primeiro endereço concedido.
@@ -107,7 +154,7 @@ Cenário, Captura, Mensagem, Leases, Experimento, Referência e Log.
   - A porta Gi0/2 do switch.
   - Só vale com 2 servidores.
 
-### Ciclo do lease
+### 5.3 Ciclo do lease
 
 - **O que o cliente faz depois do BOUND**. Valores: Renovar o lease (T1); Liberar o endereço (RELEASE). Padrão: Renovar o lease (T1). Modos: Ciclo do lease.
   - Como o ciclo do lease continua.
@@ -118,15 +165,15 @@ Cenário, Captura, Mensagem, Leases, Experimento, Referência e Log.
   - Na renovação: sem resposta no T1, o cliente segue usando o endereço, tenta qualquer servidor no T2 (REBINDING) e, ao fim do lease, perde o endereço.
   - Na liberação: o RELEASE se perde e o lease continua registrado no servidor até expirar.
 
-## Cenários
+## 6. Cenários
 
-### Modo: Concessão (DORA)
+### 6.1 Modo: Concessão (DORA)
 
-#### Concessão
+> **Grupo:** Concessão
 
 Como um cliente sem endereço obtém a configuração IP: a troca DORA (Discover, Offer, Request, Ack), com um ou mais servidores.
 
-##### DORA básico
+#### 6.1.1 DORA básico
 
 *A troca completa de quatro mensagens que configura o cliente.*
 
@@ -141,8 +188,6 @@ Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no quadro de 
 - Na Captura: o DISCOVER sai de 0.0.0.0:68 para 255.255.255.255:67.
 - Na aba Mensagem: o xid igual em todas as mensagens e as opções do ACK (máscara, gateway, DNS, lease, T1 e T2).
 - Depois do ACK, o ARP Probe: o cliente confere se o endereço está livre antes de usá-lo.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -163,6 +208,8 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "DORA básico", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -174,7 +221,7 @@ sequenceDiagram
 
 **Por que importa.** Sem o DHCP, cada host precisaria de configuração manual. A contrapartida é que o protocolo não autentica ninguém: qualquer host pode se passar por servidor (rogue DHCP).
 
-##### Dois servidores
+#### 6.1.2 Dois servidores
 
 *Duas ofertas: o cliente escolhe uma e o outro servidor desiste.*
 
@@ -191,8 +238,6 @@ Repare que o servidor não escolhido devolve o endereço ao pool.
 - Na Captura: dois DHCPOFFER, um de cada servidor, com endereços de pools diferentes.
 - Na aba Mensagem do REQUEST: a opção 54 com o IP do servidor escolhido.
 - Na aba Leases: a oferta do servidor não escolhido some do pool.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -218,6 +263,8 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Dois servidores", na ordem do tempo, entre PC-A, DHCP-1, DHCP-2, PC-B: 12 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -228,7 +275,7 @@ sequenceDiagram
 
 **Por que importa.** Redes reais usam dois servidores para disponibilidade. Os pools precisam ser separados (ou sincronizados por failover), senão dois clientes podem receber o mesmo endereço.
 
-##### Lease curto
+#### 6.1.3 Lease curto
 
 *Lease de 1 hora: T1 e T2 chegam bem antes.*
 
@@ -245,8 +292,6 @@ Leases curtos devolvem endereços ao pool mais rápido, ao custo de mais renova�
 - Na aba Mensagem do ACK: opção 51 com 3600 s, opção 58 com 1800 s e opção 59 com 3150 s.
 - Compare com o cenário DORA básico (8 horas).
 - No modo Ciclo do lease, o tempo simulado avança até o T1, aos 30 minutos.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -267,6 +312,8 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Lease curto", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -277,11 +324,11 @@ sequenceDiagram
 
 **Por que importa.** Leases curtos convêm a redes com muita rotatividade (Wi-Fi de visitantes); leases longos reduzem o tráfego de renovação em redes estáveis.
 
-#### Falhas
+> **Grupo:** Falhas
 
 O que acontece quando algo dá errado: endereço já em uso na rede ou servidor que não responde.
 
-##### Conflito de IP
+#### 6.1.4 Conflito de IP
 
 *O ARP Probe descobre que o endereço já está em uso.*
 
@@ -298,8 +345,6 @@ Na segunda negociação, o servidor oferece o endereço seguinte.
 - Na Captura: o ARP Probe e a resposta do PC-B.
 - A mensagem DHCPDECLINE enviada ao servidor.
 - Na aba Leases: o endereço marcado como indisponível; na segunda tentativa, o servidor oferece o seguinte.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -334,6 +379,8 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Conflito de IP", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 18 mensagens (em 8 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -344,7 +391,7 @@ sequenceDiagram
 
 **Por que importa.** Conflitos surgem quando alguém configura um IP estático dentro do pool. Sem o ARP Probe, dois hosts usariam o mesmo endereço e as conexões dos dois falhariam de forma intermitente.
 
-##### Servidor indisponível
+#### 6.1.5 Servidor indisponível
 
 *Sem resposta, o cliente retransmite com espera crescente.*
 
@@ -361,8 +408,6 @@ Marque **DHCP-1 ativo** e execute de novo para ver a negociação funcionar.
 - No log: as tentativas sem resposta e o tempo de espera de cada uma.
 - Na Captura: vários DISCOVER com o campo secs aumentando.
 - Marque DHCP-1 ativo e execute de novo: a negociação segue normalmente.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -386,6 +431,8 @@ sequenceDiagram
   n_pc ->> n_pcb: DISCOVER
 ```
 
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Servidor indisponível", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens (em 8 fases; 4 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -395,13 +442,13 @@ sequenceDiagram
 
 **Por que importa.** Sem servidor, o host fica sem endereço (ou cai num endereço automático 169.254.x.x, APIPA, no Windows). Por isso o DHCP é um serviço crítico que merece redundância.
 
-### Modo: Ciclo do lease
+### 6.2 Modo: Ciclo do lease
 
-#### Ciclo do lease
+> **Grupo:** Ciclo do lease
 
 O endereço é emprestado por tempo limitado: renovação no T1, rebinding no T2, expiração e devolução voluntária.
 
-##### Renovação (T1)
+#### 6.2.1 Renovação (T1)
 
 *No T1, renovação em unicast, sem perder o endereço.*
 
@@ -418,8 +465,6 @@ O endereço continua o mesmo durante todo o processo.
 - No estado do protocolo: o estado BOUND, depois RENEWING e de volta a BOUND.
 - Na Captura: o REQUEST da renovação vai em unicast, com origem no próprio IP do cliente.
 - O endereço não muda e o cliente nunca fica sem rede.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -443,6 +488,8 @@ sequenceDiagram
   n_s1 ->> n_pc: ACK
 ```
 
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Renovação (T1)", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 10 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -452,7 +499,7 @@ sequenceDiagram
 
 **Por que importa.** É o caso normal do dia a dia: hosts ligados por muito tempo renovam o endereço de forma transparente.
 
-##### Falha na renovação
+#### 6.2.2 Falha na renovação
 
 *Servidor fora: RENEWING, REBINDING e perda do endereço.*
 
@@ -467,8 +514,6 @@ O servidor cai depois da concessão. Sem resposta no T1, o cliente tenta qualque
 - No estado do protocolo: BOUND, RENEWING, REBINDING e INIT.
 - Na Captura: o REQUEST do T1 em unicast e o do T2 em broadcast.
 - Na aba Experimento: a linha do tempo com o tempo simulado de cada etapa.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -494,6 +539,8 @@ sequenceDiagram
   n_pc ->> n_pcb: REQUEST
 ```
 
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Falha na renovação", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 11 mensagens (em 7 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -503,7 +550,7 @@ sequenceDiagram
 
 **Por que importa.** Mostra por que dois servidores precisam conhecer os mesmos leases (failover): no REBINDING, outro servidor só confirma um endereço que ele conhece.
 
-##### RELEASE
+#### 6.2.3 RELEASE
 
 *O cliente devolve o endereço; o servidor não responde.*
 
@@ -520,8 +567,6 @@ O servidor não responde ao RELEASE; veja na aba Leases o endereço voltar ao po
 - Na Captura: o DHCPRELEASE em unicast e nenhuma resposta.
 - Na aba Leases: o endereço volta a ficar livre.
 - No estado do protocolo: o cliente volta a INIT, sem endereço.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -544,6 +589,8 @@ sequenceDiagram
   n_pc ->> n_s1: RELEASE
 ```
 
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "RELEASE", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 9 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -552,7 +599,7 @@ sequenceDiagram
 
 **Por que importa.** Se o RELEASE se perde, o endereço fica reservado até o lease expirar. Por isso pools pequenos com leases longos podem se esgotar.
 
-## Referência
+## 7. Referência
 
 ### O que é o DHCP
 

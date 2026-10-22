@@ -8,22 +8,96 @@ Resolução de nomes por dentro: raiz, TLD e autoritativo, cache e TTL, tipos de
 - **RFCs e padrões:** [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) (Conceitos), [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035) (Implementação), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308) (Cache negativo), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033) (DNSSEC), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035) (Protocolo DNSSEC), [RFC 5452](https://www.rfc-editor.org/rfc/rfc5452) (Resistência a forja), [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858) (DoT), [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484) (DoH)
 - **Tópicos:** Resolução recursiva e cache; DNSSEC e cadeia de confiança; Envenenamento e amplificação; DoT e DoH
 
-## Modos
+## 1. Modos
 
-| Modo | Cenário inicial |
-| --- | --- |
-| Resolução | Resolução completa (cache frio) |
-| DNSSEC | Cadeia de confiança válida |
-| Envenenamento de cache | Sem defesa (porta fixa) |
-| Amplificação | Resolvedor aberto (ANY) |
-| DoT e DoH | DNS puro (UDP 53) |
+| Modo | Cenário inicial | Cenários |
+| --- | --- | --- |
+| Resolução | Resolução completa (cache frio) | 6.1.1 a 6.1.12 |
+| DNSSEC | Cadeia de confiança válida | 6.2.1 a 6.2.6 |
+| Envenenamento de cache | Sem defesa (porta fixa) | 6.3.1 a 6.3.5 |
+| Amplificação | Resolvedor aberto (ANY) | 6.4.1 a 6.4.5 |
+| DoT e DoH | DNS puro (UDP 53) | 6.5.1 a 6.5.5 |
 
-## Topologia
+## 2. Como ler os diagramas
 
-Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.
+Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.
 
-### Resolução
+| Tipo | O que é | Vale para | Equivale, no simulador, a |
+| --- | --- | --- | --- |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
+### 2.1 Legenda dos diagramas
+
+**Tipo A (topologia)**
+
+- Retângulo: host (computador ou servidor final).
+- Hexágono: switch.
+- Retângulo arredondado: roteador, ou dispositivo que encaminha ou traduz.
+- Estádio (cantos bem arredondados): servidor ou rede externa.
+- Retângulo vermelho: atacante (quando existe no modo).
+- Linha contínua: enlace. Linha tracejada: enlace alternativo, forjado ou caído, conforme o rótulo e o cenário.
+- O Mermaid posiciona os elementos automaticamente: o layout difere do simulador, as ligações não.
+
+**Tipo B (sequência)**
+
+- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.
+- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.
+- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.
+- Faixa horizontal com texto: início de uma fase do cenário.
+- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.
+
+### 2.2 Lista de figuras
+
+**Tipo A (topologia)**
+
+- [Figura 3.1](#31-resolução): topologia do modo "Resolução"
+- [Figura 3.2](#32-dnssec): topologia do modo "DNSSEC"
+- [Figura 3.3](#33-envenenamento-de-cache): topologia do modo "Envenenamento de cache"
+- [Figura 3.4](#34-amplificação): topologia do modo "Amplificação"
+- [Figura 3.5](#35-dot-e-doh): topologia do modo "DoT e DoH"
+
+**Tipo B (sequência)**
+
+- [Figura 6.1.1](#611-resolução-completa-cache-frio): sequência de "Resolução completa (cache frio)"
+- [Figura 6.1.2](#612-delegação-do-com-em-cache): sequência de "Delegação do .com em cache"
+- [Figura 6.1.3](#613-delegação-do-domínio-em-cache): sequência de "Delegação do domínio em cache"
+- [Figura 6.1.4](#614-resposta-em-cache): sequência de "Resposta em cache"
+- [Figura 6.1.5](#615-aaaa-ipv6): sequência de "AAAA (IPv6)"
+- [Figura 6.1.6](#616-mx-e-mail): sequência de "MX (e-mail)"
+- [Figura 6.1.7](#617-txt-spf): sequência de "TXT (SPF)"
+- [Figura 6.1.8](#618-cname-apelido): sequência de "CNAME (apelido)"
+- [Figura 6.1.9](#619-nome-inexistente-nxdomain): sequência de "Nome inexistente (NXDOMAIN)"
+- [Figura 6.1.10](#6110-consulta-perdida): sequência de "Consulta perdida"
+- [Figura 6.1.11](#6111-ns1-fora-do-ar-usa-ns2): sequência de "ns1 fora do ar (usa ns2)"
+- [Figura 6.1.12](#6112-resposta-truncada-tcp): sequência de "Resposta truncada (TCP)"
+- [Figura 6.2.1](#621-cadeia-de-confiança-válida): sequência de "Cadeia de confiança válida"
+- [Figura 6.2.2](#622-negação-autenticada-nsec): sequência de "Negação autenticada (NSEC)"
+- [Figura 6.2.3](#623-zona-sem-ds-insegura): sequência de "Zona sem DS (insegura)"
+- [Figura 6.2.4](#624-assinatura-vencida): sequência de "Assinatura vencida"
+- [Figura 6.2.5](#625-ds-que-não-casa-com-a-chave): sequência de "DS que não casa com a chave"
+- [Figura 6.2.6](#626-resolvedor-que-não-valida): sequência de "Resolvedor que não valida"
+- [Figura 6.3.1](#631-sem-defesa-porta-fixa): sequência de "Sem defesa (porta fixa)"
+- [Figura 6.3.2](#632-porta-e-id-aleatórios): sequência de "Porta e ID aleatórios"
+- [Figura 6.3.3](#633-aleatórios-mas-o-palpite-acerta): sequência de "Aleatórios, mas o palpite acerta"
+- [Figura 6.3.4](#634-0x20--palpite-certo): sequência de "0x20 + palpite certo"
+- [Figura 6.3.5](#635-dnssec--palpite-certo): sequência de "DNSSEC + palpite certo"
+- [Figura 6.4.1](#641-resolvedor-aberto-any): sequência de "Resolvedor aberto (ANY)"
+- [Figura 6.4.2](#642-consulta-a-pouco-ganho): sequência de "Consulta A (pouco ganho)"
+- [Figura 6.4.3](#643-provedor-com-bcp-38): sequência de "Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)"
+- [Figura 6.4.4](#644-resolvedor-fechado-acl): sequência de "Resolvedor fechado (ACL)"
+- [Figura 6.4.5](#645-limite-de-taxa-rrl): sequência de "Limite de taxa (RRL)"
+- [Figura 6.5.1](#651-dns-puro-udp-53): sequência de "DNS puro (UDP 53)"
+- [Figura 6.5.2](#652-dns-sobre-tls-dot): sequência de "DNS sobre TLS (DoT)"
+- [Figura 6.5.3](#653-dns-sobre-https-doh): sequência de "DNS sobre HTTPS (DoH)"
+- [Figura 6.5.4](#654-dot-bloqueado-política-estrita): sequência de "DoT bloqueado, política estrita"
+- [Figura 6.5.5](#655-dot-bloqueado-política-oportunista): sequência de "DoT bloqueado, política oportunista"
+
+## 3. Topologia
+
+Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
+
+### 3.1 Resolução
 
 ```mermaid
 flowchart LR
@@ -40,10 +114,9 @@ flowchart LR
   n_au -.- n_a2
 ```
 
-*Em alguns cenários, parte dos elementos do desenho não existe ou não participa da troca (por exemplo, o segundo host ou o segundo servidor).*
+*Figura 3.1 (Tipo A, topologia).* Elementos do modo "Resolução": Cliente (192.168.1.10); Resolvedor (203.0.113.53); Raiz (198.51.100.1); .com (198.51.100.2); ns1 (192.0.2.53); ns2 (192.0.2.54). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para todos os cenários do modo (6.1.1 a 6.1.12).
 
-### DNSSEC
-
+### 3.2 DNSSEC
 
 ```mermaid
 flowchart LR
@@ -58,8 +131,9 @@ flowchart LR
   n_rs --- n_au
 ```
 
-### Envenenamento de cache
+*Figura 3.2 (Tipo A, topologia).* Elementos do modo "DNSSEC": Cliente (192.168.1.10); Resolvedor (203.0.113.53); Raiz (198.51.100.1); .com (198.51.100.2); ns1 (192.0.2.53). Vale para todos os cenários do modo (6.2.1 a 6.2.6).
 
+### 3.3 Envenenamento de cache
 
 ```mermaid
 flowchart LR
@@ -74,8 +148,9 @@ flowchart LR
   class n_at atacante
 ```
 
-### Amplificação
+*Figura 3.3 (Tipo A, topologia).* Elementos do modo "Envenenamento de cache": Cliente (192.168.1.10); Resolvedor (203.0.113.53); ns1 (192.0.2.53); Atacante (198.51.100.66). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para todos os cenários do modo (6.3.1 a 6.3.5).
 
+### 3.4 Amplificação
 
 ```mermaid
 flowchart LR
@@ -88,8 +163,9 @@ flowchart LR
   class n_at atacante
 ```
 
-### DoT e DoH
+*Figura 3.4 (Tipo A, topologia).* Elementos do modo "Amplificação": Atacante (198.51.100.66); Resolvedor (203.0.113.53); Vítima (192.0.2.200). Vale para todos os cenários do modo (6.4.1 a 6.4.5).
 
+### 3.5 DoT e DoH
 
 ```mermaid
 flowchart LR
@@ -100,13 +176,15 @@ flowchart LR
   n_ob --- n_rs
 ```
 
-## Abas da bancada
+*Figura 3.5 (Tipo A, topologia).* Elementos do modo "DoT e DoH": Cliente (192.168.1.10); Rede (observador); Resolvedor (203.0.113.53). Vale para todos os cenários do modo (6.5.1 a 6.5.5).
+
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de cache), Zonas (modos: Resolução; DNSSEC), Cadeia (modos: DNSSEC), Experimento, Referência e Log.
 
-## Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### Consulta
+### 5.1 Consulta
 
 - **O que o cliente pergunta**. Valores: A: endereço IPv4 de www.example.com; AAAA: endereço IPv6 de www.example.com; MX: servidor de e-mail de example.com; TXT: texto (SPF) de example.com; CNAME: apelido blog.example.com; Nome que não existe (NXDOMAIN). Padrão: A: endereço IPv4 de www.example.com. Modos: Resolução.
   - Qual informação do DNS o cliente quer.
@@ -116,7 +194,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **CNAME:** o nome é um apelido de outro; a resposta traz o apelido e o registro final.
   - **NXDOMAIN:** o nome não existe; o resolvedor guarda a negação por um tempo (cache negativo).
 
-### Cache do resolvedor
+### 5.2 Cache do resolvedor
 
 - **O que o resolvedor já sabe**. Valores: Nada (cache frio); Só a delegação do .com; Delegações do .com e do domínio; A própria resposta (ainda dentro do TTL). Padrão: Nada (cache frio). Modos: Resolução.
   - Quanto da hierarquia o resolvedor consegue pular.
@@ -125,7 +203,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **Delegações do .com e do domínio:** vai direto ao servidor autoritativo. É o caso mais comum na prática.
   - **A própria resposta:** responde na hora, sem consultar ninguém, enquanto o TTL não acabar.
 
-### Falhas
+### 5.3 Falhas
 
 - **A primeira consulta ao autoritativo se perde**. Valores: caixa de seleção. Padrão: não. Modos: Resolução.
   - Simula perda de um datagrama UDP.
@@ -140,7 +218,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - Respostas maiores que o limite do datagrama (1232 bytes com EDNS) são truncadas.
   - O resolvedor abre uma conexão TCP na porta 53 e repete a consulta ([RFC 7766](https://www.rfc-editor.org/rfc/rfc7766)).
 
-### Zona example.com
+### 5.4 Zona example.com
 
 - **Situação do DNSSEC**. Valores: Zona assinada e correta; Zona assinada: nome que não existe (NSEC); Sem DS no .com (zona insegura); Assinatura (RRSIG) vencida; DS no .com não casa com a chave. Padrão: Zona assinada e correta. Modos: DNSSEC.
   - Em que estado está o DNSSEC do domínio.
@@ -150,7 +228,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **RRSIG vencida:** o operador esqueceu de renovar as assinaturas.
   - **DS que não casa:** a chave do domínio mudou e o DS no .com ficou desatualizado.
 
-### Resolvedor
+### 5.5 Resolvedor
 
 - **O resolvedor valida o DNSSEC**. Valores: caixa de seleção. Padrão: sim. Modos: DNSSEC.
   - Se o resolvedor confere as assinaturas.
@@ -162,7 +240,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **Fechado (ACL):** recusa quem é de fora, com um REFUSED pequeno.
   - **Limite de taxa:** limita respostas idênticas e responde truncado (TC=1), o que não incomoda quem usa o serviço de verdade.
 
-### Defesa do resolvedor
+### 5.6 Defesa do resolvedor
 
 - **Como o resolvedor se protege**. Valores: Nenhuma (porta fixa e ID previsível); Porta e ID aleatórios; Porta e ID aleatórios + 0x20; Validação DNSSEC. Padrão: Nenhuma (porta fixa e ID previsível). Modos: Envenenamento de cache.
   - O que o resolvedor exige para aceitar uma resposta.
@@ -171,28 +249,28 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **0x20:** o resolvedor mistura maiúsculas e minúsculas no nome; o autoritativo repete a mesma caixa, e o atacante precisa adivinhá-la também.
   - **DNSSEC:** a resposta só vale com assinatura válida; adivinhar porta e ID deixa de bastar.
 
-### Atacante
+### 5.7 Atacante
 
 - **O atacante acerta porta e ID do primeiro palpite**. Valores: caixa de seleção. Padrão: não. Modos: Envenenamento de cache.
   - Mostra o que cada defesa faz quando o atacante tem sorte.
   - Com porta e ID aleatórios, acertar é improvável, mas possível. Marque para ver quais defesas ainda seguram.
   - Sem defesa, o palpite não precisa de sorte: o ID é previsível.
 
-### Consulta do atacante
+### 5.8 Consulta do atacante
 
 - **Tipo de consulta**. Valores: ANY (resposta grande); A (resposta pequena). Padrão: ANY (resposta grande). Modos: Amplificação.
   - Quanto a resposta supera a pergunta.
   - **ANY** pede tudo o que o nome tem e gera respostas grandes, ainda maiores com DNSSEC.
   - **A** gera uma resposta curta: o ganho é pequeno.
 
-### Rede do atacante
+### 5.9 Rede do atacante
 
 - **O provedor filtra origem forjada ([BCP 38](https://www.rfc-editor.org/info/bcp38))**. Valores: caixa de seleção. Padrão: não. Modos: Amplificação.
   - Filtro de origem na borda do provedor.
   - Marcado, o provedor do atacante descarta pacotes cujo endereço de origem não pertence à rede de onde saíram.
   - É a defesa que corta o problema na raiz, mas só funciona se todos a adotarem.
 
-### Canal
+### 5.10 Canal
 
 - **Transporte do DNS**. Valores: DNS puro (UDP 53); DNS sobre TLS: DoT (porta 853); DNS sobre HTTPS: DoH (porta 443). Padrão: DNS puro (UDP 53). Modos: DoT e DoH.
   - Como a consulta chega ao resolvedor.
@@ -200,7 +278,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **DoT:** o DNS dentro de TLS numa porta própria ([RFC 7858](https://www.rfc-editor.org/rfc/rfc7858)).
   - **DoH:** o DNS dentro de HTTPS, indistinguível do tráfego web ([RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)).
 
-### Rede
+### 5.11 Rede
 
 - **A rede bloqueia a porta 853**. Valores: caixa de seleção. Padrão: não. Modos: DoT e DoH.
   - Só vale para o DoT.
@@ -210,15 +288,15 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - **Estrita:** prefere ficar sem resposta a revelar a consulta.
   - **Oportunista:** usa TLS quando dá e cai para texto claro quando não dá. É conveniente, mas quem bloqueia a porta força o rebaixamento.
 
-## Cenários
+## 6. Cenários
 
-### Modo: Resolução
+### 6.1 Modo: Resolução
 
-#### Percurso da resolução
+> **Grupo:** Percurso da resolução
 
 Como um resolvedor recursivo percorre a hierarquia (raiz, TLD e autoritativo) e como o cache encurta o caminho.
 
-##### Resolução completa (cache frio)
+#### 6.1.1 Resolução completa (cache frio)
 
 *Raiz, TLD e autoritativo: o caminho inteiro.*
 
@@ -233,8 +311,6 @@ Conte as consultas e some os tempos de cada salto.
 - Na Captura: as quatro consultas (cliente, raiz, .com, autoritativo) e as respostas, com os tempos de cada salto.
 - Na aba Mensagem: o flag RD=1 na consulta do cliente e RD=0 nas do resolvedor; AA=1 só na resposta do autoritativo.
 - Na aba Cache: as delegações guardadas com TTL de 2 dias.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -257,6 +333,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Resolução completa (cache frio)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -268,7 +346,7 @@ sequenceDiagram
 
 **Por que importa.** Entender a hierarquia explica por que o DNS escala e por que cada camada (cache, delegação, redundância) existe. Também mostra onde cada ataque pode agir.
 
-##### Delegação do .com em cache
+#### 6.1.2 Delegação do .com em cache
 
 *A raiz não é consultada de novo.*
 
@@ -282,8 +360,6 @@ O resolvedor já conhece o servidor do .com e **pula a raiz**.
 
 - O diagrama não tem consulta à raiz.
 - No log: a nota de que a delegação do .com já estava no cache.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -304,6 +380,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Delegação do .com em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 6 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -313,7 +391,7 @@ sequenceDiagram
 
 **Por que importa.** O cache de delegações é o que mantém a raiz leve e a resolução rápida.
 
-##### Delegação do domínio em cache
+#### 6.1.3 Delegação do domínio em cache
 
 *Uma única consulta ao autoritativo.*
 
@@ -327,8 +405,6 @@ As delegações do .com e de example.com estão no cache: uma única consulta, d
 
 - Uma única consulta ao autoritativo.
 - Compare o tempo total com a resolução completa.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -347,6 +423,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Delegação do domínio em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -356,7 +434,7 @@ sequenceDiagram
 
 **Por que importa.** Mostra por que TTLs altos de delegação aceleram a Internet, e por que trocar servidores de nomes leva tempo para propagar.
 
-##### Resposta em cache
+#### 6.1.4 Resposta em cache
 
 *O resolvedor responde sozinho.*
 
@@ -371,8 +449,6 @@ A resposta ainda está dentro do TTL: o resolvedor responde sozinho, sem consult
 - Nenhuma consulta é enviada ao lado da Internet.
 - O TTL da resposta é menor que o original.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -386,6 +462,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (cache)
 ```
 
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Resposta em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -395,11 +473,11 @@ sequenceDiagram
 
 **Por que importa.** O TTL equilibra velocidade e atualização: TTL alto reduz carga, mas atrasa a propagação de mudanças.
 
-#### Tipos de registro
+> **Grupo:** Tipos de registro
 
 O DNS guarda vários tipos de informação sobre um nome: endereços, e-mail, texto, apelidos e a prova de que um nome não existe.
 
-##### AAAA (IPv6)
+#### 6.1.5 AAAA (IPv6)
 
 *O tipo da consulta decide o registro.*
 
@@ -412,8 +490,6 @@ A mesma pergunta, mas o tipo AAAA devolve o endereço IPv6 do nome.
 **O que observar**
 
 - Na aba Mensagem: o tipo AAAA na seção Pergunta e o endereço 2001:db8::80 na Resposta.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -432,6 +508,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "AAAA (IPv6)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -441,7 +519,7 @@ sequenceDiagram
 
 **Por que importa.** Sem AAAA, hosts só com IPv6 não encontram o servidor. O endereço usa o prefixo de documentação 2001:db8::/32.
 
-##### MX (e-mail)
+#### 6.1.6 MX (e-mail)
 
 *Para onde vai o e-mail do domínio.*
 
@@ -455,8 +533,6 @@ Quem entrega o e-mail de example.com? A resposta traz a preferência (10) e o no
 
 - Seção Resposta: MX 10 mail.example.com.
 - Seção Adicional: o A de mail.example.com.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -475,6 +551,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "MX (e-mail)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -484,7 +562,7 @@ sequenceDiagram
 
 **Por que importa.** Falsificar um MX desvia o e-mail do domínio. Daí a importância de DNSSEC e de controles como SPF, DKIM e DMARC.
 
-##### TXT (SPF)
+#### 6.1.7 TXT (SPF)
 
 *Texto livre com função de segurança.*
 
@@ -497,8 +575,6 @@ Registro de texto usado como política SPF: quais endereços podem enviar e-mail
 **O que observar**
 
 - Seção Resposta: o texto entre aspas com a política SPF.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -517,6 +593,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "TXT (SPF)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -526,7 +604,7 @@ sequenceDiagram
 
 **Por que importa.** SPF reduz a falsificação de remetente, mas só se o DNS for confiável; o DNSSEC protege essa política.
 
-##### CNAME (apelido)
+#### 6.1.8 CNAME (apelido)
 
 *Um nome que aponta para outro.*
 
@@ -540,8 +618,6 @@ blog.example.com é um apelido de www.example.com. A resposta traz o CNAME e o r
 
 - Seção Resposta com dois registros: o CNAME e o A.
 - O cache guarda os dois.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -560,6 +636,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "CNAME (apelido)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -569,7 +647,7 @@ sequenceDiagram
 
 **Por que importa.** CNAMEs entre domínios (CDN, serviços de terceiros) criam dependências: se o dono do alvo perder o controle, o apelido pode ser sequestrado (subdomain takeover).
 
-##### Nome inexistente (NXDOMAIN)
+#### 6.1.9 Nome inexistente (NXDOMAIN)
 
 *A inexistência também é guardada.*
 
@@ -583,8 +661,6 @@ O nome não existe. O autoritativo responde NXDOMAIN com o SOA, e o resolvedor g
 
 - O RCODE 3 (NXDOMAIN) e o SOA na seção Autoridade.
 - Na aba Cache: a entrada negativa.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -603,6 +679,8 @@ sequenceDiagram
   n_rs ->> n_cl: NXDOMAIN
 ```
 
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Nome inexistente (NXDOMAIN)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -612,11 +690,11 @@ sequenceDiagram
 
 **Por que importa.** NXDOMAIN em volume indica erros de digitação, malware com geração de domínios (DGA) e ataques de consulta a nomes aleatórios.
 
-#### Falhas
+> **Grupo:** Falhas
 
 O que o resolvedor faz quando uma consulta se perde, um servidor cai ou a resposta é grande demais para o UDP.
 
-##### Consulta perdida
+#### 6.1.10 Consulta perdida
 
 *O UDP não retransmite; o resolvedor sim.*
 
@@ -630,8 +708,6 @@ A primeira consulta ao autoritativo se perde. O resolvedor espera 800 ms e retra
 
 - Uma consulta marcada como perdida e a retransmissão 800 ms depois.
 - O tempo total subiu em 800 ms.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -651,6 +727,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.10 (Tipo B, sequência).* Mensagens do cenário "Consulta perdida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 5 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -661,7 +739,7 @@ sequenceDiagram
 
 **Por que importa.** Perda de pacotes aparece para o usuário como "site lento". Distinguir lentidão de DNS de lentidão do site é o primeiro passo do diagnóstico.
 
-##### ns1 fora do ar (usa ns2)
+#### 6.1.11 ns1 fora do ar (usa ns2)
 
 *Redundância de servidores de nomes.*
 
@@ -675,8 +753,6 @@ O primeiro servidor autoritativo não responde. Depois do tempo limite, o resolv
 
 - A consulta sem resposta a ns1 e a seguinte a ns2.
 - O tempo limite de 800 ms antes da troca.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -697,6 +773,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.11 (Tipo B, sequência).* Mensagens do cenário "ns1 fora do ar (usa ns2)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1, ns2: 5 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -707,7 +785,7 @@ sequenceDiagram
 
 **Por que importa.** Servidores de nomes na mesma rede ou no mesmo provedor derrubam o domínio juntos. A boa prática é espalhá-los.
 
-##### Resposta truncada (TCP)
+#### 6.1.12 Resposta truncada (TCP)
 
 *TC=1: refaça por TCP.*
 
@@ -721,8 +799,6 @@ A resposta não cabe no UDP: o servidor marca TC=1 e o resolvedor repete a consu
 
 - A resposta com TC=1 e sem registros.
 - O handshake TCP (SYN e SYN+ACK) e a consulta repetida.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -745,6 +821,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.1.12 (Tipo B, sequência).* Mensagens do cenário "Resposta truncada (TCP)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -755,13 +833,13 @@ sequenceDiagram
 
 **Por que importa.** Firewalls que bloqueiam o TCP 53 quebram respostas grandes e o DNSSEC. A porta 53 precisa estar liberada em UDP e TCP.
 
-### Modo: DNSSEC
+### 6.2 Modo: DNSSEC
 
-#### Validação
+> **Grupo:** Validação
 
 O DNSSEC prova que a resposta vem do dono da zona e não foi alterada, por uma cadeia de assinaturas da raiz até o registro.
 
-##### Cadeia de confiança válida
+#### 6.2.1 Cadeia de confiança válida
 
 *A cadeia de confiança da raiz ao registro.*
 
@@ -775,8 +853,6 @@ A zona está assinada e o DS no .com bate com a chave. O resolvedor percorre a c
 - As consultas de DNSKEY na fase de validação.
 - A resposta ao cliente com AD=1.
 - A aba Cadeia: cada elo marcado como válido.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -806,6 +882,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (AD)
 ```
 
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Cadeia de confiança válida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -817,7 +895,7 @@ sequenceDiagram
 
 **Por que importa.** O DNSSEC garante autenticidade e integridade das respostas, mas não as cifra e não protege o trecho entre o cliente e o resolvedor.
 
-##### Negação autenticada (NSEC)
+#### 6.2.2 Negação autenticada (NSEC)
 
 *Provar que um nome não existe.*
 
@@ -831,8 +909,6 @@ O nome não existe, e o NXDOMAIN vem com NSEC assinado: a inexistência é prova
 
 - A seção Autoridade com SOA, NSEC e as assinaturas.
 - AD=1 no NXDOMAIN entregue ao cliente.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -862,6 +938,8 @@ sequenceDiagram
   n_rs ->> n_cl: NXDOMAIN (AD)
 ```
 
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Negação autenticada (NSEC)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -872,7 +950,7 @@ sequenceDiagram
 
 **Por que importa.** Sem negação autenticada, um atacante poderia fazer um domínio real "desaparecer" forjando NXDOMAIN, sem que o DNSSEC percebesse.
 
-##### Zona sem DS (insegura)
+#### 6.2.3 Zona sem DS (insegura)
 
 *Sem DS, a cadeia termina.*
 
@@ -887,8 +965,6 @@ O .com não tem DS para example.com. A cadeia termina no .com e a resposta é ac
 - A referência do .com sem DS, mas com NSEC3.
 - A aba Cadeia: a cadeia termina no .com.
 - A resposta sem AD.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -916,6 +992,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Zona sem DS (insegura)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 12 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -925,11 +1003,11 @@ sequenceDiagram
 
 **Por que importa.** Assinar a zona não basta: o DS precisa ser publicado no registro do domínio. Sem ele, o DNSSEC não protege nada.
 
-#### Falhas de DNSSEC
+> **Grupo:** Falhas de DNSSEC
 
 O DNSSEC mal operado derruba o domínio para quem valida; e quem não valida não recebe proteção alguma.
 
-##### Assinatura vencida
+#### 6.2.4 Assinatura vencida
 
 *Assinaturas têm validade.*
 
@@ -945,8 +1023,6 @@ O RRSIG do registro A venceu. O resolvedor que valida devolve **SERVFAIL**: o si
 - O SERVFAIL e o erro estendido 7 na resposta ao cliente.
 - Na aba Cadeia: o último elo marcado como falho.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -975,6 +1051,8 @@ sequenceDiagram
   n_rs ->> n_cl: SERVFAIL
 ```
 
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Assinatura vencida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -984,7 +1062,7 @@ sequenceDiagram
 
 **Por que importa.** Falhas de operação do DNSSEC (assinatura vencida, troca de chave mal feita) já tiraram do ar domínios inteiros. Automatizar a renovação é essencial.
 
-##### DS que não casa com a chave
+#### 6.2.5 DS que não casa com a chave
 
 *O elo entre as zonas se rompe.*
 
@@ -999,8 +1077,6 @@ A chave do domínio mudou e o DS no .com ficou desatualizado. A cadeia quebra e 
 - A fase de validação: o hash da KSK difere do DS.
 - Na aba Cadeia: o elo de example.com falha e o registro final fica sem verificação.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1029,6 +1105,8 @@ sequenceDiagram
   n_rs ->> n_cl: SERVFAIL
 ```
 
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "DS que não casa com a chave", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1039,7 +1117,7 @@ sequenceDiagram
 
 **Por que importa.** A troca de KSK (rollover) exige coordenar a zona e o registro do domínio. É a causa mais comum de falhas de DNSSEC.
 
-##### Resolvedor que não valida
+#### 6.2.6 Resolvedor que não valida
 
 *Assinatura inválida que ninguém confere.*
 
@@ -1053,8 +1131,6 @@ Mesma assinatura vencida, mas o resolvedor **não valida**: entrega a resposta s
 
 - A mesma zona do cenário anterior, agora com resposta entregue.
 - A resposta ao cliente sem AD.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1077,6 +1153,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Resolvedor que não valida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1086,13 +1164,13 @@ sequenceDiagram
 
 **Por que importa.** Ativar a validação no resolvedor é a parte que cabe ao provedor ou à empresa. Resolvedores públicos grandes já validam.
 
-### Modo: Envenenamento de cache
+### 6.3 Modo: Envenenamento de cache
 
-#### Envenenamento de cache
+> **Grupo:** Envenenamento de cache
 
 Um atacante tenta fazer o resolvedor aceitar uma resposta falsa e guardá-la, afetando todos os seus clientes.
 
-##### Sem defesa (porta fixa)
+#### 6.3.1 Sem defesa (porta fixa)
 
 *Porta fixa e ID previsível: fácil de forjar.*
 
@@ -1107,8 +1185,6 @@ Porta de origem fixa e ID previsível: uma resposta forjada que chegue antes da 
 - Na aba Cache: a entrada falsa com TTL de 24 horas.
 - A segunda consulta é respondida pelo cache envenenado.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1127,6 +1203,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (198.51.100.66)
 ```
 
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Sem defesa (porta fixa)", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 7 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1137,7 +1215,7 @@ sequenceDiagram
 
 **Por que importa.** O envenenamento redireciona o tráfego de todos os usuários de um resolvedor para o atacante, sem que ninguém perceba. O cenário é defensivo: mostra o efeito e as contramedidas, não o passo a passo.
 
-##### Porta e ID aleatórios
+#### 6.3.2 Porta e ID aleatórios
 
 *Cerca de 32 bits a adivinhar.*
 
@@ -1152,8 +1230,6 @@ Porta e ID aleatórios: as respostas forjadas não casam e são descartadas. A l
 - A porta de origem aleatória na consulta.
 - As respostas forjadas descartadas, sem alterar o cache.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1171,6 +1247,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (192.0.2.80)
 ```
 
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Porta e ID aleatórios", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1181,7 +1259,7 @@ sequenceDiagram
 
 **Por que importa.** Foi a correção emergencial do ataque de Kaminsky e hoje é padrão. Não elimina o risco: um palpite certo ainda funciona.
 
-##### Aleatórios, mas o palpite acerta
+#### 6.3.3 Aleatórios, mas o palpite acerta
 
 *Probabilidade não é garantia.*
 
@@ -1195,8 +1273,6 @@ O atacante tem sorte e acerta porta e ID. Aleatoriedade é probabilidade, não g
 
 - A resposta forjada é aceita.
 - Na aba Cache: a entrada falsa.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1216,6 +1292,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (198.51.100.66)
 ```
 
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Aleatórios, mas o palpite acerta", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 7 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1225,11 +1303,11 @@ sequenceDiagram
 
 **Por que importa.** Segredos curtos na camada de transporte só adiam o problema. Só a assinatura (DNSSEC) o resolve de forma estrutural.
 
-#### Defesas adicionais
+> **Grupo:** Defesas adicionais
 
 Camadas que elevam o custo do envenenamento: aleatoriedade extra na consulta e a validação criptográfica.
 
-##### 0x20 + palpite certo
+#### 6.3.4 0x20 + palpite certo
 
 *A caixa das letras como entropia extra.*
 
@@ -1244,8 +1322,6 @@ Mesmo acertando porta e ID, a resposta forjada tem a **caixa das letras** errada
 - O nome com caixa mista na consulta.
 - A resposta forjada descartada pela caixa diferente.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1263,6 +1339,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (192.0.2.80)
 ```
 
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "0x20 + palpite certo", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1272,7 +1350,7 @@ sequenceDiagram
 
 **Por que importa.** Funciona com servidores que preservam a caixa. É uma defesa barata, mas não substitui o DNSSEC.
 
-##### DNSSEC + palpite certo
+#### 6.3.5 DNSSEC + palpite certo
 
 *A assinatura vale mais que a sorte.*
 
@@ -1287,8 +1365,6 @@ A resposta forjada passa em porta e ID, mas não tem RRSIG válido. A validaçã
 - A resposta forjada com porta e ID certos, descartada por não ter RRSIG válido.
 - A resposta legítima com RRSIG, aceita.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1306,6 +1382,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (192.0.2.80)
 ```
 
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "DNSSEC + palpite certo", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1315,13 +1393,13 @@ sequenceDiagram
 
 **Por que importa.** Só funciona para zonas assinadas. O domínio precisa publicar DNSSEC e o resolvedor precisa validar.
 
-### Modo: Amplificação
+### 6.4 Modo: Amplificação
 
-#### Reflexão e amplificação
+> **Grupo:** Reflexão e amplificação
 
 Resolvedores abertos podem ser usados para inundar uma vítima com respostas muito maiores que as consultas.
 
-##### Resolvedor aberto (ANY)
+#### 6.4.1 Resolvedor aberto (ANY)
 
 *Pergunta pequena, resposta grande, vítima errada.*
 
@@ -1335,8 +1413,6 @@ Consultas pequenas com a origem trocada pela da vítima: o resolvedor aberto res
 - As respostas grandes dirigidas à vítima.
 - O fator de amplificação no quadro de estados.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_at as Atacante<br/>origem forjada
@@ -1352,6 +1428,8 @@ sequenceDiagram
   n_rs ->> n_vi: Resposta grande
 ```
 
+*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Resolvedor aberto (ANY)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1361,7 +1439,7 @@ sequenceDiagram
 
 **Por que importa.** O DNS é um dos protocolos mais usados em ataques volumétricos (DDoS). Os controles estão no operador do resolvedor e no provedor do atacante. O cenário é defensivo: mostra o mecanismo para que seja evitado.
 
-##### Consulta A (pouco ganho)
+#### 6.4.2 Consulta A (pouco ganho)
 
 *O tipo da consulta limita o ganho.*
 
@@ -1375,8 +1453,6 @@ Uma consulta A gera uma resposta curta: o fator de amplificação é pequeno. O 
 
 - Compare o fator com o do cenário anterior.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_at as Atacante<br/>origem forjada
@@ -1392,6 +1468,8 @@ sequenceDiagram
   n_rs ->> n_vi: Resposta grande
 ```
 
+*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Consulta A (pouco ganho)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1401,11 +1479,11 @@ sequenceDiagram
 
 **Por que importa.** Reduzir o tamanho das respostas de tipos como ANY é uma defesa barata do lado do servidor.
 
-#### Defesas
+> **Grupo:** Defesas
 
 Controles que impedem a reflexão: filtro de origem, resolvedor fechado e limite de taxa.
 
-##### Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)
+#### 6.4.3 Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)
 
 *Cortar a forja na origem.*
 
@@ -1420,8 +1498,6 @@ O provedor do atacante descarta pacotes com origem forjada: a reflexão não che
 - As consultas descartadas na borda do provedor do atacante.
 - Nenhum tráfego chega ao resolvedor nem à vítima.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_at as Atacante<br/>origem forjada
@@ -1433,6 +1509,8 @@ sequenceDiagram
   n_at -x n_rs: ANY example.com
 ```
 
+*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 3 mensagens (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1441,7 +1519,7 @@ sequenceDiagram
 
 **Por que importa.** É um problema de ação coletiva: o provedor que filtra protege os outros, não a si mesmo.
 
-##### Resolvedor fechado (ACL)
+#### 6.4.4 Resolvedor fechado (ACL)
 
 *Resolvedor só para quem é da casa.*
 
@@ -1454,8 +1532,6 @@ O resolvedor só atende a rede interna e responde REFUSED a quem é de fora: a v
 **O que observar**
 
 - Os REFUSED dirigidos à vítima, do tamanho da consulta.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1472,6 +1548,8 @@ sequenceDiagram
   n_rs ->> n_vi: REFUSED
 ```
 
+*Figura 6.4.4 (Tipo B, sequência).* Mensagens do cenário "Resolvedor fechado (ACL)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1481,7 +1559,7 @@ sequenceDiagram
 
 **Por que importa.** Resolvedores abertos são o problema; a regra básica é nunca expor um resolvedor recursivo à Internet.
 
-##### Limite de taxa (RRL)
+#### 6.4.5 Limite de taxa (RRL)
 
 *Limitar respostas repetidas.*
 
@@ -1494,8 +1572,6 @@ O limite de taxa deixa passar uma resposta truncada e descarta o resto: o ganho 
 **O que observar**
 
 - Uma resposta truncada pequena e as demais descartadas.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1510,6 +1586,8 @@ sequenceDiagram
   n_at ->> n_rs: ANY example.com
 ```
 
+*Figura 6.4.5 (Tipo B, sequência).* Mensagens do cenário "Limite de taxa (RRL)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1519,13 +1597,13 @@ sequenceDiagram
 
 **Por que importa.** O RRL é a defesa recomendada para servidores autoritativos, que não podem ser fechados por serem públicos.
 
-### Modo: DoT e DoH
+### 6.5 Modo: DoT e DoH
 
-#### Canal do DNS
+> **Grupo:** Canal do DNS
 
 O DNS puro viaja em texto claro; DoT e DoH protegem o trecho entre o cliente e o resolvedor.
 
-##### DNS puro (UDP 53)
+#### 6.5.1 DNS puro (UDP 53)
 
 *Nome e resposta à vista de todos.*
 
@@ -1538,8 +1616,6 @@ Consulta e resposta em texto claro: o observador lê o nome consultado e pode al
 - O observador registrando o nome consultado e a resposta.
 - A consulta e a resposta legíveis na aba Mensagem.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1550,6 +1626,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta 192.0.2.80
 ```
 
+*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "DNS puro (UDP 53)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 2 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1559,7 +1637,7 @@ sequenceDiagram
 
 **Por que importa.** Mesmo com HTTPS, a consulta DNS revela o site visitado. Por isso a privacidade do DNS se tornou tema de padronização.
 
-##### DNS sobre TLS (DoT)
+#### 6.5.2 DNS sobre TLS (DoT)
 
 *DNS dentro de TLS, em porta própria.*
 
@@ -1574,8 +1652,6 @@ O DNS dentro do TLS, na porta 853. O observador vê a conexão e o SNI, mas não
 - O handshake TLS antes da consulta.
 - O observador vê apenas dados cifrados.
 - A mensagem DNS na aba Mensagem, como cliente e resolvedor a enxergam.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1593,6 +1669,8 @@ sequenceDiagram
   n_rs ->> n_cl: [cifrado] Resposta 192.0.2.80 (cifrada)
 ```
 
+*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "DNS sobre TLS (DoT)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 7 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1603,7 +1681,7 @@ sequenceDiagram
 
 **Por que importa.** Protege o trecho cliente-resolvedor, mas o resolvedor continua vendo todas as consultas: a confiança é transferida, não eliminada.
 
-##### DNS sobre HTTPS (DoH)
+#### 6.5.3 DNS sobre HTTPS (DoH)
 
 *DNS dentro de HTTPS, camuflado no tráfego web.*
 
@@ -1617,8 +1695,6 @@ O DNS dentro de HTTPS, na porta 443, misturado ao tráfego web.
 
 - A requisição POST /dns-query com content-type application/dns-message.
 - O observador sem distinguir esse tráfego do restante do HTTPS.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1636,6 +1712,8 @@ sequenceDiagram
   n_rs ->> n_cl: [cifrado] Resposta 192.0.2.80 (cifrada)
 ```
 
+*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "DNS sobre HTTPS (DoH)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 7 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1646,11 +1724,11 @@ sequenceDiagram
 
 **Por que importa.** Para as redes corporativas, o DoH torna mais difícil aplicar filtragem e monitoramento por DNS; é preciso tratá-lo por política (resolvedor oficial, bloqueio de DoH externo).
 
-#### Bloqueio da porta 853
+> **Grupo:** Bloqueio da porta 853
 
 O DoT tem porta própria e pode ser bloqueado; a política do cliente decide entre falhar e voltar ao texto claro.
 
-##### DoT bloqueado, política estrita
+#### 6.5.4 DoT bloqueado, política estrita
 
 *Prefere falhar a vazar.*
 
@@ -1666,8 +1744,6 @@ A rede bloqueia a 853. O cliente estrito prefere ficar sem resposta a consultar 
 - Nenhuma consulta em UDP 53.
 - O quadro de estados: sem resposta (falha fechada).
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1677,6 +1753,8 @@ sequenceDiagram
   n_cl -x n_rs: SYN :853
 ```
 
+*Figura 6.5.4 (Tipo B, sequência).* Mensagens do cenário "DoT bloqueado, política estrita", na ordem do tempo, entre Cliente, Observador, Resolvedor: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1685,7 +1763,7 @@ sequenceDiagram
 
 **Por que importa.** A política estrita troca disponibilidade por confidencialidade; a escolha depende do risco aceito.
 
-##### DoT bloqueado, política oportunista
+#### 6.5.5 DoT bloqueado, política oportunista
 
 *O bloqueio força o rebaixamento.*
 
@@ -1700,8 +1778,6 @@ Com o bloqueio, o cliente oportunista volta ao UDP 53: o bloqueio força o rebai
 - O bloqueio da 853, seguido de uma consulta em UDP 53.
 - O observador lendo o nome.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_cl as Cliente<br/>stub resolver
@@ -1714,6 +1790,8 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta 192.0.2.80
 ```
 
+*Figura 6.5.5 (Tipo B, sequência).* Mensagens do cenário "DoT bloqueado, política oportunista", na ordem do tempo, entre Cliente, Observador, Resolvedor: 3 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1723,7 +1801,7 @@ sequenceDiagram
 
 **Por que importa.** Se a privacidade é requisito, use a política estrita (ou DoH, que é difícil de bloquear seletivamente).
 
-## Referência
+## 7. Referência
 
 ### O que é o DNS
 

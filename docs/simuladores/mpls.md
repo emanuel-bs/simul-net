@@ -7,11 +7,11 @@ Núcleo MPLS com seis LSRs: sessões LDP, LIB e LFIB, push, swap e pop, PHP, mod
 - **RFCs e padrões:** [RFC 3031](https://www.rfc-editor.org/rfc/rfc3031), [RFC 5036](https://www.rfc-editor.org/rfc/rfc5036), [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364)
 - **Tópicos:** LDP, LIB e LFIB; Push, swap e pop; PHP e TTL; L3VPN com dois rótulos
 
-## Abas
+## 1. Abas
 
 Cenário, LIB / LFIB, Captura, Pacote, Terminal, Experimento, Referência, Log de eventos.
 
-## Configurações (campos do painel)
+## 2. Configurações (campos do painel)
 
 - **Serviço**. Valores: IP sobre MPLS (1 rótulo); L3VPN (pilha de 2 rótulos). Padrão: IP sobre MPLS (1 rótulo).
   - **IP sobre MPLS:** todos os LSRs conhecem as redes dos clientes e o pacote leva 1 rótulo.
@@ -35,13 +35,13 @@ Cenário, LIB / LFIB, Captura, Pacote, Terminal, Experimento, Referência, Log d
   - Muda só a velocidade de exibição; rótulos, TTL e tempos são os mesmos.
   - Use Avançar fase para acompanhar o LDP passo a passo.
 
-## Cenários
+## 3. Cenários
 
-### LDP e LSP
+> **Grupo:** LDP e LSP
 
 Como o plano de controle (LDP sobre o IGP) monta os caminhos rotulados e como o plano de dados os percorre.
 
-#### Montagem do LSP
+### 3.1 Montagem do LSP
 
 Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Uniform
 
@@ -73,7 +73,7 @@ Depois escolha um LSR em **Ver LIB / LFIB** e compare a LIB, com os rótulos de 
 
 Sem LDP não há rótulos, e o tráfego segue por roteamento IP comum (ou é descartado, na L3VPN). O LDP depende do IGP: só existem rótulos para destinos que o OSPF conhece.
 
-#### Push, swap e pop
+### 3.2 Push, swap e pop
 
 Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Uniform
 
@@ -105,11 +105,11 @@ Troque o sentido para H-B → H-A e repita: a volta usa outro LSP, com outros r�
 
 Comutar por rótulo permite engenharia de tráfego, VPNs e caminhos independentes do destino IP; o núcleo nem precisa conhecer as redes dos clientes.
 
-### Rótulo do egresso
+> **Grupo:** Rótulo do egresso
 
 O rótulo que o PE de saída anuncia para as próprias FECs define onde o último rótulo é removido.
 
-#### explicit-null
+### 3.3 explicit-null
 
 Configuração do cenário: IP sobre MPLS; egresso explicit-null; TTL Uniform
 
@@ -140,7 +140,7 @@ Na Captura, o último enlace leva o rótulo 0 até o PE2, que o remove.
 
 Provedores usam explicit-null quando a marcação de QoS do núcleo precisa valer até a borda.
 
-#### Sem PHP
+### 3.4 Sem PHP
 
 Configuração do cenário: IP sobre MPLS; egresso sem PHP; TTL Uniform
 
@@ -171,11 +171,11 @@ Compare onde o pop acontece nos três modos de rótulo do egresso.
 
 O PHP (penultimate hop popping) existe justamente para evitar essa consulta dupla no egresso.
 
-### TTL
+> **Grupo:** TTL
 
 Se o TTL do IP é copiado para o rótulo, o núcleo aparece ou some no traceroute do cliente.
 
-#### TTL Uniform
+### 3.5 TTL Uniform
 
 Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Uniform
 
@@ -204,7 +204,7 @@ Avance as fases e rode o **traceroute**. Com a propagação de TTL, o TTL do IP 
 
 Facilita o diagnóstico do núcleo, mas revela a topologia interna do provedor a qualquer cliente.
 
-#### TTL Pipe
+### 3.6 TTL Pipe
 
 Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Pipe
 
@@ -235,11 +235,11 @@ Rode também um ping e compare o TTL recebido com o do modelo Uniform.
 
 Esconde a topologia do provedor dos clientes. É uma escolha comum em redes de operadoras.
 
-### Serviços
+> **Grupo:** Serviços
 
 O MPLS usado para separar clientes sobre o mesmo núcleo: a VPN de camada 3.
 
-#### L3VPN
+### 3.7 L3VPN
 
 Configuração do cenário: L3VPN; egresso implicit-null; TTL Uniform
 
@@ -271,11 +271,11 @@ Os P só olham o rótulo de transporte: não conhecem as redes dos clientes.
 
 Permite atender vários clientes, até com endereços repetidos, sobre o mesmo núcleo. A separação é lógica, não criptográfica: o PE nunca deve aceitar pacotes rotulados vindos do cliente.
 
-### Falhas
+> **Grupo:** Falhas
 
 Como os LSPs reagem a mudanças de topologia.
 
-#### Falha de enlace
+### 3.8 Falha de enlace
 
 Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Uniform
 
@@ -306,7 +306,7 @@ O caminho e os rótulos mudam sem esperar nova sinalização LDP.
 
 A convergência do MPLS depende do IGP. Em produção, mecanismos como a sincronização LDP-IGP e o Fast Reroute reduzem a perda durante a troca.
 
-## Referência
+## 4. Referência
 
 ### O que é o MPLS
 

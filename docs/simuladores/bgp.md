@@ -7,11 +7,11 @@ BGP-4 entre seis sistemas autônomos: sessões, OPEN, UPDATE e KEEPALIVE, relaç
 - **RFCs e padrões:** [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271), [RFC 6811](https://www.rfc-editor.org/rfc/rfc6811)
 - **Tópicos:** Sessões e mensagens; Seleção de caminho; Sequestro, vazamento e flapping; Defesas (RPKI/ROV, filtros)
 
-## Abas
+## 1. Abas
 
 Cenário, Terminal, Captura, Mensagem BGP, Sessões, Tabela BGP, Experimento, Referência, Log de eventos.
 
-## Configurações (campos do painel)
+## 2. Configurações (campos do painel)
 
 - **Sentido do tráfego**. Valores: Conteúdo → Cliente; Cliente → Conteúdo; ISP A → Conteúdo. Padrão: Conteúdo → Cliente.
   - **ISP A → Conteúdo:** mostra o caminho de um provedor, útil no cenário de vazamento de rota.
@@ -52,13 +52,13 @@ Cenário, Terminal, Captura, Mensagem BGP, Sessões, Tabela BGP, Experimento, Re
   - Muda só a velocidade de exibição; rotas, UPDATEs e decisões são os mesmos.
   - Use Avançar fase para acompanhar as sessões e a convergência passo a passo.
 
-## Cenários
+## 3. Cenários
 
-### Sessões
+> **Grupo:** Sessões
 
 Como dois roteadores de AS diferentes abrem e mantêm uma sessão BGP, e como uma sessão morta é detectada.
 
-#### Estabelecimento da sessão
+### 3.1 Estabelecimento da sessão
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -90,7 +90,7 @@ Acompanhe os estados na aba Sessões e abra um OPEN na aba Mensagem BGP.
 
 O BGP não descobre vizinhos sozinho: toda sessão é configurada à mão, dos dois lados. Se os parâmetros do OPEN não batem (por exemplo, o AS esperado), a sessão termina com NOTIFICATION.
 
-#### Hold timer
+### 3.2 Hold timer
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -122,11 +122,11 @@ Compare com **Derrubar enlace** no mesmo enlace: quanto tempo cada falha leva pa
 
 O hold time define quanto tempo o tráfego pode ir para um vizinho morto. Valores menores detectam falhas mais rápido; em produção, o BFD faz isso em milissegundos.
 
-### Propagação
+> **Grupo:** Propagação
 
 Como um prefixo se espalha de AS em AS e quem repassa o quê, conforme as relações comerciais.
 
-#### Propagação do anúncio
+### 3.3 Propagação do anúncio
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -158,7 +158,7 @@ A cada AS, o AS_PATH ganha mais um número e o NEXT_HOP passa a ser o endereço 
 
 O AS_PATH é a memória do caminho: evita laços e serve de critério de escolha. Por isso o BGP é chamado de protocolo de vetor de caminho.
 
-#### Exportação entre provedores e peers
+### 3.4 Exportação entre provedores e peers
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -190,11 +190,11 @@ O ISP B conhece um caminho mais curto, mas não o repassa ao ISP A.
 
 É a política, e não a distância, que define boa parte dos caminhos da Internet. Repassar rotas fora dessa regra provoca vazamentos de rota e desvia tráfego por redes que não deveriam carregá-lo.
 
-### Seleção de caminho
+> **Grupo:** Seleção de caminho
 
 Como cada AS escolhe um único caminho entre vários, e como a política influencia o tráfego que sai e o que entra.
 
-#### AS_PATH mais curto
+### 3.5 AS_PATH mais curto
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -225,7 +225,7 @@ Há dois caminhos: pelo ISP B (peering) e pelo Trânsito. Envie tráfego Conteú
 
 O AS_PATH é uma aproximação grosseira de distância: um caminho com menos AS pode ser mais lento. Por isso os operadores combinam o AS_PATH com políticas de LOCAL_PREF.
 
-#### Desempate por router ID
+### 3.6 Desempate por router ID
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -256,7 +256,7 @@ Na aba Tabela BGP, veja qual critério desempatou.
 
 Desempates arbitrários tornam o caminho imprevisível para quem está fora. Operadores costumam definir políticas explícitas para não depender deles.
 
-#### LOCAL_PREF (saída)
+### 3.7 LOCAL_PREF (saída)
 
 Configuração: LOCAL_PREF 200 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -287,7 +287,7 @@ Depois volte o LOCAL_PREF para 100 e envie de novo: o caminho muda, e nenhum UPD
 
 É a principal ferramenta de engenharia de tráfego de saída: preferir o provedor mais barato, o de melhor desempenho ou um enlace de backup.
 
-#### AS-path prepend (entrada)
+### 3.8 AS-path prepend (entrada)
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend 3x para o ISP B; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -318,11 +318,11 @@ Depois tire o prepend e envie de novo: o tráfego volta a entrar pelo ISP B.
 
 É a ferramenta clássica para controlar o tráfego que entra. Muitos provedores dão LOCAL_PREF maior às rotas de clientes, e nesse caso o prepend não muda a escolha deles; aqui, todos usam LOCAL_PREF 100.
 
-### Falhas
+> **Grupo:** Falhas
 
 O que acontece quando um caminho deixa de existir: retiradas, reconvergência e caminhos alternativos.
 
-#### Falha de enlace
+### 3.9 Falha de enlace
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -353,7 +353,7 @@ Restaure o enlace e veja as rotas voltarem.
 
 O dual-homing só protege se o outro caminho também for anunciado e aceito. A convergência do BGP leva de segundos a minutos, e durante esse tempo parte do tráfego pode se perder.
 
-#### Retirada do prefixo
+### 3.10 Retirada do prefixo
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; defesas: nenhuma
 
@@ -383,11 +383,11 @@ Envie tráfego Conteúdo → Cliente: ele não tem mais para onde ir.
 
 É assim que uma rede sai do ar para o resto da Internet, de propósito (manutenção, migração) ou por erro de configuração.
 
-### Segurança e defesa
+> **Grupo:** Segurança e defesa
 
 Como anúncios indevidos, violações de política e instabilidade desviam ou interrompem o tráfego, e como as defesas de importação (filtros, RPKI, damping) barram cada problema.
 
-#### Sequestro de prefixo
+### 3.11 Sequestro de prefixo
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; o Atacante origina 203.0.113.0/24; defesas: nenhuma
 
@@ -420,7 +420,7 @@ Envie tráfego **Conteúdo → Cliente** e veja onde ele para. Depois ligue uma 
 
 O alcance do sequestro depende de quem aceita a rota falsa, e não de quem a originou. As defesas atuam na importação: filtro de prefixos no provedor do atacante e validação de origem (RPKI) em qualquer AS. Incidentes reais costumam ser erros de configuração, não ataques, e causam indisponibilidade em larga escala.
 
-#### Defesa: filtro de prefixos
+### 3.12 Defesa: filtro de prefixos
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; o Atacante origina 203.0.113.0/24; defesas: filtro de prefixos de clientes no ISP B
 
@@ -452,7 +452,7 @@ Troque o filtro para **no Trânsito** e observe: o desvio volta. Por que o filtr
 
 O filtro só funciona na borda: precisa estar no provedor direto de quem anuncia. Depende de listas atualizadas e não escala para a Internet inteira, por isso é complementado pelo RPKI.
 
-#### Defesa: RPKI / ROV
+### 3.13 Defesa: RPKI / ROV
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; o Atacante origina 203.0.113.0/24; defesas: RPKI / ROV só no ISP B
 
@@ -483,7 +483,7 @@ Troque o ROV para **só no ISP A** e envie tráfego Conteúdo → Cliente: o Con
 
 O ROV só protege quem o aplica, e o benefício cresce com a adoção. Ele valida a origem, não o caminho: não detecta uma rota vazada nem um AS_PATH forjado (para isso existem ASPA e BGPsec).
 
-#### Vazamento de rota
+### 3.14 Vazamento de rota
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; o ISP B vaza a rota do Conteúdo ao ISP A; defesas: LOCAL_PREF por relação comercial
 
@@ -515,7 +515,7 @@ Envie tráfego **ISP A → Conteúdo**, depois ligue o **filtro de rotas de peer
 
 O ISP B passa a carregar tráfego de que não foi contratado, e o ISP A usa um caminho que não pagou nem negociou. Defesa: o ISP A filtra o que aceita do peer ao cone de clientes dele (barra a rota vazada); no protocolo, os papéis BGP com atributo OTC ([RFC 9234](https://www.rfc-editor.org/rfc/rfc9234)) detectam o vazamento, mas dependem de os dois lados implementarem.
 
-#### Flapping de rota
+### 3.15 Flapping de rota
 
 Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anunciado; o Cliente oscila o anúncio; defesas: nenhuma
 
@@ -546,7 +546,7 @@ Reinicie com o **flap damping nos provedores** ligado: compare o número de mens
 
 O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fica fora do ar até a penalidade decair. Por isso é pouco usado hoje e, quando usado, com parâmetros conservadores.
 
-## Referência
+## 4. Referência
 
 ### O que é o BGP
 

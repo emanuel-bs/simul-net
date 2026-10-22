@@ -8,20 +8,84 @@ Tradução de endereços e portas: Basic NAT estático e dinâmico, NAPT (PAT), 
 - **RFCs e padrões:** [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) (Terminologia), [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022) (NAT tradicional), [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (UDP), [RFC 5382](https://www.rfc-editor.org/rfc/rfc5382) (TCP), [RFC 5508](https://www.rfc-editor.org/rfc/rfc5508) (ICMP), [RFC 6598](https://www.rfc-editor.org/rfc/rfc6598) (Espaço 100.64.0.0/10), [RFC 6888](https://www.rfc-editor.org/rfc/rfc6888) (CGN)
 - **Tópicos:** Basic NAT e NAPT (PAT); SNAT e DNAT; Tabela de traduções e portas; Hairpinning e redirecionamento transparente; Esgotamento de portas e expiração; ESP, NAT-T e CGNAT
 
-## Modos
+## 1. Modos
 
-| Modo | Cenário inicial |
-| --- | --- |
-| Saída: Basic NAT e NAPT | NAPT (PAT): dois hosts, um endereço |
-| Entrada: DNAT | Publicar um serviço (443 para 8443) |
-| Limites, IPsec e CGNAT | Esgotamento de portas |
+| Modo | Cenário inicial | Cenários |
+| --- | --- | --- |
+| Saída: Basic NAT e NAPT | NAPT (PAT): dois hosts, um endereço | 6.1.1 a 6.1.8 |
+| Entrada: DNAT | Publicar um serviço (443 para 8443) | 6.2.1 a 6.2.6 |
+| Limites, IPsec e CGNAT | Esgotamento de portas | 6.3.1 a 6.3.8 |
 
-## Topologia
+## 2. Como ler os diagramas
 
-Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.
+Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.
 
-### Saída: Basic NAT e NAPT
+| Tipo | O que é | Vale para | Equivale, no simulador, a |
+| --- | --- | --- | --- |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
+### 2.1 Legenda dos diagramas
+
+**Tipo A (topologia)**
+
+- Retângulo: host (computador ou servidor final).
+- Hexágono: switch.
+- Retângulo arredondado: roteador, ou dispositivo que encaminha ou traduz.
+- Estádio (cantos bem arredondados): servidor ou rede externa.
+- Retângulo vermelho: atacante (quando existe no modo).
+- Linha contínua: enlace. Linha tracejada: enlace alternativo, forjado ou caído, conforme o rótulo e o cenário.
+- O Mermaid posiciona os elementos automaticamente: o layout difere do simulador, as ligações não.
+
+**Tipo B (sequência)**
+
+- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.
+- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.
+- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.
+- Faixa horizontal com texto: início de uma fase do cenário.
+- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.
+
+### 2.2 Lista de figuras
+
+**Tipo A (topologia)**
+
+- [Figura 3.1](#31-saída-basic-nat-e-napt): topologia do modo "Saída: Basic NAT e NAPT"
+- [Figura 3.2a](#32-entrada-dnat): topologia do modo "Entrada: DNAT", variante a
+- [Figura 3.2b](#32-entrada-dnat): topologia do modo "Entrada: DNAT", variante b
+- [Figura 3.2c](#32-entrada-dnat): topologia do modo "Entrada: DNAT", variante c
+- [Figura 3.3a](#33-limites-ipsec-e-cgnat): topologia do modo "Limites, IPsec e CGNAT", variante a
+- [Figura 3.3b](#33-limites-ipsec-e-cgnat): topologia do modo "Limites, IPsec e CGNAT", variante b
+
+**Tipo B (sequência)**
+
+- [Figura 6.1.1](#611-basic-nat-estático-11): sequência de "Basic NAT estático (1:1)"
+- [Figura 6.1.2](#612-basic-nat-dinâmico-pool-de-2): sequência de "Basic NAT dinâmico (pool de 2)"
+- [Figura 6.1.3](#613-pool-esgotado-1-endereço-2-hosts): sequência de "Pool esgotado (1 endereço, 2 hosts)"
+- [Figura 6.1.4](#614-napt-pat-dois-hosts-um-endereço): sequência de "NAPT (PAT): dois hosts, um endereço"
+- [Figura 6.1.5](#615-colisão-de-portas): sequência de "Colisão de portas"
+- [Figura 6.1.6](#616-icmp-echo-ping-sem-portas): sequência de "ICMP Echo (ping) sem portas"
+- [Figura 6.1.7](#617-mapeamento-independente-do-destino-eim): sequência de "Mapeamento independente do destino (EIM)"
+- [Figura 6.1.8](#618-mapeamento-dependente-do-destino-apdm): sequência de "Mapeamento dependente do destino (APDM)"
+- [Figura 6.2.1](#621-publicar-um-serviço-443-para-8443): sequência de "Publicar um serviço (443 para 8443)"
+- [Figura 6.2.2](#622-retorno-assimétrico): sequência de "Retorno assimétrico"
+- [Figura 6.2.3](#623-hairpin-sem-suporte): sequência de "Hairpin sem suporte"
+- [Figura 6.2.4](#624-hairpin-só-com-dnat-quebra): sequência de "Hairpin só com DNAT (quebra)"
+- [Figura 6.2.5](#625-hairpin-com-dnat-e-snat): sequência de "Hairpin com DNAT e SNAT"
+- [Figura 6.2.6](#626-redirecionamento-transparente-para-proxy): sequência de "Redirecionamento transparente para proxy"
+- [Figura 6.3.1](#631-esgotamento-de-portas): sequência de "Esgotamento de portas"
+- [Figura 6.3.2](#632-expiração-por-inatividade): sequência de "Expiração por inatividade"
+- [Figura 6.3.3](#633-entrada-não-solicitada-no-napt): sequência de "Entrada não solicitada no NAPT"
+- [Figura 6.3.4](#634-entrada-não-solicitada-no-nat-estático): sequência de "Entrada não solicitada no NAT estático"
+- [Figura 6.3.5](#635-esp-atrás-de-napt): sequência de "ESP atrás de NAPT"
+- [Figura 6.3.6](#636-esp-atrás-de-basic-nat-estático): sequência de "ESP atrás de Basic NAT estático"
+- [Figura 6.3.7](#637-nat-t-esp-dentro-de-udp-4500): sequência de "NAT-T: ESP dentro de UDP 4500"
+- [Figura 6.3.8](#638-cgnat-nat-em-duas-camadas): sequência de "CGNAT: NAT em duas camadas"
+
+## 3. Topologia
+
+Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
+
+### 3.1 Saída: Basic NAT e NAPT
 
 ```mermaid
 flowchart LR
@@ -36,11 +100,9 @@ flowchart LR
   n_nat -- "externa" --- n_srv
 ```
 
-*Em alguns cenários, parte dos elementos do desenho não existe ou não participa da troca (por exemplo, o segundo host ou o segundo servidor).*
+*Figura 3.1 (Tipo A, topologia).* Elementos do modo "Saída: Basic NAT e NAPT": PC1 (192.168.1.10); PC2 (192.168.1.11); SW LAN (switch L2); R-NAT (192.168.1.1 | 203.0.113.1); SRV (198.51.100.10). Vale para todos os cenários do modo (6.1.1 a 6.1.8).
 
-### Entrada: DNAT
-
-**Cenários: Retorno assimétrico; Publicar um serviço (443 para 8443)**
+### 3.2 Entrada: DNAT
 
 ```mermaid
 flowchart LR
@@ -58,7 +120,7 @@ flowchart LR
   n_r2 -.- n_srv
 ```
 
-**Cenários: Hairpin sem suporte; Hairpin só com DNAT (quebra); Hairpin com DNAT e SNAT**
+*Figura 3.2a (Tipo A, topologia).* Elementos do modo "Entrada: DNAT": PC1 (192.168.1.10); WEB (192.168.1.50); SW LAN (switch L2); R-NAT (192.168.1.1 | 203.0.113.1); CLI (198.51.100.10); R2 (outro gateway). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.2.1 e 6.2.2).
 
 ```mermaid
 flowchart LR
@@ -73,7 +135,7 @@ flowchart LR
   n_nat -- "externa" --- n_srv
 ```
 
-**Cenários: Redirecionamento transparente para proxy**
+*Figura 3.2b (Tipo A, topologia).* Elementos do modo "Entrada: DNAT": PC1 (192.168.1.10); WEB (192.168.1.50); SW LAN (switch L2); R-NAT (192.168.1.1 | 203.0.113.1); SRV (198.51.100.10). Vale para os cenários (6.2.3 a 6.2.5).
 
 ```mermaid
 flowchart LR
@@ -88,11 +150,9 @@ flowchart LR
   n_nat -- "externa" --- n_srv
 ```
 
-*Em alguns cenários, parte dos elementos do desenho não existe ou não participa da troca (por exemplo, o segundo host ou o segundo servidor).*
+*Figura 3.2c (Tipo A, topologia).* Elementos do modo "Entrada: DNAT": PC1 (192.168.1.10); WEB (192.168.1.50 (proxy)); SW LAN (switch L2); R-NAT (192.168.1.1 | 203.0.113.1); SRV (198.51.100.10). Vale para os cenários (6.2.6).
 
-### Limites, IPsec e CGNAT
-
-**Cenários: CGNAT: NAT em duas camadas**
+### 3.3 Limites, IPsec e CGNAT
 
 ```mermaid
 flowchart LR
@@ -109,7 +169,7 @@ flowchart LR
   n_cgn -- "externa" --- n_srv
 ```
 
-**Cenários: Esgotamento de portas; Entrada não solicitada no NAPT; Entrada não solicitada no NAT estático; ESP atrás de NAPT; ESP atrás de Basic NAT estático; NAT-T: ESP dentro de UDP 4500; Expiração por inatividade**
+*Figura 3.3a (Tipo A, topologia).* Elementos do modo "Limites, IPsec e CGNAT": PC1 (192.168.1.10); PC2 (192.168.1.11); SW LAN (switch L2); CPE (192.168.1.1 | 100.64.10.2); CGN (100.64.0.1 | 203.0.113.1); SRV (198.51.100.10). Vale para os cenários (6.3.8).
 
 ```mermaid
 flowchart LR
@@ -124,15 +184,15 @@ flowchart LR
   n_nat -- "externa" --- n_srv
 ```
 
-*Em alguns cenários, parte dos elementos do desenho não existe ou não participa da troca (por exemplo, o segundo host ou o segundo servidor).*
+*Figura 3.3b (Tipo A, topologia).* Elementos do modo "Limites, IPsec e CGNAT": PC1 (192.168.1.10); PC2 (192.168.1.11); SW LAN (switch L2); R-NAT (192.168.1.1 | 203.0.113.1); SRV (198.51.100.10). Vale para os cenários (6.3.1 a 6.3.7).
 
-## Abas da bancada
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT; Limites, IPsec e CGNAT), Experimento, Referência e Log.
 
-## Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### Tradução
+### 5.1 Tradução
 
 - **Tipo de tradução**. Valores: Basic NAT estático (1:1); Basic NAT dinâmico (pool); NAPT (PAT): endereço e porta. Padrão: NAPT (PAT): endereço e porta. Modos: Saída: Basic NAT e NAPT; Limites, IPsec e CGNAT.
   - O que o NAT traduz ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)).
@@ -153,7 +213,7 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
   - **Independente do destino (EIM):** a mesma porta interna usa sempre a mesma porta externa, qualquer que seja o destino. Facilita aplicações ponto a ponto.
   - **Dependente de endereço e porta (APDM):** cada destino distinto recebe sua própria porta externa. É o comportamento do NAT dito "simétrico" e dificulta a conexão direta entre dois hosts atrás de NATs.
 
-### Hosts
+### 5.2 Hosts
 
 - **Conexões por host**. Valores: 1 conexão; 2 conexões. Padrão: 1 conexão. Modos: Saída: Basic NAT e NAPT; Limites, IPsec e CGNAT.
   - Quantas conexões cada host abre, em sequência.
@@ -168,7 +228,7 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
   - O PC1 envia da mesma porta de origem para duas portas de destino do mesmo servidor. Com mapeamento independente do destino, as duas conexões compartilham a porta externa; com mapeamento dependente, cada uma recebe a sua.
   - Só vale para TCP e UDP. Com este campo, só o PC1 envia.
 
-### Limites do NAT
+### 5.3 Limites do NAT
 
 - **Faixa de portas do NAT**. Valores: Ampla (1024 a 65535); Pequena, didática (3 portas). Padrão: Ampla (1024 a 65535). Modos: Limites, IPsec e CGNAT.
   - O conjunto de portas externas que o NAT pode usar.
@@ -194,7 +254,7 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
   - Encapsula o ESP em UDP porta 4500 ([RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)).
   - Vale quando o protocolo é ESP. Com o ESP dentro de um datagrama UDP, o NAPT passa a ver portas e consegue distinguir os hosts.
 
-### Redirecionamento (DNAT)
+### 5.4 Redirecionamento (DNAT)
 
 - **Situação**. Valores: Publicar serviço (cliente externo); Hairpin (cliente interno); Proxy transparente. Padrão: Publicar serviço (cliente externo). Modos: Entrada: DNAT.
   - Qual redirecionamento de destino é mostrado.
@@ -212,15 +272,15 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
   - **DNAT e SNAT:** o roteador reescreve também a origem. O servidor responde ao roteador e a conexão funciona.
   - Só vale na situação "Hairpin".
 
-## Cenários
+## 6. Cenários
 
-### Modo: Saída: Basic NAT e NAPT
+### 6.1 Modo: Saída: Basic NAT e NAPT
 
-#### Basic NAT
+> **Grupo:** Basic NAT
 
 Tradução só do endereço IP, 1:1, estática ou a partir de um pool ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)). Não usa portas.
 
-##### Basic NAT estático (1:1)
+#### 6.1.1 Basic NAT estático (1:1)
 
 *Cada host tem seu endereço público fixo, nos dois sentidos.*
 
@@ -238,8 +298,6 @@ Só o endereço IP muda. As portas passam sem alteração.
 - Na aba Mensagem: a origem 192.168.1.10 vira 203.0.113.11 e a porta 50000 não muda; o checksum é recalculado.
 - Na aba Portas: nenhuma porta é consumida, só endereços.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -258,6 +316,8 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Basic NAT estático (1:1)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -268,7 +328,7 @@ sequenceDiagram
 
 **Por que importa.** É usado quando um host precisa ser alcançado de fora por um endereço fixo. Cada host consome um endereço público inteiro, o que não escala.
 
-##### Basic NAT dinâmico (pool de 2)
+#### 6.1.2 Basic NAT dinâmico (pool de 2)
 
 *O NAT empresta um endereço do pool a quem precisa.*
 
@@ -286,8 +346,6 @@ Ao contrário do estático, a tabela começa vazia e os vínculos expiram quando
 - O endereço público de cada host é o primeiro livre do pool: .11 e .12.
 - Na aba Portas: o pool mostra 2 de 2 endereços em uso.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -306,6 +364,8 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Basic NAT dinâmico (pool de 2)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -316,7 +376,7 @@ sequenceDiagram
 
 **Por que importa.** Reaproveita endereços públicos entre hosts que não falam ao mesmo tempo, mas ainda limita os hosts simultâneos ao tamanho do pool.
 
-##### Pool esgotado (1 endereço, 2 hosts)
+#### 6.1.3 Pool esgotado (1 endereço, 2 hosts)
 
 *Com um endereço para dois hosts, o segundo fica sem tradução.*
 
@@ -334,8 +394,6 @@ Só há um endereço público para dois hosts. O PC1 fica com ele e o PC2 não c
 - O pacote do PC2 é descartado: "pool de endereços públicos esgotado".
 - Na aba Portas: o pool aparece com 1 de 1 em uso.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -351,6 +409,8 @@ sequenceDiagram
   n_pc2 -x n_nat: SYN
 ```
 
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Pool esgotado (1 endereço, 2 hosts)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 5 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -360,11 +420,11 @@ sequenceDiagram
 
 **Por que importa.** Mostra por que o NAPT é o tipo de NAT dominante: um único endereço atende milhares de hosts.
 
-#### NAPT (PAT)
+> **Grupo:** NAPT (PAT)
 
 Tradução de endereço e porta ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)), o que o mercado chama de PAT. Muitos hosts compartilham um endereço público.
 
-##### NAPT (PAT): dois hosts, um endereço
+#### 6.1.4 NAPT (PAT): dois hosts, um endereço
 
 *Dois hosts compartilham um endereço público, separados por porta.*
 
@@ -382,8 +442,6 @@ Observe a tabela: duas entradas com o mesmo endereço externo e portas diferente
 - Na aba Mensagem: origem e porta de origem reescritas, com o checksum de TCP recalculado (ele cobre endereços e portas).
 - Na aba Portas: duas portas consumidas no mesmo endereço.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -402,6 +460,8 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "NAPT (PAT): dois hosts, um endereço", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -413,7 +473,7 @@ sequenceDiagram
 
 **Por que importa.** Um único endereço público atende uma rede inteira. O custo é a perda da conectividade fim a fim: ninguém de fora inicia conexões para os hosts internos sem uma regra de DNAT.
 
-##### Colisão de portas
+#### 6.1.5 Colisão de portas
 
 *Duas conexões com a mesma porta de origem: uma é remapeada.*
 
@@ -431,8 +491,6 @@ O host não percebe: só o NAT conhece a porta externa.
 - No log: "colisão: a porta 50000 já estava em uso".
 - Na aba Mensagem: a porta de origem aparece como reescrita.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -451,6 +509,8 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Colisão de portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -460,7 +520,7 @@ sequenceDiagram
 
 **Por que importa.** Sem esse remapeamento, as respostas das duas conexões chegariam ao mesmo destino. O host nunca vê a troca: ele continua usando a porta 50000.
 
-##### ICMP Echo (ping) sem portas
+#### 6.1.6 ICMP Echo (ping) sem portas
 
 *No ping, o identificador faz o papel da porta.*
 
@@ -475,8 +535,6 @@ O ICMP não tem portas. O NAPT usa o campo **Identifier** do Echo como se fosse 
 - Na Tabela NAT: a coluna de porta mostra o identificador (4660 e 22136).
 - Na aba Mensagem: o Identifier aparece sem tipo de porta, e é ele que muda se houver colisão.
 - No Echo Reply, o destino é o endereço público e o identificador casa com a entrada.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -496,6 +554,8 @@ sequenceDiagram
   n_nat ->> n_pc2: Echo Reply
 ```
 
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "ICMP Echo (ping) sem portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -506,11 +566,11 @@ sequenceDiagram
 
 **Por que importa.** Sem esse tratamento, o ping de vários hosts atrás de um NAPT não funcionaria. Mensagens de erro ICMP exigem tratamento adicional (o NAT consulta o pacote embutido), que o simulador não modela.
 
-#### Mapeamento
+> **Grupo:** Mapeamento
 
 Quando o NAPT reaproveita a porta externa para o mesmo host interno ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787)).
 
-##### Mapeamento independente do destino (EIM)
+#### 6.1.7 Mapeamento independente do destino (EIM)
 
 *A mesma porta interna usa a mesma porta externa, qualquer que seja o destino.*
 
@@ -525,8 +585,6 @@ O PC1 envia, da mesma porta de origem, para duas portas do servidor. Com EIM, as
 - Na Tabela NAT: duas entradas com o mesmo endereço e a mesma porta externa, mas destinos diferentes.
 - No log: "reaproveitou a porta externa 50000".
 - Na aba Portas: só uma porta é consumida.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -545,6 +603,8 @@ sequenceDiagram
   n_nat ->> n_pc1: UDP (resp.)
 ```
 
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Mapeamento independente do destino (EIM)", na ordem do tempo, entre PC1, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -554,7 +614,7 @@ sequenceDiagram
 
 **Por que importa.** É o comportamento que a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) exige para UDP (REQ-1). Compare com o cenário seguinte.
 
-##### Mapeamento dependente do destino (APDM)
+#### 6.1.8 Mapeamento dependente do destino (APDM)
 
 *Cada destino distinto recebe uma porta externa própria.*
 
@@ -571,8 +631,6 @@ O mesmo envio, agora com mapeamento dependente de endereço e porta: cada destin
 - Na Tabela NAT: duas entradas com portas externas diferentes (50000 e 50001), apesar da mesma porta interna.
 - Na aba Portas: duas portas consumidas.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -590,6 +648,8 @@ sequenceDiagram
   n_nat ->> n_pc1: UDP (resp.)
 ```
 
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Mapeamento dependente do destino (APDM)", na ordem do tempo, entre PC1, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -599,13 +659,13 @@ sequenceDiagram
 
 **Por que importa.** Consome mais portas e dificulta aplicações ponto a ponto, como voz e vídeo. Por isso a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (REQ-1) exige o mapeamento independente do destino para UDP.
 
-### Modo: Entrada: DNAT
+### 6.2 Modo: Entrada: DNAT
 
-#### DNAT
+> **Grupo:** DNAT
 
 Reescrita do destino: publicar serviços, hairpinning e redirecionamento transparente. A reescrita da origem é o SNAT.
 
-##### Publicar um serviço (443 para 8443)
+#### 6.2.1 Publicar um serviço (443 para 8443)
 
 *O NAT reescreve o destino para levar o tráfego ao servidor interno.*
 
@@ -623,8 +683,6 @@ A resposta é revertida sem regra extra, pela tabela de conexões.
 - Na Tabela NAT: a regra configurada no topo e a conexão ativa logo abaixo.
 - Nos eventos do R-NAT: "PREROUTING: DNAT ..." antes do envio ao servidor interno.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_srv as CLI<br/>cliente externo
@@ -637,6 +695,8 @@ sequenceDiagram
   n_nat ->> n_srv: SYN+ACK
 ```
 
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Publicar um serviço (443 para 8443)", na ordem do tempo, entre CLI, R-NAT, WEB: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -648,7 +708,7 @@ sequenceDiagram
 
 **Por que importa.** É como serviços internos são publicados na internet atrás de um único endereço. O DNAT só redireciona: quem pode acessar é decidido pela regra de filtragem, que o simulador não modela.
 
-##### Retorno assimétrico
+#### 6.2.2 Retorno assimétrico
 
 *A resposta sai por outro caminho, sem reversão, e a conexão falha.*
 
@@ -664,8 +724,6 @@ O servidor interno tem outro gateway padrão. A resposta não passa pelo R-NAT, 
 - A origem na resposta é 192.168.1.50:8443, não 203.0.113.1:443.
 - O estado "pacotes descartados" sobe para 1.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_srv as CLI<br/>cliente externo
@@ -677,6 +735,8 @@ sequenceDiagram
   n_web -x n_srv: SYN+ACK
 ```
 
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Retorno assimétrico", na ordem do tempo, entre CLI, R-NAT, WEB: 3 mensagens (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -686,7 +746,7 @@ sequenceDiagram
 
 **Por que importa.** É um erro clássico de publicação de serviços. A correção é fazer o tráfego de retorno passar pelo NAT (gateway padrão certo) ou também aplicar SNAT na origem.
 
-##### Hairpin sem suporte
+#### 6.2.3 Hairpin sem suporte
 
 *O cliente interno usa o endereço público e o roteador não o trata.*
 
@@ -701,8 +761,6 @@ Um cliente interno tenta acessar o endereço público do serviço. O roteador n�
 - O pacote do PC1 chega ao R-NAT e é descartado.
 - O estado "pacotes descartados" sobe para 1.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -712,6 +770,8 @@ sequenceDiagram
   n_pc1 -x n_nat: SYN
 ```
 
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Hairpin sem suporte", na ordem do tempo, entre PC1, R-NAT, WEB: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -720,7 +780,7 @@ sequenceDiagram
 
 **Por que importa.** Por isso muitas redes usam DNS interno (split DNS) para que o nome resolva para o endereço privado dentro da rede.
 
-##### Hairpin só com DNAT (quebra)
+#### 6.2.4 Hairpin só com DNAT (quebra)
 
 *Só o DNAT não basta: o servidor responde direto ao cliente.*
 
@@ -735,8 +795,6 @@ O DNAT leva o pedido ao servidor, mas a origem continua sendo o cliente, na mesm
 - A resposta do WEB para o PC1 não passa pelo R-NAT.
 - A origem na resposta é privada e não casa com o que o cliente espera.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -748,6 +806,8 @@ sequenceDiagram
   n_web -x n_pc1: SYN+ACK
 ```
 
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Hairpin só com DNAT (quebra)", na ordem do tempo, entre PC1, R-NAT, WEB: 3 mensagens (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -758,7 +818,7 @@ sequenceDiagram
 
 **Por que importa.** É a falha típica do hairpin mal configurado. A solução é reescrever também a origem (SNAT), no cenário a seguir.
 
-##### Hairpin com DNAT e SNAT
+#### 6.2.5 Hairpin com DNAT e SNAT
 
 *DNAT no destino e SNAT na origem forçam o retorno pelo roteador.*
 
@@ -774,8 +834,6 @@ O roteador reescreve o destino (DNAT) e a origem (SNAT). O servidor responde ao 
 - Na aba Tabela NAT: a observação "DNAT + SNAT".
 - No retorno, o cliente vê 203.0.113.1:443 como origem.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -788,6 +846,8 @@ sequenceDiagram
   n_nat ->> n_pc1: SYN+ACK
 ```
 
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Hairpin com DNAT e SNAT", na ordem do tempo, entre PC1, R-NAT, WEB: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -799,7 +859,7 @@ sequenceDiagram
 
 **Por que importa.** O custo é que o servidor interno perde o endereço real do cliente nos registros: todos os acessos internos parecem vir do roteador.
 
-##### Redirecionamento transparente para proxy
+#### 6.2.6 Redirecionamento transparente para proxy
 
 *O NAT desvia o tráfego dos clientes para um proxy sem avisá-los.*
 
@@ -815,8 +875,6 @@ O roteador desvia o tráfego dos clientes internos para a porta 80 de qualquer s
 - A origem do cliente não muda.
 - No retorno, a origem volta a ser 198.51.100.10:80.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -830,6 +888,8 @@ sequenceDiagram
   n_nat ->> n_pc1: SYN+ACK
 ```
 
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Redirecionamento transparente para proxy", na ordem do tempo, entre PC1, R-NAT, WEB, SRV: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -841,13 +901,13 @@ sequenceDiagram
 
 **Por que importa.** É usado para filtragem e cache sem configurar cada cliente. O simulador mostra só o trecho redirecionado, não a conexão que o proxy abre ao servidor externo.
 
-### Modo: Limites, IPsec e CGNAT
+### 6.3 Modo: Limites, IPsec e CGNAT
 
-#### Limites do NAT
+> **Grupo:** Limites do NAT
 
 O que acontece quando as portas acabam, quando a entrada expira e quando chega tráfego que ninguém pediu.
 
-##### Esgotamento de portas
+#### 6.3.1 Esgotamento de portas
 
 *Só há 3 portas e 4 conexões: a última é descartada.*
 
@@ -864,8 +924,6 @@ Em redes reais é o mesmo fenômeno, em escala de dezenas de milhares de portas 
 - O PC1 usa as portas 50000 e 50001 (preservadas).
 - O PC2 usa a 50002 e a quarta conexão é descartada: "sem porta livre".
 - Na aba Portas: 3 de 3 portas em uso.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -892,6 +950,8 @@ sequenceDiagram
   n_pc2 -x n_nat: SYN
 ```
 
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Esgotamento de portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 13 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -901,7 +961,7 @@ sequenceDiagram
 
 **Por que importa.** Um único host com muitas conexões (ou um ataque) pode esgotar as portas e negar serviço aos demais. Limitar conexões por host é a defesa.
 
-##### Expiração por inatividade
+#### 6.3.2 Expiração por inatividade
 
 *A resposta chega depois da expiração e não acha a entrada.*
 
@@ -917,8 +977,6 @@ O servidor responde depois do tempo de inatividade. A entrada já foi removida e
 - Na Tabela NAT: a entrada desaparece no instante exato da expiração.
 - A resposta tardia é descartada: "a entrada expirou por inatividade".
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc1 as PC1<br/>cliente interno
@@ -930,6 +988,8 @@ sequenceDiagram
   n_srv -x n_nat: SYN+ACK
 ```
 
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Expiração por inatividade", na ordem do tempo, entre PC1, R-NAT, SRV: 3 mensagens (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -940,7 +1000,7 @@ sequenceDiagram
 
 **Por que importa.** É a causa de quedas silenciosas de conexões ociosas atrás de NAT. Keepalives menores que o timeout evitam o problema.
 
-##### Entrada não solicitada no NAPT
+#### 6.3.3 Entrada não solicitada no NAPT
 
 *Sem entrada na tabela, o pacote de fora é descartado.*
 
@@ -956,8 +1016,6 @@ Depois das conexões de saída, o servidor envia um pacote para uma porta que ni
 
 - Depois das conexões, um pacote para 203.0.113.1:8080 é descartado.
 - Motivo no log: "ninguém de dentro iniciou esta conexão".
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -979,6 +1037,8 @@ sequenceDiagram
   n_srv -x n_nat: SYN
 ```
 
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Entrada não solicitada no NAPT", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 9 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -988,7 +1048,7 @@ sequenceDiagram
 
 **Por que importa.** Comparar com o cenário seguinte mostra que o resultado depende do tipo de NAT, e não de uma regra de segurança.
 
-##### Entrada não solicitada no NAT estático
+#### 6.3.4 Entrada não solicitada no NAT estático
 
 *O mapeamento estático é bidirecional: o pacote de fora chega ao host.*
 
@@ -1002,8 +1062,6 @@ No Basic NAT estático, o mapeamento é permanente e vale nos dois sentidos. Um 
 
 - O pacote não solicitado é entregue ao PC1 com o destino reescrito para 192.168.1.10.
 - O log registra a entrega como alerta.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1026,6 +1084,8 @@ sequenceDiagram
   n_nat ->> n_pc1: SYN
 ```
 
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Entrada não solicitada no NAT estático", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 10 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1035,11 +1095,11 @@ sequenceDiagram
 
 **Por que importa.** Publicar um host por NAT estático sem filtragem equivale a expor o host à internet.
 
-#### IPsec e CGNAT
+> **Grupo:** IPsec e CGNAT
 
 Protocolos sem portas e a tradução em duas camadas nas redes de operadora.
 
-##### ESP atrás de NAPT
+#### 6.3.5 ESP atrás de NAPT
 
 *Sem portas, o NAPT não separa dois hosts usando IPsec.*
 
@@ -1054,8 +1114,6 @@ O ESP não tem portas. O NAPT cria uma entrada só com endereços e não tem com
 - O ESP do PC1 passa e a Tabela NAT mostra "sem porta (só endereços)".
 - O ESP do PC2 é descartado: "o ESP não tem porta".
 - Na aba Mensagem: o campo Portas aparece como "nenhuma".
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1072,6 +1130,8 @@ sequenceDiagram
   n_pc2 -x n_nat: ESP
 ```
 
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "ESP atrás de NAPT", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 5 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1081,7 +1141,7 @@ sequenceDiagram
 
 **Por que importa.** É um dos motivos de o IPsec ter ganhado o NAT traversal ([RFC 3947](https://www.rfc-editor.org/rfc/rfc3947) e [RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)).
 
-##### ESP atrás de Basic NAT estático
+#### 6.3.6 ESP atrás de Basic NAT estático
 
 *O Basic NAT traduz só o endereço, e o ESP atravessa.*
 
@@ -1095,8 +1155,6 @@ Como o Basic NAT traduz só o endereço do cabeçalho IP, o ESP passa sem proble
 
 - O ESP dos dois hosts passa, cada um com seu endereço público fixo.
 - Na aba Mensagem: só a origem e o checksum do cabeçalho IP mudam.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1116,6 +1174,8 @@ sequenceDiagram
   n_nat ->> n_pc2: ESP
 ```
 
+*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "ESP atrás de Basic NAT estático", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1126,7 +1186,7 @@ sequenceDiagram
 
 **Por que importa.** Mostra por que o problema do IPsec está em compartilhar um endereço (NAPT), e não em traduzir.
 
-##### NAT-T: ESP dentro de UDP 4500
+#### 6.3.7 NAT-T: ESP dentro de UDP 4500
 
 *Com ESP dentro de UDP 4500, o NAPT passa a ver portas.*
 
@@ -1141,8 +1201,6 @@ Com o ESP encapsulado em UDP, o NAPT passa a ver portas. Os dois hosts usam a po
 - O protocolo no IP é UDP (17), com o ESP dentro.
 - Os dois hosts usam a porta 4500 e o PC2 recebe outra porta externa.
 - Na Tabela NAT: entradas UDP normais.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1162,6 +1220,8 @@ sequenceDiagram
   n_nat ->> n_pc2: ESP em UDP
 ```
 
+*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "NAT-T: ESP dentro de UDP 4500", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1171,7 +1231,7 @@ sequenceDiagram
 
 **Por que importa.** Os pontos IPsec detectam o NAT durante o IKE e passam a encapsular automaticamente.
 
-##### CGNAT: NAT em duas camadas
+#### 6.3.8 CGNAT: NAT em duas camadas
 
 *Dois NATs em cascata: o endereço passa por 100.64.0.0/10.*
 
@@ -1188,8 +1248,6 @@ Duas tabelas, duas traduções por pacote.
 - O pacote do PC1 é traduzido duas vezes: 192.168.1.10 para 100.64.10.2 e depois para 203.0.113.1.
 - No CGN, as portas 50000 e 50001 já estão em uso por outro assinante: o PC1 recebe a 50002.
 - A resposta é revertida na ordem inversa, primeiro no CGN e depois no CPE.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1214,6 +1272,8 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
+*Figura 6.3.8 (Tipo B, sequência).* Mensagens do cenário "CGNAT: NAT em duas camadas", na ordem do tempo, entre PC1, PC2, CPE, CGN, SRV: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1225,7 +1285,7 @@ sequenceDiagram
 
 **Por que importa.** O CGNAT consome o espaço IPv4, mas impede que o assinante receba conexões de fora e dificulta o rastreamento de quem usou uma porta (o CGN precisa registrar as traduções).
 
-## Referência
+## 7. Referência
 
 ### O que é o NAT
 

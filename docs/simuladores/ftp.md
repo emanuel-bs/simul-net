@@ -8,36 +8,80 @@ Transferência de arquivos por dentro: FTP com canais de controle e de dados (mo
 - **RFCs e padrões:** [RFC 959](https://www.rfc-editor.org/rfc/rfc959) (FTP), [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217) (FTP sobre TLS), [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428) (EPSV e EPRT), [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) (SSH (SFTP))
 - **Tópicos:** Canais de controle e de dados; Modos ativo e passivo atrás de NAT; FTPS: AUTH TLS, PROT P e PROT C; SFTP e comparação dos três
 
-## Modos
+## 1. Modos
 
-| Modo | Cenário inicial |
-| --- | --- |
-| FTP | Passivo atrás de NAT |
-| FTPS | FTPS explícito (AUTH TLS) |
-| SFTP | Download (get) |
-| Comparação | Download nos três |
+| Modo | Cenário inicial | Cenários |
+| --- | --- | --- |
+| FTP | Passivo atrás de NAT | 5.1.1 a 5.1.9 |
+| FTPS | FTPS explícito (AUTH TLS) | 5.2.1 a 5.2.5 |
+| SFTP | Download (get) | 5.3.1 a 5.3.4 |
+| Comparação | Download nos três | 5.4.1 a 5.4.3 |
 
-## Abas da bancada
+## 2. Como ler os diagramas
+
+Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.
+
+| Tipo | O que é | Vale para | Equivale, no simulador, a |
+| --- | --- | --- | --- |
+| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
+
+### 2.1 Legenda dos diagramas
+
+**Tipo B (sequência)**
+
+- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.
+- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.
+- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.
+- Faixa horizontal com texto: início de uma fase do cenário.
+- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.
+
+### 2.2 Lista de figuras
+
+**Tipo B (sequência)**
+
+- [Figura 5.1.1](#511-passivo-atrás-de-nat): sequência de "Passivo atrás de NAT"
+- [Figura 5.1.2](#512-ativo-sem-nat): sequência de "Ativo sem NAT"
+- [Figura 5.1.3](#513-ativo-atrás-de-nat-falha): sequência de "Ativo atrás de NAT (falha)"
+- [Figura 5.1.4](#514-ativo-com-helper-de-ftp): sequência de "Ativo com helper de FTP"
+- [Figura 5.1.5](#515-passivo-com-faixa-bloqueada): sequência de "Passivo com faixa bloqueada"
+- [Figura 5.1.6](#516-listar-diretório-list): sequência de "Listar diretório (LIST)"
+- [Figura 5.1.7](#517-enviar-arquivo-stor): sequência de "Enviar arquivo (STOR)"
+- [Figura 5.1.8](#518-senha-incorreta-530): sequência de "Senha incorreta (530)"
+- [Figura 5.1.9](#519-acesso-anônimo): sequência de "Acesso anônimo"
+- [Figura 5.2.1](#521-ftps-explícito-auth-tls): sequência de "FTPS explícito (AUTH TLS)"
+- [Figura 5.2.2](#522-ftps-implícito-porta-990): sequência de "FTPS implícito (porta 990)"
+- [Figura 5.2.3](#523-prot-c-dados-em-claro): sequência de "PROT C: dados em claro"
+- [Figura 5.2.4](#524-ativo-com-helper-falha): sequência de "Ativo com helper (falha)"
+- [Figura 5.2.5](#525-certificado-inválido): sequência de "Certificado inválido"
+- [Figura 5.3.1](#531-download-get): sequência de "Download (get)"
+- [Figura 5.3.2](#532-chave-pública): sequência de "Chave pública"
+- [Figura 5.3.3](#533-upload-put): sequência de "Upload (put)"
+- [Figura 5.3.4](#534-listar-ls): sequência de "Listar (ls)"
+- [Figura 5.4.1](#541-download-nos-três): sequência de "Download nos três"
+- [Figura 5.4.2](#542-upload-nos-três): sequência de "Upload nos três"
+- [Figura 5.4.3](#543-listagem-nos-três): sequência de "Listagem nos três"
+
+## 3. Abas da bancada
 
 Cenário, Captura, Mensagem, Conexões e portas (modos: FTP; FTPS; SFTP), O que o observador vê, Comparação (modos: Comparação), Experimento, Referência e Log.
 
-## Configurações (campos do painel)
+## 4. Configurações (campos do painel)
 
-### Rede
+### 4.1 Rede
 
 - **RTT (ms)**. Valores: 5; 20; 50; 100; 200. Padrão: 20. Modos: todos.
   - Tempo de ida e volta entre cliente e servidor.
   - Cada comando FTP espera uma resposta, então o RTT pesa mais no FTP e no FTPS do que no SFTP, que agrupa pedidos.
   - O TLS acrescenta cerca de 1 RTT por conexão.
 
-### Operação
+### 4.2 Operação
 
 - **Operação**. Valores: Baixar um arquivo (RETR / get); Enviar um arquivo (STOR / put); Listar o diretório (LIST / ls). Padrão: Baixar um arquivo (RETR / get). Modos: todos.
   - O que o cliente faz depois do login.
   - **Baixar** e **enviar** abrem um canal de dados no FTP e no FTPS.
   - **Listar** também usa o canal de dados: o diretório não vem pelo controle.
 
-### Autenticação
+### 4.3 Autenticação
 
 - **Login**. Valores: Usuário e senha válidos; Acesso anônimo (anonymous); Senha incorreta. Padrão: Usuário e senha válidos. Modos: FTP; FTPS.
   - Resultado da autenticação no servidor.
@@ -45,7 +89,7 @@ Cenário, Captura, Mensagem, Conexões e portas (modos: FTP; FTPS; SFTP), O que 
   - **Anônimo:** usuário anonymous e e-mail como senha.
   - **Incorreta:** o servidor responde 530. A senha, mesmo errada, pode já ter sido exposta.
 
-### Canal de dados
+### 4.4 Canal de dados
 
 - **Modo de dados**. Valores: Passivo (PASV): o cliente conecta; Ativo (PORT): o servidor conecta. Padrão: Passivo (PASV): o cliente conecta. Modos: FTP; FTPS.
   - Quem abre a conexão de dados.
@@ -60,7 +104,7 @@ Cenário, Captura, Mensagem, Conexões e portas (modos: FTP; FTPS; SFTP), O que 
   - Firewall do servidor.
   - No modo passivo o servidor escolhe uma porta de uma faixa. Se o firewall dele não a liberar, o SYN do cliente fica sem resposta.
 
-### TLS
+### 4.5 TLS
 
 - **Modo FTPS**. Valores: Explícito (AUTH TLS, porta 21); Implícito (porta 990). Padrão: Explícito (AUTH TLS, porta 21). Modos: FTPS.
   - Como o TLS é iniciado.
@@ -74,22 +118,22 @@ Cenário, Captura, Mensagem, Conexões e portas (modos: FTP; FTPS; SFTP), O que 
   - Validação pelo cliente.
   - Desmarcado, o cliente rejeita o certificado e encerra antes de enviar usuário e senha.
 
-### SSH
+### 4.6 SSH
 
 - **Autenticação**. Valores: Senha; Chave pública. Padrão: Senha. Modos: SFTP.
   - Como o cliente se autentica.
   - **Senha:** vai dentro do túnel cifrado.
   - **Chave pública:** o cliente assina um desafio, sem enviar segredo.
 
-## Cenários
+## 5. Cenários
 
-### Modo: FTP
+### 5.1 Modo: FTP
 
-#### Modos de dados
+> **Grupo:** Modos de dados
 
 O FTP usa um canal de controle e um canal de dados separado. Quem abre o canal de dados (cliente ou servidor) decide se o NAT e o firewall deixam passar.
 
-##### Passivo atrás de NAT
+#### 5.1.1 Passivo atrás de NAT
 
 *O cliente conecta a uma porta alta do servidor: passa pelo NAT.*
 
@@ -104,8 +148,6 @@ Download em **modo passivo** com o cliente atrás de NAT. O cliente conecta a um
 - No 227, a porta vem em dois bytes: 195×256+80 = 50000.
 - O SYN dos dados parte do cliente.
 - A senha trafega em claro no canal de controle.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -146,6 +188,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "Passivo atrás de NAT", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -156,7 +200,7 @@ sequenceDiagram
 
 **Por que importa.** É por isso que o modo passivo é o padrão na internet: quase todo cliente está atrás de NAT.
 
-##### Ativo sem NAT
+#### 5.1.2 Ativo sem NAT
 
 *O servidor conecta ao cliente a partir da porta 20.*
 
@@ -171,8 +215,6 @@ Download em **modo ativo**, com o cliente em um endereço alcançável e sem fil
 - O SYN dos dados parte do servidor.
 - O PORT carrega 192,168,1,20 e a porta 195,81 (50001).
 - Sem NAT nem filtro, o SYN de entrada passa.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -213,6 +255,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "Ativo sem NAT", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -223,7 +267,7 @@ sequenceDiagram
 
 **Por que importa.** O modo ativo inverte quem inicia a conexão. Em redes modernas, com NAT e firewalls, isso quase sempre quebra.
 
-##### Ativo atrás de NAT (falha)
+#### 5.1.3 Ativo atrás de NAT (falha)
 
 *O servidor tenta um endereço privado e falha com 425.*
 
@@ -238,8 +282,6 @@ Modo ativo atrás de NAT: o cliente anuncia o endereço **privado** no PORT. O s
 - O SYN do servidor aparece com ✕ duas vezes (retransmissão).
 - O 425 chega pelo canal de controle.
 - A senha já foi exposta mesmo sem transferir nada.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -273,6 +315,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Ativo atrás de NAT (falha)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 21 mensagens (em 4 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -283,7 +327,7 @@ sequenceDiagram
 
 **Por que importa.** É a causa mais comum de "o FTP conecta mas não lista nem baixa".
 
-##### Ativo com helper de FTP
+#### 5.1.4 Ativo com helper de FTP
 
 *O helper do NAT lê o PORT e abre a porta.*
 
@@ -298,8 +342,6 @@ O NAT com **inspeção de FTP** lê o comando PORT, troca o endereço privado pe
 - O firewall reescreve 192.168.1.20 para 198.51.100.7.
 - A conexão de dados é aceita.
 - Isso só funciona com o controle em claro.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -340,6 +382,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "Ativo com helper de FTP", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -349,7 +393,7 @@ sequenceDiagram
 
 **Por que importa.** O helper resolve o NAT, mas obriga o controle a ficar em claro, e por isso não combina com FTPS.
 
-##### Passivo com faixa bloqueada
+#### 5.1.5 Passivo com faixa bloqueada
 
 *A porta passiva está bloqueada no servidor.*
 
@@ -364,8 +408,6 @@ O servidor anuncia a porta passiva **50000**, mas o firewall dele não libera a 
 - O 227 informa a porta 50000.
 - O SYN do cliente é retransmitido sem resposta.
 - O cliente desiste do canal de dados.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -397,6 +439,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "Passivo com faixa bloqueada", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 19 mensagens (em 4 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -406,11 +450,11 @@ sequenceDiagram
 
 **Por que importa.** Todo servidor FTP passivo precisa de uma faixa de portas fixa e liberada no firewall.
 
-#### Operações e login
+> **Grupo:** Operações e login
 
 Cada operação (LIST, RETR, STOR) abre um canal de dados novo. O login mostra o que acontece com as credenciais.
 
-##### Listar diretório (LIST)
+#### 5.1.6 Listar diretório (LIST)
 
 *Até a listagem abre uma conexão de dados.*
 
@@ -424,8 +468,6 @@ Até uma **listagem** usa um canal de dados novo: o resultado do LIST não vem p
 
 - O 150 antecede os dados.
 - O 226 fecha a operação.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -464,6 +506,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Listar diretório (LIST)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 25 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -475,7 +519,7 @@ sequenceDiagram
 
 **Por que importa.** Entender isso explica por que o FTP "trava" ao listar quando o canal de dados está bloqueado.
 
-##### Enviar arquivo (STOR)
+#### 5.1.7 Enviar arquivo (STOR)
 
 *O arquivo segue do cliente para o servidor.*
 
@@ -489,8 +533,6 @@ sequenceDiagram
 
 - Os segmentos de dados partem do cliente.
 - O conteúdo está em claro.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -531,6 +573,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Enviar arquivo (STOR)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -541,7 +585,7 @@ sequenceDiagram
 
 **Por que importa.** O upload em FTP deixa o conteúdo legível para quem captura o tráfego.
 
-##### Senha incorreta (530)
+#### 5.1.8 Senha incorreta (530)
 
 *A senha errada também foi exposta.*
 
@@ -555,8 +599,6 @@ Senha errada: o servidor responde **530**. Repare que a senha, certa ou errada, 
 
 - O PASS aparece em vermelho na captura.
 - Nenhum canal de dados chega a abrir.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -579,6 +621,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "Senha incorreta (530)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -588,7 +632,7 @@ sequenceDiagram
 
 **Por que importa.** Senhas digitadas erradas costumam ser variações da correta: expô-las também é grave.
 
-##### Acesso anônimo
+#### 5.1.9 Acesso anônimo
 
 *Login anônimo: o e-mail faz o papel de senha.*
 
@@ -602,8 +646,6 @@ Login **anonymous**, com o e-mail como senha: comum em repositórios públicos. 
 
 - O PASS leva um e-mail.
 - O restante é igual ao FTP comum.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -644,6 +686,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Acesso anônimo", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -653,13 +697,13 @@ sequenceDiagram
 
 **Por que importa.** Mesmo sem segredo, o conteúdo sem integridade pode ser alterado por quem estiver no caminho.
 
-### Modo: FTPS
+### 5.2 Modo: FTPS
 
-#### FTP sobre TLS
+> **Grupo:** FTP sobre TLS
 
 O FTPS põe o TLS sobre o FTP. Protege controle e dados, mas mantém as duas conexões e seus problemas de firewall.
 
-##### FTPS explícito (AUTH TLS)
+#### 5.2.1 FTPS explícito (AUTH TLS)
 
 *AUTH TLS no canal de controle, depois login cifrado.*
 
@@ -674,8 +718,6 @@ O cliente conecta na porta 21 em claro, envia **AUTH TLS** e só então autentic
 - O AUTH TLS e o Client Hello ainda estão em claro.
 - USER e PASS passam cifrados.
 - O canal de dados abre outro TLS, reaproveitando a sessão.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -730,6 +772,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "FTPS explícito (AUTH TLS)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 40 mensagens (em 6 fases; 24 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -740,7 +784,7 @@ sequenceDiagram
 
 **Por que importa.** É a forma recomendada de FTPS: padronizada na [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217) e compatível com clientes e servidores comuns.
 
-##### FTPS implícito (porta 990)
+#### 5.2.2 FTPS implícito (porta 990)
 
 *TLS começa antes de qualquer comando FTP.*
 
@@ -754,8 +798,6 @@ No modo **implícito** o TLS começa no primeiro byte da conexão, na porta 990,
 
 - O Client Hello é o primeiro pacote depois do TCP.
 - O 220 já chega cifrado.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -808,6 +850,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "FTPS implícito (porta 990)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 38 mensagens (em 6 fases; 25 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -817,7 +861,7 @@ sequenceDiagram
 
 **Por que importa.** É o modo legado, não padronizado na [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217), mas ainda comum em ambientes corporativos.
 
-##### PROT C: dados em claro
+#### 5.2.3 PROT C: dados em claro
 
 *A senha é protegida, o arquivo não.*
 
@@ -831,8 +875,6 @@ Com **PROT C**, só o controle é cifrado: a senha fica protegida, mas o **arqui
 
 - O DADOS aparece em vermelho na captura.
 - O PROT C vai dentro do TLS e passa despercebido.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -884,6 +926,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "PROT C: dados em claro", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 37 mensagens (em 6 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -893,7 +937,7 @@ sequenceDiagram
 
 **Por que importa.** É uma falsa sensação de segurança: sempre confira se PROT P está ativo.
 
-##### Ativo com helper (falha)
+#### 5.2.4 Ativo com helper (falha)
 
 *O helper do NAT não lê comandos cifrados.*
 
@@ -907,8 +951,6 @@ Com o controle cifrado, o **helper de FTP do NAT não consegue ler o PORT**. O s
 
 - O PORT segue cifrado.
 - O SYN do servidor é descartado.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -953,6 +995,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Ativo com helper (falha)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 31 mensagens (em 5 fases; 2 perdidas; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -963,7 +1007,7 @@ sequenceDiagram
 
 **Por que importa.** É por isso que o FTPS costuma exigir modo passivo e uma faixa de portas liberada.
 
-##### Certificado inválido
+#### 5.2.5 Certificado inválido
 
 *O cliente rejeita o certificado antes de autenticar.*
 
@@ -977,8 +1021,6 @@ O certificado não é confiável. O cliente envia o alerta **unknown_ca** e ence
 
 - O alerta unknown_ca é o último pacote.
 - Nenhum USER ou PASS foi enviado.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1000,6 +1042,8 @@ sequenceDiagram
   n_c ->> n_s: [cifrado] Alert: unknown_ca
 ```
 
+*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "Certificado inválido", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 10 mensagens (em 3 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1009,13 +1053,13 @@ sequenceDiagram
 
 **Por que importa.** É a diferença para o FTP comum: aqui o cliente consegue evitar entregar a senha a um servidor falso.
 
-### Modo: SFTP
+### 5.3 Modo: SFTP
 
-#### SFTP
+> **Grupo:** SFTP
 
 O SFTP é um subsistema do SSH: uma conexão, uma porta, tudo cifrado e autenticado.
 
-##### Download (get)
+#### 5.3.1 Download (get)
 
 *Uma conexão TCP, uma porta, tudo cifrado.*
 
@@ -1030,8 +1074,6 @@ Download por SFTP: TCP na porta 22, troca de chaves, autenticação e o subsiste
 - Só os banners e o KEXINIT estão em claro.
 - A chave do host é conferida em known_hosts.
 - Não há canal de dados separado.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1076,6 +1118,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.3.1 (Tipo B, sequência).* Mensagens do cenário "Download (get)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1086,7 +1130,7 @@ sequenceDiagram
 
 **Por que importa.** Uma porta só e criptografia de ponta a ponta tornam o SFTP a opção mais simples de operar com firewalls.
 
-##### Chave pública
+#### 5.3.2 Chave pública
 
 *A chave privada nunca sai do cliente.*
 
@@ -1100,8 +1144,6 @@ A autenticação por **chave pública** não envia segredo algum: o cliente assi
 
 - Não há senha para capturar.
 - O restante é igual ao SFTP comum.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1146,6 +1188,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.3.2 (Tipo B, sequência).* Mensagens do cenário "Chave pública", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1155,7 +1199,7 @@ sequenceDiagram
 
 **Por que importa.** Chaves eliminam o risco de senhas fracas ou reutilizadas e permitem automação.
 
-##### Upload (put)
+#### 5.3.3 Upload (put)
 
 *Upload por pedidos WRITE.*
 
@@ -1169,8 +1213,6 @@ Upload por SFTP: pedidos **WRITE** dentro do túnel cifrado, na mesma conexão d
 
 - Os blocos partem do cliente.
 - O STATUS confirma o fim.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1215,6 +1257,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.3.3 (Tipo B, sequência).* Mensagens do cenário "Upload (put)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1225,7 +1269,7 @@ sequenceDiagram
 
 **Por que importa.** O upload usa a mesma conexão e as mesmas proteções do login.
 
-##### Listar (ls)
+#### 5.3.4 Listar (ls)
 
 *Listagem por OPENDIR e READDIR.*
 
@@ -1238,8 +1282,6 @@ Listagem por SFTP: **OPENDIR**, **READDIR** e **NAME**, sem canal de dados separ
 **O que observar**
 
 - Nenhuma conexão extra.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1282,6 +1324,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.3.4 (Tipo B, sequência).* Mensagens do cenário "Listar (ls)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 29 mensagens (em 5 fases; 16 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1292,13 +1336,13 @@ sequenceDiagram
 
 **Por que importa.** Sem conexão extra, listar não falha por causa de firewall.
 
-### Modo: Comparação
+### 5.4 Modo: Comparação
 
-#### FTP, FTPS e SFTP
+> **Grupo:** FTP, FTPS e SFTP
 
 A mesma ação nos três protocolos, com um observador na rede, para comparar exposição, conexões e custo.
 
-##### Download nos três
+#### 5.4.1 Download nos três
 
 *O mesmo download nos três protocolos.*
 
@@ -1313,8 +1357,6 @@ O mesmo download feito em **FTP**, **FTPS** e **SFTP**, com um observador na red
 - No FTP o observador lê a senha e o arquivo.
 - No FTPS vê só o nome do servidor e o tamanho dos registros.
 - No SFTP vê só pacotes cifrados na porta 22.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1440,6 +1482,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.4.1 (Tipo B, sequência).* Mensagens do cenário "Download nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 98 mensagens (em 19 fases; 42 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1450,7 +1494,7 @@ sequenceDiagram
 
 **Por que importa.** A tabela da aba Comparação mostra também conexões, portas, integridade e tempo.
 
-##### Upload nos três
+#### 5.4.2 Upload nos três
 
 *O mesmo upload nos três protocolos.*
 
@@ -1464,8 +1508,6 @@ O mesmo upload nos três protocolos, com o observador na rede.
 
 - No FTP o conteúdo também é legível.
 - O custo do TLS é de cerca de 1 RTT extra.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1591,6 +1633,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.4.2 (Tipo B, sequência).* Mensagens do cenário "Upload nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 98 mensagens (em 19 fases; 42 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1601,7 +1645,7 @@ sequenceDiagram
 
 **Por que importa.** O mesmo vale para quem envia arquivos sensíveis: o FTP simples não deve ser usado em redes não confiáveis.
 
-##### Listagem nos três
+#### 5.4.3 Listagem nos três
 
 *A mesma listagem nos três protocolos.*
 
@@ -1614,8 +1658,6 @@ A mesma listagem de diretório nos três protocolos.
 **O que observar**
 
 - No FTP a listagem aparece em vermelho.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1735,6 +1777,8 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
+*Figura 5.4.3 (Tipo B, sequência).* Mensagens do cenário "Listagem nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 92 mensagens (em 19 fases; 38 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1745,7 +1789,7 @@ sequenceDiagram
 
 **Por que importa.** Nomes de arquivos também podem ser informação sensível.
 
-## Referência
+## 6. Referência
 
 ### Os três protocolos
 

@@ -102,7 +102,14 @@ function toMermaid(topo) {
 
 const mmMsg = (s) => String(s ?? '').replace(/<[^>]*>/g, '').replace(/;/g, ',').replace(/#/g, 'nº ').replace(/\s+/g, ' ').trim().slice(0, 90);
 
-/** Diagrama de sequência Mermaid de um cenário, a partir das mensagens do trace (mesma fonte do diagrama da bancada). */
+// Âncora de um título, no padrão do GitHub: minúsculas, sem pontuação, espaços viram hífens.
+const slug = (t) => t.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').trim().replace(/\s/g, '-');
+const pl = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+
+/**
+ * Diagrama de sequência Mermaid de um cenário, a partir das mensagens do trace (mesma fonte do diagrama da bancada).
+ * Devolve também os dados que alimentam a legenda da figura.
+ */
 function sequenceDiagram(def, s, base) {
   const tr = def.build({ ...base, ...(s.set ?? {}) }, s.sub);
   const L = ['sequenceDiagram'];
@@ -121,14 +128,75 @@ function sequenceDiagram(def, s, base) {
     const arrow = m.lost ? '-x' : '->>';
     L.push(`  ${mmId(m.from)} ${arrow} ${mmId(m.to)}: ${m.enc ? '[cifrado] ' : ''}${text}`);
   }
-  return '```mermaid\n' + L.join('\n') + '\n```';
+  return {
+    block: '```mermaid\n' + L.join('\n') + '\n```',
+    parts: tr.cols.map((c) => mmMsg(c.label)),
+    n: msgs.length,
+    phases: phases.length,
+    lost: msgs.filter((m) => m.lost).length,
+    enc: msgs.filter((m) => m.enc).length,
+  };
 }
 
-/** Um diagrama por topologia distinta: percorre os cenários de cada modo e agrupa os que compartilham o mesmo desenho. */
-function topologySection(def) {
-  const L = ['## Topologia\n', 'Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.\n'];
+/** Texto da legenda de uma figura do tipo B (sequência). */
+function sequenceCaption(num, nome, info, onde) {
+  const extra = [info.phases ? `em ${pl(info.phases, 'fase', 'fases')}` : '', info.lost ? pl(info.lost, 'perdida', 'perdidas') : '', info.enc ? pl(info.enc, 'cifrada', 'cifradas') : ''].filter(Boolean);
+  return `*Figura ${num} (Tipo B, sequência).* Mensagens do cenário "${nome}", na ordem do tempo, entre ${info.parts.join(', ')}: ${pl(info.n, 'mensagem', 'mensagens')}${extra.length ? ' (' + extra.join('; ') + ')' : ''}. ${onde}`;
+}
+
+const KIND_PT = { host: 'host', switch: 'switch', router: 'roteador', cloud: 'servidor ou rede externa', attacker: 'atacante' };
+
+/** Seção "Como ler os diagramas": os tipos, a legenda de cada um e a lista de figuras. */
+function howToRead(sec, usa, figs) {
+  const L = [`## ${sec}. Como ler os diagramas\n`, 'Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.\n'];
+  L.push('| Tipo | O que é | Vale para | Equivale, no simulador, a |', '| --- | --- | --- | --- |');
+  if (usa.A) L.push('| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |');
+  if (usa.B) L.push('| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |');
+  L.push('', `### ${sec}.1 Legenda dos diagramas\n`);
+  if (usa.A) {
+    L.push('**Tipo A (topologia)**\n',
+      '- Retângulo: host (computador ou servidor final).',
+      '- Hexágono: switch.',
+      '- Retângulo arredondado: roteador, ou dispositivo que encaminha ou traduz.',
+      '- Estádio (cantos bem arredondados): servidor ou rede externa.',
+      '- Retângulo vermelho: atacante (quando existe no modo).',
+      '- Linha contínua: enlace. Linha tracejada: enlace alternativo, forjado ou caído, conforme o rótulo e o cenário.',
+      '- O Mermaid posiciona os elementos automaticamente: o layout difere do simulador, as ligações não.\n');
+  }
+  if (usa.B) {
+    L.push('**Tipo B (sequência)**\n',
+      '- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.',
+      '- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.',
+      '- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.',
+      '- Faixa horizontal com texto: início de uma fase do cenário.',
+      '- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.\n');
+  }
+  L.push(`### ${sec}.2 Lista de figuras\n`);
+  for (const [tipo, titulo] of [['A', 'Tipo A (topologia)'], ['B', 'Tipo B (sequência)']]) {
+    const lista = figs.filter((f) => f.tipo === tipo);
+    if (!lista.length) continue;
+    L.push(`**${titulo}**\n`);
+    for (const f of lista) L.push(`- [Figura ${f.num}](#${slug(f.heading)}): ${f.titulo}`);
+    L.push('');
+  }
+  return L;
+}
+
+/** Agrupa números inteiros em intervalos consecutivos: [1,2,3,5] com prefixo "6.1." vira "6.1.1 a 6.1.3; 6.1.5". */
+function rangeText(prefix, nums) {
+  const s = [...new Set(nums)].sort((a, b) => a - b);
+  const runs = [];
+  for (const n of s) {
+    const last = runs[runs.length - 1];
+    if (last && n === last[1] + 1) last[1] = n; else runs.push([n, n]);
+  }
+  return runs.map(([a, b]) => (a === b ? `${prefix}${a}` : b === a + 1 ? `${prefix}${a} e ${prefix}${b}` : `${prefix}${a} a ${prefix}${b}`)).join('; ');
+}
+
+/** Uma topologia por desenho distinto: percorre os cenários de cada modo e agrupa os que compartilham o mesmo desenho. */
+function topologyData(def) {
   const base = Object.fromEntries(def.controls.map((c) => [c.id, c.def]));
-  let any = false;
+  const out = [];
   for (const sub of def.subs) {
     const all = def.scenarios.filter((x) => x.sub === sub.key);
     const found = [];
@@ -137,26 +205,20 @@ function topologySection(def) {
         const topo = def.topology(sub.key, def.build({ ...base, ...(s.set ?? {}) }, sub.key));
         const nodes = new Set(topo.nodes.map((n) => [n.key, n.label, n.sub, n.kind].join('|')));
         const links = new Set(topo.links.map(([a, b, o]) => [a, b, o?.label, o?.dashed, o?.down].join('|')));
-        found.push({ mm: toMermaid(topo), nodes, links, labels: [s.label], size: nodes.size + links.size });
+        const elems = topo.nodes.map((n) => mmMsg(n.label) + (n.sub ? ` (${mmMsg(n.sub)})` : ''));
+        const dashed = topo.links.some(([, , o]) => o?.dashed || o?.down);
+        found.push({ mm: toMermaid(topo), nodes, links, ids: [s.id], elems, dashed, size: nodes.size + links.size });
       } catch { /* cenário sem topologia gerável */ }
     }
     // Une as variantes que são subconjunto de outra (por exemplo, cenários em que só um dos hosts participa).
     const kept = [];
-    let reduced = false;
     for (const v of found.sort((a, b) => b.size - a.size)) {
       const host = kept.find((k) => [...v.nodes].every((n) => k.nodes.has(n)) && [...v.links].every((l) => k.links.has(l)));
-      if (host) { host.labels.push(...v.labels); if (v.size < host.size) reduced = true; } else kept.push(v);
+      if (host) host.ids.push(...v.ids); else kept.push(v);
     }
-    if (!kept.length) continue;
-    any = true;
-    L.push(`### ${sub.label}\n`);
-    for (const v of kept) {
-      L.push(kept.length > 1 ? `**${v.labels.length === all.length ? 'Todos os cenários' : 'Cenários: ' + v.labels.join('; ')}**\n` : '');
-      L.push('```mermaid\n' + v.mm + '\n```\n');
-    }
-    if (reduced) L.push('*Em alguns cenários, parte dos elementos do desenho não existe ou não participa da troca (por exemplo, o segundo host ou o segundo servidor).*\n');
+    if (kept.length) out.push({ sub, total: all.length, kept });
   }
-  return any ? L : [];
+  return out;
 }
 
 function nativePage(sim, def) {
@@ -170,27 +232,62 @@ function nativePage(sim, def) {
   if (sim.topics?.length) L.push(`- **Tópicos:** ${sim.topics.join('; ')}`);
   L.push('');
 
-  L.push('## Modos\n');
-  L.push('| Modo | Cenário inicial |', '| --- | --- |');
+  // Numeração das seções (a de topologia só existe quando há desenho) e dos cenários, na ordem em que são exibidos.
+  const topo = def.topology ? topologyData(def) : [];
+  let n = 0;
+  const S = { modos: ++n, ler: ++n, topo: topo.length ? ++n : 0, abas: ++n, conf: ++n, cen: ++n, ref: ++n };
+  const order = def.subs.map((sub, i) => {
+    const sc = def.scenarios.filter((s) => s.sub === sub.key);
+    const list = [];
+    for (const g of [...new Set(sc.map((s) => s.g))]) for (const s of sc.filter((x) => x.g === g)) list.push({ s, g });
+    list.forEach((e, j) => { e.j = j + 1; e.num = `${S.cen}.${i + 1}.${j + 1}`; });
+    return { sub, i, list, prefix: `${S.cen}.${i + 1}.` };
+  });
+  const numOf = Object.fromEntries(order.flatMap((o) => o.list.map((e) => [e.s.id, e])));
+  const figs = [];
+  const usa = { A: topo.length > 0, B: false };
+
+  L.push(`## ${S.modos}. Modos\n`);
+  L.push('| Modo | Cenário inicial | Cenários |', '| --- | --- | --- |');
   const byId = Object.fromEntries(def.scenarios.map((s) => [s.id, s]));
-  for (const s of def.subs) L.push(`| ${s.label} | ${byId[s.default]?.label ?? s.default} |`);
+  for (const o of order) {
+    const cen = o.list.length ? rangeText(o.prefix, o.list.map((e) => e.j)) : '-';
+    L.push(`| ${o.sub.label} | ${byId[o.sub.default]?.label ?? o.sub.default} | ${cen} |`);
+  }
   L.push('');
 
-  if (def.topology) L.push(...topologySection(def));
+  const lerAt = L.length;
 
-  L.push('## Abas da bancada\n');
-  const fixed = ['Cenário', 'Captura', 'Mensagem'];
+  if (topo.length) {
+    L.push(`## ${S.topo}. Topologia\n`);
+    L.push('Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.\n');
+    topo.forEach((t, k) => {
+      const num = `${S.topo}.${k + 1}`;
+      const heading = `${num} ${t.sub.label}`;
+      L.push(`### ${heading}\n`);
+      const cen = order.find((o) => o.sub.key === t.sub.key);
+      t.kept.forEach((v, vi) => {
+        const fnum = t.kept.length > 1 ? num + 'abcdefghij'[vi] : num;
+        L.push('```mermaid\n' + v.mm + '\n```\n');
+        const todos = v.ids.length === t.total;
+        const rel = rangeText(cen.prefix, v.ids.map((id) => numOf[id].j));
+        L.push(`*Figura ${fnum} (Tipo A, topologia).* Elementos do modo "${t.sub.label}": ${v.elems.join('; ')}.${v.dashed ? ' Linhas tracejadas: enlaces alternativos, forjados ou caídos.' : ''} Vale para ${todos ? 'todos os cenários do modo' : 'os cenários'} (${rel}).\n`);
+        figs.push({ tipo: 'A', num: fnum, heading, titulo: `topologia do modo "${t.sub.label}"${t.kept.length > 1 ? ', variante ' + 'abcdefghij'[vi] : ''}` });
+      });
+    });
+  }
+
+  L.push(`## ${S.abas}. Abas da bancada\n`);
   const own = (def.tabs ?? []).map((t) => {
     const only = t.subs?.length ? ` (modos: ${t.subs.map((k) => def.subs.find((x) => x.key === k)?.label ?? k).join('; ')})` : '';
     return `${t.label}${only}`;
   });
   L.push(`Cenário, Captura, Mensagem${own.length ? ', ' + own.join(', ') : ''}, Experimento, Referência e Log.\n`);
 
-  L.push('## Configurações (campos do painel)\n');
+  L.push(`## ${S.conf}. Configurações (campos do painel)\n`);
   const subLabel = (k) => def.subs.find((x) => x.key === k)?.label ?? k;
-  const groups = [...new Set(def.controls.map((c) => c.grp))];
-  for (const g of groups) {
-    L.push(`### ${g}\n`);
+  [...new Set(def.controls.map((c) => c.grp))].forEach((g, gi) => {
+    L.push(`### ${S.conf}.${gi + 1} ${g}\n`);
     for (const c of def.controls.filter((x) => x.grp === g)) {
       const opts = c.type === 'check' ? 'caixa de seleção' : (c.opts ?? []).map(([v, l]) => l).join('; ');
       const modos = c.subs?.length ? c.subs.map(subLabel).join('; ') : 'todos';
@@ -201,39 +298,49 @@ function nativePage(sim, def) {
       }
     }
     L.push('');
-  }
+  });
 
-  L.push('## Cenários\n');
-  for (const sub of def.subs) {
-    L.push(`### Modo: ${sub.label}\n`);
-    const sc = def.scenarios.filter((s) => s.sub === sub.key);
-    const groups = [...new Set(sc.map((s) => s.g))];
-    for (const g of groups) {
-      L.push(`#### ${g}\n`);
-      if (def.groupDoc[g]) L.push(`${md(def.groupDoc[g])}\n`);
-      for (const s of sc.filter((x) => x.g === g)) {
-        const d = def.scenDoc[s.id];
-        L.push(`##### ${s.label}\n`);
-        if (d?.short) L.push(`*${md(d.short)}*\n`);
-        const set = s.set ? Object.entries(s.set).map(([k, v]) => `${def.controls.find((c) => c.id === k)?.label ?? k} = ${q(v)}`).join('; ') : '';
-        if (set) L.push(`**Configuração aplicada:** ${set}\n`);
-        if (s.what) L.push(`${md(s.what)}\n`);
-        if (d?.concept) L.push(`**Conceito.** ${md(d.concept)}\n`);
-        if (d?.observe?.length) { L.push('**O que observar**\n'); for (const o of d.observe) L.push(`- ${md(o)}`); L.push(''); }
-        try { L.push(`**Diagrama de sequência**\n`, sequenceDiagram(def, s, Object.fromEntries(def.controls.map((c) => [c.id, c.def]))), ''); } catch { /* sem diagrama */ }
-        if (d?.msgs?.length) {
-          L.push(`**${d.msgsTitle ?? 'Mensagens'}**\n`);
-          L.push('| Mensagem | Significado | Origem |', '| --- | --- | --- |');
-          for (const m of d.msgs) L.push(`| ${m.map((c) => md(c).replace(/\|/g, '\\|')).join(' | ')} |`);
-          L.push('');
-        }
-        if (d?.why) L.push(`**Por que importa.** ${md(d.why)}\n`);
+  L.push(`## ${S.cen}. Cenários\n`);
+  const base = Object.fromEntries(def.controls.map((c) => [c.id, c.def]));
+  for (const o of order) {
+    L.push(`### ${S.cen}.${o.i + 1} Modo: ${o.sub.label}\n`);
+    let curG;
+    for (const { s, g, num } of o.list) {
+      if (g !== curG) {
+        curG = g;
+        L.push(`> **Grupo:** ${g}\n`);
+        if (def.groupDoc[g]) L.push(`${md(def.groupDoc[g])}\n`);
       }
+      const d = def.scenDoc[s.id];
+      const heading = `${num} ${s.label}`;
+      L.push(`#### ${heading}\n`);
+      if (d?.short) L.push(`*${md(d.short)}*\n`);
+      const set = s.set ? Object.entries(s.set).map(([k, v]) => `${def.controls.find((c) => c.id === k)?.label ?? k} = ${q(v)}`).join('; ') : '';
+      if (set) L.push(`**Configuração aplicada:** ${set}\n`);
+      if (s.what) L.push(`${md(s.what)}\n`);
+      if (d?.concept) L.push(`**Conceito.** ${md(d.concept)}\n`);
+      if (d?.observe?.length) { L.push('**O que observar**\n'); for (const x of d.observe) L.push(`- ${md(x)}`); L.push(''); }
+      try {
+        const sd = sequenceDiagram(def, s, base);
+        L.push(sd.block, '');
+        const onde = `Corresponde ao diagrama de sequência e à aba Captura, no modo "${o.sub.label}", ${set ? 'com a configuração aplicada acima' : 'com a configuração padrão'}.`;
+        L.push(sequenceCaption(num, s.label, sd, onde) + '\n');
+        figs.push({ tipo: 'B', num, heading, titulo: `sequência de "${s.label}"` });
+        usa.B = true;
+      } catch { /* sem diagrama */ }
+      if (d?.msgs?.length) {
+        L.push(`**${d.msgsTitle ?? 'Mensagens'}**\n`);
+        L.push('| Mensagem | Significado | Origem |', '| --- | --- | --- |');
+        for (const m of d.msgs) L.push(`| ${m.map((c) => md(c).replace(/\|/g, '\\|')).join(' | ')} |`);
+        L.push('');
+      }
+      if (d?.why) L.push(`**Por que importa.** ${md(d.why)}\n`);
     }
   }
 
-  L.push('## Referência\n');
+  L.push(`## ${S.ref}. Referência\n`);
   L.push(md(def.reference).replace(/^#### /gm, '### ') + '\n');
+  L.splice(lerAt, 0, ...howToRead(S.ler, usa, figs));
   return L.join('\n') + footer;
 }
 
@@ -264,7 +371,14 @@ function captureSequence(rows, hosts = {}) {
   const L = ['sequenceDiagram'];
   for (const ip of ips) L.push(`  participant ${id(ip)} as ${hosts[ip] ? hosts[ip] + '<br/>' : ''}${ip}`);
   for (const r of rows) L.push(`  ${id(r[2])} ${/perdid/i.test(r[6]) ? '-x' : '->>'} ${id(r[3])}: ${mmMsg(r[4] + ' ' + r[6])}`);
-  return '```mermaid\n' + L.join('\n') + '\n```';
+  return {
+    block: '```mermaid\n' + L.join('\n') + '\n```',
+    parts: ips.map((ip) => (hosts[ip] ? hosts[ip] + ' ' : '') + ip),
+    n: rows.length,
+    phases: 0,
+    lost: rows.filter((r) => /perdid/i.test(r[6])).length,
+    enc: 0,
+  };
 }
 
 /** Executa uma página legada no jsdom e captura controles, ajuda, abas, cenários e referência. */
@@ -363,31 +477,48 @@ function legacyPage(sim) {
   L.push(`- **Motor:** legado (página autônoma em \`public/sims/${sim.file}\`, incorporada por \`iframe\`)`);
   L.push(`- **RFCs e padrões:** ${sim.rfcs.join(', ')}`);
   if (sim.topics?.length) L.push(`- **Tópicos:** ${sim.topics.join('; ')}`);
-  L.push('', '## Abas\n', `${x.tabs.join(', ')}.\n`);
+  L.push('');
 
-  L.push('## Configurações (campos do painel)\n');
+  // Só o TCP e UDP tem sequência (a partir da captura); a seção de leitura dos diagramas existe apenas quando há figuras.
+  const hasB = x.scenarios.some((s) => s.capture?.length);
+  let n = 0;
+  const S = { ler: hasB ? ++n : 0, abas: ++n, conf: ++n, cen: ++n, ref: ++n };
+  const figs = [];
+
+  const lerAt = L.length;
+  L.push(`## ${S.abas}. Abas\n`, `${x.tabs.join(', ')}.\n`);
+
+  L.push(`## ${S.conf}. Configurações (campos do painel)\n`);
   for (const c of x.controls) {
     const opts = c.check ? 'caixa de seleção' : c.opts.join('; ');
     L.push(`- **${c.label.replace(/ⓘ/g, '').trim()}**. Valores: ${opts}. Padrão: ${c.def}.`);
     for (const p of c.help?.p ?? []) L.push(`  - ${md(p).replace(/\n+/g, ' ')}`);
   }
-  L.push('', '## Cenários\n');
-  let lastMode = null, last = '';
+  L.push('', `## ${S.cen}. Cenários\n`);
+  let lastMode = null, last = '', m = 0, j = 0;
   const multi = x.scenarios.some((s) => s.mode);
-  const H = multi ? '#' : '';
   for (const s of x.scenarios) {
-    if (multi && s.mode !== lastMode) { lastMode = s.mode; last = ''; L.push(`### Modo: ${s.mode}\n`); }
+    if (multi && s.mode !== lastMode) { lastMode = s.mode; last = ''; m++; j = 0; L.push(`### ${S.cen}.${m} Modo: ${s.mode}\n`); }
+    j++;
+    const num = multi ? `${S.cen}.${m}.${j}` : `${S.cen}.${j}`;
     if (s.group !== last) {
       last = s.group;
-      L.push(`###${H} ${s.group}\n`);
+      L.push(`> **Grupo:** ${s.group}\n`);
       if (x.groupDoc[s.group]) L.push(`${md(x.groupDoc[s.group])}\n`);
     }
-    L.push(`####${H} ${s.title ?? s.label}\n`);
+    const heading = `${num} ${s.title ?? s.label}`;
+    L.push(`${multi ? '####' : '###'} ${heading}\n`);
     if (s.cmd) L.push(`${md(s.cmd)}\n`);
     L.push(`${md(s.html.replace(/<h4>([\s\S]*?)<\/h4>/gi, '<p><b>$1.</b></p>'))}\n`);
-    if (s.capture?.length) L.push('**Diagrama de sequência** (a partir da aba Captura)\n', captureSequence(s.capture, LEGACY[sim.file]?.hosts), '');
+    if (s.capture?.length) {
+      const sd = captureSequence(s.capture, LEGACY[sim.file]?.hosts);
+      const onde = `Corresponde à aba Captura${multi ? `, no modo "${s.mode}"` : ''}, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.`;
+      L.push(sd.block, '', sequenceCaption(num, s.title ?? s.label, sd, onde) + '\n');
+      figs.push({ tipo: 'B', num, heading, titulo: `sequência de "${s.title ?? s.label}"` });
+    }
   }
-  L.push('## Referência\n', md(x.ref).replace(/^#### /gm, '### ') + '\n');
+  L.push(`## ${S.ref}. Referência\n`, md(x.ref).replace(/^#### /gm, '### ') + '\n');
+  if (hasB) L.splice(lerAt, 0, ...howToRead(S.ler, { A: false, B: true }, figs));
   return L.join('\n') + footer;
 }
 

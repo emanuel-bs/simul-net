@@ -8,21 +8,74 @@ ping, traceroute, tracert e hping3 em uma rede simulada: Echo, Time Exceeded, De
 - **RFCs e padrões:** [RFC 792](https://www.rfc-editor.org/rfc/rfc792) (ICMP), [RFC 1191](https://www.rfc-editor.org/rfc/rfc1191) (Path MTU Discovery), [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812) (Roteadores IPv4), [RFC 2923](https://www.rfc-editor.org/rfc/rfc2923) (Problemas de PMTUD)
 - **Tópicos:** Echo e Time Exceeded; Fragmentação e PMTUD; ACLs e loops de roteamento; Captura e hex dump
 
-## Modos
+## 1. Modos
 
-| Modo | Cenário inicial |
-| --- | --- |
-| Ping | Echo (ping) |
-| Traceroute e tracert | traceroute (UDP) |
-| Scan UDP (hping3) | Porta inalcançável |
+| Modo | Cenário inicial | Cenários |
+| --- | --- | --- |
+| Ping | Echo (ping) | 6.1.1 a 6.1.9 |
+| Traceroute e tracert | traceroute (UDP) | 6.2.1 a 6.2.3 |
+| Scan UDP (hping3) | Porta inalcançável | 6.3.1 |
 
-## Topologia
+## 2. Como ler os diagramas
 
-Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.
+Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.
 
-### Ping
+| Tipo | O que é | Vale para | Equivale, no simulador, a |
+| --- | --- | --- | --- |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
-**Cenários: Echo (ping); TTL expirado; Rede inalcançável; Host inalcançável; Proibido (3/13)**
+### 2.1 Legenda dos diagramas
+
+**Tipo A (topologia)**
+
+- Retângulo: host (computador ou servidor final).
+- Hexágono: switch.
+- Retângulo arredondado: roteador, ou dispositivo que encaminha ou traduz.
+- Estádio (cantos bem arredondados): servidor ou rede externa.
+- Retângulo vermelho: atacante (quando existe no modo).
+- Linha contínua: enlace. Linha tracejada: enlace alternativo, forjado ou caído, conforme o rótulo e o cenário.
+- O Mermaid posiciona os elementos automaticamente: o layout difere do simulador, as ligações não.
+
+**Tipo B (sequência)**
+
+- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.
+- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.
+- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.
+- Faixa horizontal com texto: início de uma fase do cenário.
+- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.
+
+### 2.2 Lista de figuras
+
+**Tipo A (topologia)**
+
+- [Figura 3.1a](#31-ping): topologia do modo "Ping", variante a
+- [Figura 3.1b](#31-ping): topologia do modo "Ping", variante b
+- [Figura 3.1c](#31-ping): topologia do modo "Ping", variante c
+- [Figura 3.2](#32-traceroute-e-tracert): topologia do modo "Traceroute e tracert"
+- [Figura 3.3](#33-scan-udp-hping3): topologia do modo "Scan UDP (hping3)"
+
+**Tipo B (sequência)**
+
+- [Figura 6.1.1](#611-echo-ping): sequência de "Echo (ping)"
+- [Figura 6.1.2](#612-ttl-expirado): sequência de "TTL expirado"
+- [Figura 6.1.3](#613-rede-inalcançável): sequência de "Rede inalcançável"
+- [Figura 6.1.4](#614-host-inalcançável): sequência de "Host inalcançável"
+- [Figura 6.1.5](#615-fragmentação): sequência de "Fragmentação"
+- [Figura 6.1.6](#616-pmtud-df): sequência de "PMTUD (DF)"
+- [Figura 6.1.7](#617-proibido-313): sequência de "Proibido (3/13)"
+- [Figura 6.1.8](#618-buraco-negro-pmtud): sequência de "Buraco negro PMTUD"
+- [Figura 6.1.9](#619-loop-de-roteamento): sequência de "Loop de roteamento"
+- [Figura 6.2.1](#621-traceroute-udp): sequência de "traceroute (UDP)"
+- [Figura 6.2.2](#622-tracert-windows): sequência de "tracert (Windows)"
+- [Figura 6.2.3](#623-filtro-silencioso): sequência de "Filtro silencioso"
+- [Figura 6.3.1](#631-porta-inalcançável): sequência de "Porta inalcançável"
+
+## 3. Topologia
+
+Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
+
+### 3.1 Ping
 
 ```mermaid
 flowchart LR
@@ -43,7 +96,7 @@ flowchart LR
   n_r2 -.- n_net
 ```
 
-**Cenários: Fragmentação; PMTUD (DF); Buraco negro PMTUD**
+*Figura 3.1a (Tipo A, topologia).* Elementos do modo "Ping": PC-A (10.0.1.10); R1 (10.0.1.1); R2 (10.0.12.2); R3 (10.0.23.2); SW2 (switch L2); SRV (10.0.4.20); 10.0.4.99 (sem host); 192.168.50.0/24 (sem rota em R2). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.1.1 a 6.1.4; 6.1.7).
 
 ```mermaid
 flowchart LR
@@ -64,7 +117,7 @@ flowchart LR
   n_r2 -.- n_net
 ```
 
-**Cenários: Loop de roteamento**
+*Figura 3.1b (Tipo A, topologia).* Elementos do modo "Ping": PC-A (10.0.1.10); R1 (10.0.1.1); R2 (10.0.12.2); R3 (10.0.23.2); SW2 (switch L2); SRV (10.0.4.20); 10.0.4.99 (sem host); 192.168.50.0/24 (sem rota em R2). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.1.5 e 6.1.6; 6.1.8).
 
 ```mermaid
 flowchart LR
@@ -85,30 +138,9 @@ flowchart LR
   n_r2 -.- n_net
 ```
 
-### Traceroute e tracert
+*Figura 3.1c (Tipo A, topologia).* Elementos do modo "Ping": PC-A (10.0.1.10); R1 (10.0.1.1); R2 (10.0.12.2); R3 (10.0.23.2); SW2 (switch L2); SRV (10.0.4.20); 10.0.4.99 (sem host); 192.168.50.0/24 (sem rota em R2). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.1.9).
 
-
-```mermaid
-flowchart LR
-  n_pc["PC-A<br/>10.0.1.10"]
-  n_r1("R1<br/>10.0.1.1")
-  n_r2("R2<br/>10.0.12.2")
-  n_r3("R3<br/>10.0.23.2")
-  n_sw2{{"SW2<br/>switch L2"}}
-  n_srv["SRV<br/>10.0.4.20"]
-  n_ghost(["10.0.4.99<br/>sem host"])
-  n_net(["192.168.50.0/24<br/>sem rota em R2"])
-  n_pc -- "MTU 1500" --- n_r1
-  n_r1 -- "MTU 1500" --- n_r2
-  n_r2 -- "MTU 1500" --- n_r3
-  n_r3 -- "MTU 1500" --- n_sw2
-  n_sw2 --- n_srv
-  n_sw2 -.- n_ghost
-  n_r2 -.- n_net
-```
-
-### Scan UDP (hping3)
-
+### 3.2 Traceroute e tracert
 
 ```mermaid
 flowchart LR
@@ -129,13 +161,38 @@ flowchart LR
   n_r2 -.- n_net
 ```
 
-## Abas da bancada
+*Figura 3.2 (Tipo A, topologia).* Elementos do modo "Traceroute e tracert": PC-A (10.0.1.10); R1 (10.0.1.1); R2 (10.0.12.2); R3 (10.0.23.2); SW2 (switch L2); SRV (10.0.4.20); 10.0.4.99 (sem host); 192.168.50.0/24 (sem rota em R2). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para todos os cenários do modo (6.2.1 a 6.2.3).
+
+### 3.3 Scan UDP (hping3)
+
+```mermaid
+flowchart LR
+  n_pc["PC-A<br/>10.0.1.10"]
+  n_r1("R1<br/>10.0.1.1")
+  n_r2("R2<br/>10.0.12.2")
+  n_r3("R3<br/>10.0.23.2")
+  n_sw2{{"SW2<br/>switch L2"}}
+  n_srv["SRV<br/>10.0.4.20"]
+  n_ghost(["10.0.4.99<br/>sem host"])
+  n_net(["192.168.50.0/24<br/>sem rota em R2"])
+  n_pc -- "MTU 1500" --- n_r1
+  n_r1 -- "MTU 1500" --- n_r2
+  n_r2 -- "MTU 1500" --- n_r3
+  n_r3 -- "MTU 1500" --- n_sw2
+  n_sw2 --- n_srv
+  n_sw2 -.- n_ghost
+  n_r2 -.- n_net
+```
+
+*Figura 3.3 (Tipo A, topologia).* Elementos do modo "Scan UDP (hping3)": PC-A (10.0.1.10); R1 (10.0.1.1); R2 (10.0.12.2); R3 (10.0.23.2); SW2 (switch L2); SRV (10.0.4.20); 10.0.4.99 (sem host); 192.168.50.0/24 (sem rota em R2). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para todos os cenários do modo (6.3.1).
+
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, Terminal, Comando, Rotas, Experimento, Referência e Log.
 
-## Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### Comando
+### 5.1 Comando
 
 - **Ferramenta**. Valores: traceroute (Linux, sondas UDP); traceroute -I (Linux, sondas ICMP); tracert (Windows, sondas ICMP). Padrão: traceroute (Linux, sondas UDP). Modos: Traceroute e tracert.
   - Programa executado no PC-A.
@@ -183,7 +240,7 @@ Cenário, Captura, Mensagem, Terminal, Comando, Rotas, Experimento, Referência 
   - Linhas com * * * são saltos que não responderam: filtro silencioso, ACL ou roteador com no ip unreachables.
   - O padrão das ferramentas reais é 30; aqui, 10 basta para a topologia.
 
-### Enlaces
+### 5.2 Enlaces
 
 - **Enlace PC-A / R1 ativo** (ajuste avançado). Valores: caixa de seleção. Padrão: sim. Modos: todos.
   - Rede 10.0.1.0/24, atraso de 0,3 ms.
@@ -211,7 +268,7 @@ Cenário, Captura, Mensagem, Terminal, Comando, Rotas, Experimento, Referência 
   - Tamanho máximo do pacote neste enlace.
   - Pacotes maiores são fragmentados pelo roteador ou, com o bit DF ligado, descartados com Fragmentation Needed (3/4).
 
-### Roteadores e servidor
+### 5.3 Roteadores e servidor
 
 - **ACL de entrada em R1 (g0/1)**. Valores: permitir tudo; negar todo ICMP; só echo-reply. Padrão: permitir tudo. Modos: todos.
   - Filtra o que volta da WAN para a LAN do PC-A.
@@ -237,15 +294,15 @@ Cenário, Captura, Mensagem, Terminal, Comando, Rotas, Experimento, Referência 
   - Se o roteador gera Destination Unreachable.
   - Desligado (no ip unreachables), o roteador descarta sem gerar ICMP tipo 3. A origem vê timeout. Time Exceeded continua sendo gerado.
 
-## Cenários
+## 6. Cenários
 
-### Modo: Ping
+### 6.1 Modo: Ping
 
-#### Consultas
+> **Grupo:** Consultas
 
 Mensagens de consulta do ICMP (Echo Request e Echo Reply) e as ferramentas que exploram o TTL para descobrir o caminho até o destino.
 
-##### Echo (ping)
+#### 6.1.1 Echo (ping)
 
 *Echo Request e Echo Reply: a consulta mais básica do ICMP.*
 
@@ -260,8 +317,6 @@ Observe no terminal **ttl=61**: o Linux do servidor começa em 64 e três rotead
 - Na aba Terminal: o RTT de cada resposta e **ttl=61** (o Linux do SRV começa em 64 e três roteadores decrementaram).
 - Na Captura: pares de Echo Request e Echo Reply com o mesmo id e a mesma seq.
 - Na aba Mensagem: os campos Type, Code, Identifier, Sequence Number e o checksum.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -305,6 +360,8 @@ sequenceDiagram
   n_r1 ->> n_pc: ECHO REP ttl=61
 ```
 
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Echo (ping)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 32 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração padrão.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -314,7 +371,7 @@ sequenceDiagram
 
 **Por que importa.** O ping confirma a conectividade de camada 3 e mede a latência. Para quem faz reconhecimento, ele revela hosts ativos (ping sweep); por isso muitas redes limitam ou bloqueiam Echo Request vindo de fora.
 
-##### TTL expirado
+#### 6.1.2 TTL expirado
 
 *O TTL chega a zero no meio do caminho e o roteador avisa com Time Exceeded.*
 
@@ -332,8 +389,6 @@ Abra o erro na aba Mensagem: o datagrama original citado mostra TTL 1 e o mesmo 
 - O endereço que responde é o da interface de R2 voltada para o PC-A, não o do destino.
 - Na aba Mensagem do erro: o cabeçalho IP original citado, com TTL 1 e o mesmo id e seq do ping.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -352,6 +407,8 @@ sequenceDiagram
   n_r1 ->> n_pc: TIME EXCEEDED ttl=254
 ```
 
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "TTL expirado", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -361,11 +418,11 @@ sequenceDiagram
 
 **Por que importa.** É a peça que o traceroute usa para descobrir cada salto, e um dos sinais de que existe um loop de roteamento.
 
-#### Destination Unreachable
+> **Grupo:** Destination Unreachable
 
 O tipo 3 avisa a origem que o pacote não pôde ser entregue. O código diz o motivo: rede sem rota (0), host que não responde (1), porta fechada (3), MTU (4) ou filtro (13).
 
-##### Rede inalcançável
+#### 6.1.3 Rede inalcançável
 
 *Destination Unreachable código 0: o roteador não tem rota.*
 
@@ -383,8 +440,6 @@ O endereço de origem do erro mostra **onde** o caminho termina. Tente também d
 - O erro vem de R2: o endereço de origem do erro mostra **onde** o caminho termina.
 - Na aba Rotas: R1 encaminha pela rota padrão, mas R2 não tem rota para 192.168.50.0/24 nem rota padrão.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -403,6 +458,8 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/0 ttl=254
 ```
 
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Rede inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -412,7 +469,7 @@ sequenceDiagram
 
 **Por que importa.** É o diagnóstico de rota faltando. Derrubar o enlace R1 / R2 e repetir mostra o mesmo erro vindo de outro ponto.
 
-##### Host inalcançável
+#### 6.1.4 Host inalcançável
 
 *Destination Unreachable código 1: ninguém responde ao ARP.*
 
@@ -430,8 +487,6 @@ Repare no tempo: o erro só chega cerca de 3 s depois, a espera do ARP.
 - O erro só chega cerca de 3 s depois: é o tempo das tentativas de ARP.
 - Na aba Terminal: "Destination Host Unreachable" vindo de R3.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -460,6 +515,8 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/1 ttl=253
 ```
 
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Host inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 18 mensagens (em 2 fases; 6 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -470,11 +527,11 @@ sequenceDiagram
 
 **Por que importa.** Explica por que um ping para um host desligado na mesma LAN demora antes de falhar.
 
-#### MTU
+> **Grupo:** MTU
 
 Cada enlace tem um tamanho máximo de pacote (MTU). Pacotes maiores são fragmentados pelos roteadores ou, com o bit DF ligado, geram um aviso para a origem reduzir o tamanho (PMTUD).
 
-##### Fragmentação
+#### 6.1.5 Fragmentação
 
 *O pacote não cabe no enlace e o roteador o divide em fragmentos.*
 
@@ -492,8 +549,6 @@ Veja os campos Flags e Fragment Offset na aba Mensagem.
 - Na Captura: R2 gera 2 fragmentos (offsets 0 e 172); na volta, R3 fragmenta o Echo Reply.
 - Na aba Mensagem: os campos Flags (MF) e Fragment Offset.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -520,6 +575,8 @@ sequenceDiagram
   n_r1 ->> n_pc: ECHO REP x2 frag ttl=61
 ```
 
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Fragmentação", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 16 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -529,7 +586,7 @@ sequenceDiagram
 
 **Por que importa.** Fragmentar custa processamento, e a perda de um único fragmento perde o datagrama inteiro. Ataques antigos (Teardrop, fragmentos sobrepostos) exploravam a remontagem. No IPv6, roteadores não fragmentam.
 
-##### PMTUD (DF)
+#### 6.1.6 PMTUD (DF)
 
 *Com DF ligado, o roteador avisa a MTU e a origem se adapta.*
 
@@ -547,8 +604,6 @@ Repita com **-M want** (padrão do Linux): depois de aprender a PMTU, o PC-A fra
 - Os envios seguintes falham no próprio PC-A ("message too long"), porque -M do proíbe fragmentar localmente.
 - No estado do simulador, o "Cache de PMTU do PC-A" passa a mostrar 10.0.4.20 = 1400.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -563,6 +618,8 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/4 ttl=254
 ```
 
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "PMTUD (DF)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 4 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -572,11 +629,11 @@ sequenceDiagram
 
 **Por que importa.** É assim que conexões TCP se ajustam a túneis e VPNs, que têm MTU menor. Mas tudo depende de o 3/4 chegar à origem: veja o cenário Buraco negro PMTUD.
 
-#### Filtros e falhas
+> **Grupo:** Filtros e falhas
 
 Como ACLs, firewalls e erros de roteamento aparecem (ou deixam de aparecer) para quem testa a rede, e que problemas um filtro mal planejado pode criar.
 
-##### Proibido (3/13)
+#### 6.1.7 Proibido (3/13)
 
 *Destination Unreachable código 13: o filtro se anuncia.*
 
@@ -594,8 +651,6 @@ O erro deixa claro que existe um filtro e onde ele está.
 - O erro vem de R3, onde está a ACL de saída para a LAN do servidor.
 - No log: a ACL nega e responde com 3/13.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -618,6 +673,8 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/13 ttl=253
 ```
 
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Proibido (3/13)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -627,7 +684,7 @@ sequenceDiagram
 
 **Por que importa.** Facilita o diagnóstico (fica claro que existe um filtro e onde ele está), mas entrega essa mesma informação a quem faz reconhecimento. Compare com o Filtro silencioso.
 
-##### Buraco negro PMTUD
+#### 6.1.8 Buraco negro PMTUD
 
 *O firewall bloqueia o aviso de MTU e os pacotes grandes somem.*
 
@@ -645,8 +702,6 @@ Mude **Dados** para 56 e rode de novo: pacotes pequenos funcionam. Esse é o sin
 - Na Captura: o 3/4 **foi gerado** por R2, mas não chegou ao PC-A (a ACL de R1 o descartou).
 - Mude "Dados" para 56 e rode de novo: pacotes pequenos funcionam normalmente.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_pc as PC-A<br/>Linux, 64
@@ -663,6 +718,8 @@ sequenceDiagram
   n_r2 ->> n_r1: UNREACH 3/4 ttl=255
 ```
 
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Buraco negro PMTUD", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 6 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -672,7 +729,7 @@ sequenceDiagram
 
 **Por que importa.** É o sintoma clássico de VPNs e túneis: a conexão TCP abre (o handshake usa pacotes pequenos), mas trava ao transferir dados, como páginas que nunca terminam de carregar. A correção é liberar o ICMP tipo 3 código 4 (e o tipo 11) ou ajustar o MSS do TCP (MSS clamping). Nunca filtre o 3/4.
 
-##### Loop de roteamento
+#### 6.1.9 Loop de roteamento
 
 *Dois roteadores apontam um para o outro e o TTL salva a rede.*
 
@@ -689,8 +746,6 @@ O enlace da LAN do servidor caiu. R3 perde a rota conectada e usa a rota padrão
 - O enlace da LAN do servidor caiu: R3 perde a rota conectada e usa a rota padrão de volta para R2, que devolve o pacote para R3.
 - Na animação e no log: o pacote vai e volta entre R2 e R3 com o TTL diminuindo.
 - Na aba Terminal: o Time Exceeded vem de um dos dois roteadores do laço.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -720,6 +775,8 @@ sequenceDiagram
   n_r1 ->> n_pc: TIME EXCEEDED ttl=254
 ```
 
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Loop de roteamento", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 18 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -729,13 +786,13 @@ sequenceDiagram
 
 **Por que importa.** Loops surgem de rotas estáticas mal planejadas ou durante a convergência de protocolos dinâmicos. Enquanto existem, consomem banda e CPU; o TTL limita o estrago, mas não resolve a causa.
 
-### Modo: Traceroute e tracert
+### 6.2 Modo: Traceroute e tracert
 
-#### Consultas
+> **Grupo:** Consultas
 
 Mensagens de consulta do ICMP (Echo Request e Echo Reply) e as ferramentas que exploram o TTL para descobrir o caminho até o destino.
 
-##### traceroute (UDP)
+#### 6.2.1 traceroute (UDP)
 
 *Sondas UDP com TTL crescente revelam cada roteador do caminho.*
 
@@ -752,8 +809,6 @@ O simulador desenha a primeira sonda de cada salto; as três aparecem no termina
 - Na aba Terminal: as linhas 1, 2 e 3 mostram R1, R2 e R3; a linha 4 mostra o SRV.
 - Cada linha tem 3 tempos: são 3 sondas por salto.
 - Na Captura: UDP com portas 33434, 33435..., Time Exceeded dos roteadores e Port Unreachable do SRV.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -785,6 +840,8 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/3 ttl=61
 ```
 
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "traceroute (UDP)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 20 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -795,7 +852,7 @@ sequenceDiagram
 
 **Por que importa.** O traceroute mapeia a topologia, o que serve tanto ao diagnóstico quanto ao reconhecimento. Linhas com * * * são saltos que não responderam.
 
-##### tracert (Windows)
+#### 6.2.2 tracert (Windows)
 
 *A versão do Windows usa Echo Request como sonda.*
 
@@ -812,8 +869,6 @@ Compare com o traceroute do Linux: um firewall que bloqueia UDP mas libera ping 
 - Na aba Terminal: o formato do Windows, com "Tracing route to" e os tempos em ms.
 - Na Captura: Echo Requests com TTL crescente e, no último salto, um Echo Reply.
 - Compare com o cenário traceroute (UDP): o caminho é o mesmo, as mensagens são outras.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -845,6 +900,8 @@ sequenceDiagram
   n_r1 ->> n_pc: ECHO REP ttl=61
 ```
 
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "tracert (Windows)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 20 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -855,11 +912,11 @@ sequenceDiagram
 
 **Por que importa.** Um firewall que bloqueia UDP e libera ping faz o traceroute do Linux falhar e o tracert funcionar (e o contrário). Por isso o Linux oferece o traceroute -I, que usa ICMP.
 
-#### Filtros e falhas
+> **Grupo:** Filtros e falhas
 
 Como ACLs, firewalls e erros de roteamento aparecem (ou deixam de aparecer) para quem testa a rede, e que problemas um filtro mal planejado pode criar.
 
-##### Filtro silencioso
+#### 6.2.3 Filtro silencioso
 
 *O filtro descarta sem avisar: só sobra o timeout.*
 
@@ -876,8 +933,6 @@ Compare com o cenário 3/13.
 - No traceroute (aba Terminal): R1, R2 e R3 aparecem; dali em diante, só * * * até o limite de saltos.
 - Na Captura: sondas UDP sem nenhuma resposta depois de R3.
 - Compare com o cenário Proibido (3/13): o bloqueio é o mesmo, a resposta não.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -910,6 +965,8 @@ sequenceDiagram
   n_r2 ->> n_r3: UDP :33449 ttl=4
 ```
 
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Filtro silencioso", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 21 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -919,13 +976,13 @@ sequenceDiagram
 
 **Por que importa.** Esconde a rede de varreduras: o atacante não sabe se o host existe. Em troca, o diagnóstico fica mais difícil, e o próprio silêncio indica que algo filtra depois de R3.
 
-### Modo: Scan UDP (hping3)
+### 6.3 Modo: Scan UDP (hping3)
 
-#### Destination Unreachable
+> **Grupo:** Destination Unreachable
 
 O tipo 3 avisa a origem que o pacote não pôde ser entregue. O código diz o motivo: rede sem rota (0), host que não responde (1), porta fechada (3), MTU (4) ou filtro (13).
 
-##### Porta inalcançável
+#### 6.3.1 Porta inalcançável
 
 *Destination Unreachable código 3: a porta UDP está fechada.*
 
@@ -942,8 +999,6 @@ Troque para **-p 53**: a porta está aberta e não há resposta ICMP. É assim q
 - No hping3 (aba Terminal): "ICMP Port Unreachable from ip=10.0.4.20".
 - Troque para a porta 53 (DNS, aberta no SRV): a aplicação recebe e nada volta.
 - Na aba Mensagem do erro: o SRV cita uma parte maior do datagrama original (hosts Linux citam até 548 bytes).
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -971,6 +1026,8 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/3 ttl=61
 ```
 
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Porta inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 16 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Scan UDP (hping3)", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -980,7 +1037,7 @@ sequenceDiagram
 
 **Por que importa.** É a base do scan UDP (nmap -sU): porta fechada responde 3/3; porta aberta ou filtrada em silêncio não responde, por isso o nmap a marca como "open|filtered".
 
-## Referência
+## 7. Referência
 
 ### O que é o ICMP
 

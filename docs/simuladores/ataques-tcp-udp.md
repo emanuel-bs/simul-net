@@ -7,11 +7,11 @@ Laboratório defensivo com 12 ataques (SYN flood, Slowloris, RST injection, varr
 - **RFCs e padrões:** [RFC 4987](https://www.rfc-editor.org/rfc/rfc4987), [BCP 38](https://www.rfc-editor.org/info/bcp38)
 - **Tópicos:** SYN flood e Slowloris; Varreduras e amplificação; Mitigação e falsos positivos; Resposta a incidente
 
-## Abas
+## 1. Abas
 
 Cenário, Efeito dos controles, Configuração de referência, Experimento, Referência, Log de eventos.
 
-## Configurações (campos do painel)
+## 2. Configurações (campos do painel)
 
 - **Intensidade do ataque3 - moderada**. Valores: caixa de seleção. Padrão: não.
   - Define quantos pacotes de ataque saem por ciclo e o ritmo da simulação.
@@ -53,13 +53,13 @@ Cenário, Efeito dos controles, Configuração de referência, Experimento, Refe
   - Muda só a velocidade de exibição; métricas, eficácia e resultados são os mesmos.
   - Use Executar passo para avançar um ciclo de cada vez.
 
-## Cenários
+## 3. Cenários
 
-### TCP
+> **Grupo:** TCP
 
 Ataques que abusam do estado da conexão TCP (fila de conexões, números de sequência, sessões abertas) ou das respostas do TCP para mapear a rede.
 
-#### TCP SYN flood
+### 3.1 TCP SYN flood
 
 Tipo: ataque direto | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -91,7 +91,7 @@ Controle essencial: **SYN cookies**. A eficácia, o ponto de atuação e o motiv
 
 Contramedidas recomendadas: SYN cookies e ajuste do backlog; Rate limiting por origem e por destino; Filtragem upstream para ataques volumétricos. Risco residual: Floods acima da capacidade do enlace exigem mitigação upstream (operadora, RTBH ou scrubbing center).
 
-#### TCP RST injection
+### 3.2 TCP RST injection
 
 Tipo: ataque direto | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -123,7 +123,7 @@ Controle essencial: **Firewall stateful**. A eficácia, o ponto de atuação e o
 
 Contramedidas recomendadas: Validação rigorosa de sequência ([RFC 5961](https://www.rfc-editor.org/rfc/rfc5961), challenge ACK); TCP-AO ou IPsec em sessões críticas; Monitoramento de RST anômalos. Risco residual: Sessões longas e de portas previsíveis (BGP, VPN) continuam alvos; prefira TCP-AO ([RFC 5925](https://www.rfc-editor.org/rfc/rfc5925)) ou IPsec.
 
-#### TCP session hijacking
+### 3.3 TCP session hijacking
 
 Tipo: ataque direto | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -155,7 +155,7 @@ Controle essencial: **TLS / SSH**. A eficácia, o ponto de atuação e o motivo 
 
 Contramedidas recomendadas: TLS ou SSH para autenticação e integridade; Números de sequência imprevisíveis; Firewall stateful e segmentação. Risco residual: Um atacante no caminho (MITM) vê a sequência correta e vence controles de estado; só criptografia autenticada protege a integridade.
 
-#### TCP ACK / port scan
+### 3.4 TCP ACK / port scan
 
 Tipo: varredura | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -187,7 +187,7 @@ Controle essencial: **Firewall stateful**. A eficácia, o ponto de atuação e o
 
 Contramedidas recomendadas: Política padrão de bloqueio; Firewall stateful para descartar ACK órfão; Correlação de varredura no IDS/IPS. Risco residual: Varreduras lentas e distribuídas passam abaixo dos limiares; mantenha inventário e exponha o mínimo.
 
-#### TCP Slowloris (conexões lentas)
+### 3.5 TCP Slowloris (conexões lentas)
 
 Tipo: ataque direto | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -219,7 +219,7 @@ Controle essencial: **Hardening de serviços**. A eficácia, o ponto de atuaçã
 
 Contramedidas recomendadas: Timeouts curtos de cabeçalho e corpo; Limite de conexões simultâneas por IP; Proxy reverso orientado a eventos na frente do servidor. Risco residual: Variações (R.U.D.Y., slow read) atacam o corpo da requisição e a leitura da resposta; revise todos os timeouts da aplicação.
 
-#### TCP varredura lenta (low and slow)
+### 3.6 TCP varredura lenta (low and slow)
 
 Tipo: varredura | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -251,11 +251,11 @@ Controle essencial: **Hardening de serviços**. A eficácia, o ponto de atuaçã
 
 Contramedidas recomendadas: Expor somente as portas necessárias; Correlação de longo prazo no SIEM (horas ou dias); Portas-armadilha (honeypots) que alertam no primeiro toque. Risco residual: Com paciência, o atacante sempre descobre as portas realmente abertas; o objetivo é reduzir a exposição e detectar cedo.
 
-### UDP
+> **Grupo:** UDP
 
 Ataques que exploram a falta de conexão do UDP: volume, origem falsificada, reflexão, amplificação e varredura.
 
-#### UDP flood
+### 3.7 UDP flood
 
 Tipo: ataque direto | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -287,7 +287,7 @@ Controle essencial: **Rate limiting**. A eficácia, o ponto de atuação e o mot
 
 Contramedidas recomendadas: Rate limiting e QoS; ACLs para serviços desnecessários; Mitigação upstream e scrubbing. Risco residual: Se o volume excede o enlace, nenhum controle local resolve: é preciso mitigação upstream (RTBH, FlowSpec, scrubbing).
 
-#### UDP DDoS distribuído (botnet)
+### 3.8 UDP DDoS distribuído (botnet)
 
 Tipo: ataque distribuído | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -319,7 +319,7 @@ Controle essencial: **Mitigação upstream**. A eficácia, o ponto de atuação 
 
 Contramedidas recomendadas: Mitigação upstream: scrubbing ou FlowSpec; Plano de resposta com a operadora definido antes do incidente; CDN e anycast para diluir o volume. Risco residual: Botnets muito grandes podem exceder até a capacidade de scrubbing contratada; anycast e CDN diluem o impacto.
 
-#### UDP amplification
+### 3.9 UDP amplification
 
 Tipo: reflexão, fator 4x | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -351,7 +351,7 @@ Controle essencial: **Anti-spoofing** e **Hardening de serviços**. A eficácia,
 
 Contramedidas recomendadas: [BCP 38](https://www.rfc-editor.org/info/bcp38) / 84 na rede de origem; Desativar amplificadores abertos; Response Rate Limiting e filtragem upstream. Risco residual: O tráfego amplificado pode exceder o enlace da vítima; filtragem por porta de origem e scrubbing na operadora continuam necessários.
 
-#### UDP spoofing / reflection
+### 3.10 UDP spoofing / reflection
 
 Tipo: reflexão, fator 2x | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -383,7 +383,7 @@ Controle essencial: **Anti-spoofing**. A eficácia, o ponto de atuação e o mot
 
 Contramedidas recomendadas: Filtragem de ingresso e egresso ([BCP 38](https://www.rfc-editor.org/info/bcp38) / 84); Validação de origem na operadora; Rate limiting nos serviços UDP. Risco residual: Enquanto houver redes sem [BCP 38](https://www.rfc-editor.org/info/bcp38), a falsificação continua possível; a vítima depende de filtragem e mitigação upstream.
 
-#### UDP port scan
+### 3.11 UDP port scan
 
 Tipo: varredura | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -415,7 +415,7 @@ Controle essencial: **Hardening de serviços**. A eficácia, o ponto de atuaçã
 
 Contramedidas recomendadas: Expor somente serviços necessários; ACLs e firewall com registro; Detecção por limiar e correlação temporal. Risco residual: Serviços realmente expostos continuarão respondendo; mantenha-os atualizados e monitorados.
 
-#### UDP DNS water torture
+### 3.12 UDP DNS water torture
 
 Tipo: via resolvedores legítimos | vítima 203.0.113.10 | ative os controles no painel lateral e clique em Iniciar.
 
@@ -447,7 +447,7 @@ Controle essencial: **IDS/IPS**. A eficácia, o ponto de atuação e o motivo de
 
 Contramedidas recomendadas: Detecção pela proporção de NXDOMAIN e filtragem pelo padrão do nome; RRL com limite de NXDOMAIN no autoritativo; Aggressive NSEC ([RFC 8198](https://www.rfc-editor.org/rfc/rfc8198)) nos resolvedores e capacidade anycast. Risco residual: Bloquear por IP derruba os resolvedores que também atendem os usuários; a defesa precisa olhar o nome consultado, não a origem.
 
-## Referência
+## 4. Referência
 
 Ambiente didático isolado: todos os hosts, pacotes e resultados existem apenas nesta página e não há tráfego de rede real. Os endereços usam as faixas de documentação da [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737).
 

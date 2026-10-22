@@ -8,20 +8,85 @@ Resolução de endereços na rede local: requisição em broadcast e resposta un
 - **RFCs e padrões:** [RFC 826](https://www.rfc-editor.org/rfc/rfc826) (ARP), [RFC 1027](https://www.rfc-editor.org/rfc/rfc1027) (Proxy ARP), [RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) (Requisitos de hosts), [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) (Conflito de endereço)
 - **Tópicos:** Requisição e resposta; Tabela ARP (REACHABLE, STALE, FAILED); Gateway e proxy ARP; ARP Probe e Announce; Conflito de endereço e failover; Envenenamento de cache e defesas (DAI, entradas estáticas)
 
-## Modos
+## 1. Modos
 
-| Modo | Cenário inicial |
-| --- | --- |
-| Resolução | Primeira resolução |
-| ARP gratuito e conflito | Endereço novo: Probe e Announce |
-| Envenenamento de cache | Sem ataque (referência) |
+| Modo | Cenário inicial | Cenários |
+| --- | --- | --- |
+| Resolução | Primeira resolução | 6.1.1 a 6.1.9 |
+| ARP gratuito e conflito | Endereço novo: Probe e Announce | 6.2.1 a 6.2.7 |
+| Envenenamento de cache | Sem ataque (referência) | 6.3.1 a 6.3.7 |
 
-## Topologia
+## 2. Como ler os diagramas
 
-Diagramas gerados a partir da mesma definição de topologia que a bancada usa. O Mermaid reorganiza o layout automaticamente, então as posições diferem do simulador.
+Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.
 
-### Resolução
+| Tipo | O que é | Vale para | Equivale, no simulador, a |
+| --- | --- | --- | --- |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
+### 2.1 Legenda dos diagramas
+
+**Tipo A (topologia)**
+
+- Retângulo: host (computador ou servidor final).
+- Hexágono: switch.
+- Retângulo arredondado: roteador, ou dispositivo que encaminha ou traduz.
+- Estádio (cantos bem arredondados): servidor ou rede externa.
+- Retângulo vermelho: atacante (quando existe no modo).
+- Linha contínua: enlace. Linha tracejada: enlace alternativo, forjado ou caído, conforme o rótulo e o cenário.
+- O Mermaid posiciona os elementos automaticamente: o layout difere do simulador, as ligações não.
+
+**Tipo B (sequência)**
+
+- Cada coluna é um participante (cliente, servidor, roteador ou outro). O tempo corre de cima para baixo.
+- Seta cheia: mensagem enviada. Seta com X: mensagem perdida.
+- `[cifrado]` no início do rótulo: a mensagem viaja cifrada.
+- Faixa horizontal com texto: início de uma fase do cenário.
+- A ordem é a da aba Captura; os intervalos de tempo não são desenhados em escala.
+
+### 2.2 Lista de figuras
+
+**Tipo A (topologia)**
+
+- [Figura 3.1](#31-resolução): topologia do modo "Resolução"
+- [Figura 3.2a](#32-arp-gratuito-e-conflito): topologia do modo "ARP gratuito e conflito", variante a
+- [Figura 3.2b](#32-arp-gratuito-e-conflito): topologia do modo "ARP gratuito e conflito", variante b
+- [Figura 3.2c](#32-arp-gratuito-e-conflito): topologia do modo "ARP gratuito e conflito", variante c
+- [Figura 3.2d](#32-arp-gratuito-e-conflito): topologia do modo "ARP gratuito e conflito", variante d
+- [Figura 3.3](#33-envenenamento-de-cache): topologia do modo "Envenenamento de cache"
+
+**Tipo B (sequência)**
+
+- [Figura 6.1.1](#611-primeira-resolução): sequência de "Primeira resolução"
+- [Figura 6.1.2](#612-entrada-já-em-cache): sequência de "Entrada já em cache"
+- [Figura 6.1.3](#613-entrada-antiga-revalidação): sequência de "Entrada antiga (revalidação)"
+- [Figura 6.1.4](#614-destino-remoto-via-gateway): sequência de "Destino remoto via gateway"
+- [Figura 6.1.5](#615-proxy-arp-sem-gateway): sequência de "Proxy ARP (sem gateway)"
+- [Figura 6.1.6](#616-sem-gateway-e-sem-proxy-arp): sequência de "Sem gateway e sem proxy ARP"
+- [Figura 6.1.7](#617-destino-desligado): sequência de "Destino desligado"
+- [Figura 6.1.8](#618-requisição-perdida-e-retransmitida): sequência de "Requisição perdida e retransmitida"
+- [Figura 6.1.9](#619-entrada-recente-host-desligado): sequência de "Entrada recente, host desligado"
+- [Figura 6.2.1](#621-endereço-novo-probe-e-announce): sequência de "Endereço novo: Probe e Announce"
+- [Figura 6.2.2](#622-anúncio-sem-entradas-antigas): sequência de "Anúncio sem entradas antigas"
+- [Figura 6.2.3](#623-endereço-já-em-uso-probe): sequência de "Endereço já em uso (Probe)"
+- [Figura 6.2.4](#624-disputa-o-recém-chegado-cede): sequência de "Disputa: o recém-chegado cede"
+- [Figura 6.2.5](#625-disputa-os-dois-defendem): sequência de "Disputa: os dois defendem"
+- [Figura 6.2.6](#626-failover-com-arp-gratuito): sequência de "Failover com ARP gratuito"
+- [Figura 6.2.7](#627-failover-sem-arp-gratuito): sequência de "Failover sem ARP gratuito"
+- [Figura 6.3.1](#631-sem-ataque-referência): sequência de "Sem ataque (referência)"
+- [Figura 6.3.2](#632-cache-envenenado-http): sequência de "Cache envenenado (HTTP)"
+- [Figura 6.3.3](#633-só-a-vítima-é-enganada): sequência de "Só a vítima é enganada"
+- [Figura 6.3.4](#634-mesmo-desvio-tráfego-https): sequência de "Mesmo desvio, tráfego HTTPS"
+- [Figura 6.3.5](#635-defesa-entradas-estáticas): sequência de "Defesa: entradas estáticas"
+- [Figura 6.3.6](#636-defesa-dai-no-switch): sequência de "Defesa: DAI no switch"
+- [Figura 6.3.7](#637-detecção-mac-do-gateway-mudou): sequência de "Detecção: MAC do gateway mudou"
+
+## 3. Topologia
+
+Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
+
+### 3.1 Resolução
 
 ```mermaid
 flowchart LR
@@ -36,9 +101,9 @@ flowchart LR
   n_g --- n_net
 ```
 
-### ARP gratuito e conflito
+*Figura 3.1 (Tipo A, topologia).* Elementos do modo "Resolução": Host A (192.168.1.10); Switch (camada 2); Gateway (192.168.1.1); Host B (192.168.1.20); Outras redes (192.0.2.0/24). Vale para todos os cenários do modo (6.1.1 a 6.1.9).
 
-**Cenários: Endereço novo: Probe e Announce; Anúncio sem entradas antigas**
+### 3.2 ARP gratuito e conflito
 
 ```mermaid
 flowchart LR
@@ -53,7 +118,7 @@ flowchart LR
   n_g --- n_net
 ```
 
-**Cenários: Endereço já em uso (Probe)**
+*Figura 3.2a (Tipo A, topologia).* Elementos do modo "ARP gratuito e conflito": Host A (192.168.1.50); Switch (camada 2); Gateway (192.168.1.1); Host B (192.168.1.20); Outras redes (192.0.2.0/24). Vale para os cenários (6.2.1 e 6.2.2).
 
 ```mermaid
 flowchart LR
@@ -68,7 +133,7 @@ flowchart LR
   n_g --- n_net
 ```
 
-**Cenários: Disputa: o recém-chegado cede; Disputa: os dois defendem**
+*Figura 3.2b (Tipo A, topologia).* Elementos do modo "ARP gratuito e conflito": Host A (192.168.1.20 (pretendido)); Switch (camada 2); Gateway (192.168.1.1); Host B (192.168.1.20); Outras redes (192.0.2.0/24). Vale para os cenários (6.2.3).
 
 ```mermaid
 flowchart LR
@@ -83,7 +148,7 @@ flowchart LR
   n_g --- n_net
 ```
 
-**Cenários: Failover com ARP gratuito; Failover sem ARP gratuito**
+*Figura 3.2c (Tipo A, topologia).* Elementos do modo "ARP gratuito e conflito": Host A (192.168.1.50); Switch (camada 2); Gateway (192.168.1.1); Host B (192.168.1.50); Outras redes (192.0.2.0/24). Vale para os cenários (6.2.4 e 6.2.5).
 
 ```mermaid
 flowchart LR
@@ -98,8 +163,9 @@ flowchart LR
   n_g --- n_net
 ```
 
-### Envenenamento de cache
+*Figura 3.2d (Tipo A, topologia).* Elementos do modo "ARP gratuito e conflito": Host A (192.168.1.20 (assume)); Switch (camada 2); Gateway (192.168.1.1); Host B (192.168.1.20); Outras redes (192.0.2.0/24). Vale para os cenários (6.2.6 e 6.2.7).
 
+### 3.3 Envenenamento de cache
 
 ```mermaid
 flowchart LR
@@ -116,20 +182,22 @@ flowchart LR
   class n_m atacante
 ```
 
-## Abas da bancada
+*Figura 3.3 (Tipo A, topologia).* Elementos do modo "Envenenamento de cache": Host A (192.168.1.10); Switch (camada 2); Gateway (192.168.1.1); Host M (192.168.1.66); Servidor (192.0.2.50). Vale para todos os cenários do modo (6.3.1 a 6.3.7).
+
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
 
-## Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### Rede
+### 5.1 Rede
 
 - **RTT (ms)**. Valores: 1; 2; 5; 20; 100. Padrão: 2. Modos: todos.
   - Tempo de ida e volta na rede local.
   - Numa rede local Ethernet o RTT costuma ser de poucos milissegundos. Valores altos servem para ver o diagrama mais espaçado.
   - Não muda o que o ARP faz, só os tempos mostrados.
 
-### Destino
+### 5.2 Destino
 
 - **Para onde o host A envia**. Valores: Host B (mesma sub-rede); Destino remoto, via gateway; Destino remoto, sem gateway (máscara errada). Padrão: Host B (mesma sub-rede). Modos: Resolução.
   - Define por qual IP o ARP vai perguntar.
@@ -137,7 +205,7 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - **Destino remoto via gateway:** o ARP pergunta pelo IP do **gateway**, nunca pelo IP remoto. O quadro vai ao MAC do gateway, e o IP de destino continua o remoto.
   - **Sem gateway:** a máscara errada faz o host achar que o destino remoto é local e perguntar por ele. Só um roteador com proxy ARP responde.
 
-### Tabela ARP do host A
+### 5.3 Tabela ARP do host A
 
 - **Estado inicial da entrada**. Valores: Sem entrada (primeira vez); Entrada recente (REACHABLE); Entrada antiga (STALE). Padrão: Sem entrada (primeira vez). Modos: Resolução.
   - O que o host A já sabe antes do ping.
@@ -145,7 +213,7 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - **Recente:** acerto na tabela, nenhuma mensagem ARP.
   - **Antiga (STALE):** o host ainda usa o endereço, mas o confirma com uma requisição unicast.
 
-### Falhas
+### 5.4 Falhas
 
 - **O próximo salto está ligado**. Valores: caixa de seleção. Padrão: sim. Modos: Resolução.
   - Vizinho (host B) ou gateway, conforme o destino.
@@ -159,7 +227,7 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - Simula uma perda na rede local.
   - Se não há resposta em cerca de 1 s, o sistema retransmite a requisição. O ping demora mais, mas funciona.
 
-### Situação
+### 5.5 Situação
 
 - **O que acontece**. Valores: Endereço novo: verificação e anúncio; Endereço já em uso por outro host; Dois hosts com o mesmo endereço; Failover: o reserva assume o IP. Padrão: Endereço novo: verificação e anúncio. Modos: ARP gratuito e conflito.
   - Qual das quatro histórias do ARP gratuito será simulada.
@@ -168,28 +236,28 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - **Mesmo endereço:** o dono defende o endereço e a disputa se resolve (ou não).
   - **Failover:** o reserva assume o IP do principal que caiu.
 
-### Tabelas
+### 5.6 Tabelas
 
 - **Os vizinhos guardam um MAC antigo do endereço**. Valores: caixa de seleção. Padrão: sim. Modos: ARP gratuito e conflito.
   - Vale para o endereço novo.
   - Marcado, o gateway e o host B ainda têm uma entrada com o MAC de um dono anterior do IP, e o Announce a atualiza.
   - Desmarcado, ninguém tinha entrada e o Announce não muda nenhuma tabela.
 
-### Disputa
+### 5.7 Disputa
 
 - **O host recém-chegado cede ao conflito**. Valores: caixa de seleção. Padrão: sim. Modos: ARP gratuito e conflito.
   - Vale para a disputa de endereço.
   - Marcado, o host B abandona o endereço assim que o dono o defende.
   - Desmarcado, B também defende. A recebe um segundo conflito em menos de 10 s e abandona o endereço ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227)).
 
-### Failover
+### 5.8 Failover
 
 - **Enviar ARP gratuito ao assumir o IP**. Valores: caixa de seleção. Padrão: sim. Modos: ARP gratuito e conflito.
   - Vale para o failover.
   - Marcado, o novo dono avisa a rede e o gateway atualiza a tabela na hora.
   - Desmarcado, o gateway continua enviando ao MAC do host que caiu até a entrada expirar e ser revalidada.
 
-### Cenário
+### 5.9 Cenário
 
 - **Há um host malicioso na rede local**. Valores: caixa de seleção. Padrão: sim. Modos: Envenenamento de cache.
   - Liga ou desliga o ataque, para comparar com a situação normal.
@@ -199,14 +267,14 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - Marcado, o host A e o gateway são enganados: o tráfego passa pelo host M nos dois sentidos.
   - Desmarcado, só A é enganado: M vê o que A envia, mas a resposta do servidor volta direto para A.
 
-### Tráfego
+### 5.10 Tráfego
 
 - **Tráfego da vítima**. Valores: HTTP (texto puro); HTTPS (TLS, cifrado). Padrão: HTTP (texto puro). Modos: Envenenamento de cache.
   - O que A envia ao servidor.
   - **HTTP:** quem fica no meio do caminho lê o conteúdo, inclusive cookies de sessão.
   - **HTTPS:** o conteúdo está cifrado entre as pontas. O desvio continua acontecendo, mas M vê só tamanhos e momentos dos registros.
 
-### Defesa
+### 5.11 Defesa
 
 - **Defesa na rede local**. Valores: Nenhuma; Entradas ARP estáticas (host e gateway); DAI no switch (com DHCP snooping); Monitoramento da tabela ARP (só alerta). Padrão: Nenhuma. Modos: Envenenamento de cache.
   - Como a rede reage às respostas forjadas.
@@ -214,15 +282,15 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - **DAI (Dynamic ARP Inspection):** o switch descarta respostas ARP cujo par IP e MAC não confere com a tabela do DHCP snooping.
   - **Monitoramento:** detecta a mudança de MAC e alerta, mas não impede o desvio.
 
-## Cenários
+## 6. Cenários
 
-### Modo: Resolução
+### 6.1 Modo: Resolução
 
-#### Resolução básica
+> **Grupo:** Resolução básica
 
 O ARP traduz um endereço IP no endereço físico (MAC) do mesmo segmento. A tabela ARP guarda o resultado para que a pergunta não se repita a cada pacote.
 
-##### Primeira resolução
+#### 6.1.1 Primeira resolução
 
 *Pergunta em broadcast, resposta unicast.*
 
@@ -238,8 +306,6 @@ O host A quer fazer um ping no host B, na mesma rede, e **não tem o endereço f
 - O gateway também recebe a pergunta e a descarta.
 - B guarda o MAC de A ao receber a requisição, por isso o Echo Reply não precisa de outra consulta.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -255,6 +321,8 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeira resolução", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -265,7 +333,7 @@ sequenceDiagram
 
 **Por que importa.** É o caso mais comum: todo primeiro contato numa rede local passa por aqui, e o resultado fica guardado na tabela ARP.
 
-##### Entrada já em cache
+#### 6.1.2 Entrada já em cache
 
 *Acerto na tabela: nenhum ARP.*
 
@@ -280,8 +348,6 @@ A tabela ARP de A já tem o endereço de B. **Nenhuma mensagem ARP** é enviada:
 - Não há mensagem ARP no diagrama.
 - O primeiro quadro é o próprio Echo Request.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -293,6 +359,8 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Entrada já em cache", na ordem do tempo, entre Host A, Host B, Gateway: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -301,7 +369,7 @@ sequenceDiagram
 
 **Por que importa.** A tabela ARP evita uma pergunta por pacote. É também o que torna o envenenamento da tabela tão eficaz: o host confia no que já guardou.
 
-##### Entrada antiga (revalidação)
+#### 6.1.3 Entrada antiga (revalidação)
 
 *A entrada antiga é confirmada por unicast.*
 
@@ -315,8 +383,6 @@ A entrada de B está **STALE**: o host ainda a usa, mas a confirma perguntando *
 
 - A requisição vai para o MAC de B, e não para ff:ff:ff:ff:ff:ff.
 - A resposta devolve a entrada a REACHABLE.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -332,6 +398,8 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Entrada antiga (revalidação)", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -341,11 +409,11 @@ sequenceDiagram
 
 **Por que importa.** A confirmação unicast mantém a tabela correta sem sobrecarregar a rede com broadcasts.
 
-#### Fora da sub-rede
+> **Grupo:** Fora da sub-rede
 
 O ARP só vale dentro da rede local. Para chegar a outra rede, o host resolve o endereço físico do gateway, e não o do destino remoto.
 
-##### Destino remoto via gateway
+#### 6.1.4 Destino remoto via gateway
 
 *O ARP pergunta pelo gateway, não pelo destino remoto.*
 
@@ -360,8 +428,6 @@ O destino está em outra rede. O host A **não pergunta pelo IP remoto**: pergun
 - O Who has pergunta por 192.168.1.1, e não por 192.0.2.50.
 - No Echo Request, o MAC de destino é o do gateway e o IP de destino é o remoto.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -377,6 +443,8 @@ sequenceDiagram
   n_g ->> n_a: Echo Reply
 ```
 
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Destino remoto via gateway", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -387,7 +455,7 @@ sequenceDiagram
 
 **Por que importa.** É o que o aluno costuma errar: o ARP nunca resolve o endereço de um host de outra rede.
 
-##### Proxy ARP (sem gateway)
+#### 6.1.5 Proxy ARP (sem gateway)
 
 *O roteador responde no lugar do destino remoto.*
 
@@ -402,8 +470,6 @@ A máscara de A está errada e ele acha que o destino remoto é local. O roteado
 - O Who has pergunta por 192.0.2.50, que não está nesta rede.
 - A resposta traz o MAC do gateway, e não o do destino.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -419,6 +485,8 @@ sequenceDiagram
   n_g ->> n_a: Echo Reply
 ```
 
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Proxy ARP (sem gateway)", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -428,7 +496,7 @@ sequenceDiagram
 
 **Por que importa.** O proxy ARP faz um erro de configuração parecer funcionar, o que dificulta achar o problema e aumenta a tabela ARP.
 
-##### Sem gateway e sem proxy ARP
+#### 6.1.6 Sem gateway e sem proxy ARP
 
 *Ninguém responde: o ping falha.*
 
@@ -443,8 +511,6 @@ Mesma máscara errada, mas o roteador **não faz proxy ARP**. Ninguém responde 
 - As três requisições seguem sem resposta.
 - A entrada de A vira FAILED.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -460,6 +526,8 @@ sequenceDiagram
   n_a ->> n_g: ARP Request
 ```
 
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Sem gateway e sem proxy ARP", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -468,11 +536,11 @@ sequenceDiagram
 
 **Por que importa.** O sintoma, "Destination Host Unreachable", aponta para uma falha no ARP, e não na rota. Conferir a máscara resolve.
 
-#### Falhas
+> **Grupo:** Falhas
 
 Sem resposta ARP o pacote IP nem chega a ser montado. A perda, o host desligado e a entrada desatualizada têm sintomas diferentes.
 
-##### Destino desligado
+#### 6.1.7 Destino desligado
 
 *Três tentativas e a entrada vira FAILED.*
 
@@ -487,8 +555,6 @@ B está desligado. A repete a requisição **3 vezes**, com 1 s entre elas, e de
 - São 3 requisições, 1 s entre elas.
 - Nenhum ICMP circula na rede: o aviso é gerado em A.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -504,6 +570,8 @@ sequenceDiagram
   n_a -x n_b: ARP Request
 ```
 
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Destino desligado", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens (em 3 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -512,7 +580,7 @@ sequenceDiagram
 
 **Por que importa.** "Destination Host Unreachable" vindo do próprio host indica falha de resolução ARP, e não uma mensagem de um roteador.
 
-##### Requisição perdida e retransmitida
+#### 6.1.8 Requisição perdida e retransmitida
 
 *A retransmissão resolve a perda.*
 
@@ -526,8 +594,6 @@ A primeira requisição se perde. Sem resposta em 1 s, o host **retransmite** e 
 
 - A primeira requisição aparece com ✕.
 - O ping demora cerca de 1 s a mais.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -546,6 +612,8 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Requisição perdida e retransmitida", na ordem do tempo, entre Host A, Host B, Gateway: 7 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -556,7 +624,7 @@ sequenceDiagram
 
 **Por que importa.** Perdas esporádicas viram atrasos de 1 s no primeiro pacote, uma assinatura típica de problemas na camada 2.
 
-##### Entrada recente, host desligado
+#### 6.1.9 Entrada recente, host desligado
 
 *A tabela guardava um host que já não responde.*
 
@@ -571,8 +639,6 @@ A tabela ainda guarda o endereço de B, que foi desligado. O ping sai sem consul
 - Não há mensagem ARP.
 - O Echo Request aparece com ✕.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>origem
@@ -583,6 +649,8 @@ sequenceDiagram
   n_a -x n_b: Echo Request
 ```
 
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Entrada recente, host desligado", na ordem do tempo, entre Host A, Host B, Gateway: 1 mensagem (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -591,13 +659,13 @@ sequenceDiagram
 
 **Por que importa.** A tabela ARP não é um teste de vida: um ping sem resposta pode ter a entrada ainda "boa".
 
-### Modo: ARP gratuito e conflito
+### 6.2 Modo: ARP gratuito e conflito
 
-#### Anúncio de endereço
+> **Grupo:** Anúncio de endereço
 
 Antes de usar um endereço, o host verifica se há conflito (ARP Probe) e depois o anuncia (ARP Announce), como define a [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227). Os dois usam pacotes ARP comuns, com o IP do remetente e o do alvo escolhidos de propósito.
 
-##### Endereço novo: Probe e Announce
+#### 6.2.1 Endereço novo: Probe e Announce
 
 *Três Probes e dois Announces antes de usar o endereço.*
 
@@ -613,8 +681,6 @@ O host A vai usar um endereço novo. Antes, faz **3 Probes** para saber se algu�
 - O Announce leva o mesmo IP como remetente e como alvo.
 - No gateway, a entrada do endereço passa do MAC antigo para o MAC de A.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>configura o endereço
@@ -634,6 +700,8 @@ sequenceDiagram
   n_a ->> n_g: ARP Announce
 ```
 
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Endereço novo: Probe e Announce", na ordem do tempo, entre Host A, Host B, Gateway: 10 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -643,7 +711,7 @@ sequenceDiagram
 
 **Por que importa.** O Probe evita configurar um endereço duplicado, e o Announce faz a rede esquecer o dono anterior sem esperar as tabelas expirarem.
 
-##### Anúncio sem entradas antigas
+#### 6.2.2 Anúncio sem entradas antigas
 
 *Se ninguém tinha entrada, o Announce não muda nenhuma tabela.*
 
@@ -658,8 +726,6 @@ Mesma sequência, mas nenhum vizinho tinha entrada para o endereço: o Announce 
 - Os vizinhos mostram "sem entrada: nada a atualizar".
 - A tabela do gateway continua vazia.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>configura o endereço
@@ -679,6 +745,8 @@ sequenceDiagram
   n_a ->> n_g: ARP Announce
 ```
 
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Anúncio sem entradas antigas", na ordem do tempo, entre Host A, Host B, Gateway: 10 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -688,11 +756,11 @@ sequenceDiagram
 
 **Por que importa.** O anúncio é útil sobretudo quando o endereço já foi de outro host, caso comum com DHCP.
 
-#### Conflito de endereço
+> **Grupo:** Conflito de endereço
 
 Dois hosts com o mesmo IP quebram a comunicação dos dois. O ARP é o meio de descobrir e de defender o endereço.
 
-##### Endereço já em uso (Probe)
+#### 6.2.3 Endereço já em uso (Probe)
 
 *O dono do endereço responde ao Probe e o host desiste.*
 
@@ -708,8 +776,6 @@ O endereço que A quer **já pertence ao host B**. B responde ao primeiro Probe 
 - O host A não chega a mandar nenhum Announce.
 - O endereço de A continua sem uso.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>quer o endereço
@@ -721,6 +787,8 @@ sequenceDiagram
   n_b ->> n_a: ARP Reply
 ```
 
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Endereço já em uso (Probe)", na ordem do tempo, entre Host A, Host B, Gateway: 3 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -730,7 +798,7 @@ sequenceDiagram
 
 **Por que importa.** Sem a verificação, o endereço duplicado derrubaria as conexões do host original.
 
-##### Disputa: o recém-chegado cede
+#### 6.2.4 Disputa: o recém-chegado cede
 
 *O dono defende o endereço e o outro cede.*
 
@@ -745,8 +813,6 @@ B é configurado à mão com o endereço de A, sem verificar conflito. A **defen
 - O gateway troca a entrada para o MAC de B e depois a devolve para o MAC de A.
 - Entre as duas mensagens, o tráfego do gateway iria para o host errado.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>dono do endereço
@@ -760,6 +826,8 @@ sequenceDiagram
   n_a ->> n_g: ARP Announce (defesa)
 ```
 
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Disputa: o recém-chegado cede", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -769,7 +837,7 @@ sequenceDiagram
 
 **Por que importa.** Endereços duplicados por configuração manual são comuns, e a tabela do gateway oscila enquanto a disputa dura.
 
-##### Disputa: os dois defendem
+#### 6.2.5 Disputa: os dois defendem
 
 *Se os dois defendem, o dono desiste no segundo conflito.*
 
@@ -783,8 +851,6 @@ B também defende o endereço. A recebe um **segundo conflito em menos de 10 s**
 
 - O gateway termina apontando para o MAC de B.
 - O estado final é "B ficou com o endereço".
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -802,6 +868,8 @@ sequenceDiagram
   n_b ->> n_g: ARP Announce (defesa)
 ```
 
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Disputa: os dois defendem", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -812,11 +880,11 @@ sequenceDiagram
 
 **Por que importa.** A regra de desistir no segundo conflito evita uma disputa sem fim, mas pode tirar o endereço de quem o tinha primeiro.
 
-#### Failover de IP
+> **Grupo:** Failover de IP
 
 Quando um host reserva assume o IP do principal, os vizinhos ainda guardam o MAC do host antigo. O ARP gratuito corrige as tabelas na hora.
 
-##### Failover com ARP gratuito
+#### 6.2.6 Failover com ARP gratuito
 
 *O ARP gratuito atualiza o gateway na hora.*
 
@@ -830,8 +898,6 @@ O principal cai e o reserva assume o IP. O reserva envia um **ARP gratuito**, o 
 
 - O ARP gratuito chega ao gateway, mas não a B, que está fora do ar.
 - A tabela do gateway muda para o MAC de A.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -847,6 +913,8 @@ sequenceDiagram
   n_a ->> n_g: Echo Reply
 ```
 
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Failover com ARP gratuito", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -856,7 +924,7 @@ sequenceDiagram
 
 **Por que importa.** É o que protocolos de redundância como VRRP e clusters fazem ao trocar o responsável por um IP.
 
-##### Failover sem ARP gratuito
+#### 6.2.7 Failover sem ARP gratuito
 
 *Sem aviso, o gateway só corrige quando a entrada expira.*
 
@@ -870,8 +938,6 @@ O reserva assume o IP e **não avisa ninguém**. O gateway continua mandando ao 
 
 - O primeiro ping fica sem resposta.
 - As sondas unicast para B também ficam sem resposta e a entrada vira FAILED.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -892,6 +958,8 @@ sequenceDiagram
   n_a ->> n_g: Echo Reply
 ```
 
+*Figura 6.2.7 (Tipo B, sequência).* Mensagens do cenário "Failover sem ARP gratuito", na ordem do tempo, entre Host A, Host B, Gateway: 9 mensagens (em 3 fases; 5 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -902,13 +970,13 @@ sequenceDiagram
 
 **Por que importa.** Sem o ARP gratuito, o failover pode levar de dezenas de segundos a horas para chegar a todos os vizinhos.
 
-### Modo: Envenenamento de cache
+### 6.3 Modo: Envenenamento de cache
 
-#### Referência
+> **Grupo:** Referência
 
 Antes de olhar o ataque, convém ver o fluxo normal, com as duas tabelas ARP corretas.
 
-##### Sem ataque (referência)
+#### 6.3.1 Sem ataque (referência)
 
 *As duas tabelas estão corretas e o tráfego vai direto.*
 
@@ -923,8 +991,6 @@ A situação normal: as tabelas de A e do gateway estão corretas e o tráfego v
 - O MAC de destino dos quadros é sempre o do gateway ou o de A.
 - O host M não aparece no caminho.
 
-**Diagrama de sequência**
-
 ```mermaid
 sequenceDiagram
   participant n_a as Host A<br/>vítima
@@ -936,6 +1002,8 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Sem ataque (referência)", na ordem do tempo, entre Host A, Host M, Gateway: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -944,11 +1012,11 @@ sequenceDiagram
 
 **Por que importa.** É a referência para comparar com os cenários de ataque e de defesa.
 
-#### O ataque e seu efeito
+> **Grupo:** O ataque e seu efeito
 
 O ARP aceita respostas sem verificar quem as enviou. Dentro da rede local, isso permite que um host se coloque no caminho do tráfego de outros. O que ele consegue ler depende do protocolo usado.
 
-##### Cache envenenado (HTTP)
+#### 6.3.2 Cache envenenado (HTTP)
 
 *Respostas forjadas colocam M no caminho do tráfego.*
 
@@ -963,8 +1031,6 @@ O host M envia respostas ARP que ninguém pediu. A e o gateway as aceitam, e o t
 - A resposta forjada traz o MAC de M como remetente e o IP do gateway como endereço declarado.
 - A tabela de A passa a associar o IP do gateway ao MAC de M.
 - M repassa os quadros, e por isso a comunicação continua funcionando.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -982,6 +1048,8 @@ sequenceDiagram
   n_m ->> n_a: HTTP 200 (repassado)
 ```
 
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Cache envenenado (HTTP)", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -991,7 +1059,7 @@ sequenceDiagram
 
 **Por que importa.** Em HTTP, quem fica no meio do caminho lê tudo, inclusive cookies de sessão. É um risco de redes locais compartilhadas, como Wi-Fi público.
 
-##### Só a vítima é enganada
+#### 6.3.3 Só a vítima é enganada
 
 *Com só a vítima enganada, M vê só um sentido.*
 
@@ -1005,8 +1073,6 @@ Só A recebe a resposta forjada. M vê **só a requisição**; a resposta do ser
 
 - A resposta do servidor não passa por M.
 - O estado diz "ida por M, volta direta".
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1022,6 +1088,8 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Só a vítima é enganada", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1032,7 +1100,7 @@ sequenceDiagram
 
 **Por que importa.** Mostra que o desvio pode ser parcial: nem sempre o intermediário vê a conversa inteira.
 
-##### Mesmo desvio, tráfego HTTPS
+#### 6.3.4 Mesmo desvio, tráfego HTTPS
 
 *O desvio ocorre, mas o conteúdo cifrado continua protegido.*
 
@@ -1046,8 +1114,6 @@ O desvio acontece do mesmo jeito, mas o tráfego é **HTTPS**: M recebe os quadr
 
 - A tabela de A continua envenenada.
 - M vê só dados cifrados (TLS).
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1065,6 +1131,8 @@ sequenceDiagram
   n_m ->> n_a: [cifrado] TLS dados (repassado)
 ```
 
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Mesmo desvio, tráfego HTTPS", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens (em 3 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1074,11 +1142,11 @@ sequenceDiagram
 
 **Por que importa.** A cifra de ponta a ponta (HTTPS, SSH) limita o dano de um desvio na camada 2, o que liga este simulador ao de HTTPS e ao de SSH.
 
-#### Defesas
+> **Grupo:** Defesas
 
 As defesas atuam em pontos diferentes: no host (entrada estática), no switch (DAI) e na observação da rede (monitoramento). Nenhuma substitui a cifra de ponta a ponta.
 
-##### Defesa: entradas estáticas
+#### 6.3.5 Defesa: entradas estáticas
 
 *A entrada estática não aceita a resposta forjada.*
 
@@ -1092,8 +1160,6 @@ Com **entradas ARP estáticas** no host e no gateway, as respostas forjadas são
 
 - Os dois hosts ignoram a resposta forjada.
 - As tabelas ficam como estavam.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1109,6 +1175,8 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "Defesa: entradas estáticas", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1118,7 +1186,7 @@ sequenceDiagram
 
 **Por que importa.** Faz sentido em poucos hosts críticos, como servidores e gateways, em que o endereço físico quase não muda.
 
-##### Defesa: DAI no switch
+#### 6.3.6 Defesa: DAI no switch
 
 *O switch descarta a resposta antes de chegar aos hosts.*
 
@@ -1132,8 +1200,6 @@ O **switch com DAI** confere cada resposta ARP com a tabela do DHCP snooping e d
 
 - A resposta forjada para no switch (✕ no caminho).
 - As tabelas dos hosts continuam corretas.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1149,6 +1215,8 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
+*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "Defesa: DAI no switch", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1158,7 +1226,7 @@ sequenceDiagram
 
 **Por que importa.** Protege toda a rede sem configurar cada host, desde que o DHCP snooping esteja ativo e as portas de uplink estejam marcadas como confiáveis.
 
-##### Detecção: MAC do gateway mudou
+#### 6.3.7 Detecção: MAC do gateway mudou
 
 *O monitoramento detecta a mudança de MAC, mas não bloqueia.*
 
@@ -1172,8 +1240,6 @@ O **monitoramento** percebe que o MAC do gateway mudou e gera um alerta. Detecta
 
 - O alerta aparece no estado e no Log.
 - O tráfego já foi desviado.
-
-**Diagrama de sequência**
 
 ```mermaid
 sequenceDiagram
@@ -1191,6 +1257,8 @@ sequenceDiagram
   n_m ->> n_a: HTTP 200 (repassado)
 ```
 
+*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "Detecção: MAC do gateway mudou", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+
 **Mensagens**
 
 | Mensagem | Significado | Origem |
@@ -1200,7 +1268,7 @@ sequenceDiagram
 
 **Por que importa.** Detecção sem bloqueio é complementar: avisa a equipe, que pode isolar a porta do host suspeito.
 
-## Referência
+## 7. Referência
 
 ### O que o ARP resolve
 
