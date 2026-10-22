@@ -233,6 +233,36 @@ function nativePage(sim, def) {
   return L.join('\n') + footer;
 }
 
+/**
+ * Particularidades das páginas legadas. O TCP e UDP tem cinco modos escolhidos por botões (protocolo e
+ * aplicação) e uma tabela de captura que o botão Passo revela; hosts nomeia os endereços da captura
+ * (CLI e SRV nas constantes da página).
+ */
+const LEGACY = {
+  'tcp-udp-simulator.html': {
+    capture: true,
+    hosts: { '192.168.10.10': 'Cliente', '203.0.113.80': 'Servidor' },
+    modes: [
+      { label: 'TCP: conexão', proto: 'tcp', sub: 0 },
+      { label: 'TCP: download de arquivo', proto: 'tcp', sub: 1 },
+      { label: 'UDP: fluxo de datagramas e DNS', proto: 'udp', sub: 0 },
+      { label: 'UDP: vídeo em streaming', proto: 'udp', sub: 2 },
+      { label: 'Comparação TCP x UDP', proto: 'cmp', sub: 0 },
+    ],
+  },
+};
+
+/** Diagrama de sequência a partir da tabela de captura: [nº, tempo, origem, destino, protocolo, tamanho, informação]. */
+function captureSequence(rows, hosts = {}) {
+  const ips = [];
+  for (const r of rows) for (const ip of [r[2], r[3]]) if (!ips.includes(ip)) ips.push(ip);
+  const id = (ip) => 'h_' + ip.replace(/[^A-Za-z0-9]/g, '_');
+  const L = ['sequenceDiagram'];
+  for (const ip of ips) L.push(`  participant ${id(ip)} as ${hosts[ip] ? hosts[ip] + '<br/>' : ''}${ip}`);
+  for (const r of rows) L.push(`  ${id(r[2])} ${/perdid/i.test(r[6]) ? '-x' : '->>'} ${id(r[3])}: ${mmMsg(r[4] + ' ' + r[6])}`);
+  return '```mermaid\n' + L.join('\n') + '\n```';
+}
+
 /** Executa uma página legada no jsdom e captura controles, ajuda, abas, cenários e referência. */
 function extractLegacy(file) {
   const html = fs.readFileSync(path.join(root, 'public', 'sims', file), 'utf8');
@@ -272,23 +302,48 @@ function extractLegacy(file) {
       help,
     };
   });
-  let grp = '';
-  for (const el of d.getElementById('scenRow').children) {
-    if (el.classList.contains('scen-group')) { grp = el.textContent.trim(); continue; }
-    if (el.tagName !== 'BUTTON') continue;
-    el.click();
-    const body = d.getElementById('scenBody');
-    const main = body.querySelector('.sc-main');
-    r.scenarios.push({
-      group: grp,
-      label: el.textContent.trim(),
-      title: main?.querySelector('.sc-title')?.textContent.trim(),
-      cmd: main?.querySelector('.sc-cmd')?.textContent.trim(),
-      html: [...(main?.children ?? [])].filter((c) => !c.matches('.sc-kicker, .sc-title, .sc-cmd')).map((c) => c.outerHTML).join(''),
-    });
-    for (const h of body.querySelectorAll('.sc-side h4')) {
-      const g = h.nextElementSibling;
-      if (g?.classList.contains('sc-gdoc')) r.groupDoc[h.textContent.trim()] = g.innerHTML;
+  const cfg = LEGACY[file] ?? {};
+  const capRows = () => [...d.querySelectorAll('#capBody tr')].filter((tr) => !tr.classList.contains('placeholder-row'));
+  for (const mode of cfg.modes ?? [{ label: '' }]) {
+    if (mode.proto) {
+      d.querySelector(`#protoSeg [data-proto="${mode.proto}"]`).click();
+      const subs = [...d.querySelectorAll('#subSeg button')];
+      if (subs[mode.sub]) subs[mode.sub].click();
+    }
+    let grp = '';
+    for (const el of [...d.getElementById('scenRow').children]) {
+      if (el.classList.contains('scen-group')) { grp = el.textContent.trim(); continue; }
+      if (el.tagName !== 'BUTTON') continue;
+      el.click();
+      const body = d.getElementById('scenBody');
+      const main = body.querySelector('.sc-main');
+      let capture;
+      if (cfg.capture) {
+        // Avança passo a passo até a captura parar de crescer (o motor calcula tudo de uma vez; o passo só revela).
+        let stable = 0, prev = -1, i = 0;
+        while (stable < 15 && i++ < 5000) {
+          const b = d.getElementById('btnStep');
+          if (!b || b.disabled) break;
+          b.click();
+          const n = capRows().length;
+          stable = n === prev ? stable + 1 : 0;
+          prev = n;
+        }
+        capture = capRows().map((tr) => [...tr.children].map((td) => td.textContent.trim()));
+      }
+      r.scenarios.push({
+        mode: mode.label,
+        group: grp,
+        label: el.textContent.trim(),
+        title: main?.querySelector('.sc-title')?.textContent.trim(),
+        cmd: main?.querySelector('.sc-cmd')?.textContent.trim(),
+        html: [...(main?.children ?? [])].filter((c) => !c.matches('.sc-kicker, .sc-title, .sc-cmd')).map((c) => c.outerHTML).join(''),
+        capture,
+      });
+      for (const h of body.querySelectorAll('.sc-side h4')) {
+        const g = h.nextElementSibling;
+        if (g?.classList.contains('sc-gdoc')) r.groupDoc[h.textContent.trim()] = g.innerHTML;
+      }
     }
   }
   r.tabs = [...d.querySelectorAll('.tab-btn')].map((b) => b.textContent.trim());
@@ -313,16 +368,20 @@ function legacyPage(sim) {
     for (const p of c.help?.p ?? []) L.push(`  - ${md(p).replace(/\n+/g, ' ')}`);
   }
   L.push('', '## Cenários\n');
-  let last = '';
+  let lastMode = null, last = '';
+  const multi = x.scenarios.some((s) => s.mode);
+  const H = multi ? '#' : '';
   for (const s of x.scenarios) {
+    if (multi && s.mode !== lastMode) { lastMode = s.mode; last = ''; L.push(`### Modo: ${s.mode}\n`); }
     if (s.group !== last) {
       last = s.group;
-      L.push(`### ${s.group}\n`);
+      L.push(`###${H} ${s.group}\n`);
       if (x.groupDoc[s.group]) L.push(`${md(x.groupDoc[s.group])}\n`);
     }
-    L.push(`#### ${s.title ?? s.label}\n`);
+    L.push(`####${H} ${s.title ?? s.label}\n`);
     if (s.cmd) L.push(`${md(s.cmd)}\n`);
     L.push(`${md(s.html.replace(/<h4>([\s\S]*?)<\/h4>/gi, '<p><b>$1.</b></p>'))}\n`);
+    if (s.capture?.length) L.push('**Diagrama de sequência** (a partir da aba Captura)\n', captureSequence(s.capture, LEGACY[sim.file]?.hosts), '');
   }
   L.push('## Referência\n', md(x.ref).replace(/^#### /gm, '### ') + '\n');
   return L.join('\n') + footer;
