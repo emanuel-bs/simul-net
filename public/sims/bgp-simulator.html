@@ -1122,15 +1122,18 @@
       });
     });
   }
+  let capShownN=0;
   function renderCapture(){
     const tb=$('capBody'); tb.innerHTML='';
-    if(!capture.length){ tb.innerHTML='<tr class="placeholder-row"><td colspan="7">Nenhuma mensagem ainda. Avance as fases para ver o TCP, os OPEN, os KEEPALIVE e os UPDATE.</td></tr>'; return; }
+    const sc=tb.parentElement.parentElement, grew=capture.length>capShownN; capShownN=capture.length;
+    if(!capture.length){ tb.innerHTML='<tr class="placeholder-row"><td colspan="7">Nenhuma mensagem ainda. Avance as fases para ver o TCP, os OPEN, os KEEPALIVE e os UPDATE.</td></tr>'; sc.scrollTop=0; return; }
     capture.forEach(c=>{
       const tr=document.createElement('tr'); tr.className='cap-row'+(msgSel===c?' selected':'');
       tr.innerHTML='<td>'+c.n+'</td><td>'+c.t.toFixed(2)+'</td><td>'+c.link+'</td><td>'+ASES[c.from].name+'</td><td>'+ASES[c.to].name+'</td><td>'+c.type+'</td><td>'+esc(c.info)+'</td>';
       tr.addEventListener('click',()=>{ msgSel=c; renderCapture(); renderMessage(); activateTab('msg'); });
       tb.appendChild(tr);
     });
+    if(grew) sc.scrollTop=sc.scrollHeight;
   }
   function renderMessage(){
     const tb=$('msgBody'); tb.innerHTML='';

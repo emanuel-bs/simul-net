@@ -182,8 +182,29 @@ function Bench({ def }: Props) {
     } else if (lastAction.current === 'step') wrap.scrollTop = Math.max(0, layout.y(clock) * k - wrap.clientHeight * 0.5);
   }, [clock, player.playing, layout]);
 
+  // Captura e Log acompanham a simulação: a rolagem desce com as linhas novas, a menos que o aluno suba para reler.
+  const capRef = useRef<HTMLDivElement>(null);
+  const logRef = useRef<HTMLDivElement>(null);
+  const follow = useRef({ cap: true, log: true });
+  const trackScroll = (key: 'cap' | 'log') => (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    follow.current[key] = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+  };
+  const capCount = visibleMessages(tr, clock).length;
+  const logCount = visibleLog(tr, clock).length;
+  const atStart = clock === 0;
+  useEffect(() => {
+    const key = tab === 'cap' ? 'cap' : tab === 'log' ? 'log' : null;
+    const el = key === 'cap' ? capRef.current : key === 'log' ? logRef.current : null;
+    if (!key || !el) return;
+    if (atStart) {
+      follow.current[key] = true;
+      el.scrollTop = 0;
+    } else if (follow.current[key]) el.scrollTop = el.scrollHeight;
+  }, [tab, capCount, logCount, atStart]);
+
   const scenarios = def.scenarios;
-  const byId = (id: string | null) => scenarios.find((s) => s.id === id);
+  const byId =(id: string | null) => scenarios.find((s) => s.id === id);
   const active = byId(activeScen);
   const base = !active && baseScen ? byId(baseScen) : undefined;
   const selected: Message | null = selId === null ? null : (tr.msgs[selId] ?? null);
@@ -537,7 +558,7 @@ function Bench({ def }: Props) {
             )}
 
             {tabId === 'cap' && (
-              <div className="tab-scroll">
+              <div className="tab-scroll" ref={capRef} onScroll={trackScroll('cap')}>
                 <table>
                   <thead>
                     <tr>
@@ -655,7 +676,7 @@ function Bench({ def }: Props) {
             )}
 
             {tabId === 'log' && (
-              <div className="tab-scroll">
+              <div className="tab-scroll" ref={logRef} onScroll={trackScroll('log')}>
                 <div className="log-body">
                   {visibleLog(tr, clock).map((e, i) => (
                     <div key={i} dangerouslySetInnerHTML={html(`<span class="tag tag-${esc(e.tag)}">[${esc(e.tag.toUpperCase())}]</span> ${e.t.toFixed(1)} ms: ${esc(e.text)}`)} />
