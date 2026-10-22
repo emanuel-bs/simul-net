@@ -1,4 +1,4 @@
-export type CategoryId = 'camada-de-rede' | 'transporte' | 'protocolos-seguros';
+export type CategoryId = 'camada-de-enlace' | 'camada-de-rede' | 'transporte' | 'protocolos-seguros';
 
 export interface Category {
   id: CategoryId;
@@ -30,6 +30,11 @@ export interface SimMeta {
 }
 
 export const CATEGORIES: Category[] = [
+  {
+    id: 'camada-de-enlace',
+    title: 'Camada de enlace e redes locais',
+    description: 'Switching, VLANs, spanning tree e Wi-Fi: como os quadros são encaminhados, como a rede local evita laços e como as redes sem fio operam.',
+  },
   {
     id: 'camada-de-rede',
     title: 'Roteamento e serviços de rede',
@@ -199,6 +204,60 @@ export const SIMS: SimMeta[] = [
     summary: 'Gerência de redes com SNMP: GET, SET, GETNEXT, traps, a MIB e o modelo de segurança SNMPv3.',
     topics: [],
     rfcs: ['RFC 3411', 'RFC 3416', 'RFC 3414'],
+    status: 'planned',
+  },
+  {
+    id: 'switching',
+    category: 'camada-de-enlace',
+    title: 'Switching e aprendizado de MAC',
+    summary: 'Encaminhamento de quadros em switches Ethernet: tabela de endereços MAC, aprendizado, flooding, broadcast, envelhecimento, inundação de MAC e port security.',
+    topics: [],
+    rfcs: ['IEEE 802.1D', 'IEEE 802.3'],
+    status: 'planned',
+  },
+  {
+    id: 'stp',
+    category: 'camada-de-enlace',
+    title: 'STP, RSTP e MSTP',
+    summary: 'Spanning tree: eleição da bridge raiz, papéis e estados das portas, BPDUs, reconvergência após falha, tempestade de broadcast sem STP e proteções (BPDU Guard e Root Guard).',
+    topics: [],
+    rfcs: ['IEEE 802.1D', 'IEEE 802.1w', 'IEEE 802.1s'],
+    status: 'planned',
+  },
+  {
+    id: 'vlan',
+    category: 'camada-de-enlace',
+    title: 'VLAN e trunking (802.1Q)',
+    summary: 'Segmentação da rede local: marcação 802.1Q, portas de acesso e de tronco, VLAN nativa, roteamento entre VLANs e as defesas contra VLAN hopping.',
+    topics: [],
+    rfcs: ['IEEE 802.1Q'],
+    status: 'planned',
+  },
+  {
+    id: 'wifi',
+    category: 'camada-de-enlace',
+    title: 'Wi-Fi: operação (802.11)',
+    summary: 'Como uma rede local sem fio funciona: canais, beacon e probe, autenticação aberta e associação, acesso ao meio com CSMA/CA, RTS/CTS e nó oculto, roaming e economia de energia.',
+    topics: [],
+    rfcs: ['IEEE 802.11'],
+    status: 'planned',
+  },
+  {
+    id: 'wifi-seguranca',
+    category: 'protocolos-seguros',
+    title: 'Wi-Fi: segurança (WPA2 e WPA3)',
+    summary: 'Autenticação e proteção em redes sem fio: o handshake de quatro vias, PSK e SAE (WPA3), o modo empresarial com 802.1X e EAP, a proteção de quadros de gerência (PMF) e as defesas contra desautenticação e evil twin.',
+    topics: [],
+    rfcs: ['IEEE 802.11i', 'IEEE 802.11w', 'IEEE 802.1X', 'RFC 3748'],
+    status: 'planned',
+  },
+  {
+    id: 'ntp',
+    category: 'camada-de-rede',
+    title: 'NTP (sincronização de tempo)',
+    summary: 'Sincronização de relógios com NTPv4: os quatro timestamps, o cálculo de offset e delay, estratos, seleção de servidores e a autenticação com NTS.',
+    topics: [],
+    rfcs: ['RFC 5905', 'RFC 8915', 'RFC 5906'],
     status: 'planned',
   },
   {
