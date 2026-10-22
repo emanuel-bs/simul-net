@@ -4,7 +4,7 @@ Camada de transporte em diagrama de sequência: handshake e estados do TCP, ACKs
 
 - **Categoria:** Camada de transporte e segurança
 - **Motor:** legado (página autônoma em `public/sims/tcp-udp-simulator.html`, incorporada por `iframe`)
-- **RFCs e padrões:** RFC 9293, RFC 768, RFC 5681, RFC 2018
+- **RFCs e padrões:** [RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), [RFC 768](https://www.rfc-editor.org/rfc/rfc768), [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681), [RFC 2018](https://www.rfc-editor.org/rfc/rfc2018)
 - **Tópicos:** Handshake e estados; Controle de congestionamento e SACK; Download TCP e vídeo UDP; Comparação TCP x UDP
 
 ## Abas
@@ -60,7 +60,7 @@ Cenário, Captura, Segmento, Janela (cwnd), Resultados, Experimento, Referência
   - No UDP, a aplicação recebe os datagramas fora de ordem.
 - **Janela inicial**. Valores: 1 seg.; 4 seg.; 10 seg.. Padrão: 1 seg..
   - É quantos segmentos o emissor pode enviar antes do primeiro ACK.
-  - O valor original era 1; a RFC 5681 permite de 2 a 4 e o Linux usa 10 (RFC 6928).
+  - O valor original era 1; a [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681) permite de 2 a 4 e o Linux usa 10 ([RFC 6928](https://www.rfc-editor.org/rfc/rfc6928)).
   - Com 1, o slow start fica bem visível: 1, 2, 4, 8 segmentos por RTT.
 - **rwnd (seg.)**. Valores: 4; 8; 16; 32; 64; 256; 1024. Padrão: 16.
   - É o controle de fluxo: protege o receptor de receber mais do que consegue guardar. O valor aparece no campo Janela dos ACKs (16 segmentos = 16000 bytes).
@@ -168,7 +168,7 @@ Veja a aba Janela (cwnd). Repare também que os ACKs voltam espaçados e cadenci
 
 **Por que importa.**
 
-Evita que um emissor recém-chegado inunde a rede (RFC 5681). O Linux começa com janela 10 (RFC 6928) para acelerar transferências curtas.
+Evita que um emissor recém-chegado inunde a rede ([RFC 5681](https://www.rfc-editor.org/rfc/rfc5681)). O Linux começa com janela 10 ([RFC 6928](https://www.rfc-editor.org/rfc/rfc6928)) para acelerar transferências curtas.
 
 **Diagrama de sequência** (a partir da aba Captura)
 
@@ -339,7 +339,7 @@ Configuração do cenário: TCP; 6 segmentos de 1000 bytes; sem perda aleatória
 
 **O que é.**
 
-O **RTO** (Retransmission Timeout) é quanto o emissor espera por um ACK antes de concluir que o segmento se perdeu. Ele é calculado a partir do RTT medido (RFC 6298) e dobra a cada timeout seguido. Depois de um timeout, o TCP trata a rede como muito congestionada: a cwnd volta a 1 e o slow start recomeça.
+O **RTO** (Retransmission Timeout) é quanto o emissor espera por um ACK antes de concluir que o segmento se perdeu. Ele é calculado a partir do RTT medido ([RFC 6298](https://www.rfc-editor.org/rfc/rfc6298)) e dobra a cada timeout seguido. Depois de um timeout, o TCP trata a rede como muito congestionada: a cwnd volta a 1 e o slow start recomeça.
 
 **Neste cenário.**
 
@@ -485,7 +485,7 @@ Configuração do cenário: TCP; 30 segmentos de 1000 bytes; 8% de perda; janela
 
 **O que é.**
 
-Com **8% de perda aleatória**, aparecem ao mesmo tempo perdas isoladas (fast retransmit), várias perdas na mesma janela (ACKs parciais do NewReno, RFC 6582) e, às vezes, timeouts. A **semente** define o sorteio: a mesma semente repete exatamente as mesmas perdas.
+Com **8% de perda aleatória**, aparecem ao mesmo tempo perdas isoladas (fast retransmit), várias perdas na mesma janela (ACKs parciais do NewReno, [RFC 6582](https://www.rfc-editor.org/rfc/rfc6582)) e, às vezes, timeouts. A **semente** define o sorteio: a mesma semente repete exatamente as mesmas perdas.
 
 **Neste cenário.**
 
@@ -596,7 +596,7 @@ Configuração do cenário: TCP; 20 segmentos de 1000 bytes; sem perda aleatóri
 
 **O que é.**
 
-O ACK do TCP é **cumulativo**: informa só até onde os dados chegaram em ordem. Quando várias perdas ocorrem na mesma janela, o emissor só descobre uma lacuna de cada vez. O **NewReno** (RFC 6582) usa o **ACK parcial**, que avança até o próximo buraco, para retransmitir um segmento por RTT, ainda dentro do fast recovery.
+O ACK do TCP é **cumulativo**: informa só até onde os dados chegaram em ordem. Quando várias perdas ocorrem na mesma janela, o emissor só descobre uma lacuna de cada vez. O **NewReno** ([RFC 6582](https://www.rfc-editor.org/rfc/rfc6582)) usa o **ACK parcial**, que avança até o próximo buraco, para retransmitir um segmento por RTT, ainda dentro do fast recovery.
 
 **Neste cenário.**
 
@@ -687,7 +687,7 @@ Configuração do cenário: TCP; 20 segmentos de 1000 bytes; sem perda aleatóri
 
 **O que é.**
 
-O **SACK** (RFC 2018) é uma opção TCP negociada no handshake (**SACK_PERM**). Nos ACKs duplicados, o receptor acrescenta até 3 **blocos** com os intervalos de bytes que já chegaram além da lacuna (**SLE**, borda esquerda, e **SRE**, borda direita). O emissor monta um placar do que o receptor tem e repõe só os buracos, todos de uma vez, sem retransmitir o que já chegou.
+O **SACK** ([RFC 2018](https://www.rfc-editor.org/rfc/rfc2018)) é uma opção TCP negociada no handshake (**SACK_PERM**). Nos ACKs duplicados, o receptor acrescenta até 3 **blocos** com os intervalos de bytes que já chegaram além da lacuna (**SLE**, borda esquerda, e **SRE**, borda direita). O emissor monta um placar do que o receptor tem e repõe só os buracos, todos de uma vez, sem retransmitir o que já chegou.
 
 **Neste cenário.**
 
@@ -1182,7 +1182,7 @@ No máximo 16 kB chegam por RTT: cerca de 1,3 Mbps. A rede está quase ociosa, e
 
 **Por que importa.**
 
-Por isso existe a escala de janela (window scale, RFC 7323): sem ela, a janela máxima de 64 kB limita a vazão em caminhos de RTT alto.
+Por isso existe a escala de janela (window scale, [RFC 7323](https://www.rfc-editor.org/rfc/rfc7323)): sem ela, a janela máxima de 64 kB limita a vazão em caminhos de RTT alto.
 
 **Diagrama de sequência** (a partir da aba Captura)
 
@@ -2006,7 +2006,7 @@ Muitos pacotes chegam depois do prazo de exibição e são descartados. Aumente 
 
 **O que observar.**
 
-- Na aba Resultados: os pacotes fora do prazo e o jitter medido (RFC 3550).
+- Na aba Resultados: os pacotes fora do prazo e o jitter medido ([RFC 3550](https://www.rfc-editor.org/rfc/rfc3550)).
 - Aumente o buffer para 200 ms e veja os atrasos deixarem de causar defeitos.
 - Compare o atraso até a exibição nos dois casos: o buffer maior custa tempo.
 
@@ -2379,7 +2379,7 @@ sequenceDiagram
 
           
 
-O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entrega dados entre **processos**, identificados por **portas**. O **UDP** (RFC 768) acrescenta apenas portas, comprimento e checksum: cada datagrama é independente, sem conexão, sem confirmação, sem ordem e sem controle de taxa. O **TCP** (RFC 9293) oferece um fluxo de bytes confiável e ordenado, com controle de fluxo e de congestionamento, ao custo de abrir uma conexão e de esperar confirmações.
+O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entrega dados entre **processos**, identificados por **portas**. O **UDP** ([RFC 768](https://www.rfc-editor.org/rfc/rfc768)) acrescenta apenas portas, comprimento e checksum: cada datagrama é independente, sem conexão, sem confirmação, sem ordem e sem controle de taxa. O **TCP** ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293)) oferece um fluxo de bytes confiável e ordenado, com controle de fluxo e de congestionamento, ao custo de abrir uma conexão e de esperar confirmações.
 
           
 
@@ -2410,21 +2410,21 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
           
 
 - **ACK cumulativo:** informa o próximo byte esperado. Um segmento que chega fora de ordem faz o receptor repetir o último ACK (**ACK duplicado**).
-- **RTO (RFC 6298):** o temporizador de retransmissão vale SRTT + 4×RTTVAR. Pelo **algoritmo de Karn**, segmentos retransmitidos não geram amostra de RTT. A cada timeout, o RTO dobra (backoff exponencial). A RFC recomenda mínimo de 1 s; o Linux usa 200 ms, valor adotado aqui.
+- **RTO ([RFC 6298](https://www.rfc-editor.org/rfc/rfc6298)):** o temporizador de retransmissão vale SRTT + 4×RTTVAR. Pelo **algoritmo de Karn**, segmentos retransmitidos não geram amostra de RTT. A cada timeout, o RTO dobra (backoff exponencial). A RFC recomenda mínimo de 1 s; o Linux usa 200 ms, valor adotado aqui.
 - **Controle de fluxo:** o receptor anuncia quanto ainda consegue armazenar (rwnd). O emissor nunca tem mais dados em voo que min(cwnd, rwnd).
 
           
 
-### Controle de congestionamento (RFC 5681 e RFC 6582)
+### Controle de congestionamento ([RFC 5681](https://www.rfc-editor.org/rfc/rfc5681) e [RFC 6582](https://www.rfc-editor.org/rfc/rfc6582))
 
           
 
-- **Slow start:** a cwnd começa pequena (1 a 4 segmentos; 10 no Linux, RFC 6928) e cresce 1 segmento por ACK, o que a **dobra a cada RTT**.
+- **Slow start:** a cwnd começa pequena (1 a 4 segmentos; 10 no Linux, [RFC 6928](https://www.rfc-editor.org/rfc/rfc6928)) e cresce 1 segmento por ACK, o que a **dobra a cada RTT**.
 - **Congestion avoidance:** acima do ssthresh, cresce cerca de 1 segmento por RTT (crescimento linear).
 - **Fast retransmit e fast recovery:** 3 ACKs duplicados indicam uma perda isolada. O emissor retransmite sem esperar o RTO e faz ssthresh = metade do que está em voo. O NewReno trata os ACKs parciais quando há várias perdas na mesma janela.
 - **Timeout:** sinal de congestionamento grave. ssthresh = metade do que está em voo e cwnd = 1.
-- **SACK (RFC 2018):** opção negociada no SYN (SACK_PERM). Cada ACK duplicado leva até 3 blocos (SLE e SRE) com os bytes recebidos além da lacuna, e o emissor mantém um placar (scoreboard). Este simulador usa uma versão simplificada: dá como perdido todo buraco abaixo do maior byte confirmado (como o FACK do Linux), sem DSACK e sem os detalhes da RFC 6675.
-- O Linux usa **CUBIC** (RFC 9438) por padrão. A lógica de crescer até perceber perda e então reduzir é a mesma mostrada aqui com Reno/NewReno.
+- **SACK ([RFC 2018](https://www.rfc-editor.org/rfc/rfc2018)):** opção negociada no SYN (SACK_PERM). Cada ACK duplicado leva até 3 blocos (SLE e SRE) com os bytes recebidos além da lacuna, e o emissor mantém um placar (scoreboard). Este simulador usa uma versão simplificada: dá como perdido todo buraco abaixo do maior byte confirmado (como o FACK do Linux), sem DSACK e sem os detalhes da [RFC 6675](https://www.rfc-editor.org/rfc/rfc6675).
+- O Linux usa **CUBIC** ([RFC 9438](https://www.rfc-editor.org/rfc/rfc9438)) por padrão. A lógica de crescer até perceber perda e então reduzir é a mesma mostrada aqui com Reno/NewReno.
 
           
 
@@ -2432,7 +2432,7 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 
           
 
-Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta não chegar no tempo limite. A **voz e o vídeo** preferem perder um pacote a esperar por ele, porque um áudio atrasado já não serve. O **QUIC** (RFC 9000) implementa sobre o UDP a confiabilidade e o controle de congestionamento, com criptografia embutida.
+Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta não chegar no tempo limite. A **voz e o vídeo** preferem perder um pacote a esperar por ele, porque um áudio atrasado já não serve. O **QUIC** ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) implementa sobre o UDP a confiabilidade e o controle de congestionamento, com criptografia embutida.
 
           
 
@@ -2443,8 +2443,8 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 - **Custo da conexão:** o primeiro byte do arquivo só chega depois de 2 RTT (handshake mais pedido HTTP). Em arquivos pequenos, esse custo e o slow start dominam o tempo.
 - **Slow start e fila do roteador:** a janela dobra a cada RTT até a rede não aguentar. O que passa da capacidade do caminho (banda × RTT mais a fila do roteador) é descartado no fim da fila (tail drop), o TCP reduz a janela e volta a crescer: é o dente de serra da cwnd.
 - **O que limita a vazão:** a capacidade do enlace, a janela do receptor (vazão máxima de cerca de rwnd / RTT) e as perdas (aproximação de Mathis: vazão de cerca de MSS / (RTT × √perda)).
-- **SACK:** a caixa "SACK" liga a confirmação seletiva (RFC 2018), padrão nos sistemas atuais. Ligado, o receptor informa os blocos que chegaram e o emissor repõe todas as lacunas de uma janela em cerca de 1 RTT. Desligado, o NewReno repõe uma lacuna por RTT.
-- **Perdas no fim da janela:** sem segmentos depois da perda, não há ACKs duplicados. As pilhas atuais, com SACK, usam a sonda de cauda (TLP, RFC 8985): cerca de 2 RTT depois, o emissor reenvia o último segmento, descobre o que falta e recupera sem esperar o RTO. Só a perda de uma janela inteira cai em timeout.
+- **SACK:** a caixa "SACK" liga a confirmação seletiva ([RFC 2018](https://www.rfc-editor.org/rfc/rfc2018)), padrão nos sistemas atuais. Ligado, o receptor informa os blocos que chegaram e o emissor repõe todas as lacunas de uma janela em cerca de 1 RTT. Desligado, o NewReno repõe uma lacuna por RTT.
+- **Perdas no fim da janela:** sem segmentos depois da perda, não há ACKs duplicados. As pilhas atuais, com SACK, usam a sonda de cauda (TLP, [RFC 8985](https://www.rfc-editor.org/rfc/rfc8985)): cerca de 2 RTT depois, o emissor reenvia o último segmento, descobre o que falta e recupera sem esperar o RTO. Só a perda de uma janela inteira cai em timeout.
 - **Modelo desta tela:** o simulador trabalha por rodada (uma janela inteira por RTT) e desenha uma seta por rodada. Rodadas parecidas são omitidas do diagrama, mas entram no gráfico e nas métricas.
 
           
@@ -2453,7 +2453,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-- **RTP sobre UDP** (RFC 3550): cada pacote leva número de sequência e marca de tempo. O UDP não retransmite; o receptor usa esses campos para reordenar e para medir perdas e jitter.
+- **RTP sobre UDP** ([RFC 3550](https://www.rfc-editor.org/rfc/rfc3550)): cada pacote leva número de sequência e marca de tempo. O UDP não retransmite; o receptor usa esses campos para reordenar e para medir perdas e jitter.
 - **Quadros I e P:** o quadro I é completo e grande; os quadros P guardam só a diferença para o anterior. Por isso um pacote perdido num P estraga os quadros seguintes até o próximo I, e a perda num I congela a imagem até o próximo I.
 - **Buffer de reprodução (jitter buffer):** o player atrasa a exibição para esperar pacotes que atrasaram. O pacote que chega depois do prazo é descartado. Mais buffer protege melhor, mas aumenta o atraso, que em transmissão ao vivo conta como qualidade.
 - **Sem controle de congestionamento:** o UDP não reduz a taxa quando a fila enche. Na prática, as aplicações usam taxa adaptativa (vários bitrates, como no DASH e no HLS) ou controle de taxa no próprio RTP (RTCP e algoritmos como o GCC do WebRTC).
@@ -2465,12 +2465,12 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-- **SYN flood:** muitos SYN sem o ACK final esgotam a fila de conexões semiabertas do servidor. SYN cookies (RFC 4987) evitam reservar estado antes do handshake terminar.
-- **Números de sequência:** um ISN previsível permite injetar segmentos ou derrubar conexões de fora do caminho. Pilhas modernas sorteiam o ISN (RFC 6528) e só aceitam RST com a sequência exata (RFC 5961).
-- **UDP sem conexão:** nada confirma a origem de um datagrama. Isso permite falsificação, reflexão e amplificação (DNS, NTP, memcached). A defesa começa na rede de origem (BCP 38) e no próprio serviço (sem recursão aberta, limite de respostas).
+- **SYN flood:** muitos SYN sem o ACK final esgotam a fila de conexões semiabertas do servidor. SYN cookies ([RFC 4987](https://www.rfc-editor.org/rfc/rfc4987)) evitam reservar estado antes do handshake terminar.
+- **Números de sequência:** um ISN previsível permite injetar segmentos ou derrubar conexões de fora do caminho. Pilhas modernas sorteiam o ISN ([RFC 6528](https://www.rfc-editor.org/rfc/rfc6528)) e só aceitam RST com a sequência exata ([RFC 5961](https://www.rfc-editor.org/rfc/rfc5961)).
+- **UDP sem conexão:** nada confirma a origem de um datagrama. Isso permite falsificação, reflexão e amplificação (DNS, NTP, memcached). A defesa começa na rede de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) e no próprio serviço (sem recursão aberta, limite de respostas).
 - **Varreduras:** o TCP responde SYN-ACK em porta aberta e RST em porta fechada; o UDP só denuncia porta fechada com ICMP Port Unreachable. Política padrão de descarte e firewall stateful reduzem o que a varredura revela.
 - **Download:** o TCP entrega os bytes, mas não garante que são os bytes certos. Use HTTPS (TLS) e confira o hash do arquivo; sem TLS, um atacante no caminho pode alterar a transferência.
-- **Streaming:** o RTP simples vai em claro e sem autenticação; use SRTP (RFC 3711) ou DTLS-SRTP. Servidores de mídia UDP expostos também podem ser usados em ataques de reflexão e inundação.
+- **Streaming:** o RTP simples vai em claro e sem autenticação; use SRTP ([RFC 3711](https://www.rfc-editor.org/rfc/rfc3711)) ou DTLS-SRTP. Servidores de mídia UDP expostos também podem ser usados em ataques de reflexão e inundação.
 - Para praticar a defesa contra esses ataques, use o Simulador de Ataques e Defesas TCP/UDP.
 
           

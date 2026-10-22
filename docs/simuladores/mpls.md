@@ -4,7 +4,7 @@ Núcleo MPLS com seis LSRs: sessões LDP, LIB e LFIB, push, swap e pop, PHP, mod
 
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** legado (página autônoma em `public/sims/mpls-simulator.html`, incorporada por `iframe`)
-- **RFCs e padrões:** RFC 3031, RFC 5036, RFC 4364
+- **RFCs e padrões:** [RFC 3031](https://www.rfc-editor.org/rfc/rfc3031), [RFC 5036](https://www.rfc-editor.org/rfc/rfc5036), [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364)
 - **Tópicos:** LDP, LIB e LFIB; Push, swap e pop; PHP e TTL; L3VPN com dois rótulos
 
 ## Abas
@@ -47,7 +47,7 @@ Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Uniform
 
 **O que é.**
 
-O MPLS encaminha pacotes por **rótulos** curtos em vez de consultar o endereço IP em cada salto. O **LDP** (RFC 5036) distribui esses rótulos: cada LSR descobre os vizinhos, abre uma sessão TCP com cada um e anuncia um rótulo local para cada destino (**FEC**) que conhece pelo IGP. O caminho rotulado resultante é o **LSP**.
+O MPLS encaminha pacotes por **rótulos** curtos em vez de consultar o endereço IP em cada salto. O **LDP** ([RFC 5036](https://www.rfc-editor.org/rfc/rfc5036)) distribui esses rótulos: cada LSR descobre os vizinhos, abre uma sessão TCP com cada um e anuncia um rótulo local para cada destino (**FEC**) que conhece pelo IGP. O caminho rotulado resultante é o **LSP**.
 
 **Neste cenário.**
 
@@ -90,7 +90,7 @@ Troque o sentido para H-B → H-A e repita: a volta usa outro LSP, com outros r�
 **O que observar.**
 
 - Na aba Captura: a coluna Pilha de rótulos muda a cada enlace.
-- Na aba Pacote: o cabeçalho de rótulo (Label, TC, S e TTL, RFC 3032).
+- Na aba Pacote: o cabeçalho de rótulo (Label, TC, S e TTL, [RFC 3032](https://www.rfc-editor.org/rfc/rfc3032)).
 - Na aba Experimento: as operações da ida e da volta, roteador por roteador.
 
 **Mensagens envolvidas.**
@@ -181,7 +181,7 @@ Configuração do cenário: IP sobre MPLS; egresso implicit-null; TTL Uniform
 
 **O que é.**
 
-No modelo **Uniform** (RFC 3443), o PE copia o TTL do IP para o rótulo na entrada e de volta na saída. Cada P decrementa o TTL do rótulo, então o traceroute enxerga todos os saltos do núcleo. Quando o TTL expira dentro do LSP, o ICMP Time Exceeded leva a pilha de rótulos recebida (RFC 4950).
+No modelo **Uniform** ([RFC 3443](https://www.rfc-editor.org/rfc/rfc3443)), o PE copia o TTL do IP para o rótulo na entrada e de volta na saída. Cada P decrementa o TTL do rótulo, então o traceroute enxerga todos os saltos do núcleo. Quando o TTL expira dentro do LSP, o ICMP Time Exceeded leva a pilha de rótulos recebida ([RFC 4950](https://www.rfc-editor.org/rfc/rfc4950)).
 
 **Neste cenário.**
 
@@ -198,7 +198,7 @@ Avance as fases e rode o **traceroute**. Com a propagação de TTL, o TTL do IP 
 | Mensagem | Função | Quem envia |
 | --- | --- | --- |
 | UDP | sondas com TTL 1, 2, 3... | H-A |
-| Time Exceeded | com a pilha de rótulos (RFC 4950) | cada LSR |
+| Time Exceeded | com a pilha de rótulos ([RFC 4950](https://www.rfc-editor.org/rfc/rfc4950)) | cada LSR |
 
 **Por que importa.**
 
@@ -245,7 +245,7 @@ Configuração do cenário: L3VPN; egresso implicit-null; TTL Uniform
 
 **O que é.**
 
-Na **L3VPN** (RFC 4364), cada cliente tem uma tabela própria (**VRF**) nos PEs, e as rotas dos clientes trocam de PE por **MP-BGP**, cada uma com um rótulo VPN. O pacote atravessa o núcleo com dois rótulos: o externo (transporte, do LDP) leva até o PE de saída; o interno (VPN) indica a VRF.
+Na **L3VPN** ([RFC 4364](https://www.rfc-editor.org/rfc/rfc4364)), cada cliente tem uma tabela própria (**VRF**) nos PEs, e as rotas dos clientes trocam de PE por **MP-BGP**, cada uma com um rótulo VPN. O pacote atravessa o núcleo com dois rótulos: o externo (transporte, do LDP) leva até o PE de saída; o interno (VPN) indica a VRF.
 
 **Neste cenário.**
 
@@ -312,7 +312,7 @@ A convergência do MPLS depende do IGP. Em produção, mecanismos como a sincron
 
           
 
-No **Multiprotocol Label Switching** (RFC 3031), o roteador de entrada classifica o pacote uma única vez em uma **FEC** (Forwarding Equivalence Class, por exemplo um prefixo de destino) e cola nele um **rótulo** curto. No núcleo, cada LSR encaminha consultando só o rótulo, sem olhar o cabeçalho IP. O caminho percorrido por uma FEC é o **LSP** (Label Switched Path), que é **unidirecional**: ida e volta usam LSPs e rótulos diferentes.
+No **Multiprotocol Label Switching** ([RFC 3031](https://www.rfc-editor.org/rfc/rfc3031)), o roteador de entrada classifica o pacote uma única vez em uma **FEC** (Forwarding Equivalence Class, por exemplo um prefixo de destino) e cola nele um **rótulo** curto. No núcleo, cada LSR encaminha consultando só o rótulo, sem olhar o cabeçalho IP. O caminho percorrido por uma FEC é o **LSP** (Label Switched Path), que é **unidirecional**: ida e volta usam LSPs e rótulos diferentes.
 
           
 
@@ -322,14 +322,14 @@ No **Multiprotocol Label Switching** (RFC 3031), o roteador de entrada classific
 
           
 
-### Cabeçalho de rótulo (RFC 3032)
+### Cabeçalho de rótulo ([RFC 3032](https://www.rfc-editor.org/rfc/rfc3032))
 
           
 
 O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada entrada da pilha tem 32 bits:
 
 | Rótulo (20 bits) | TC (3) | S (1) | TTL (8) |
-  TC: Traffic Class, antes chamado EXP (RFC 5462), usado para QoS
+  TC: Traffic Class, antes chamado EXP ([RFC 5462](https://www.rfc-editor.org/rfc/rfc5462)), usado para QoS
   S:  1 na última entrada da pilha (fundo)
   TTL: decrementado a cada LSR, como no IP
           
@@ -340,13 +340,13 @@ O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada 
 | 1 | Router Alert | Entrega ao plano de controle do LSR |
 | 2 | IPv6 Explicit NULL | Igual ao 0, para IPv6 |
 | 3 | Implicit NULL | Anunciado pelo egresso, nunca aparece no pacote: o penúltimo salto faz pop (PHP) |
-| 7 | Entropy Label Indicator | Balanceamento de carga (RFC 6790) |
-| 13 | GAL | Canal de OAM do MPLS-TP (RFC 5586) |
+| 7 | Entropy Label Indicator | Balanceamento de carga ([RFC 6790](https://www.rfc-editor.org/rfc/rfc6790)) |
+| 13 | GAL | Canal de OAM do MPLS-TP ([RFC 5586](https://www.rfc-editor.org/rfc/rfc5586)) |
 | 16 em diante | Rótulos livres | Alocados pelos protocolos de distribuição |
 
           
 
-### LDP (RFC 5036)
+### LDP ([RFC 5036](https://www.rfc-editor.org/rfc/rfc5036))
 
           
 
@@ -360,19 +360,19 @@ O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada 
 
 ### PHP e modelos de TTL
 
-          Com **PHP** (Penultimate Hop Popping), o egresso anuncia implicit-null (3) e o penúltimo LSR remove o rótulo. Assim, o egresso faz uma única consulta (IP) em vez de duas (rótulo e IP). Com **explicit-null** (0), o rótulo chega ao egresso, o que preserva o campo TC para QoS. A RFC 3032 só permitia o explicit-null no fundo da pilha; a RFC 4182 removeu essa restrição, o que permite usá-lo também sobre o rótulo VPN.
+          Com **PHP** (Penultimate Hop Popping), o egresso anuncia implicit-null (3) e o penúltimo LSR remove o rótulo. Assim, o egresso faz uma única consulta (IP) em vez de duas (rótulo e IP). Com **explicit-null** (0), o rótulo chega ao egresso, o que preserva o campo TC para QoS. A [RFC 3032](https://www.rfc-editor.org/rfc/rfc3032) só permitia o explicit-null no fundo da pilha; a [RFC 4182](https://www.rfc-editor.org/rfc/rfc4182) removeu essa restrição, o que permite usá-lo também sobre o rótulo VPN.
 
           
 
-No modelo **Uniform** (RFC 3443), o TTL do IP é copiado para o rótulo na entrada e de volta na saída, e cada LSR do núcleo aparece no traceroute. No modelo **Pipe** (**no mpls ip propagate-ttl** no Cisco IOS), o rótulo começa com TTL 255 e o núcleo fica invisível: o traceroute mostra só os PEs.
+No modelo **Uniform** ([RFC 3443](https://www.rfc-editor.org/rfc/rfc3443)), o TTL do IP é copiado para o rótulo na entrada e de volta na saída, e cada LSR do núcleo aparece no traceroute. No modelo **Pipe** (**no mpls ip propagate-ttl** no Cisco IOS), o rótulo começa com TTL 255 e o núcleo fica invisível: o traceroute mostra só os PEs.
 
           
 
-Quando o TTL expira dentro do LSP, o LSR gera o ICMP Time Exceeded, copia a pilha de rótulos e o encaminha **adiante pelo LSP** até o egresso, que o devolve à origem (RFC 3032, seção 2.3.2). Por isso todos os saltos do núcleo mostram quase o mesmo RTT. A extensão ICMP da RFC 4950 informa a pilha recebida, que o traceroute do Linux exibe com **-e**.
+Quando o TTL expira dentro do LSP, o LSR gera o ICMP Time Exceeded, copia a pilha de rótulos e o encaminha **adiante pelo LSP** até o egresso, que o devolve à origem ([RFC 3032](https://www.rfc-editor.org/rfc/rfc3032), seção 2.3.2). Por isso todos os saltos do núcleo mostram quase o mesmo RTT. A extensão ICMP da [RFC 4950](https://www.rfc-editor.org/rfc/rfc4950) informa a pilha recebida, que o traceroute do Linux exibe com **-e**.
 
           
 
-### L3VPN (RFC 4364)
+### L3VPN ([RFC 4364](https://www.rfc-editor.org/rfc/rfc4364))
 
           
 
@@ -386,8 +386,8 @@ Os PEs mantêm uma tabela de roteamento por cliente (**VRF**) e trocam as rotas 
 
 - **MPLS não é criptografia:** a separação de uma L3VPN é lógica. Quem tem acesso ao núcleo lê o tráfego. Dados sensíveis exigem IPsec ou MACsec.
 - **Pacotes rotulados vindos do cliente:** o PE nunca deve aceitar MPLS na interface do cliente. Caso contrário, um rótulo VPN forjado injeta tráfego em outra VRF (label spoofing).
-- **Proteção do LDP e do BGP:** autenticação TCP-MD5 ou TCP-AO (RFC 5925) e filtros que aceitem LDP e BGP só de vizinhos conhecidos.
-- **Ocultação da topologia:** desativar a propagação de TTL esconde o núcleo no traceroute. As extensões da RFC 4950, por outro lado, revelam os rótulos em uso.
+- **Proteção do LDP e do BGP:** autenticação TCP-MD5 ou TCP-AO ([RFC 5925](https://www.rfc-editor.org/rfc/rfc5925)) e filtros que aceitem LDP e BGP só de vizinhos conhecidos.
+- **Ocultação da topologia:** desativar a propagação de TTL esconde o núcleo no traceroute. As extensões da [RFC 4950](https://www.rfc-editor.org/rfc/rfc4950), por outro lado, revelam os rótulos em uso.
 
           
 

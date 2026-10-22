@@ -4,7 +4,7 @@ Laboratório defensivo com 12 ataques (SYN flood, Slowloris, RST injection, varr
 
 - **Categoria:** Camada de transporte e segurança
 - **Motor:** legado (página autônoma em `public/sims/tcp-udp-security-simulator.html`, incorporada por `iframe`)
-- **RFCs e padrões:** RFC 4987, BCP 38
+- **RFCs e padrões:** [RFC 4987](https://www.rfc-editor.org/rfc/rfc4987), [BCP 38](https://www.rfc-editor.org/info/bcp38)
 - **Tópicos:** SYN flood e Slowloris; Varreduras e amplificação; Mitigação e falsos positivos; Resposta a incidente
 
 ## Abas
@@ -26,11 +26,11 @@ Cenário, Efeito dos controles, Configuração de referência, Experimento, Refe
   - Descarta ACK órfão, RST fora da sequência e respostas que ninguém pediu.
   - **Limite:** um SYN é sempre um início válido, e a própria tabela de estados pode esgotar em floods.
 - **Anti-spoofingBCP 38 / uRPF: descarta origens falsificadas.**. Valores: caixa de seleção. Padrão: não.
-  - Descarta pacotes cuja origem não poderia chegar por aquela interface: uRPF no roteador, rp_filter no Linux, BCP 38 na borda do provedor.
+  - Descarta pacotes cuja origem não poderia chegar por aquela interface: uRPF no roteador, rp_filter no Linux, [BCP 38](https://www.rfc-editor.org/info/bcp38) na borda do provedor.
   - Contra reflexão e amplificação, só funciona na rede de **origem** do atacante: na vítima, as respostas vêm de IPs legítimos, os dos refletores.
   - Não ajuda contra botnets, que usam os próprios IPs.
 - **SYN cookiesProtege a fila de conexões TCP no host.**. Valores: caixa de seleção. Padrão: não.
-  - O servidor responde ao SYN sem reservar memória: o estado vai codificado no número de sequência do SYN-ACK e só é reconstruído quando o ACK final chega (RFC 4987).
+  - O servidor responde ao SYN sem reservar memória: o estado vai codificado no número de sequência do SYN-ACK e só é reconstruído quando o ACK final chega ([RFC 4987](https://www.rfc-editor.org/rfc/rfc4987)).
   - Neutraliza o SYN flood contra a fila de conexões semiabertas.
   - Atua só no handshake TCP: não ajuda depois da conexão aberta nem contra UDP.
 - **IDS/IPSDetecta padrões anômalos e bloqueia origens.**. Valores: caixa de seleção. Padrão: não.
@@ -46,7 +46,7 @@ Cenário, Efeito dos controles, Configuração de referência, Experimento, Refe
   - É o controle essencial contra Slowloris, varreduras e o uso dos seus serviços como refletores.
   - Depende de inventário: só se endurece o que se sabe que existe.
 - **Mitigação upstreamScrubbing / FlowSpec na operadora. Ativado durante o ataque, leva alguns ciclos para agir.**. Valores: caixa de seleção. Padrão: não.
-  - A operadora ou um serviço anti-DDoS filtra o tráfego antes de ele chegar ao seu enlace: FlowSpec (RFC 8955), scrubbing center ou RTBH (RFC 7999).
+  - A operadora ou um serviço anti-DDoS filtra o tráfego antes de ele chegar ao seu enlace: FlowSpec ([RFC 8955](https://www.rfc-editor.org/rfc/rfc8955)), scrubbing center ou RTBH ([RFC 7999](https://www.rfc-editor.org/rfc/rfc7999)).
   - É o único controle que escala com ataques maiores que o seu enlace.
   - Ativada durante o ataque, leva alguns ciclos para agir (chamado à operadora); marcada antes de iniciar, vale como contrato always-on. O RTBH descarta todo o tráfego para a vítima, inclusive o legítimo.
 - **Velocidade da animação**. Valores: Lenta; Normal; Rápida. Padrão: Normal.
@@ -121,7 +121,7 @@ Controle essencial: **Firewall stateful**. A eficácia, o ponto de atuação e o
 
 **Por que importa.**
 
-Contramedidas recomendadas: Validação rigorosa de sequência (RFC 5961, challenge ACK); TCP-AO ou IPsec em sessões críticas; Monitoramento de RST anômalos. Risco residual: Sessões longas e de portas previsíveis (BGP, VPN) continuam alvos; prefira TCP-AO (RFC 5925) ou IPsec.
+Contramedidas recomendadas: Validação rigorosa de sequência ([RFC 5961](https://www.rfc-editor.org/rfc/rfc5961), challenge ACK); TCP-AO ou IPsec em sessões críticas; Monitoramento de RST anômalos. Risco residual: Sessões longas e de portas previsíveis (BGP, VPN) continuam alvos; prefira TCP-AO ([RFC 5925](https://www.rfc-editor.org/rfc/rfc5925)) ou IPsec.
 
 #### TCP session hijacking
 
@@ -349,7 +349,7 @@ Controle essencial: **Anti-spoofing** e **Hardening de serviços**. A eficácia,
 
 **Por que importa.**
 
-Contramedidas recomendadas: BCP 38 / 84 na rede de origem; Desativar amplificadores abertos; Response Rate Limiting e filtragem upstream. Risco residual: O tráfego amplificado pode exceder o enlace da vítima; filtragem por porta de origem e scrubbing na operadora continuam necessários.
+Contramedidas recomendadas: [BCP 38](https://www.rfc-editor.org/info/bcp38) / 84 na rede de origem; Desativar amplificadores abertos; Response Rate Limiting e filtragem upstream. Risco residual: O tráfego amplificado pode exceder o enlace da vítima; filtragem por porta de origem e scrubbing na operadora continuam necessários.
 
 #### UDP spoofing / reflection
 
@@ -381,7 +381,7 @@ Controle essencial: **Anti-spoofing**. A eficácia, o ponto de atuação e o mot
 
 **Por que importa.**
 
-Contramedidas recomendadas: Filtragem de ingresso e egresso (BCP 38 / 84); Validação de origem na operadora; Rate limiting nos serviços UDP. Risco residual: Enquanto houver redes sem BCP 38, a falsificação continua possível; a vítima depende de filtragem e mitigação upstream.
+Contramedidas recomendadas: Filtragem de ingresso e egresso ([BCP 38](https://www.rfc-editor.org/info/bcp38) / 84); Validação de origem na operadora; Rate limiting nos serviços UDP. Risco residual: Enquanto houver redes sem [BCP 38](https://www.rfc-editor.org/info/bcp38), a falsificação continua possível; a vítima depende de filtragem e mitigação upstream.
 
 #### UDP port scan
 
@@ -445,11 +445,11 @@ Controle essencial: **IDS/IPS**. A eficácia, o ponto de atuação e o motivo de
 
 **Por que importa.**
 
-Contramedidas recomendadas: Detecção pela proporção de NXDOMAIN e filtragem pelo padrão do nome; RRL com limite de NXDOMAIN no autoritativo; Aggressive NSEC (RFC 8198) nos resolvedores e capacidade anycast. Risco residual: Bloquear por IP derruba os resolvedores que também atendem os usuários; a defesa precisa olhar o nome consultado, não a origem.
+Contramedidas recomendadas: Detecção pela proporção de NXDOMAIN e filtragem pelo padrão do nome; RRL com limite de NXDOMAIN no autoritativo; Aggressive NSEC ([RFC 8198](https://www.rfc-editor.org/rfc/rfc8198)) nos resolvedores e capacidade anycast. Risco residual: Bloquear por IP derruba os resolvedores que também atendem os usuários; a defesa precisa olhar o nome consultado, não a origem.
 
 ## Referência
 
-Ambiente didático isolado: todos os hosts, pacotes e resultados existem apenas nesta página e não há tráfego de rede real. Os endereços usam as faixas de documentação da RFC 5737.
+Ambiente didático isolado: todos os hosts, pacotes e resultados existem apenas nesta página e não há tráfego de rede real. Os endereços usam as faixas de documentação da [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737).
 
           
 
@@ -469,7 +469,7 @@ Na telemetria, vale sempre: **ataque rumo à vítima = neutralizados + chegaram 
 
           
 
-O TCP mantém estado e usa flags, números de sequência e confirmações. Ataques exploram filas de conexão (SYN flood, RFC 4987), validação insuficiente de sequência (RST injection, mitigado pela RFC 5961) ou sessões sem autenticação (sequestro). SYN cookies, firewall stateful e criptografia autenticada (TLS, SSH, TCP-AO da RFC 5925) reduzem a superfície de ataque.
+O TCP mantém estado e usa flags, números de sequência e confirmações. Ataques exploram filas de conexão (SYN flood, [RFC 4987](https://www.rfc-editor.org/rfc/rfc4987)), validação insuficiente de sequência (RST injection, mitigado pela [RFC 5961](https://www.rfc-editor.org/rfc/rfc5961)) ou sessões sem autenticação (sequestro). SYN cookies, firewall stateful e criptografia autenticada (TLS, SSH, TCP-AO da [RFC 5925](https://www.rfc-editor.org/rfc/rfc5925)) reduzem a superfície de ataque.
 
           
 
@@ -477,7 +477,7 @@ O TCP mantém estado e usa flags, números de sequência e confirmações. Ataqu
 
           
 
-O UDP não estabelece sessão e não confirma a origem. Isso favorece falsificação, reflexão e amplificação quando serviços respondem com muito mais dados do que recebem. Anti-spoofing na rede de origem (BCP 38, RFC 2827), hardening dos serviços, rate limiting e mitigação upstream são os controles essenciais.
+O UDP não estabelece sessão e não confirma a origem. Isso favorece falsificação, reflexão e amplificação quando serviços respondem com muito mais dados do que recebem. Anti-spoofing na rede de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38), [RFC 2827](https://www.rfc-editor.org/rfc/rfc2827)), hardening dos serviços, rate limiting e mitigação upstream são os controles essenciais.
 
           
 
@@ -485,7 +485,7 @@ O UDP não estabelece sessão e não confirma a origem. Isso favorece falsifica�
 
           
 
-- **Borda da rede de origem:** BCP 38 / BCP 84 impede que pacotes com origem falsificada saiam da rede do atacante.
+- **Borda da rede de origem:** [BCP 38](https://www.rfc-editor.org/info/bcp38) / [BCP 84](https://www.rfc-editor.org/info/bcp84) impede que pacotes com origem falsificada saiam da rede do atacante.
 - **Firewall da vítima:** firewall stateful, ACLs, rate limiting e IPS.
 - **Host:** SYN cookies e validação de sequência na pilha TCP.
 - **Aplicação e serviço:** TLS, SSH e configuração segura (sem recursão aberta, RRL, UDP desabilitado quando desnecessário).
@@ -505,11 +505,11 @@ O UDP não estabelece sessão e não confirma a origem. Isso favorece falsifica�
 
           
 
-Em um **DDoS distribuído**, cada bot usa seu IP real e envia pouco, então rate limiting por origem e anti-spoofing quase não atuam, e o enlace satura antes do firewall: descartar no firewall não devolve a banda. A resposta é **upstream**: FlowSpec (RFC 8955) descarta só o padrão do ataque na operadora, scrubbing centers limpam o tráfego e devolvem o legítimo por túnel, e **RTBH** (RFC 7999) descarta todo o tráfego para o /32 da vítima, o que protege o resto da rede mas completa o DoS contra aquele host. Sem contrato always-on, o acionamento leva tempo; no simulador, a mitigação ativada durante o ataque só age após alguns ciclos.
+Em um **DDoS distribuído**, cada bot usa seu IP real e envia pouco, então rate limiting por origem e anti-spoofing quase não atuam, e o enlace satura antes do firewall: descartar no firewall não devolve a banda. A resposta é **upstream**: FlowSpec ([RFC 8955](https://www.rfc-editor.org/rfc/rfc8955)) descarta só o padrão do ataque na operadora, scrubbing centers limpam o tráfego e devolvem o legítimo por túnel, e **RTBH** ([RFC 7999](https://www.rfc-editor.org/rfc/rfc7999)) descarta todo o tráfego para o /32 da vítima, o que protege o resto da rede mas completa o DoS contra aquele host. Sem contrato always-on, o acionamento leva tempo; no simulador, a mitigação ativada durante o ataque só age após alguns ciclos.
 
           
 
-No **DNS water torture**, os bots consultam nomes aleatórios por meio de resolvedores legítimos. Bloquear por IP derruba os resolvedores que também atendem os usuários (falso positivo em massa); a defesa deve olhar o nome consultado: proporção de NXDOMAIN, RRL com `nxdomains-per-second` e Aggressive NSEC (RFC 8198) nos resolvedores.
+No **DNS water torture**, os bots consultam nomes aleatórios por meio de resolvedores legítimos. Bloquear por IP derruba os resolvedores que também atendem os usuários (falso positivo em massa); a defesa deve olhar o nome consultado: proporção de NXDOMAIN, RRL com `nxdomains-per-second` e Aggressive NSEC ([RFC 8198](https://www.rfc-editor.org/rfc/rfc8198)) nos resolvedores.
 
           
 

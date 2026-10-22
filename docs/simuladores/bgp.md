@@ -4,7 +4,7 @@ BGP-4 entre seis sistemas autônomos: sessões, OPEN, UPDATE e KEEPALIVE, relaç
 
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** legado (página autônoma em `public/sims/bgp-simulator.html`, incorporada por `iframe`)
-- **RFCs e padrões:** RFC 4271, RFC 6811
+- **RFCs e padrões:** [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271), [RFC 6811](https://www.rfc-editor.org/rfc/rfc6811)
 - **Tópicos:** Sessões e mensagens; Seleção de caminho; Sequestro, vazamento e flapping; Defesas (RPKI/ROV, filtros)
 
 ## Abas
@@ -36,7 +36,7 @@ Cenário, Terminal, Captura, Mensagem BGP, Sessões, Tabela BGP, Experimento, Re
   - Ligado, todo AS atribui LOCAL_PREF 200 às rotas de clientes, 150 às de peers e 100 às de provedores: prefere a rota que lhe rende dinheiro ou custa menos. É a prática comum das operadoras.
   - Desligado, todas as rotas têm LOCAL_PREF 100 e a decisão passa para o AS_PATH. Isso simplifica os cenários de seleção de caminho, mas esconde o efeito de um vazamento de rota.
 - **RPKI / ROV**. Valores: desligado; só no ISP B; só no ISP A; ISP A, ISP B e Trânsito; todos os AS. Padrão: desligado.
-  - O dono do prefixo publica um ROA com o AS autorizado a originá-lo (RFC 6811). Um AS com **validação de origem** rejeita rotas cujo último AS do AS_PATH é outro.
+  - O dono do prefixo publica um ROA com o AS autorizado a originá-lo ([RFC 6811](https://www.rfc-editor.org/rfc/rfc6811)). Um AS com **validação de origem** rejeita rotas cujo último AS do AS_PATH é outro.
   - Escolha onde a validação está ativa. Ela protege quem a aplica: um AS sem ROV continua aceitando rotas inválidas.
   - Valida só a origem; não detecta um AS_PATH forjado nem uma rota vazada.
 - **Filtro de prefixos de clientes**. Valores: desligado; no ISP B; no Trânsito; ISP A, ISP B e Trânsito. Padrão: desligado.
@@ -46,7 +46,7 @@ Cenário, Terminal, Captura, Mensagem BGP, Sessões, Tabela BGP, Experimento, Re
   - Um peer só deveria anunciar rotas próprias e de seus clientes. O filtro rejeita o resto, o que barra **vazamentos de rota**.
   - Não barra um sequestro que parta de dentro do cone do peer: o prefixo do Cliente pertence ao cone do ISP B, mesmo quando é o Atacante que o anuncia.
 - **Flap damping nos provedores**. Valores: caixa de seleção. Padrão: não.
-  - Depois de duas retiradas do mesmo prefixo pelo mesmo vizinho, o AS passa a rejeitar o prefixo desse vizinho (RFC 2439).
+  - Depois de duas retiradas do mesmo prefixo pelo mesmo vizinho, o AS passa a rejeitar o prefixo desse vizinho ([RFC 2439](https://www.rfc-editor.org/rfc/rfc2439)).
   - Reduz a instabilidade que se espalha, mas também tira do ar um prefixo legítimo até a penalidade decair. Vale para as próximas oscilações.
 - **Velocidade da animação**. Valores: Lenta; Normal; Rápida. Padrão: Normal.
   - Muda só a velocidade de exibição; rotas, UPDATEs e decisões são os mesmos.
@@ -458,7 +458,7 @@ Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anun
 
 **O que é.**
 
-No **RPKI** (RFC 6811), o dono do prefixo publica um **ROA** com o AS autorizado a originá-lo. Um roteador com **validação de origem (ROV)** compara o AS de origem de cada rota (o último do AS_PATH) com o ROA e rejeita as inválidas. O ROA de 203.0.113.0/24 autoriza só o AS64510, então a rota do AS64666 é inválida.
+No **RPKI** ([RFC 6811](https://www.rfc-editor.org/rfc/rfc6811)), o dono do prefixo publica um **ROA** com o AS autorizado a originá-lo. Um roteador com **validação de origem (ROV)** compara o AS de origem de cada rota (o último do AS_PATH) com o ROA e rejeita as inválidas. O ROA de 203.0.113.0/24 autoriza só o AS64510, então a rota do AS64666 é inválida.
 
 **Neste cenário.**
 
@@ -513,7 +513,7 @@ Envie tráfego **ISP A → Conteúdo**, depois ligue o **filtro de rotas de peer
 
 **Por que importa.**
 
-O ISP B passa a carregar tráfego de que não foi contratado, e o ISP A usa um caminho que não pagou nem negociou. Defesa: o ISP A filtra o que aceita do peer ao cone de clientes dele (barra a rota vazada); no protocolo, os papéis BGP com atributo OTC (RFC 9234) detectam o vazamento, mas dependem de os dois lados implementarem.
+O ISP B passa a carregar tráfego de que não foi contratado, e o ISP A usa um caminho que não pagou nem negociou. Defesa: o ISP A filtra o que aceita do peer ao cone de clientes dele (barra a rota vazada); no protocolo, os papéis BGP com atributo OTC ([RFC 9234](https://www.rfc-editor.org/rfc/rfc9234)) detectam o vazamento, mas dependem de os dois lados implementarem.
 
 #### Flapping de rota
 
@@ -521,7 +521,7 @@ Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anun
 
 **O que é.**
 
-No **route flapping**, uma rota alterna entre disponível e indisponível. Cada mudança gera UPDATEs ou withdraws que recalculam caminhos em vários AS e podem causar perda intermitente. O **flap damping** (RFC 2439) suprime um prefixo que oscila demais: depois de algumas retiradas, o vizinho deixa de aceitá-lo por um tempo.
+No **route flapping**, uma rota alterna entre disponível e indisponível. Cada mudança gera UPDATEs ou withdraws que recalculam caminhos em vários AS e podem causar perda intermitente. O **flap damping** ([RFC 2439](https://www.rfc-editor.org/rfc/rfc2439)) suprime um prefixo que oscila demais: depois de algumas retiradas, o vizinho deixa de aceitá-lo por um tempo.
 
 **Neste cenário.**
 
@@ -552,7 +552,7 @@ O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fic
 
           
 
-O **BGP-4** (Border Gateway Protocol, RFC 4271) é o protocolo que interliga os **sistemas autônomos** (AS) da Internet: redes administradas de forma independente, como provedores, empresas e serviços de conteúdo, cada uma identificada por um número de AS. Dentro de um AS, um IGP como o OSPF encontra o caminho mais curto; entre AS, o BGP troca **alcançabilidade** e deixa cada AS escolher, por política, por onde entrar e sair.
+O **BGP-4** (Border Gateway Protocol, [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271)) é o protocolo que interliga os **sistemas autônomos** (AS) da Internet: redes administradas de forma independente, como provedores, empresas e serviços de conteúdo, cada uma identificada por um número de AS. Dentro de um AS, um IGP como o OSPF encontra o caminho mais curto; entre AS, o BGP troca **alcançabilidade** e deixa cada AS escolher, por política, por onde entrar e sair.
 
           
 
@@ -560,7 +560,7 @@ O BGP é um protocolo de **vetor de caminho**: cada rota carrega a lista dos AS 
 
           
 
-### Sessões e mensagens (RFC 4271)
+### Sessões e mensagens ([RFC 4271](https://www.rfc-editor.org/rfc/rfc4271))
 
           
 
@@ -626,7 +626,7 @@ Quando um enlace cai, a sessão termina e cada lado descarta as rotas aprendidas
 
           
 
-*Simplificações do simulador: um roteador por AS (sem iBGP), um UPDATE por prefixo, ORIGIN IGP e MED 0 em todas as rotas, e tempos acelerados. Os números de AS e os prefixos são de documentação (RFC 5398 e RFC 5737).*
+*Simplificações do simulador: um roteador por AS (sem iBGP), um UPDATE por prefixo, ORIGIN IGP e MED 0 em todas as rotas, e tempos acelerados. Os números de AS e os prefixos são de documentação ([RFC 5398](https://www.rfc-editor.org/rfc/rfc5398) e [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737)).*
 
           
 
@@ -643,13 +643,13 @@ As defesas simuladas aqui atuam na **importação** de rotas:
           
 
 - **Filtro de prefixos de clientes:** o provedor aceita de cada cliente só os prefixos do cone de clientes dele (listas feitas com registros IRR e contrato). Precisa estar no provedor direto de quem anuncia.
-- **RPKI / ROV (RFC 6811):** o dono do prefixo publica um ROA com o AS autorizado, e o roteador rejeita rotas cuja origem não confere. Protege quem valida, e o efeito cresce com a adoção. Valida só a origem, não o caminho.
+- **RPKI / ROV ([RFC 6811](https://www.rfc-editor.org/rfc/rfc6811)):** o dono do prefixo publica um ROA com o AS autorizado, e o roteador rejeita rotas cuja origem não confere. Protege quem valida, e o efeito cresce com a adoção. Valida só a origem, não o caminho.
 - **Filtro de rotas de peers:** de um peer, aceita-se só o cone de clientes dele. Barra vazamentos, mas não sequestros que partem do próprio cone.
-- **Flap damping (RFC 2439):** suprime prefixos instáveis. É pouco usado hoje, porque também tira do ar prefixos legítimos.
+- **Flap damping ([RFC 2439](https://www.rfc-editor.org/rfc/rfc2439)):** suprime prefixos instáveis. É pouco usado hoje, porque também tira do ar prefixos legítimos.
 
           
 
-*Não simulados: limite de prefixos por sessão (max-prefix), papéis BGP com atributo OTC (RFC 9234), ASPA, BGPsec, proteção da sessão com TCP-AO e GTSM, e blackhole por community (RTBH, RFC 7999). Nos cenários de segurança, o AS64666 (Atacante) é cliente do ISP B; os ROAs e as listas de prefixos são fixos.*
+*Não simulados: limite de prefixos por sessão (max-prefix), papéis BGP com atributo OTC ([RFC 9234](https://www.rfc-editor.org/rfc/rfc9234)), ASPA, BGPsec, proteção da sessão com TCP-AO e GTSM, e blackhole por community (RTBH, [RFC 7999](https://www.rfc-editor.org/rfc/rfc7999)). Nos cenários de segurança, o AS64666 (Atacante) é cliente do ISP B; os ROAs e as listas de prefixos são fixos.*
 
           
 

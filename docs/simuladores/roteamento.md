@@ -4,7 +4,7 @@ Roteamento dinâmico passo a passo: OSPF em área única e multiárea (Hello, ad
 
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** legado (página autônoma em `public/sims/router-simulator.html`, incorporada por `iframe`)
-- **RFCs e padrões:** RFC 2328, RFC 2453
+- **RFCs e padrões:** [RFC 2328](https://www.rfc-editor.org/rfc/rfc2328), [RFC 2453](https://www.rfc-editor.org/rfc/rfc2453)
 - **Tópicos:** Hello e adjacências; LSAs e SPF; Bellman-Ford e split horizon; Falhas de enlace
 
 ## Abas
@@ -45,7 +45,7 @@ Configuração do cenário: OSPF, área única
 
 **O que é.**
 
-O **OSPF** (RFC 2328) é um protocolo de **estado de enlace**. Os roteadores formam adjacências com Hello, sincronizam um banco de dados com a descrição de todos os enlaces (**LSDB**) e, com esse mapa completo, cada um calcula sozinho a árvore de menor custo (**SPF**, algoritmo de Dijkstra).
+O **OSPF** ([RFC 2328](https://www.rfc-editor.org/rfc/rfc2328)) é um protocolo de **estado de enlace**. Os roteadores formam adjacências com Hello, sincronizam um banco de dados com a descrição de todos os enlaces (**LSDB**) e, com esse mapa completo, cada um calcula sozinho a árvore de menor custo (**SPF**, algoritmo de Dijkstra).
 
 **Neste cenário.**
 
@@ -175,7 +175,7 @@ Configuração do cenário: RIPv2, split horizon ligado
 
 **O que é.**
 
-O **RIPv2** (RFC 2453) é um protocolo de **vetor de distância**. Cada roteador envia aos vizinhos a lista de destinos que conhece e a distância até cada um, em **saltos**. Quem recebe soma 1 e guarda o menor valor (Bellman-Ford). Ninguém conhece o mapa completo da rede.
+O **RIPv2** ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453)) é um protocolo de **vetor de distância**. Cada roteador envia aos vizinhos a lista de destinos que conhece e a distância até cada um, em **saltos**. Quem recebe soma 1 e guarda o menor valor (Bellman-Ford). Ninguém conhece o mapa completo da rede.
 
 **Neste cenário.**
 
@@ -271,7 +271,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### OSPF (RFC 2328)
+### OSPF ([RFC 2328](https://www.rfc-editor.org/rfc/rfc2328))
 
           
 
@@ -284,7 +284,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### RIPv2 (RFC 2453)
+### RIPv2 ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453))
 
           
 
@@ -316,7 +316,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-- **Injeção de rotas:** um atacante na mesma rede pode anunciar rotas falsas para desviar tráfego (man-in-the-middle) ou criar um buraco negro. A defesa é a **autenticação**: no OSPF, HMAC-SHA (RFC 5709); no RIPv2, MD5 ou HMAC-SHA (RFC 4822).
+- **Injeção de rotas:** um atacante na mesma rede pode anunciar rotas falsas para desviar tráfego (man-in-the-middle) ou criar um buraco negro. A defesa é a **autenticação**: no OSPF, HMAC-SHA ([RFC 5709](https://www.rfc-editor.org/rfc/rfc5709)); no RIPv2, MD5 ou HMAC-SHA ([RFC 4822](https://www.rfc-editor.org/rfc/rfc4822)).
 - **Interfaces passivas:** desativar o envio de Hello e de atualizações nas interfaces voltadas para usuários impede que um host participe do roteamento.
 - **Filtragem e resumo de rotas:** filtrar o que se aceita e resumir rotas reduz o efeito de anúncios indevidos e da instabilidade de enlaces (flapping).
 

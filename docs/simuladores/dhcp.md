@@ -5,7 +5,7 @@ Simulação interativa do DHCP: Discover, Offer, Request e Acknowledge, com gest
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/dhcp/`
-- **RFCs e padrões:** RFC 2131 (DHCP), RFC 2132 (Opções DHCP), RFC 5227 (ARP Probe)
+- **RFCs e padrões:** [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131) (DHCP), [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132) (Opções DHCP), [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) (ARP Probe)
 - **Tópicos:** DORA; Leases e renovação; Conflitos de endereço (ARP)
 
 ## Modos
@@ -134,7 +134,7 @@ Um servidor, lease de 8 horas e nenhuma falha: DISCOVER, OFFER, REQUEST e ACK, s
 
 Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no quadro de estados.
 
-**Conceito.** O **DHCP** (RFC 2131) entrega a um host o endereço IP, a máscara, o gateway e o DNS. Como o cliente ainda não tem endereço, a negociação começa em **broadcast**: **Discover** (procura servidores), **Offer** (o servidor reserva e oferece um endereço), **Request** (o cliente pede formalmente) e **Ack** (o servidor confirma e o empréstimo começa).
+**Conceito.** O **DHCP** ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)) entrega a um host o endereço IP, a máscara, o gateway e o DNS. Como o cliente ainda não tem endereço, a negociação começa em **broadcast**: **Discover** (procura servidores), **Offer** (o servidor reserva e oferece um endereço), **Request** (o cliente pede formalmente) e **Ack** (o servidor confirma e o empréstimo começa).
 
 **O que observar**
 
@@ -291,7 +291,7 @@ O PC-B, com IP estático, já usa o primeiro endereço do pool. O ARP Probe rece
 
 Na segunda negociação, o servidor oferece o endereço seguinte.
 
-**Conceito.** Antes de usar o endereço recebido, o cliente faz um **ARP Probe** (RFC 2131, seção 3.1, e RFC 5227): pergunta quem tem aquele IP, usando 0.0.0.0 como origem. Se alguém responder, há **conflito**: o cliente envia **DHCPDECLINE**, o servidor marca o endereço como indisponível e o cliente recomeça do zero.
+**Conceito.** Antes de usar o endereço recebido, o cliente faz um **ARP Probe** ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131), seção 3.1, e [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227)): pergunta quem tem aquele IP, usando 0.0.0.0 como origem. Se alguém responder, há **conflito**: o cliente envia **DHCPDECLINE**, o servidor marca o endereço como indisponível e o cliente recomeça do zero.
 
 **O que observar**
 
@@ -354,7 +354,7 @@ DHCP-1 está fora do ar. O DISCOVER fica sem resposta e o cliente espera 4 s, 8 
 
 Marque **DHCP-1 ativo** e execute de novo para ver a negociação funcionar.
 
-**Conceito.** Se nenhum OFFER chega, o cliente retransmite o DISCOVER com **backoff exponencial** (4 s, 8 s, 16 s... até 64 s, RFC 2131 seção 4.1). Espaçar as tentativas evita que muitos clientes juntos inundem a rede quando o servidor volta.
+**Conceito.** Se nenhum OFFER chega, o cliente retransmite o DISCOVER com **backoff exponencial** (4 s, 8 s, 16 s... até 64 s, [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131) seção 4.1). Espaçar as tentativas evita que muitos clientes juntos inundem a rede quando o servidor volta.
 
 **O que observar**
 
@@ -558,7 +558,7 @@ sequenceDiagram
 
           
 
-O **Dynamic Host Configuration Protocol** (RFC 2131) entrega automaticamente a um host o endereço IP, a máscara, o gateway e os servidores DNS. As opções que carregam cada parâmetro estão na RFC 2132. O DHCP usa **UDP**: o servidor escuta na porta **67** e o cliente, na porta **68**. O endereço é **emprestado** por um tempo (lease) e precisa ser renovado.
+O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)) entrega automaticamente a um host o endereço IP, a máscara, o gateway e os servidores DNS. As opções que carregam cada parâmetro estão na [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132). O DHCP usa **UDP**: o servidor escuta na porta **67** e o cliente, na porta **68**. O endereço é **emprestado** por um tempo (lease) e precisa ser renovado.
 
 ### Troca DORA
 
@@ -567,7 +567,7 @@ O **Dynamic Host Configuration Protocol** (RFC 2131) entrega automaticamente a u
 - **Discover:** o cliente, ainda sem IP, envia em broadcast de 0.0.0.0 para 255.255.255.255 procurando servidores.
 - **Offer:** cada servidor que recebeu o pedido reserva um endereço do pool e o oferece no campo yiaddr.
 - **Request:** o cliente escolhe uma oferta e a pede em broadcast. A opção 54 (Server Identifier) avisa os servidores não escolhidos para liberarem suas reservas.
-- **Acknowledge:** o servidor escolhido confirma e grava o lease. Antes de usar o endereço, o cliente pode testá-lo com um ARP Probe (RFC 5227).
+- **Acknowledge:** o servidor escolhido confirma e grava o lease. Antes de usar o endereço, o cliente pode testá-lo com um ARP Probe ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227)).
 
 ### Ciclo de vida do lease
 

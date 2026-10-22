@@ -5,7 +5,7 @@ Resolução de endereços na rede local: requisição em broadcast e resposta un
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/arp/`
-- **RFCs e padrões:** RFC 826 (ARP), RFC 1027 (Proxy ARP), RFC 1122 (Requisitos de hosts), RFC 5227 (Conflito de endereço)
+- **RFCs e padrões:** [RFC 826](https://www.rfc-editor.org/rfc/rfc826) (ARP), [RFC 1027](https://www.rfc-editor.org/rfc/rfc1027) (Proxy ARP), [RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) (Requisitos de hosts), [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) (Conflito de endereço)
 - **Tópicos:** Requisição e resposta; Tabela ARP (REACHABLE, STALE, FAILED); Gateway e proxy ARP; ARP Probe e Announce; Conflito de endereço e failover; Envenenamento de cache e defesas (DAI, entradas estáticas)
 
 ## Modos
@@ -152,7 +152,7 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
   - Desmarcado, ninguém responde à requisição ARP: depois de 3 tentativas, 1 s entre elas, a entrada vira FAILED e o sistema informa "Destination Host Unreachable".
   - Com uma entrada recente na tabela, o ARP nem é consultado, e o ping falha sem resposta.
 - **Proxy ARP ligado no gateway**. Valores: caixa de seleção. Padrão: não. Modos: Resolução.
-  - O roteador responde no lugar de hosts de outras redes (RFC 1027).
+  - O roteador responde no lugar de hosts de outras redes ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027)).
   - Só importa no destino remoto sem gateway. Ligado, o roteador responde ao ARP com o próprio MAC e encaminha o tráfego. Desligado, ninguém responde.
   - É um recurso de compatibilidade: esconde erros de configuração e aumenta a tabela ARP.
 - **A primeira requisição se perde**. Valores: caixa de seleção. Padrão: não. Modos: Resolução.
@@ -180,7 +180,7 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
 - **O host recém-chegado cede ao conflito**. Valores: caixa de seleção. Padrão: sim. Modos: ARP gratuito e conflito.
   - Vale para a disputa de endereço.
   - Marcado, o host B abandona o endereço assim que o dono o defende.
-  - Desmarcado, B também defende. A recebe um segundo conflito em menos de 10 s e abandona o endereço (RFC 5227).
+  - Desmarcado, B também defende. A recebe um segundo conflito em menos de 10 s e abandona o endereço ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227)).
 
 ### Failover
 
@@ -395,7 +395,7 @@ sequenceDiagram
 
 A máscara de A está errada e ele acha que o destino remoto é local. O roteador, com **proxy ARP**, responde com o próprio MAC e a comunicação funciona por acaso.
 
-**Conceito.** Com a máscara errada, o host acredita que o destino está na rede local e pergunta diretamente por ele. O roteador, com proxy ARP, responde com o próprio MAC e passa a encaminhar o tráfego (RFC 1027).
+**Conceito.** Com a máscara errada, o host acredita que o destino está na rede local e pergunta diretamente por ele. O roteador, com proxy ARP, responde com o próprio MAC e passa a encaminhar o tráfego ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027)).
 
 **O que observar**
 
@@ -595,7 +595,7 @@ sequenceDiagram
 
 #### Anúncio de endereço
 
-Antes de usar um endereço, o host verifica se há conflito (ARP Probe) e depois o anuncia (ARP Announce), como define a RFC 5227. Os dois usam pacotes ARP comuns, com o IP do remetente e o do alvo escolhidos de propósito.
+Antes de usar um endereço, o host verifica se há conflito (ARP Probe) e depois o anuncia (ARP Announce), como define a [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227). Os dois usam pacotes ARP comuns, com o IP do remetente e o do alvo escolhidos de propósito.
 
 ##### Endereço novo: Probe e Announce
 
@@ -738,7 +738,7 @@ sequenceDiagram
 
 B é configurado à mão com o endereço de A, sem verificar conflito. A **defende o endereço** com um Announce e B cede.
 
-**Conceito.** Um host configurado à mão sem verificar conflito anuncia um endereço que já pertence a outro. O dono percebe o conflito e o defende com um Announce, no máximo uma vez por intervalo de 10 s (RFC 5227). O outro host reconhece o conflito e abandona o endereço.
+**Conceito.** Um host configurado à mão sem verificar conflito anuncia um endereço que já pertence a outro. O dono percebe o conflito e o defende com um Announce, no máximo uma vez por intervalo de 10 s ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227)). O outro host reconhece o conflito e abandona o endereço.
 
 **O que observar**
 
@@ -777,7 +777,7 @@ sequenceDiagram
 
 B também defende o endereço. A recebe um **segundo conflito em menos de 10 s** e abandona o endereço.
 
-**Conceito.** Pela RFC 5227, o host defende o endereço uma vez. Se B também defende, A recebe um segundo conflito em menos de 10 s e abandona o endereço. O resultado é o oposto do esperado: o dono perde para quem não cedeu.
+**Conceito.** Pela [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227), o host defende o endereço uma vez. Se B também defende, A recebe um segundo conflito em menos de 10 s e abandona o endereço. O resultado é o oposto do esperado: o dono perde para quem não cedeu.
 
 **O que observar**
 
@@ -1204,9 +1204,9 @@ sequenceDiagram
 
 ### O que o ARP resolve
 
-O **ARP** (*Address Resolution Protocol*, RFC 826) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, **dentro da mesma rede local**. A Ethernet entrega quadros por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.
+O **ARP** (*Address Resolution Protocol*, [RFC 826](https://www.rfc-editor.org/rfc/rfc826)) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, **dentro da mesma rede local**. A Ethernet entrega quadros por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.
 
-### Formato do pacote (RFC 826, para IPv4 sobre Ethernet)
+### Formato do pacote ([RFC 826](https://www.rfc-editor.org/rfc/rfc826), para IPv4 sobre Ethernet)
 
 | Campo | Tamanho | Valor |
 | --- | --- | --- |
@@ -1226,7 +1226,7 @@ O quadro Ethernet que carrega o pacote usa o tipo 0x0806. São 28 bytes de ARP e
 
 - A **requisição** vai para o broadcast (ff:ff:ff:ff:ff:ff): todos os hosts da rede a recebem e só o dono do IP perguntado responde.
 - A **resposta** vai em unicast para quem perguntou.
-- Quem é o alvo da requisição guarda o par IP e MAC do remetente (RFC 826), e por isso a resposta de volta (o *Echo Reply* do ping) não exige outra consulta.
+- Quem é o alvo da requisição guarda o par IP e MAC do remetente ([RFC 826](https://www.rfc-editor.org/rfc/rfc826)), e por isso a resposta de volta (o *Echo Reply* do ping) não exige outra consulta.
 
 ### Tabela ARP e estados das entradas
 
@@ -1244,15 +1244,15 @@ Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s co
 ### Fora da sub-rede e proxy ARP
 
 - O broadcast **não atravessa roteadores**. Para um destino em outra rede, o host faz o ARP do **gateway**, e o quadro leva o MAC do gateway com o IP de destino remoto.
-- No **proxy ARP** (RFC 1027), o roteador responde a requisições por endereços de outras redes usando o próprio MAC. Serve para hosts sem gateway, mas esconde erros de máscara e de rota.
+- No **proxy ARP** ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027)), o roteador responde a requisições por endereços de outras redes usando o próprio MAC. Serve para hosts sem gateway, mas esconde erros de máscara e de rota.
 
-### ARP gratuito, Probe e Announce (RFC 5227)
+### ARP gratuito, Probe e Announce ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227))
 
 - O **ARP Probe** é uma requisição com o IP do remetente **zerado** (0.0.0.0): pergunta se alguém usa o endereço sem contaminar as tabelas dos vizinhos. A RFC prevê 3 Probes, com 1 a 2 s entre eles, depois de uma espera inicial de até 1 s.
 - O **ARP Announce** é uma requisição em que o IP do remetente e o do alvo são o mesmo endereço. A RFC prevê 2 Announces, a cada 2 s, depois de uma espera de 2 s. Os vizinhos que já tinham uma entrada para o IP a atualizam; ninguém cria entrada por causa de um Announce.
 - O **ARP gratuito** clássico também pode ser uma resposta (operação 2) que ninguém pediu, em broadcast. É o que muitas implementações enviam ao assumir um IP em um failover. O valor do endereço físico do alvo varia entre sistemas.
 - Se o dono de um endereço vê um conflito, ele o **defende** com um Announce, no máximo uma vez a cada 10 s. Um segundo conflito dentro desse intervalo faz o host abandonar o endereço.
-- Com DHCP, quem detecta o endereço em uso recusa a oferta com `DHCPDECLINE` (RFC 2131).
+- Com DHCP, quem detecta o endereço em uso recusa a oferta com `DHCPDECLINE` ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)).
 
 ### Envenenamento do cache ARP (nível defensivo)
 
@@ -1279,7 +1279,7 @@ O ARP **não tem autenticação**: o host aceita qualquer resposta que pareça v
 
 ### Limitações do simulador
 
-O simulador mostra um único segmento Ethernet com três hosts (o switch não aparece, mas é ele que entrega o broadcast a todos). Os endereços são de documentação (RFC 5737 e RFC 7042), os tempos são didáticos e, no destino remoto, a resposta do ping é gerada pelo gateway, sem simular a rede além dele. No modo de conflito, os tempos da RFC 5227 são valores fixos (a RFC sorteia intervalos). Fora do escopo: o NDP do IPv6.
+O simulador mostra um único segmento Ethernet com três hosts (o switch não aparece, mas é ele que entrega o broadcast a todos). Os endereços são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 7042](https://www.rfc-editor.org/rfc/rfc7042)), os tempos são didáticos e, no destino remoto, a resposta do ping é gerada pelo gateway, sem simular a rede além dele. No modo de conflito, os tempos da [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) são valores fixos (a RFC sorteia intervalos). Fora do escopo: o NDP do IPv6.
 
 
 ---

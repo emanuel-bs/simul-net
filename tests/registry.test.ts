@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CATEGORIES, DOCS_BASE, SIMS, docUrl } from '../src/sims/registry';
@@ -19,6 +19,21 @@ describe('registro de simuladores', () => {
       expect(existsSync(join(root, 'docs', 'simuladores', s.id + '.md')), s.id + ': documento ausente (npm run docs:simuladores)').toBe(true);
       expect(docUrl(s)).toBe(DOCS_BASE + s.id + '.md');
     });
+  });
+
+  it('nos documentos de docs/simuladores, toda RFC e todo BCP citados são links', () => {
+    const dir = join(root, 'docs', 'simuladores');
+    readdirSync(dir)
+      .filter((f) => f.endsWith('.md'))
+      .forEach((f) => {
+        // Fora de blocos de código, código em linha e links já formados, não pode sobrar citação sem link.
+        const text = readFileSync(join(dir, f), 'utf8')
+          .replace(/```[\s\S]*?```/g, '')
+          .replace(/`[^`\n]*`/g, '')
+          .replace(/\[[^\]\n]*\]\([^)\n]*\)/g, '');
+        const bare = text.match(/\b(RFC|BCP) \d+\b/g) ?? [];
+        expect(bare, `${f}: citações sem link (rode npm run docs:simuladores)`).toEqual([]);
+      });
   });
 
   it('todo simulador disponível cita pelo menos uma RFC ou padrão', () => {

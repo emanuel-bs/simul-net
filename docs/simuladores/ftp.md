@@ -5,7 +5,7 @@ Transferência de arquivos por dentro: FTP com canais de controle e de dados (mo
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/ftp/`
-- **RFCs e padrões:** RFC 959 (FTP), RFC 4217 (FTP sobre TLS), RFC 2428 (EPSV e EPRT), RFC 4253 (SSH (SFTP))
+- **RFCs e padrões:** [RFC 959](https://www.rfc-editor.org/rfc/rfc959) (FTP), [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217) (FTP sobre TLS), [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428) (EPSV e EPRT), [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) (SSH (SFTP))
 - **Tópicos:** Canais de controle e de dados; Modos ativo e passivo atrás de NAT; FTPS: AUTH TLS, PROT P e PROT C; SFTP e comparação dos três
 
 ## Modos
@@ -738,7 +738,7 @@ sequenceDiagram
 | Client Hello ... Finished | handshake TLS | cliente / servidor |
 | PBSZ / PROT P | protege também os dados | cliente / servidor |
 
-**Por que importa.** É a forma recomendada de FTPS: padronizada na RFC 4217 e compatível com clientes e servidores comuns.
+**Por que importa.** É a forma recomendada de FTPS: padronizada na [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217) e compatível com clientes e servidores comuns.
 
 ##### FTPS implícito (porta 990)
 
@@ -815,7 +815,7 @@ sequenceDiagram
 | Client Hello ... Finished | handshake TLS | cliente / servidor |
 | 220 | saudação, já cifrada | servidor |
 
-**Por que importa.** É o modo legado, não padronizado na RFC 4217, mas ainda comum em ambientes corporativos.
+**Por que importa.** É o modo legado, não padronizado na [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217), mas ainda comum em ambientes corporativos.
 
 ##### PROT C: dados em claro
 
@@ -1749,13 +1749,13 @@ sequenceDiagram
 
 ### Os três protocolos
 
-- **FTP (RFC 959):** canal de controle na porta 21 e um canal de dados por transferência. Usuário, senha, comandos e arquivos viajam em texto puro.
-- **FTPS (RFC 4217, com RFC 2228):** o FTP com TLS. No modo **explícito**, o cliente envia `AUTH TLS` na porta 21. No modo **implícito**, o TLS começa no primeiro byte, por convenção na porta 990 (não padronizado na RFC 4217). Os comandos `PBSZ 0` e `PROT P` ou `PROT C` escolhem se os dados também são cifrados.
-- **SFTP:** não é "FTP sobre SSH". É um protocolo próprio de acesso a arquivos, que roda como subsistema do SSH (RFC 4251 a 4254) em uma única conexão na porta 22. A especificação é o rascunho do IETF *SSH File Transfer Protocol*; a versão 3 é a mais usada.
+- **FTP ([RFC 959](https://www.rfc-editor.org/rfc/rfc959)):** canal de controle na porta 21 e um canal de dados por transferência. Usuário, senha, comandos e arquivos viajam em texto puro.
+- **FTPS ([RFC 4217](https://www.rfc-editor.org/rfc/rfc4217), com [RFC 2228](https://www.rfc-editor.org/rfc/rfc2228)):** o FTP com TLS. No modo **explícito**, o cliente envia `AUTH TLS` na porta 21. No modo **implícito**, o TLS começa no primeiro byte, por convenção na porta 990 (não padronizado na [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217)). Os comandos `PBSZ 0` e `PROT P` ou `PROT C` escolhem se os dados também são cifrados.
+- **SFTP:** não é "FTP sobre SSH". É um protocolo próprio de acesso a arquivos, que roda como subsistema do SSH ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251) a [4254](https://www.rfc-editor.org/rfc/rfc4254)) em uma única conexão na porta 22. A especificação é o rascunho do IETF *SSH File Transfer Protocol*; a versão 3 é a mais usada.
 
 ### Modos de dados do FTP
 
-- **Passivo (`PASV` ou `EPSV`, RFC 2428):** o servidor abre uma porta de uma faixa e o cliente conecta nela. É o modo que atravessa NAT e firewalls de estado, desde que a faixa de portas esteja liberada no servidor.
+- **Passivo (`PASV` ou `EPSV`, [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428)):** o servidor abre uma porta de uma faixa e o cliente conecta nela. É o modo que atravessa NAT e firewalls de estado, desde que a faixa de portas esteja liberada no servidor.
 - **Ativo (`PORT` ou `EPRT`):** o cliente anuncia seu endereço e uma porta, e o **servidor** conecta, a partir da porta 20. Atrás de NAT, o endereço anunciado é privado e a conexão falha, a menos que um helper do firewall reescreva o comando.
 - O helper de FTP precisa ler o canal de controle. Com FTPS o canal é cifrado e o helper não consegue fazer isso.
 

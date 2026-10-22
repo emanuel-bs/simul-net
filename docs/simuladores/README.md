@@ -19,16 +19,16 @@ Roteamento, endereçamento automático, diagnóstico e redes de operadora, em di
 
 | Simulador | Motor | Situação | RFCs e padrões |
 | --- | --- | --- | --- |
-| [Roteamento (OSPF e RIPv2)](roteamento.md) | legado | disponível | RFC 2328, RFC 2453 |
-| [DHCP (DORA)](dhcp.md) | nativo | disponível | RFC 2131, RFC 2132, RFC 5227 |
-| [ICMP (ping e traceroute)](icmp.md) | nativo | disponível | RFC 792, RFC 1191, RFC 1812, RFC 2923 |
-| [BGP (sessões e seleção de caminho)](bgp.md) | legado | disponível | RFC 4271, RFC 6811 |
-| [MPLS (LDP e L3VPN)](mpls.md) | legado | disponível | RFC 3031, RFC 5036, RFC 4364 |
-| IS-IS | - | planejado | RFC 1195, ISO/IEC 10589 |
-| SNMP | - | planejado | RFC 3411, RFC 3416, RFC 3414 |
-| NTP (sincronização de tempo) | - | planejado | RFC 5905, RFC 8915, RFC 5906 |
-| [ARP](arp.md) | nativo | disponível | RFC 826, RFC 1027, RFC 1122, RFC 5227 |
-| [NAT (SNAT, DNAT e NAPT)](nat.md) | nativo | disponível | RFC 2663, RFC 3022, RFC 4787, RFC 5382, RFC 5508, RFC 6598, RFC 6888 |
+| [Roteamento (OSPF e RIPv2)](roteamento.md) | legado | disponível | [RFC 2328](https://www.rfc-editor.org/rfc/rfc2328), [RFC 2453](https://www.rfc-editor.org/rfc/rfc2453) |
+| [DHCP (DORA)](dhcp.md) | nativo | disponível | [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131), [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132), [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) |
+| [ICMP (ping e traceroute)](icmp.md) | nativo | disponível | [RFC 792](https://www.rfc-editor.org/rfc/rfc792), [RFC 1191](https://www.rfc-editor.org/rfc/rfc1191), [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812), [RFC 2923](https://www.rfc-editor.org/rfc/rfc2923) |
+| [BGP (sessões e seleção de caminho)](bgp.md) | legado | disponível | [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271), [RFC 6811](https://www.rfc-editor.org/rfc/rfc6811) |
+| [MPLS (LDP e L3VPN)](mpls.md) | legado | disponível | [RFC 3031](https://www.rfc-editor.org/rfc/rfc3031), [RFC 5036](https://www.rfc-editor.org/rfc/rfc5036), [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364) |
+| IS-IS | - | planejado | [RFC 1195](https://www.rfc-editor.org/rfc/rfc1195), ISO/IEC 10589 |
+| SNMP | - | planejado | [RFC 3411](https://www.rfc-editor.org/rfc/rfc3411), [RFC 3416](https://www.rfc-editor.org/rfc/rfc3416), [RFC 3414](https://www.rfc-editor.org/rfc/rfc3414) |
+| NTP (sincronização de tempo) | - | planejado | [RFC 5905](https://www.rfc-editor.org/rfc/rfc5905), [RFC 8915](https://www.rfc-editor.org/rfc/rfc8915), [RFC 5906](https://www.rfc-editor.org/rfc/rfc5906) |
+| [ARP](arp.md) | nativo | disponível | [RFC 826](https://www.rfc-editor.org/rfc/rfc826), [RFC 1027](https://www.rfc-editor.org/rfc/rfc1027), [RFC 1122](https://www.rfc-editor.org/rfc/rfc1122), [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) |
+| [NAT (SNAT, DNAT e NAPT)](nat.md) | nativo | disponível | [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663), [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022), [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787), [RFC 5382](https://www.rfc-editor.org/rfc/rfc5382), [RFC 5508](https://www.rfc-editor.org/rfc/rfc5508), [RFC 6598](https://www.rfc-editor.org/rfc/rfc6598), [RFC 6888](https://www.rfc-editor.org/rfc/rfc6888) |
 
 ## Camada de transporte e segurança
 
@@ -36,10 +36,10 @@ TCP e UDP passo a passo e o laboratório defensivo com ataques, mitigações e r
 
 | Simulador | Motor | Situação | RFCs e padrões |
 | --- | --- | --- | --- |
-| [TCP e UDP](tcp-udp.md) | legado | disponível | RFC 9293, RFC 768, RFC 5681, RFC 2018 |
-| [Ataques e defesas TCP/UDP](ataques-tcp-udp.md) | legado | disponível | RFC 4987, BCP 38 |
-| [HTTP/1.1, HTTP/2 e HTTP/3](http-versoes.md) | nativo | disponível | RFC 9110, RFC 9112, RFC 9113, RFC 9114, RFC 9000 |
-| Controle de congestionamento (Reno, CUBIC e BBR) | - | planejado | RFC 5681, RFC 9438, RFC 6582 |
+| [TCP e UDP](tcp-udp.md) | legado | disponível | [RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), [RFC 768](https://www.rfc-editor.org/rfc/rfc768), [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681), [RFC 2018](https://www.rfc-editor.org/rfc/rfc2018) |
+| [Ataques e defesas TCP/UDP](ataques-tcp-udp.md) | legado | disponível | [RFC 4987](https://www.rfc-editor.org/rfc/rfc4987), [BCP 38](https://www.rfc-editor.org/info/bcp38) |
+| [HTTP/1.1, HTTP/2 e HTTP/3](http-versoes.md) | nativo | disponível | [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112), [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113), [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114), [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000) |
+| Controle de congestionamento (Reno, CUBIC e BBR) | - | planejado | [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681), [RFC 9438](https://www.rfc-editor.org/rfc/rfc9438), [RFC 6582](https://www.rfc-editor.org/rfc/rfc6582) |
 
 ## Protocolos de rede seguros
 
@@ -47,14 +47,14 @@ SSH, HTTPS e transferência de arquivos por dentro: negociação, troca de chave
 
 | Simulador | Motor | Situação | RFCs e padrões |
 | --- | --- | --- | --- |
-| [SSH](ssh.md) | nativo | disponível | RFC 4253, RFC 4252, RFC 4254, RFC 8709 |
-| [HTTPS e TLS](https.md) | nativo | disponível | RFC 8446, RFC 5246, RFC 6797, RFC 5280 |
-| [FTP, FTPS e SFTP](ftp.md) | nativo | disponível | RFC 959, RFC 4217, RFC 2428, RFC 4253 |
-| [DNS e DNSSEC](dns.md) | nativo | disponível | RFC 1034, RFC 4033, RFC 4035, RFC 7858, RFC 8484 |
-| VPN (IPsec e WireGuard) | - | planejado | RFC 7296, RFC 4303 |
-| SMTP e segurança de e-mail | - | planejado | RFC 5321, RFC 3207, RFC 7208, RFC 6376, RFC 7489 |
-| Wi-Fi: segurança (WPA2 e WPA3) | - | planejado | IEEE 802.11i, IEEE 802.11w, IEEE 802.1X, RFC 3748 |
-| 802.1X e RADIUS (EAP) | - | planejado | RFC 3748, RFC 2865, IEEE 802.1X |
+| [SSH](ssh.md) | nativo | disponível | [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253), [RFC 4252](https://www.rfc-editor.org/rfc/rfc4252), [RFC 4254](https://www.rfc-editor.org/rfc/rfc4254), [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709) |
+| [HTTPS e TLS](https.md) | nativo | disponível | [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446), [RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797), [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) |
+| [FTP, FTPS e SFTP](ftp.md) | nativo | disponível | [RFC 959](https://www.rfc-editor.org/rfc/rfc959), [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217), [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428), [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) |
+| [DNS e DNSSEC](dns.md) | nativo | disponível | [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035), [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858), [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484) |
+| VPN (IPsec e WireGuard) | - | planejado | [RFC 7296](https://www.rfc-editor.org/rfc/rfc7296), [RFC 4303](https://www.rfc-editor.org/rfc/rfc4303) |
+| SMTP e segurança de e-mail | - | planejado | [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321), [RFC 3207](https://www.rfc-editor.org/rfc/rfc3207), [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208), [RFC 6376](https://www.rfc-editor.org/rfc/rfc6376), [RFC 7489](https://www.rfc-editor.org/rfc/rfc7489) |
+| Wi-Fi: segurança (WPA2 e WPA3) | - | planejado | IEEE 802.11i, IEEE 802.11w, IEEE 802.1X, [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748) |
+| 802.1X e RADIUS (EAP) | - | planejado | [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748), [RFC 2865](https://www.rfc-editor.org/rfc/rfc2865), IEEE 802.1X |
 
 
 ---

@@ -5,7 +5,7 @@ ping, traceroute, tracert e hping3 em uma rede simulada: Echo, Time Exceeded, De
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/icmp/`
-- **RFCs e padrões:** RFC 792 (ICMP), RFC 1191 (Path MTU Discovery), RFC 1812 (Roteadores IPv4), RFC 2923 (Problemas de PMTUD)
+- **RFCs e padrões:** [RFC 792](https://www.rfc-editor.org/rfc/rfc792) (ICMP), [RFC 1191](https://www.rfc-editor.org/rfc/rfc1191) (Path MTU Discovery), [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812) (Roteadores IPv4), [RFC 2923](https://www.rfc-editor.org/rfc/rfc2923) (Problemas de PMTUD)
 - **Tópicos:** Echo e Time Exceeded; Fragmentação e PMTUD; ACLs e loops de roteamento; Captura e hex dump
 
 ## Modos
@@ -215,7 +215,7 @@ Cenário, Captura, Mensagem, Terminal, Comando, Rotas, Experimento, Referência 
 
 - **ACL de entrada em R1 (g0/1)**. Valores: permitir tudo; negar todo ICMP; só echo-reply. Padrão: permitir tudo. Modos: todos.
   - Filtra o que volta da WAN para a LAN do PC-A.
-  - **Só echo-reply** parece segura, mas bloqueia os erros ICMP no caminho de volta e cria o buraco negro de PMTUD (RFC 2923).
+  - **Só echo-reply** parece segura, mas bloqueia os erros ICMP no caminho de volta e cria o buraco negro de PMTUD ([RFC 2923](https://www.rfc-editor.org/rfc/rfc2923)).
   - **Negar todo ICMP** descarta em silêncio inclusive as respostas do ping.
 - **ACL de saída em R3 (g0/1)**. Valores: permitir tudo; negar com 3/13; negar em silêncio. Padrão: permitir tudo. Modos: todos.
   - Filtra o tráfego para a LAN do servidor.
@@ -371,11 +371,11 @@ O tipo 3 avisa a origem que o pacote não pôde ser entregue. O código diz o mo
 
 **Configuração aplicada:** Quantidade (-c) = 2; Destino = 192.168.50.1
 
-R1 encaminha pela rota padrão, mas R2 não tem rota para 192.168.50.0/24 nem rota padrão. R2 gera **3/0 Net Unreachable** (RFC 1812: obrigatório quando não há nenhuma rota).
+R1 encaminha pela rota padrão, mas R2 não tem rota para 192.168.50.0/24 nem rota padrão. R2 gera **3/0 Net Unreachable** ([RFC 1812](https://www.rfc-editor.org/rfc/rfc1812): obrigatório quando não há nenhuma rota).
 
 O endereço de origem do erro mostra **onde** o caminho termina. Tente também derrubar o enlace R1 / R2 e repetir.
 
-**Conceito.** **Net Unreachable** (tipo 3, código 0): um roteador recebeu um pacote para uma rede que não está na tabela de rotas e também não tem rota padrão. A RFC 1812 obriga o roteador a descartar e avisar a origem.
+**Conceito.** **Net Unreachable** (tipo 3, código 0): um roteador recebeu um pacote para uma rede que não está na tabela de rotas e também não tem rota padrão. A [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812) obriga o roteador a descartar e avisar a origem.
 
 **O que observar**
 
@@ -535,11 +535,11 @@ sequenceDiagram
 
 **Configuração aplicada:** Quantidade (-c) = 3; Dados (-s, bytes) = 1472; DF / PMTUD (-M) = do; MTU R2 / R3 = 1400
 
-Com DF ligado, R2 não pode fragmentar: descarta e devolve **3/4 Fragmentation Needed** com o campo Next-Hop MTU = 1400 (RFC 1191). PC-A grava 1400 no cache de PMTU e, com -M do, recusa enviar os próximos (local error).
+Com DF ligado, R2 não pode fragmentar: descarta e devolve **3/4 Fragmentation Needed** com o campo Next-Hop MTU = 1400 ([RFC 1191](https://www.rfc-editor.org/rfc/rfc1191)). PC-A grava 1400 no cache de PMTU e, com -M do, recusa enviar os próximos (local error).
 
 Repita com **-M want** (padrão do Linux): depois de aprender a PMTU, o PC-A fragmenta localmente e o ping funciona.
 
-**Conceito.** **Path MTU Discovery** (RFC 1191): a origem envia com o bit DF ligado. O roteador cujo próximo enlace tem MTU menor não pode fragmentar: descarta o pacote e devolve **Fragmentation Needed** (tipo 3, código 4) com o campo **Next-Hop MTU**. A origem guarda esse valor no cache de PMTU e passa a enviar pacotes menores.
+**Conceito.** **Path MTU Discovery** ([RFC 1191](https://www.rfc-editor.org/rfc/rfc1191)): a origem envia com o bit DF ligado. O roteador cujo próximo enlace tem MTU menor não pode fragmentar: descarta o pacote e devolve **Fragmentation Needed** (tipo 3, código 4) com o campo **Next-Hop MTU**. A origem guarda esse valor no cache de PMTU e passa a enviar pacotes menores.
 
 **O que observar**
 
@@ -635,9 +635,9 @@ sequenceDiagram
 
 R1 tem uma ACL "segura" que só aceita Echo Reply e bloqueia todo ICMP de erro. R2 gera o 3/4, mas ele é descartado em R1: o PC-A nunca aprende a PMTU e os pacotes grandes somem (timeout).
 
-Mude **Dados** para 56 e rode de novo: pacotes pequenos funcionam. Esse é o sintoma clássico (RFC 2923).
+Mude **Dados** para 56 e rode de novo: pacotes pequenos funcionam. Esse é o sintoma clássico ([RFC 2923](https://www.rfc-editor.org/rfc/rfc2923)).
 
-**Conceito.** O **buraco negro de PMTUD** (RFC 2923) acontece quando um firewall bloqueia todo ICMP de erro "por segurança". O roteador gera o **Fragmentation Needed** (3/4), mas o aviso é descartado no caminho de volta. A origem nunca aprende a MTU menor, continua enviando pacotes grandes com DF e eles desaparecem sem nenhum aviso.
+**Conceito.** O **buraco negro de PMTUD** ([RFC 2923](https://www.rfc-editor.org/rfc/rfc2923)) acontece quando um firewall bloqueia todo ICMP de erro "por segurança". O roteador gera o **Fragmentation Needed** (3/4), mas o aviso é descartado no caminho de volta. A origem nunca aprende a MTU menor, continua enviando pacotes grandes com DF e eles desaparecem sem nenhum aviso.
 
 **O que observar**
 
@@ -987,21 +987,21 @@ sequenceDiagram
 
           
 
-O **Internet Control Message Protocol** (RFC 792) é o canal de controle e diagnóstico do IPv4. Suas mensagens viajam dentro de datagramas IP com **protocolo 1**, mas o ICMP não é um protocolo de transporte: ele não carrega dados de aplicação e serve para relatar erros e responder consultas. Todo cabeçalho ICMP começa com **tipo** (1 byte), **código** (1 byte) e **checksum** (2 bytes).
+O **Internet Control Message Protocol** ([RFC 792](https://www.rfc-editor.org/rfc/rfc792)) é o canal de controle e diagnóstico do IPv4. Suas mensagens viajam dentro de datagramas IP com **protocolo 1**, mas o ICMP não é um protocolo de transporte: ele não carrega dados de aplicação e serve para relatar erros e responder consultas. Todo cabeçalho ICMP começa com **tipo** (1 byte), **código** (1 byte) e **checksum** (2 bytes).
 
 
           
 
 Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um host e respondidas pelo destino. As **mensagens de erro** são geradas por um roteador ou host que não conseguiu processar um datagrama e são sempre enviadas à **origem** do datagrama, nunca ao destino. Cada erro carrega o **cabeçalho IP original mais os 8 primeiros bytes** do datagrama que o provocou; é assim que o ping e o traceroute associam o erro à sonda certa (pelo identificador e sequência ICMP ou pelas portas UDP).
 
-### Regras de geração de erros (RFC 1122 e RFC 1812)
+### Regras de geração de erros ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) e [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812))
 
 
           
 
 - Nunca se gera um erro ICMP sobre outra mensagem de erro ICMP (evita tempestades de erros).
 - Nunca se gera erro sobre broadcast, multicast ou fragmentos que não sejam o primeiro.
-- O endereço de origem do erro é o da interface por onde o roteador envia a mensagem (RFC 1812, seção 4.3.2.4). Por isso o traceroute mostra o IP da interface voltada para você.
+- O endereço de origem do erro é o da interface por onde o roteador envia a mensagem ([RFC 1812](https://www.rfc-editor.org/rfc/rfc1812), seção 4.3.2.4). Por isso o traceroute mostra o IP da interface voltada para você.
 - Sem nenhuma rota para o destino, o roteador gera o código 0 (Network Unreachable). Se a rede está conectada mas o host não responde ao ARP, gera o código 1 (Host Unreachable).
 - Roteadores limitam a taxa de geração de erros (rate limiting). Na prática, isso faz aparecer asteriscos esporádicos no traceroute mesmo sem filtro.
 
@@ -1017,12 +1017,12 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 | 3 | 1 | Host Unreachable | Último roteador: ARP sem resposta na rede conectada |
 | 3 | 2 | Protocol Unreachable | Destino não suporta o protocolo indicado no IP |
 | 3 | 3 | Port Unreachable | Destino: nenhuma aplicação na porta UDP (fim do traceroute Linux) |
-| 3 | 4 | Fragmentation Needed and DF Set | Roteador cuja MTU de saída é menor que o pacote com DF; traz a MTU do próximo salto (RFC 1191) |
+| 3 | 4 | Fragmentation Needed and DF Set | Roteador cuja MTU de saída é menor que o pacote com DF; traz a MTU do próximo salto ([RFC 1191](https://www.rfc-editor.org/rfc/rfc1191)) |
 | 3 | 13 | Communication Administratively Prohibited | Filtro/ACL que rejeita em vez de descartar em silêncio |
-| 4 | 0 | Source Quench | Obsoleto (RFC 6633): não deve ser gerado |
+| 4 | 0 | Source Quench | Obsoleto ([RFC 6633](https://www.rfc-editor.org/rfc/rfc6633)): não deve ser gerado |
 | 5 | 0 a 3 | Redirect | Roteador indica um gateway melhor no mesmo segmento |
 | 8 | 0 | Echo Request | ping, traceroute -I e tracert |
-| 9 / 10 | 0 | Router Advertisement / Solicitation | Descoberta de roteadores (RFC 1256) |
+| 9 / 10 | 0 | Router Advertisement / Solicitation | Descoberta de roteadores ([RFC 1256](https://www.rfc-editor.org/rfc/rfc1256)) |
 | 11 | 0 | Time Exceeded in Transit | Roteador que recebeu TTL 1 (base do traceroute) |
 | 11 | 1 | Fragment Reassembly Time Exceeded | Destino que não recebeu todos os fragmentos a tempo |
 | 12 | 0 | Parameter Problem | Cabeçalho IP com campo inválido (ponteiro indica o byte) |
@@ -1043,7 +1043,7 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 
           
 
-**Path MTU Discovery** (RFC 1191): o host envia com DF ligado; o roteador cujo enlace de saída tem MTU menor descarta e devolve tipo 3 código 4 com a MTU do próximo salto. O host guarda esse valor (cache de PMTU) e passa a usar pacotes menores. No Linux, `-M want` (padrão) fragmenta localmente depois de aprender a PMTU, `-M do` recusa enviar e `-M dont` desliga o DF e deixa o roteador fragmentar.
+**Path MTU Discovery** ([RFC 1191](https://www.rfc-editor.org/rfc/rfc1191)): o host envia com DF ligado; o roteador cujo enlace de saída tem MTU menor descarta e devolve tipo 3 código 4 com a MTU do próximo salto. O host guarda esse valor (cache de PMTU) e passa a usar pacotes menores. No Linux, `-M want` (padrão) fragmenta localmente depois de aprender a PMTU, `-M do` recusa enviar e `-M dont` desliga o DF e deixa o roteador fragmentar.
 
 ### ICMP e segurança
 
@@ -1052,8 +1052,8 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 
 - **Reconhecimento:** ping sweep descobre hosts ativos; traceroute revela a topologia; Port Unreachable revela portas UDP fechadas (base do scan UDP do nmap).
 - **Filtragem:** descartar em silêncio produz timeouts (`* * *`); rejeitar com 3/13 revela que existe um filtro. Ambos são escolhas de projeto.
-- **Buraco negro de PMTUD** (RFC 2923): bloquear todo ICMP de erro impede o 3/4 de chegar. Pacotes pequenos funcionam, mas os grandes com DF somem; conexões TCP travam após o handshake. Nunca filtre o tipo 3 código 4.
-- **Ataques históricos:** Smurf (Echo para broadcast direcionado, mitigado pela RFC 2644), Ping of Death (datagrama remontado acima de 65535 bytes), túneis ICMP (dados escondidos no payload do Echo) e Redirect forjado para desviar tráfego.
+- **Buraco negro de PMTUD** ([RFC 2923](https://www.rfc-editor.org/rfc/rfc2923)): bloquear todo ICMP de erro impede o 3/4 de chegar. Pacotes pequenos funcionam, mas os grandes com DF somem; conexões TCP travam após o handshake. Nunca filtre o tipo 3 código 4.
+- **Ataques históricos:** Smurf (Echo para broadcast direcionado, mitigado pela [RFC 2644](https://www.rfc-editor.org/rfc/rfc2644)), Ping of Death (datagrama remontado acima de 65535 bytes), túneis ICMP (dados escondidos no payload do Echo) e Redirect forjado para desviar tráfego.
 
 ### Roteiro de exercícios
 

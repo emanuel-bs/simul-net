@@ -5,7 +5,7 @@ Tradução de endereços e portas: Basic NAT estático e dinâmico, NAPT (PAT), 
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/nat/`
-- **RFCs e padrões:** RFC 2663 (Terminologia), RFC 3022 (NAT tradicional), RFC 4787 (UDP), RFC 5382 (TCP), RFC 5508 (ICMP), RFC 6598 (Espaço 100.64.0.0/10), RFC 6888 (CGN)
+- **RFCs e padrões:** [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) (Terminologia), [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022) (NAT tradicional), [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (UDP), [RFC 5382](https://www.rfc-editor.org/rfc/rfc5382) (TCP), [RFC 5508](https://www.rfc-editor.org/rfc/rfc5508) (ICMP), [RFC 6598](https://www.rfc-editor.org/rfc/rfc6598) (Espaço 100.64.0.0/10), [RFC 6888](https://www.rfc-editor.org/rfc/rfc6888) (CGN)
 - **Tópicos:** Basic NAT e NAPT (PAT); SNAT e DNAT; Tabela de traduções e portas; Hairpinning e redirecionamento transparente; Esgotamento de portas e expiração; ESP, NAT-T e CGNAT
 
 ## Modos
@@ -135,21 +135,21 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
 ### Tradução
 
 - **Tipo de tradução**. Valores: Basic NAT estático (1:1); Basic NAT dinâmico (pool); NAPT (PAT): endereço e porta. Padrão: NAPT (PAT): endereço e porta. Modos: Saída: Basic NAT e NAPT; Limites, IPsec e CGNAT.
-  - O que o NAT traduz (RFC 3022).
+  - O que o NAT traduz ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)).
   - **Basic NAT estático:** cada host interno tem um endereço público fixo (1:1). Só o endereço IP é traduzido e o mapeamento é permanente, nos dois sentidos.
   - **Basic NAT dinâmico:** o host recebe um endereço de um pool quando começa a falar e o devolve depois do tempo de inatividade. Também traduz só o endereço.
   - **NAPT (PAT):** traduz o endereço **e a porta** (ou o identificador do ICMP). Muitos hosts compartilham um único endereço público. É o que o mercado chama de PAT, *overload* ou, no Linux, *masquerade*.
 - **Endereços públicos no pool (dinâmico)**. Valores: 1 endereço; 2 endereços; 3 endereços. Padrão: 2 endereços. Modos: Saída: Basic NAT e NAPT; Limites, IPsec e CGNAT.
   - Quantos endereços o NAT dinâmico pode distribuir.
   - Vale para o Basic NAT dinâmico. Com menos endereços que hosts, o host que chega depois fica sem tradução até um vínculo expirar.
-  - Os endereços do pool (203.0.113.11 em diante) são da faixa de documentação da RFC 5737 e fazem o papel de endereços públicos.
+  - Os endereços do pool (203.0.113.11 em diante) são da faixa de documentação da [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e fazem o papel de endereços públicos.
 - **Protocolo**. Valores: TCP; UDP; ICMP (ping); ESP (IPsec). Padrão: TCP. Modos: Saída: Basic NAT e NAPT; Limites, IPsec e CGNAT.
   - O protocolo do pacote que atravessa o NAT.
   - **TCP e UDP:** o NAPT usa as portas de origem e de destino.
-  - **ICMP:** não há porta; o NAT usa o campo *Identifier* do Echo como se fosse a porta (RFC 5508).
+  - **ICMP:** não há porta; o NAT usa o campo *Identifier* do Echo como se fosse a porta ([RFC 5508](https://www.rfc-editor.org/rfc/rfc5508)).
   - **ESP (IPsec):** não há porta. O Basic NAT atravessa sem problema (se não houver AH), mas o NAPT não tem como distinguir dois hosts. A saída é encapsular o ESP em UDP (NAT-T).
 - **Comportamento de mapeamento (NAPT)** (ajuste avançado). Valores: Independente do destino (EIM); Dependente de endereço e porta (APDM). Padrão: Independente do destino (EIM). Modos: Saída: Basic NAT e NAPT.
-  - Quando o NAPT reaproveita a porta externa (RFC 4787).
+  - Quando o NAPT reaproveita a porta externa ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787)).
   - **Independente do destino (EIM):** a mesma porta interna usa sempre a mesma porta externa, qualquer que seja o destino. Facilita aplicações ponto a ponto.
   - **Dependente de endereço e porta (APDM):** cada destino distinto recebe sua própria porta externa. É o comportamento do NAT dito "simétrico" e dificulta a conexão direta entre dois hosts atrás de NATs.
 
@@ -176,7 +176,7 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
   - **Pequena (didática):** 50000 a 50002, só 3 portas, para mostrar o esgotamento com poucas conexões. Em redes reais, o esgotamento é o mesmo fenômeno em escala muito maior.
 - **Tempo de inatividade (timeout)**. Valores: 30 s; 60 s; 120 s; 300 s. Padrão: 120 s. Modos: Limites, IPsec e CGNAT.
   - Quanto tempo uma entrada sobrevive sem tráfego.
-  - Parâmetro do simulador, não um padrão de fabricante: em equipamentos reais, o valor varia por protocolo e por estado da conexão (a RFC 4787 e a RFC 5382 dão orientações mínimas).
+  - Parâmetro do simulador, não um padrão de fabricante: em equipamentos reais, o valor varia por protocolo e por estado da conexão (a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) e a [RFC 5382](https://www.rfc-editor.org/rfc/rfc5382) dão orientações mínimas).
   - Passado o tempo sem tráfego, a entrada é removida e a porta é liberada.
 - **Resposta tardia do servidor**. Valores: caixa de seleção. Padrão: não. Modos: Limites, IPsec e CGNAT.
   - O servidor responde depois do timeout.
@@ -188,10 +188,10 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
   - No NAPT, sem entrada na tabela, o pacote é descartado. No Basic NAT, o mapeamento vale nos dois sentidos e o pacote é entregue. **O NAT não é um filtro de segurança:** o bloqueio de entrada vem de uma regra de filtragem com estado.
 - **NAT em duas camadas (CGNAT)**. Valores: caixa de seleção. Padrão: não. Modos: Limites, IPsec e CGNAT.
   - Um CPE doméstico e um CGN da operadora, em cascata.
-  - O CPE traduz o endereço privado para um endereço de 100.64.0.0/10 (RFC 6598). O CGN traduz esse endereço para o público, dividindo as portas com outros assinantes (RFC 6888).
+  - O CPE traduz o endereço privado para um endereço de 100.64.0.0/10 ([RFC 6598](https://www.rfc-editor.org/rfc/rfc6598)). O CGN traduz esse endereço para o público, dividindo as portas com outros assinantes ([RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)).
   - Neste cenário, o CGN já tem as portas 50000 e 50001 ocupadas por outro assinante. Força o NAPT nos dois dispositivos.
 - **NAT-T: ESP dentro de UDP 4500** (ajuste avançado). Valores: caixa de seleção. Padrão: não. Modos: Limites, IPsec e CGNAT.
-  - Encapsula o ESP em UDP porta 4500 (RFC 3948).
+  - Encapsula o ESP em UDP porta 4500 ([RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)).
   - Vale quando o protocolo é ESP. Com o ESP dentro de um datagrama UDP, o NAPT passa a ver portas e consegue distinguir os hosts.
 
 ### Redirecionamento (DNAT)
@@ -218,7 +218,7 @@ Cenário, Captura, Mensagem, Tabela NAT, Portas (modos: Saída: Basic NAT e NAPT
 
 #### Basic NAT
 
-Tradução só do endereço IP, 1:1, estática ou a partir de um pool (RFC 3022). Não usa portas.
+Tradução só do endereço IP, 1:1, estática ou a partir de um pool ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)). Não usa portas.
 
 ##### Basic NAT estático (1:1)
 
@@ -230,7 +230,7 @@ Cada host interno tem um endereço público fixo: PC1 usa 203.0.113.11 e PC2, 20
 
 Só o endereço IP muda. As portas passam sem alteração.
 
-**Conceito.** O **Basic NAT estático** (RFC 3022) mapeia um endereço interno para um endereço externo de forma permanente e 1:1. Só o **endereço IP** é reescrito, no cabeçalho IP: portas e demais campos passam intactos. Na terminologia de uso comum, é um SNAT estático na saída e um DNAT estático na entrada.
+**Conceito.** O **Basic NAT estático** ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)) mapeia um endereço interno para um endereço externo de forma permanente e 1:1. Só o **endereço IP** é reescrito, no cabeçalho IP: portas e demais campos passam intactos. Na terminologia de uso comum, é um SNAT estático na saída e um DNAT estático na entrada.
 
 **O que observar**
 
@@ -362,7 +362,7 @@ sequenceDiagram
 
 #### NAPT (PAT)
 
-Tradução de endereço e porta (RFC 3022), o que o mercado chama de PAT. Muitos hosts compartilham um endereço público.
+Tradução de endereço e porta ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)), o que o mercado chama de PAT. Muitos hosts compartilham um endereço público.
 
 ##### NAPT (PAT): dois hosts, um endereço
 
@@ -374,7 +374,7 @@ PC1 e PC2 saem pelo mesmo endereço público, 203.0.113.1. O que os distingue é
 
 Observe a tabela: duas entradas com o mesmo endereço externo e portas diferentes.
 
-**Conceito.** O **NAPT** (*Network Address Port Translation*, RFC 3022), conhecido como PAT, traduz o endereço **e a porta** de origem. A entrada da tabela liga (endereço interno, porta interna) a (endereço externo, porta externa). A resposta chega à porta externa e a tabela devolve o pacote ao host certo. É um **SNAT** com tradução de porta; no Linux, o *masquerade* é a variante em que o endereço externo é o da interface.
+**Conceito.** O **NAPT** (*Network Address Port Translation*, [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022)), conhecido como PAT, traduz o endereço **e a porta** de origem. A entrada da tabela liga (endereço interno, porta interna) a (endereço externo, porta externa). A resposta chega à porta externa e a tabela devolve o pacote ao host certo. É um **SNAT** com tradução de porta; no Linux, o *masquerade* é a variante em que o endereço externo é o da interface.
 
 **O que observar**
 
@@ -468,7 +468,7 @@ sequenceDiagram
 
 O ICMP não tem portas. O NAPT usa o campo **Identifier** do Echo como se fosse a porta: ele é a chave da entrada e é a ele que a resposta se refere.
 
-**Conceito.** O ICMP não tem portas. Para o Echo, o NAT usa o campo **Identifier** como se fosse a porta (RFC 5508). A resposta (Echo Reply) traz o mesmo identificador, que é a chave para achar a entrada.
+**Conceito.** O ICMP não tem portas. Para o Echo, o NAT usa o campo **Identifier** como se fosse a porta ([RFC 5508](https://www.rfc-editor.org/rfc/rfc5508)). A resposta (Echo Reply) traz o mesmo identificador, que é a chave para achar a entrada.
 
 **O que observar**
 
@@ -508,7 +508,7 @@ sequenceDiagram
 
 #### Mapeamento
 
-Quando o NAPT reaproveita a porta externa para o mesmo host interno (RFC 4787).
+Quando o NAPT reaproveita a porta externa para o mesmo host interno ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787)).
 
 ##### Mapeamento independente do destino (EIM)
 
@@ -518,7 +518,7 @@ Quando o NAPT reaproveita a porta externa para o mesmo host interno (RFC 4787).
 
 O PC1 envia, da mesma porta de origem, para duas portas do servidor. Com EIM, as duas conexões compartilham a mesma porta externa.
 
-**Conceito.** No mapeamento **independente do destino** (*endpoint-independent mapping*, RFC 4787), a porta externa depende só do endereço e da porta internos. Assim, uma aplicação que fala com vários pares a partir da mesma porta é vista com a mesma porta externa por todos, o que ajuda protocolos ponto a ponto.
+**Conceito.** No mapeamento **independente do destino** (*endpoint-independent mapping*, [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787)), a porta externa depende só do endereço e da porta internos. Assim, uma aplicação que fala com vários pares a partir da mesma porta é vista com a mesma porta externa por todos, o que ajuda protocolos ponto a ponto.
 
 **O que observar**
 
@@ -552,7 +552,7 @@ sequenceDiagram
 | UDP 50000 para :53 | cria o mapeamento | PC1 |
 | UDP 50000 para :123 | reaproveita a porta externa | R-NAT |
 
-**Por que importa.** É o comportamento que a RFC 4787 exige para UDP (REQ-1). Compare com o cenário seguinte.
+**Por que importa.** É o comportamento que a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) exige para UDP (REQ-1). Compare com o cenário seguinte.
 
 ##### Mapeamento dependente do destino (APDM)
 
@@ -597,7 +597,7 @@ sequenceDiagram
 | UDP 50000 para :53 | porta externa 50000 | PC1 |
 | UDP 50000 para :123 | nova porta externa 50001 | R-NAT |
 
-**Por que importa.** Consome mais portas e dificulta aplicações ponto a ponto, como voz e vídeo. Por isso a RFC 4787 (REQ-1) exige o mapeamento independente do destino para UDP.
+**Por que importa.** Consome mais portas e dificulta aplicações ponto a ponto, como voz e vídeo. Por isso a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (REQ-1) exige o mapeamento independente do destino para UDP.
 
 ### Modo: Entrada: DNAT
 
@@ -615,7 +615,7 @@ Um cliente externo acessa 203.0.113.1:443. O R-NAT reescreve o **destino** para 
 
 A resposta é revertida sem regra extra, pela tabela de conexões.
 
-**Conceito.** O **DNAT** (*destination NAT*) reescreve o **destino** do pacote. Na prática, o termo vem do netfilter/Linux; na RFC 2663 o conceito aparece como NAT de entrada (*inbound*). Aqui, o endereço público 203.0.113.1:443 vira 192.168.1.50:8443. A regra de DNAT é aplicada **antes** da decisão de roteamento (por isso o roteamento já escolhe a interface interna). A resposta volta pela tabela de conexões, com a origem revertida; não é preciso regra de SNAT.
+**Conceito.** O **DNAT** (*destination NAT*) reescreve o **destino** do pacote. Na prática, o termo vem do netfilter/Linux; na [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) o conceito aparece como NAT de entrada (*inbound*). Aqui, o endereço público 203.0.113.1:443 vira 192.168.1.50:8443. A regra de DNAT é aplicada **antes** da decisão de roteamento (por isso o roteamento já escolhe a interface interna). A resposta volta pela tabela de conexões, com a origem revertida; não é preciso regra de SNAT.
 
 **O que observar**
 
@@ -766,7 +766,7 @@ sequenceDiagram
 
 O roteador reescreve o destino (DNAT) e a origem (SNAT). O servidor responde ao roteador, que reverte os dois campos. A conexão funciona.
 
-**Conceito.** Para o hairpin funcionar, o roteador aplica **DNAT** (destino público vira o servidor interno) e **SNAT** (origem do cliente vira o endereço interno do roteador). Assim, o servidor responde ao roteador, que reverte os dois campos. Quando as duas reescritas são aplicadas ao mesmo pacote, a literatura chama de *Twice NAT* (RFC 2663).
+**Conceito.** Para o hairpin funcionar, o roteador aplica **DNAT** (destino público vira o servidor interno) e **SNAT** (origem do cliente vira o endereço interno do roteador). Assim, o servidor responde ao roteador, que reverte os dois campos. Quando as duas reescritas são aplicadas ao mesmo pacote, a literatura chama de *Twice NAT* ([RFC 2663](https://www.rfc-editor.org/rfc/rfc2663)).
 
 **O que observar**
 
@@ -857,7 +857,7 @@ O NAT só tem 3 portas externas (50000 a 50002) e há 4 conexões. A quarta não
 
 Em redes reais é o mesmo fenômeno, em escala de dezenas de milhares de portas por endereço.
 
-**Conceito.** Cada conexão simultânea ocupa uma porta externa por endereço público e protocolo. Quando todas as portas da faixa estão em uso, **novas conexões não conseguem entrada na tabela** e são descartadas até alguma porta ser liberada por expiração. Redes de operadora controlam esse risco com limites por assinante (RFC 6888).
+**Conceito.** Cada conexão simultânea ocupa uma porta externa por endereço público e protocolo. Quando todas as portas da faixa estão em uso, **novas conexões não conseguem entrada na tabela** e são descartadas até alguma porta ser liberada por expiração. Redes de operadora controlam esse risco com limites por assinante ([RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)).
 
 **O que observar**
 
@@ -950,7 +950,7 @@ Depois das conexões de saída, o servidor envia um pacote para uma porta que ni
 
 É um efeito colateral da tradução, não uma política de segurança.
 
-**Conceito.** Um pacote vindo de fora para uma porta sem entrada não tem destino interno: o NAPT o descarta. Esse efeito dá a impressão de proteção, mas é **consequência da tradução, não uma política**. A RFC 4787 permite comportamentos de filtragem diferentes, e a proteção real vem de uma regra de filtragem com estado (firewall).
+**Conceito.** Um pacote vindo de fora para uma porta sem entrada não tem destino interno: o NAPT o descarta. Esse efeito dá a impressão de proteção, mas é **consequência da tradução, não uma política**. A [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) permite comportamentos de filtragem diferentes, e a proteção real vem de uma regra de filtragem com estado (firewall).
 
 **O que observar**
 
@@ -1079,7 +1079,7 @@ sequenceDiagram
 | ESP do PC1 | entrada só com endereços | PC1 |
 | ESP do PC2 | ambíguo: descartado | R-NAT |
 
-**Por que importa.** É um dos motivos de o IPsec ter ganhado o NAT traversal (RFC 3947 e RFC 3948).
+**Por que importa.** É um dos motivos de o IPsec ter ganhado o NAT traversal ([RFC 3947](https://www.rfc-editor.org/rfc/rfc3947) e [RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)).
 
 ##### ESP atrás de Basic NAT estático
 
@@ -1134,7 +1134,7 @@ sequenceDiagram
 
 Com o ESP encapsulado em UDP, o NAPT passa a ver portas. Os dois hosts usam a porta 4500 e o NAT separa uma conexão da outra.
 
-**Conceito.** No **NAT-T** (RFC 3947 e RFC 3948), o ESP é encapsulado em um datagrama UDP, normalmente na porta 4500. Para o NAPT, é só mais um fluxo UDP: ele traduz endereço e porta e distingue os dois hosts. Aqui, ambos usam a porta 4500 e o segundo é remapeado.
+**Conceito.** No **NAT-T** ([RFC 3947](https://www.rfc-editor.org/rfc/rfc3947) e [RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)), o ESP é encapsulado em um datagrama UDP, normalmente na porta 4500. Para o NAPT, é só mais um fluxo UDP: ele traduz endereço e porta e distingue os dois hosts. Aqui, ambos usam a porta 4500 e o segundo é remapeado.
 
 **O que observar**
 
@@ -1181,7 +1181,7 @@ O CPE traduz para um endereço de 100.64.0.0/10 e o CGN da operadora traduz de n
 
 Duas tabelas, duas traduções por pacote.
 
-**Conceito.** No **CGNAT** (*carrier-grade NAT*, RFC 6888), a operadora traduz os endereços de muitos assinantes para poucos endereços públicos. O CPE doméstico traduz para um endereço do espaço compartilhado 100.64.0.0/10 (RFC 6598), e o CGN traduz de novo para o público. O CGN divide as portas entre assinantes, então a porta preferida pode já estar ocupada.
+**Conceito.** No **CGNAT** (*carrier-grade NAT*, [RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)), a operadora traduz os endereços de muitos assinantes para poucos endereços públicos. O CPE doméstico traduz para um endereço do espaço compartilhado 100.64.0.0/10 ([RFC 6598](https://www.rfc-editor.org/rfc/rfc6598)), e o CGN traduz de novo para o público. O CGN divide as portas entre assinantes, então a porta preferida pode já estar ocupada.
 
 **O que observar**
 
@@ -1229,9 +1229,9 @@ sequenceDiagram
 
 ### O que é o NAT
 
-O **Network Address Translation** reescreve campos do cabeçalho IP (e, quando há, das portas) de pacotes que atravessam um roteador. Nasceu para poupar endereços IPv4: a rede interna usa endereços privados (RFC 1918) e o roteador os traduz para endereços públicos. A terminologia está na RFC 2663 e a técnica tradicional, na RFC 3022. Nos exemplos, os endereços 203.0.113.0/24 e 198.51.100.0/24 são de documentação (RFC 5737) e fazem o papel de endereços públicos.
+O **Network Address Translation** reescreve campos do cabeçalho IP (e, quando há, das portas) de pacotes que atravessam um roteador. Nasceu para poupar endereços IPv4: a rede interna usa endereços privados ([RFC 1918](https://www.rfc-editor.org/rfc/rfc1918)) e o roteador os traduz para endereços públicos. A terminologia está na [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) e a técnica tradicional, na [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022). Nos exemplos, os endereços 203.0.113.0/24 e 198.51.100.0/24 são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737)) e fazem o papel de endereços públicos.
 
-### Os tipos de tradução (RFC 3022)
+### Os tipos de tradução ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022))
 
 | Termo da RFC | Termo de uso comum | O que traduz |
 | --- | --- | --- |
@@ -1242,7 +1242,7 @@ O **Network Address Translation** reescreve campos do cabeçalho IP (e, quando h
 
 ### SNAT e DNAT
 
-SNAT e DNAT são termos de uso consagrado na prática (netfilter/Linux e documentação de fabricantes), e não da RFC 2663 ou da RFC 3022. Descrevem **qual campo** é reescrito:
+SNAT e DNAT são termos de uso consagrado na prática (netfilter/Linux e documentação de fabricantes), e não da [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) ou da [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022). Descrevem **qual campo** é reescrito:
 
 - **SNAT** (*source NAT*): reescreve a **origem**. É o caso típico de saída: um host privado acessa a internet. O NAPT é um SNAT com tradução de porta; o *masquerade* é a variante em que o endereço externo é o da interface, útil quando ele muda (DHCP, PPPoE). Corresponde ao NAT de saída (*outbound*).
 - **DNAT** (*destination NAT*): reescreve o **destino**. É o caso típico de entrada: publicar um serviço interno, redirecionar o tráfego a um proxy. Corresponde ao NAT de entrada (*inbound*).
@@ -1256,18 +1256,18 @@ No Linux (netfilter), o DNAT é aplicado na cadeia **PREROUTING**, antes da deci
 
 ### A tabela de traduções
 
-A entrada liga o par interno (endereço, porta) ao par externo, e guarda o outro extremo da conexão. É consultada na volta para reverter a tradução e removida depois de um tempo de inatividade. A RFC 4787 pede, para UDP, que o tempo não seja menor que 2 minutos; a RFC 5382 pede, para TCP estabelecido, no mínimo 2 horas e 4 minutos. **O simulador usa tempos bem menores só para a visualização**, e o modelo tem um único tempo por entrada, sem os estados do TCP.
+A entrada liga o par interno (endereço, porta) ao par externo, e guarda o outro extremo da conexão. É consultada na volta para reverter a tradução e removida depois de um tempo de inatividade. A [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) pede, para UDP, que o tempo não seja menor que 2 minutos; a [RFC 5382](https://www.rfc-editor.org/rfc/rfc5382) pede, para TCP estabelecido, no mínimo 2 horas e 4 minutos. **O simulador usa tempos bem menores só para a visualização**, e o modelo tem um único tempo por entrada, sem os estados do TCP.
 
-### Comportamento de mapeamento e de filtragem (RFC 4787)
+### Comportamento de mapeamento e de filtragem ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787))
 
-- **Mapeamento independente do destino (EIM):** a porta externa depende só do endereço e da porta internos. É o comportamento exigido pela RFC 4787 para UDP, porque permite aplicações ponto a ponto.
+- **Mapeamento independente do destino (EIM):** a porta externa depende só do endereço e da porta internos. É o comportamento exigido pela [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) para UDP, porque permite aplicações ponto a ponto.
 - **Mapeamento dependente de endereço (e porta):** cada destino distinto cria um novo mapeamento. É o NAT chamado "simétrico".
 - **Filtragem:** define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta).
 
 ### ICMP e ESP
 
-- **ICMP:** sem portas, o NAT usa o *Identifier* do Echo como chave (RFC 5508). Mensagens de erro ICMP carregam o cabeçalho do pacote original e exigem tradução adicional, que o simulador não modela.
-- **ESP (IPsec):** não tem portas. O Basic NAT atravessa, desde que não haja AH (ele protege o cabeçalho IP). O NAPT não distingue hosts. O **NAT-T** (RFC 3947 e RFC 3948) detecta o NAT no IKE e encapsula o ESP em UDP porta 4500 (RFC 3715 reúne os requisitos de compatibilidade entre IPsec e NAT).
+- **ICMP:** sem portas, o NAT usa o *Identifier* do Echo como chave ([RFC 5508](https://www.rfc-editor.org/rfc/rfc5508)). Mensagens de erro ICMP carregam o cabeçalho do pacote original e exigem tradução adicional, que o simulador não modela.
+- **ESP (IPsec):** não tem portas. O Basic NAT atravessa, desde que não haja AH (ele protege o cabeçalho IP). O NAPT não distingue hosts. O **NAT-T** ([RFC 3947](https://www.rfc-editor.org/rfc/rfc3947) e [RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)) detecta o NAT no IKE e encapsula o ESP em UDP porta 4500 ([RFC 3715](https://www.rfc-editor.org/rfc/rfc3715) reúne os requisitos de compatibilidade entre IPsec e NAT).
 
 ### Hairpinning
 
@@ -1275,7 +1275,7 @@ Quando um cliente interno usa o endereço público de um serviço da própria re
 
 ### CGNAT
 
-O *carrier-grade NAT* (RFC 6888) traduz os endereços de muitos assinantes para poucos endereços públicos. O espaço 100.64.0.0/10 (RFC 6598) é reservado ao trecho entre o CPE e o CGN. O CGN divide as portas entre assinantes (limites por assinante e alocação por blocos de portas) e precisa registrar as traduções para identificar o responsável por uma conexão. O assinante deixa de receber conexões de fora.
+O *carrier-grade NAT* ([RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)) traduz os endereços de muitos assinantes para poucos endereços públicos. O espaço 100.64.0.0/10 ([RFC 6598](https://www.rfc-editor.org/rfc/rfc6598)) é reservado ao trecho entre o CPE e o CGN. O CGN divide as portas entre assinantes (limites por assinante e alocação por blocos de portas) e precisa registrar as traduções para identificar o responsável por uma conexão. O assinante deixa de receber conexões de fora.
 
 ### NAT e protocolos que carregam endereços
 
@@ -1283,13 +1283,13 @@ Protocolos que escrevem endereços ou portas no payload (o FTP ativo, o SIP, o I
 
 ### NAT e IPv6
 
-O IPv6 tem endereços suficientes para dispensar o NAT como poupança de endereços. Há mecanismos de tradução para outros fins, como o NAT64 (RFC 6146), para acessar redes IPv4 a partir de IPv6, e o NPTv6 (RFC 6296). Nenhum deles é modelado aqui.
+O IPv6 tem endereços suficientes para dispensar o NAT como poupança de endereços. Há mecanismos de tradução para outros fins, como o NAT64 ([RFC 6146](https://www.rfc-editor.org/rfc/rfc6146)), para acessar redes IPv4 a partir de IPv6, e o NPTv6 ([RFC 6296](https://www.rfc-editor.org/rfc/rfc6296)). Nenhum deles é modelado aqui.
 
 ### NAT e segurança
 
 - **NAT não é firewall.** O descarte de pacotes sem entrada na tabela é efeito da tradução. O Basic NAT estático, o DNAT e qualquer mapeamento ativo deixam o host alcançável. A proteção vem de regras de filtragem com estado.
 - **DNAT apenas redireciona.** Quem pode acessar o serviço publicado é decidido pela política de filtragem, não pela regra de tradução.
-- **Esgotamento de portas:** um host com muitas conexões pode consumir o pool e negar serviço aos demais. Limites de conexões por host e por assinante (RFC 6888) reduzem o risco.
+- **Esgotamento de portas:** um host com muitas conexões pode consumir o pool e negar serviço aos demais. Limites de conexões por host e por assinante ([RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)) reduzem o risco.
 - **Rastreabilidade:** com muitos hosts atrás de um endereço, o registro da tradução (endereço, porta e horário) é o que permite identificar quem usou aquela conexão.
 
 ### Limitações do simulador

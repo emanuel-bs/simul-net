@@ -5,7 +5,7 @@ Resolução de nomes por dentro: raiz, TLD e autoritativo, cache e TTL, tipos de
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/dns/`
-- **RFCs e padrões:** RFC 1034 (Conceitos), RFC 1035 (Implementação), RFC 2308 (Cache negativo), RFC 4033 (DNSSEC), RFC 4035 (Protocolo DNSSEC), RFC 5452 (Resistência a forja), RFC 7858 (DoT), RFC 8484 (DoH)
+- **RFCs e padrões:** [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) (Conceitos), [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035) (Implementação), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308) (Cache negativo), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033) (DNSSEC), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035) (Protocolo DNSSEC), [RFC 5452](https://www.rfc-editor.org/rfc/rfc5452) (Resistência a forja), [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858) (DoT), [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484) (DoH)
 - **Tópicos:** Resolução recursiva e cache; DNSSEC e cadeia de confiança; Envenenamento e amplificação; DoT e DoH
 
 ## Modos
@@ -138,7 +138,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
 - **A resposta não cabe no UDP (truncada)** (ajuste avançado). Valores: caixa de seleção. Padrão: não. Modos: Resolução.
   - O servidor marca TC=1 e o resolvedor usa TCP.
   - Respostas maiores que o limite do datagrama (1232 bytes com EDNS) são truncadas.
-  - O resolvedor abre uma conexão TCP na porta 53 e repete a consulta (RFC 7766).
+  - O resolvedor abre uma conexão TCP na porta 53 e repete a consulta ([RFC 7766](https://www.rfc-editor.org/rfc/rfc7766)).
 
 ### Zona example.com
 
@@ -167,7 +167,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
 - **Como o resolvedor se protege**. Valores: Nenhuma (porta fixa e ID previsível); Porta e ID aleatórios; Porta e ID aleatórios + 0x20; Validação DNSSEC. Padrão: Nenhuma (porta fixa e ID previsível). Modos: Envenenamento de cache.
   - O que o resolvedor exige para aceitar uma resposta.
   - **Nenhuma:** só o ID de 16 bits identifica a resposta, e a porta é conhecida. Pouca entropia.
-  - **Porta e ID aleatórios:** o atacante precisa acertar os dois (cerca de 32 bits) (RFC 5452).
+  - **Porta e ID aleatórios:** o atacante precisa acertar os dois (cerca de 32 bits) ([RFC 5452](https://www.rfc-editor.org/rfc/rfc5452)).
   - **0x20:** o resolvedor mistura maiúsculas e minúsculas no nome; o autoritativo repete a mesma caixa, e o atacante precisa adivinhá-la também.
   - **DNSSEC:** a resposta só vale com assinatura válida; adivinhar porta e ID deixa de bastar.
 
@@ -187,7 +187,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
 
 ### Rede do atacante
 
-- **O provedor filtra origem forjada (BCP 38)**. Valores: caixa de seleção. Padrão: não. Modos: Amplificação.
+- **O provedor filtra origem forjada ([BCP 38](https://www.rfc-editor.org/info/bcp38))**. Valores: caixa de seleção. Padrão: não. Modos: Amplificação.
   - Filtro de origem na borda do provedor.
   - Marcado, o provedor do atacante descarta pacotes cujo endereço de origem não pertence à rede de onde saíram.
   - É a defesa que corta o problema na raiz, mas só funciona se todos a adotarem.
@@ -197,8 +197,8 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
 - **Transporte do DNS**. Valores: DNS puro (UDP 53); DNS sobre TLS: DoT (porta 853); DNS sobre HTTPS: DoH (porta 443). Padrão: DNS puro (UDP 53). Modos: DoT e DoH.
   - Como a consulta chega ao resolvedor.
   - **UDP 53:** texto claro, sem proteção.
-  - **DoT:** o DNS dentro de TLS numa porta própria (RFC 7858).
-  - **DoH:** o DNS dentro de HTTPS, indistinguível do tráfego web (RFC 8484).
+  - **DoT:** o DNS dentro de TLS numa porta própria ([RFC 7858](https://www.rfc-editor.org/rfc/rfc7858)).
+  - **DoH:** o DNS dentro de HTTPS, indistinguível do tráfego web ([RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)).
 
 ### Rede
 
@@ -577,7 +577,7 @@ sequenceDiagram
 
 O nome não existe. O autoritativo responde NXDOMAIN com o SOA, e o resolvedor guarda a negação (cache negativo).
 
-**Conceito.** Quando o nome não existe, o autoritativo responde **NXDOMAIN** (RCODE 3) com o **SOA** da zona. O campo "minimum" do SOA define por quanto tempo a negação pode ser guardada: é o **cache negativo** (RFC 2308).
+**Conceito.** Quando o nome não existe, o autoritativo responde **NXDOMAIN** (RCODE 3) com o **SOA** da zona. O campo "minimum" do SOA define por quanto tempo a negação pode ser guardada: é o **cache negativo** ([RFC 2308](https://www.rfc-editor.org/rfc/rfc2308)).
 
 **O que observar**
 
@@ -715,7 +715,7 @@ sequenceDiagram
 
 A resposta não cabe no UDP: o servidor marca TC=1 e o resolvedor repete a consulta por TCP.
 
-**Conceito.** Datagramas UDP têm limite de tamanho. Se a resposta não cabe, o servidor devolve só o cabeçalho com **TC=1** (truncada), e o resolvedor repete a pergunta por **TCP**, na porta 53 (RFC 7766). Respostas com DNSSEC são grandes e usam TCP com mais frequência.
+**Conceito.** Datagramas UDP têm limite de tamanho. Se a resposta não cabe, o servidor devolve só o cabeçalho com **TC=1** (truncada), e o resolvedor repete a pergunta por **TCP**, na porta 53 ([RFC 7766](https://www.rfc-editor.org/rfc/rfc7766)). Respostas com DNSSEC são grandes e usam TCP com mais frequência.
 
 **O que observar**
 
@@ -767,7 +767,7 @@ O DNSSEC prova que a resposta vem do dono da zona e não foi alterada, por uma c
 
 A zona está assinada e o DS no .com bate com a chave. O resolvedor percorre a cadeia da raiz até o registro e responde com **AD=1**.
 
-**Conceito.** O **DNSSEC** (RFC 4033 a 4035) assina os dados do DNS. Cada zona assina seus registros com a **ZSK** (RRSIG) e publica as chaves (**DNSKEY**); o resumo da **KSK** vai para a zona de cima como **DS**. O resolvedor parte da **âncora de confiança** (a chave da raiz) e vai validando elo por elo: raiz → .com → example.com → registro.
+**Conceito.** O **DNSSEC** ([RFC 4033](https://www.rfc-editor.org/rfc/rfc4033) a [4035](https://www.rfc-editor.org/rfc/rfc4035)) assina os dados do DNS. Cada zona assina seus registros com a **ZSK** (RRSIG) e publica as chaves (**DNSKEY**); o resumo da **KSK** vai para a zona de cima como **DS**. O resolvedor parte da **âncora de confiança** (a chave da raiz) e vai validando elo por elo: raiz → .com → example.com → registro.
 
 **O que observar**
 
@@ -937,7 +937,7 @@ O DNSSEC mal operado derruba o domínio para quem valida; e quem não valida nã
 
 O RRSIG do registro A venceu. O resolvedor que valida devolve **SERVFAIL**: o site some até o operador renovar as assinaturas.
 
-**Conceito.** Cada **RRSIG** tem um período de validade (início e fim). Se o operador não renova a assinatura a tempo, o resolvedor que valida considera a resposta **bogus** e devolve **SERVFAIL**, com o erro estendido "Signature Expired" (RFC 8914). A falha é do domínio, mas o efeito é a indisponibilidade.
+**Conceito.** Cada **RRSIG** tem um período de validade (início e fim). Se o operador não renova a assinatura a tempo, o resolvedor que valida considera a resposta **bogus** e devolve **SERVFAIL**, com o erro estendido "Signature Expired" ([RFC 8914](https://www.rfc-editor.org/rfc/rfc8914)). A falha é do domínio, mas o efeito é a indisponibilidade.
 
 **O que observar**
 
@@ -1145,7 +1145,7 @@ sequenceDiagram
 
 Porta e ID aleatórios: as respostas forjadas não casam e são descartadas. A legítima é aceita.
 
-**Conceito.** Com **porta de origem aleatória** (cerca de 16 bits) e **ID aleatório** (16 bits), o atacante precisa acertar os dois ao mesmo tempo: da ordem de 2^32 combinações em vez de 2^16 (RFC 5452). As respostas forjadas não casam e são descartadas.
+**Conceito.** Com **porta de origem aleatória** (cerca de 16 bits) e **ID aleatório** (16 bits), o atacante precisa acertar os dois ao mesmo tempo: da ordem de 2^32 combinações em vez de 2^16 ([RFC 5452](https://www.rfc-editor.org/rfc/rfc5452)). As respostas forjadas não casam e são descartadas.
 
 **O que observar**
 
@@ -1369,7 +1369,7 @@ sequenceDiagram
 
 Uma consulta A gera uma resposta curta: o fator de amplificação é pequeno. O tipo da consulta importa.
 
-**Conceito.** Uma consulta **A** gera uma resposta curta, e o fator de amplificação é pequeno. O atacante prefere tipos que geram respostas grandes (ANY, DNSKEY, TXT longos). Muitos servidores hoje recusam ou reduzem o ANY (RFC 8482).
+**Conceito.** Uma consulta **A** gera uma resposta curta, e o fator de amplificação é pequeno. O atacante prefere tipos que geram respostas grandes (ANY, DNSKEY, TXT longos). Muitos servidores hoje recusam ou reduzem o ANY ([RFC 8482](https://www.rfc-editor.org/rfc/rfc8482)).
 
 **O que observar**
 
@@ -1405,15 +1405,15 @@ sequenceDiagram
 
 Controles que impedem a reflexão: filtro de origem, resolvedor fechado e limite de taxa.
 
-##### Provedor com BCP 38
+##### Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)
 
 *Cortar a forja na origem.*
 
-**Configuração aplicada:** O provedor filtra origem forjada (BCP 38) = sim
+**Configuração aplicada:** O provedor filtra origem forjada ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = sim
 
 O provedor do atacante descarta pacotes com origem forjada: a reflexão não chega a acontecer.
 
-**Conceito.** A **BCP 38** (RFC 2827) manda cada provedor descartar pacotes cuja origem não pertença aos seus clientes. Sem pacotes com origem forjada, a reflexão não existe. É a defesa mais eficaz, mas depende de cada provedor aplicá-la.
+**Conceito.** A **[BCP 38](https://www.rfc-editor.org/info/bcp38)** ([RFC 2827](https://www.rfc-editor.org/rfc/rfc2827)) manda cada provedor descartar pacotes cuja origem não pertença aos seus clientes. Sem pacotes com origem forjada, a reflexão não existe. É a defesa mais eficaz, mas depende de cada provedor aplicá-la.
 
 **O que observar**
 
@@ -1567,7 +1567,7 @@ sequenceDiagram
 
 O DNS dentro do TLS, na porta 853. O observador vê a conexão e o SNI, mas não os nomes.
 
-**Conceito.** O **DoT** (RFC 7858) envia o DNS dentro de uma conexão **TLS** na porta **853**. O cliente autentica o resolvedor pelo certificado, e o observador só vê a conexão e o SNI. A porta própria facilita a identificação e o bloqueio.
+**Conceito.** O **DoT** ([RFC 7858](https://www.rfc-editor.org/rfc/rfc7858)) envia o DNS dentro de uma conexão **TLS** na porta **853**. O cliente autentica o resolvedor pelo certificado, e o observador só vê a conexão e o SNI. A porta própria facilita a identificação e o bloqueio.
 
 **O que observar**
 
@@ -1611,7 +1611,7 @@ sequenceDiagram
 
 O DNS dentro de HTTPS, na porta 443, misturado ao tráfego web.
 
-**Conceito.** O **DoH** (RFC 8484) envia o DNS como requisição **HTTP/2** sobre TLS, na porta **443**, junto ao tráfego web comum. Bloqueá-lo sem bloquear a web é difícil. O ganho de privacidade vem com a perda de visibilidade para quem administra a rede.
+**Conceito.** O **DoH** ([RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)) envia o DNS como requisição **HTTP/2** sobre TLS, na porta **443**, junto ao tráfego web comum. Bloqueá-lo sem bloquear a web é difícil. O ganho de privacidade vem com a perda de visibilidade para quem administra a rede.
 
 **O que observar**
 
@@ -1727,7 +1727,7 @@ sequenceDiagram
 
 ### O que é o DNS
 
-O **Domain Name System** (RFC 1034 e RFC 1035) traduz nomes em dados: endereços IP, servidores de e-mail, textos de política. É um banco de dados **hierárquico e distribuído**: a raiz delega os domínios de primeiro nível (.com, .br), que delegam os domínios de cada organização. O DNS usa a porta **53**, em UDP por padrão e em TCP para respostas grandes e transferências de zona.
+O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035)) traduz nomes em dados: endereços IP, servidores de e-mail, textos de política. É um banco de dados **hierárquico e distribuído**: a raiz delega os domínios de primeiro nível (.com, .br), que delegam os domínios de cada organização. O DNS usa a porta **53**, em UDP por padrão e em TCP para respostas grandes e transferências de zona.
 
 ### Papéis
 
@@ -1736,7 +1736,7 @@ O **Domain Name System** (RFC 1034 e RFC 1035) traduz nomes em dados: endereços
 - **Servidor autoritativo:** dono dos dados de uma zona; responde com AA=1 e não faz recursão.
 - **Raiz e TLD:** só delegam, indicando os servidores do nível seguinte.
 
-### Resolução e cache (RFC 1034, RFC 2308)
+### Resolução e cache ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308))
 
 - **Delegação (NS) e glue:** a resposta de um nível indica o próximo; o glue (A do servidor de nomes) evita a dependência circular.
 - **TTL:** prazo, em segundos, em que uma resposta pode ser reutilizada. TTL alto reduz carga; TTL baixo acelera mudanças.
@@ -1760,9 +1760,9 @@ O **Domain Name System** (RFC 1034 e RFC 1035) traduz nomes em dados: endereços
 - **QR:** 0 consulta, 1 resposta. **AA:** resposta autoritativa. **TC:** truncada, refazer por TCP.
 - **RD / RA:** recursão desejada / disponível. **AD / CD:** dados autenticados / validação desligada.
 - **RCODE:** 0 NOERROR, 2 SERVFAIL, 3 NXDOMAIN, 5 REFUSED.
-- **EDNS(0) (RFC 6891):** amplia o tamanho do datagrama e carrega o bit DO (DNSSEC OK).
+- **EDNS(0) ([RFC 6891](https://www.rfc-editor.org/rfc/rfc6891)):** amplia o tamanho do datagrama e carrega o bit DO (DNSSEC OK).
 
-### DNSSEC (RFC 4033, RFC 4034, RFC 4035)
+### DNSSEC ([RFC 4033](https://www.rfc-editor.org/rfc/rfc4033), [RFC 4034](https://www.rfc-editor.org/rfc/rfc4034), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035))
 
 - **RRSIG:** assinatura de um conjunto de registros, com início e fim de validade.
 - **DNSKEY:** chaves públicas da zona: a **ZSK** assina os dados; a **KSK** assina as chaves.
@@ -1770,21 +1770,21 @@ O **Domain Name System** (RFC 1034 e RFC 1035) traduz nomes em dados: endereços
 - **NSEC / NSEC3:** provam que um nome ou tipo não existe. O NSEC3 usa hashes para dificultar listar a zona.
 - **Âncora de confiança:** a chave da raiz, configurada no resolvedor; é a origem de toda a validação.
 - **Resultados:** segura (cadeia completa, AD=1), insegura (sem DS, resposta aceita sem AD) e bogus (falha de validação: SERVFAIL).
-- **Erros estendidos (RFC 8914):** explicam o SERVFAIL, como "Signature Expired" e "DNSSEC Bogus".
+- **Erros estendidos ([RFC 8914](https://www.rfc-editor.org/rfc/rfc8914)):** explicam o SERVFAIL, como "Signature Expired" e "DNSSEC Bogus".
 
 ### DNS e segurança
 
-- **Envenenamento de cache:** o resolvedor aceita e guarda uma resposta forjada. Defesas: porta e ID aleatórios (RFC 5452), 0x20 e, sobretudo, DNSSEC.
-- **Reflexão e amplificação:** consultas pequenas com origem forjada geram respostas grandes contra a vítima. Defesas: BCP 38, resolvedor fechado, limite de taxa (RRL) e respostas ANY reduzidas (RFC 8482).
-- **Privacidade:** o DNS puro expõe os nomes consultados. DoT (RFC 7858) e DoH (RFC 8484) cifram o trecho cliente-resolvedor; o resolvedor continua vendo as consultas.
+- **Envenenamento de cache:** o resolvedor aceita e guarda uma resposta forjada. Defesas: porta e ID aleatórios ([RFC 5452](https://www.rfc-editor.org/rfc/rfc5452)), 0x20 e, sobretudo, DNSSEC.
+- **Reflexão e amplificação:** consultas pequenas com origem forjada geram respostas grandes contra a vítima. Defesas: [BCP 38](https://www.rfc-editor.org/info/bcp38), resolvedor fechado, limite de taxa (RRL) e respostas ANY reduzidas ([RFC 8482](https://www.rfc-editor.org/rfc/rfc8482)).
+- **Privacidade:** o DNS puro expõe os nomes consultados. DoT ([RFC 7858](https://www.rfc-editor.org/rfc/rfc7858)) e DoH ([RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)) cifram o trecho cliente-resolvedor; o resolvedor continua vendo as consultas.
 - **Outros riscos:** domínio pendente por CNAME (takeover), domínios gerados por malware (DGA), tunelamento de dados por DNS, sequestro de registro do domínio. Registro de consultas e monitoração de NXDOMAIN ajudam a detectá-los.
 - **Boas práticas:** resolvedor fechado e com validação, DNSSEC na zona com renovação automática, ao menos dois autoritativos em redes diferentes, TCP 53 liberado.
 
 ### Limites do simulador
 
-- Nomes e endereços são de documentação (example.com, RFC 5737 e RFC 3849); a raiz e o .com aparecem com um servidor cada e os endereços são fictícios.
+- Nomes e endereços são de documentação (example.com, [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 3849](https://www.rfc-editor.org/rfc/rfc3849)); a raiz e o .com aparecem com um servidor cada e os endereços são fictícios.
 - Chaves, resumos e assinaturas são valores ilustrativos: não há criptografia real.
-- Tamanhos de mensagem e tempos são aproximados. O resolvedor não faz minimização de nome (RFC 9156).
+- Tamanhos de mensagem e tempos são aproximados. O resolvedor não faz minimização de nome ([RFC 9156](https://www.rfc-editor.org/rfc/rfc9156)).
 - O envenenamento e a amplificação são apresentados em nível defensivo: mostram o efeito e as contramedidas, sem o passo a passo operacional.
 
 ### Roteiro de exercícios

@@ -5,7 +5,7 @@ SSH-2 por dentro: negociação de versão e algoritmos, troca de chaves, known_h
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/ssh/`
-- **RFCs e padrões:** RFC 4253 (transporte), RFC 4252 (autenticação), RFC 4254 (conexão), RFC 8709 (Ed25519)
+- **RFCs e padrões:** [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) (transporte), [RFC 4252](https://www.rfc-editor.org/rfc/rfc4252) (autenticação), [RFC 4254](https://www.rfc-editor.org/rfc/rfc4254) (conexão), [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709) (Ed25519)
 - **Tópicos:** Negociação e troca de chaves; known_hosts e autenticação; Canais e SFTP; Túneis e encaminhamento
 
 ## Modos
@@ -120,7 +120,7 @@ Cliente e servidor modernos, chave do servidor já no known_hosts e login por ch
 
 Acompanhe como tudo passa a ser cifrado depois do NEWKEYS.
 
-**Conceito.** O **SSH-2** tem três camadas: **transporte** (RFC 4253: versões, algoritmos, troca de chaves, cifragem), **autenticação** (RFC 4252) e **conexão** (RFC 4254: canais). A troca de chaves usa Diffie-Hellman efêmero: as duas pontas obtêm o mesmo segredo sem enviá-lo, e o servidor prova quem é assinando o hash da troca com a chave de host.
+**Conceito.** O **SSH-2** tem três camadas: **transporte** ([RFC 4253](https://www.rfc-editor.org/rfc/rfc4253): versões, algoritmos, troca de chaves, cifragem), **autenticação** ([RFC 4252](https://www.rfc-editor.org/rfc/rfc4252)) e **conexão** ([RFC 4254](https://www.rfc-editor.org/rfc/rfc4254): canais). A troca de chaves usa Diffie-Hellman efêmero: as duas pontas obtêm o mesmo segredo sem enviá-lo, e o servidor prova quem é assinando o hash da troca com a chave de host.
 
 **O que observar**
 
@@ -1341,7 +1341,7 @@ sequenceDiagram
 
 ### O SSH em três camadas
 
-O **SSH-2** (RFC 4251) protege o acesso remoto a sistemas com três camadas sobre uma conexão TCP, normalmente na porta 22. A **camada de transporte** (RFC 4253) negocia algoritmos, troca chaves, autentica o servidor e cifra os pacotes. A **camada de autenticação** (RFC 4252) identifica o usuário. A **camada de conexão** (RFC 4254) multiplexa canais (sessões, SFTP, túneis) sobre a mesma conexão cifrada.
+O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acesso remoto a sistemas com três camadas sobre uma conexão TCP, normalmente na porta 22. A **camada de transporte** ([RFC 4253](https://www.rfc-editor.org/rfc/rfc4253)) negocia algoritmos, troca chaves, autentica o servidor e cifra os pacotes. A **camada de autenticação** ([RFC 4252](https://www.rfc-editor.org/rfc/rfc4252)) identifica o usuário. A **camada de conexão** ([RFC 4254](https://www.rfc-editor.org/rfc/rfc4254)) multiplexa canais (sessões, SFTP, túneis) sobre a mesma conexão cifrada.
 
 ### Fases e o que cada uma protege
 
@@ -1358,14 +1358,14 @@ O **SSH-2** (RFC 4251) protege o acesso remoto a sistemas com três camadas sobr
 - Cada lado gera um par **efêmero** e envia só a parte pública. O segredo **K** é calculado nas pontas e nunca trafega.
 - O servidor assina o hash **H** da troca com a chave de host. Isso prova que ele possui a chave e amarra a troca à identidade: um intermediário não consegue forjar.
 - Como o par é descartado, o comprometimento futuro da chave de host não decifra sessões antigas (**forward secrecy**).
-- As seis chaves da sessão (IVs, cifra e integridade nos dois sentidos) saem de `HASH(K || H || letra || session_id)` (RFC 4253, seção 7.2).
+- As seis chaves da sessão (IVs, cifra e integridade nos dois sentidos) saem de `HASH(K || H || letra || session_id)` ([RFC 4253](https://www.rfc-editor.org/rfc/rfc4253), seção 7.2).
 
 ### Algoritmos recomendados e legados
 
 | Categoria | Preferir | Evitar |
 | --- | --- | --- |
 | Troca de chaves | curve25519-sha256, ecdh-sha2-nistp256, DH group 16 | diffie-hellman-group1-sha1, group14-sha1, group-exchange-sha1 |
-| Chave de host | ssh-ed25519 (RFC 8709), rsa-sha2-256/512 | ssh-dss, ssh-rsa (RSA com SHA-1) |
+| Chave de host | ssh-ed25519 ([RFC 8709](https://www.rfc-editor.org/rfc/rfc8709)), rsa-sha2-256/512 | ssh-dss, ssh-rsa (RSA com SHA-1) |
 | Cifra | chacha20-poly1305, aes256-gcm, aes-ctr | 3des-cbc, aes-cbc |
 | MAC | hmac-sha2-512-etm, hmac-sha2-256-etm (ou AEAD) | hmac-md5, hmac-sha1 |
 

@@ -5,7 +5,7 @@ O carregamento de uma página em HTTP/1.1, HTTP/2 e HTTP/3: conexões paralelas 
 - **Categoria:** Camada de transporte e segurança
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/http-versoes/`
-- **RFCs e padrões:** RFC 9110 (Semântica do HTTP), RFC 9112 (HTTP/1.1), RFC 9113 (HTTP/2), RFC 9114 (HTTP/3), RFC 9000 (QUIC), RFC 7541 (HPACK), RFC 9204 (QPACK)
+- **RFCs e padrões:** [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (Semântica do HTTP), [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112) (HTTP/1.1), [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113) (HTTP/2), [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (HTTP/3), [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000) (QUIC), [RFC 7541](https://www.rfc-editor.org/rfc/rfc7541) (HPACK), [RFC 9204](https://www.rfc-editor.org/rfc/rfc9204) (QPACK)
 - **Tópicos:** Conexões e fila no HTTP/1.1; Fluxos e HPACK no HTTP/2; QUIC, 0-RTT e fallback no HTTP/3; Perda de pacote e bloqueio de cabeça de fila
 
 ## Modos
@@ -151,7 +151,7 @@ Cenário, Captura, Mensagem, Cascata, Comparação, Experimento, Referência e L
 - **Retomar sessão anterior (0-RTT)**. Valores: caixa de seleção. Padrão: não. Modos: HTTP/3.
   - O cliente já conhece o servidor e envia o pedido no primeiro pacote.
   - Com um ticket de uma visita anterior, o QUIC envia o pedido junto do primeiro voo, sem esperar o handshake: o tempo de conexão cai de 1 RTT para zero.
-  - Os dados 0-RTT podem ser reenviados por um atacante (replay). Por isso os servidores só os aceitam para pedidos que não alteram estado, como GET (RFC 8470).
+  - Os dados 0-RTT podem ser reenviados por um atacante (replay). Por isso os servidores só os aceitam para pedidos que não alteram estado, como GET ([RFC 8470](https://www.rfc-editor.org/rfc/rfc8470)).
 
 ### Falhas
 
@@ -180,7 +180,7 @@ O navegador carrega a página em HTTP/1.1 sobre TLS, com 6 conexões TCP paralel
 
 Depois do HTML, ele abre mais 5 conexões. Cada uma paga o próprio handshake de TCP e TLS antes de pedir o primeiro recurso.
 
-**Conceito.** No **HTTP/1.1** (RFC 9112) uma conexão atende um pedido de cada vez: o próximo só é enviado depois que a resposta anterior termina (o **pipelining** existe na especificação, mas os navegadores o desativaram). Para ganhar tempo, o navegador abre **várias conexões** em paralelo, tipicamente até 6 por servidor. Cada conexão paga o seu handshake de TCP e de TLS.
+**Conceito.** No **HTTP/1.1** ([RFC 9112](https://www.rfc-editor.org/rfc/rfc9112)) uma conexão atende um pedido de cada vez: o próximo só é enviado depois que a resposta anterior termina (o **pipelining** existe na especificação, mas os navegadores o desativaram). Para ganhar tempo, o navegador abre **várias conexões** em paralelo, tipicamente até 6 por servidor. Cada conexão paga o seu handshake de TCP e de TLS.
 
 **O que observar**
 
@@ -536,7 +536,7 @@ Uma única conexão TCP com TLS. Depois do HTML, todos os pedidos saem de uma ve
 
 Repare no HPACK: o primeiro pedido tem cerca de 330 bytes de cabeçalho e os seguintes, cerca de 50.
 
-**Conceito.** O **HTTP/2** (RFC 9113) usa uma só conexão TCP com TLS (ALPN `h2`) e a divide em **fluxos** (streams) identificados por número. O navegador envia todos os pedidos de uma vez, e o servidor devolve as respostas **intercaladas** em quadros (frames). Os cabeçalhos são comprimidos pelo **HPACK** (RFC 7541): o que se repete vira um índice.
+**Conceito.** O **HTTP/2** ([RFC 9113](https://www.rfc-editor.org/rfc/rfc9113)) usa uma só conexão TCP com TLS (ALPN `h2`) e a divide em **fluxos** (streams) identificados por número. O navegador envia todos os pedidos de uma vez, e o servidor devolve as respostas **intercaladas** em quadros (frames). Os cabeçalhos são comprimidos pelo **HPACK** ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)): o que se repete vira um índice.
 
 **O que observar**
 
@@ -671,7 +671,7 @@ A imagem de 400 KB divide a banda com os demais fluxos. Os recursos pequenos ter
 
 A imagem fica pronta mais tarde porque disputa a banda, mas nada fica parado esperando por ela.
 
-**Conceito.** No HTTP/2 as respostas são fatiadas em quadros DATA (até 16 KB, por padrão) e os quadros de fluxos diferentes se alternam. Uma resposta grande **não impede** as pequenas de terminar. Em implementações reais, o servidor pode priorizar fluxos (RFC 9218); o simulador divide a banda em partes iguais.
+**Conceito.** No HTTP/2 as respostas são fatiadas em quadros DATA (até 16 KB, por padrão) e os quadros de fluxos diferentes se alternam. Uma resposta grande **não impede** as pequenas de terminar. Em implementações reais, o servidor pode priorizar fluxos ([RFC 9218](https://www.rfc-editor.org/rfc/rfc9218)); o simulador divide a banda em partes iguais.
 
 **O que observar**
 
@@ -865,7 +865,7 @@ O QUIC junta o transporte e o TLS 1.3 em um só handshake sobre UDP: o primeiro 
 
 Cada pedido usa um fluxo QUIC próprio, com ordem e recuperação de perda independentes.
 
-**Conceito.** O **HTTP/3** (RFC 9114) roda sobre o **QUIC** (RFC 9000), que usa UDP e incorpora o TLS 1.3. O primeiro voo já leva o ClientHello e, com 1 RTT, o cliente termina o handshake e envia o pedido. Cada pedido usa um **fluxo QUIC** próprio, com ordem e recuperação de perda independentes. Os cabeçalhos são comprimidos pelo **QPACK** (RFC 9204).
+**Conceito.** O **HTTP/3** ([RFC 9114](https://www.rfc-editor.org/rfc/rfc9114)) roda sobre o **QUIC** ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)), que usa UDP e incorpora o TLS 1.3. O primeiro voo já leva o ClientHello e, com 1 RTT, o cliente termina o handshake e envia o pedido. Cada pedido usa um **fluxo QUIC** próprio, com ordem e recuperação de perda independentes. Os cabeçalhos são comprimidos pelo **QPACK** ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)).
 
 **O que observar**
 
@@ -968,7 +968,7 @@ sequenceDiagram
 | Initial + 0-RTT | ClientHello e o pedido, no mesmo voo | cliente |
 | Initial + Handshake | servidor aceita o 0-RTT | servidor |
 
-**Por que importa.** O ganho é real, mas exige cuidado: o servidor deve recusar 0-RTT em pedidos que alteram estado (RFC 8470 define a resposta 425 Too Early).
+**Por que importa.** O ganho é real, mas exige cuidado: o servidor deve recusar 0-RTT em pedidos que alteram estado ([RFC 8470](https://www.rfc-editor.org/rfc/rfc8470) define a resposta 425 Too Early).
 
 ##### Rede de alta latência
 
@@ -1038,7 +1038,7 @@ O mesmo pacote de /app.js se perde. No QUIC, cada fluxo tem a sua própria ordem
 
 Os outros fluxos entregam seus dados normalmente. Compare com o cenário de perda do HTTP/2.
 
-**Conceito.** No QUIC cada fluxo tem a sua **própria ordem de entrega**. Quando um pacote se perde, apenas o fluxo cujos dados estavam nele espera. Os demais entregam à aplicação o que já chegou. O pacote perdido é reenviado em um **pacote novo**, com número novo (RFC 9002).
+**Conceito.** No QUIC cada fluxo tem a sua **própria ordem de entrega**. Quando um pacote se perde, apenas o fluxo cujos dados estavam nele espera. Os demais entregam à aplicação o que já chegou. O pacote perdido é reenviado em um **pacote novo**, com número novo ([RFC 9002](https://www.rfc-editor.org/rfc/rfc9002)).
 
 **O que observar**
 
@@ -1099,7 +1099,7 @@ Um firewall descarta o UDP 443. O QUIC Initial se perde, o navegador espera e re
 
 Por isso o HTTP/3 é sempre uma melhoria opcional: a página carrega mesmo sem ele, só que depois de uma espera.
 
-**Conceito.** Muitas redes bloqueiam ou limitam o UDP na porta 443. O navegador tenta o QUIC (descoberto por `Alt-Svc`, RFC 7838, ou por registro DNS HTTPS), não recebe resposta e **recorre ao HTTP/2 sobre TCP**. O tempo perdido na tentativa é o custo do fallback.
+**Conceito.** Muitas redes bloqueiam ou limitam o UDP na porta 443. O navegador tenta o QUIC (descoberto por `Alt-Svc`, [RFC 7838](https://www.rfc-editor.org/rfc/rfc7838), ou por registro DNS HTTPS), não recebe resposta e **recorre ao HTTP/2 sobre TCP**. O tempo perdido na tentativa é o custo do fallback.
 
 **O que observar**
 
@@ -1155,33 +1155,33 @@ sequenceDiagram
 
 ### O que muda entre as versões
 
-A **semântica** do HTTP (RFC 9110) é a mesma nas três versões: métodos como GET e POST, códigos de status, cabeçalhos e corpo. Cada versão muda apenas **como** essas mensagens são levadas pela rede: o formato na linha, o uso de conexões e o transporte por baixo.
+A **semântica** do HTTP ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110)) é a mesma nas três versões: métodos como GET e POST, códigos de status, cabeçalhos e corpo. Cada versão muda apenas **como** essas mensagens são levadas pela rede: o formato na linha, o uso de conexões e o transporte por baixo.
 
-### HTTP/1.1 (RFC 9112)
+### HTTP/1.1 ([RFC 9112](https://www.rfc-editor.org/rfc/rfc9112))
 
 - **Formato em texto:** linha de requisição, cabeçalhos e corpo, legíveis a olho nu. Os mesmos cabeçalhos (User-Agent, Accept, Cookie) se repetem em todo pedido.
 - **Conexões persistentes** (keep-alive): a conexão TCP é reaproveitada para vários pedidos, mas um de cada vez.
 - **Pipelining:** a especificação permite enviar vários pedidos sem esperar as respostas, que voltam na mesma ordem. Na prática os navegadores o desativaram por causa do bloqueio de cabeça de fila e de intermediários problemáticos. O simulador não usa pipelining.
 - **Várias conexões:** para paralelizar, os navegadores abrem até 6 conexões por servidor, e cada uma paga o handshake de TCP e TLS.
 
-### HTTP/2 (RFC 9113)
+### HTTP/2 ([RFC 9113](https://www.rfc-editor.org/rfc/rfc9113))
 
 - **Formato binário em quadros** (HEADERS, DATA, SETTINGS...). A semântica não muda, mas a mensagem passa a ser fatiada.
 - **Fluxos (streams):** uma só conexão TCP leva muitos pedidos e respostas ao mesmo tempo, cada um com seu identificador (ímpar quando iniciado pelo cliente). Os quadros de fluxos diferentes se intercalam.
-- **HPACK (RFC 7541):** compressão de cabeçalhos com tabela estática e tabela dinâmica. O primeiro pedido paga o preço inteiro; os seguintes viram índices.
+- **HPACK ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)):** compressão de cabeçalhos com tabela estática e tabela dinâmica. O primeiro pedido paga o preço inteiro; os seguintes viram índices.
 - **Controle de fluxo** por fluxo e por conexão, e limite de fluxos simultâneos (`SETTINGS_MAX_CONCURRENT_STREAMS`).
 - **Negociação:** a versão é escolhida no TLS pela extensão ALPN (`h2`). Os navegadores só usam HTTP/2 sobre TLS.
 - **Limite:** tudo viaja na mesma sequência de bytes do TCP. Um segmento perdido retém a entrega de todos os fluxos até a retransmissão (bloqueio de cabeça de fila no TCP).
 - O *server push* do HTTP/2 foi pouco usado e removido dos principais navegadores. Não é simulado.
 
-### HTTP/3 e QUIC (RFC 9114, 9000, 9001 e 9002)
+### HTTP/3 e QUIC ([RFC 9114](https://www.rfc-editor.org/rfc/rfc9114), 9000, 9001 e 9002)
 
-- **QUIC sobre UDP:** o transporte é reimplementado em espaço de usuário, com o TLS 1.3 embutido (RFC 9001). O handshake de transporte e de criptografia ocorre junto, em 1 RTT.
+- **QUIC sobre UDP:** o transporte é reimplementado em espaço de usuário, com o TLS 1.3 embutido ([RFC 9001](https://www.rfc-editor.org/rfc/rfc9001)). O handshake de transporte e de criptografia ocorre junto, em 1 RTT.
 - **Fluxos com ordem própria:** cada pedido do HTTP/3 usa um fluxo QUIC (identificador múltiplo de 4 para fluxos bidirecionais iniciados pelo cliente). Uma perda só atrasa o fluxo afetado.
-- **Recuperação de perdas (RFC 9002):** o conteúdo perdido é reenviado em um pacote novo, com número novo, o que elimina a ambiguidade entre original e retransmissão.
-- **QPACK (RFC 9204):** compressão de cabeçalhos desenhada para funcionar mesmo com fluxos chegando fora de ordem.
-- **0-RTT:** com um ticket de sessão, o cliente envia dados no primeiro voo. Esses dados podem ser repetidos por um atacante (replay). Os servidores devem aceitar 0-RTT só para pedidos que não alteram estado (RFC 8470 define a resposta 425 Too Early).
-- **Descoberta:** o navegador costuma saber que o servidor fala HTTP/3 pelo cabeçalho `Alt-Svc` (RFC 7838) ou por registros DNS do tipo HTTPS (RFC 9460). Se o UDP 443 estiver bloqueado, usa HTTP/2 sobre TCP.
+- **Recuperação de perdas ([RFC 9002](https://www.rfc-editor.org/rfc/rfc9002)):** o conteúdo perdido é reenviado em um pacote novo, com número novo, o que elimina a ambiguidade entre original e retransmissão.
+- **QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)):** compressão de cabeçalhos desenhada para funcionar mesmo com fluxos chegando fora de ordem.
+- **0-RTT:** com um ticket de sessão, o cliente envia dados no primeiro voo. Esses dados podem ser repetidos por um atacante (replay). Os servidores devem aceitar 0-RTT só para pedidos que não alteram estado ([RFC 8470](https://www.rfc-editor.org/rfc/rfc8470) define a resposta 425 Too Early).
+- **Descoberta:** o navegador costuma saber que o servidor fala HTTP/3 pelo cabeçalho `Alt-Svc` ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) ou por registros DNS do tipo HTTPS ([RFC 9460](https://www.rfc-editor.org/rfc/rfc9460)). Se o UDP 443 estiver bloqueado, usa HTTP/2 sobre TCP.
 - O QUIC também permite **migração de conexão** (trocar de Wi-Fi para 4G sem recomeçar) e limita as respostas a endereços não validados, para reduzir ataques de amplificação. Nenhum dos dois é simulado.
 
 ### Comparação resumida
@@ -1197,14 +1197,14 @@ A **semântica** do HTTP (RFC 9110) é a mesma nas três versões: métodos como
 
 ### Considerações de segurança (nível defensivo)
 
-- **HTTP sem TLS** não protege confidencialidade nem integridade: o conteúdo pode ser lido ou alterado no caminho. Use HTTPS e HSTS (RFC 6797).
+- **HTTP sem TLS** não protege confidencialidade nem integridade: o conteúdo pode ser lido ou alterado no caminho. Use HTTPS e HSTS ([RFC 6797](https://www.rfc-editor.org/rfc/rfc6797)).
 - **0-RTT e replay:** aceite 0-RTT apenas em pedidos idempotentes e sem efeito colateral, ou desative-o quando isso não puder ser garantido.
 - **Abuso de fluxos no HTTP/2:** servidores devem limitar fluxos simultâneos, quadros e a taxa de abertura e cancelamento de fluxos (o ataque conhecido como Rapid Reset, de 2023, explorou a falta desse limite) e manter o software atualizado.
 - **Visibilidade:** o QUIC cifra quase todo o cabeçalho de transporte, o que reduz o que firewalls e sensores no caminho conseguem ver. A inspeção passa a depender de pontos de terminação do TLS e de telemetria nos extremos.
 
 ### Limitações do simulador
 
-- O enlace tem 10 Mbit/s fixos, dividido em partes iguais entre as respostas em andamento. Não há slow start, controle de congestionamento nem priorização de fluxos (RFC 9218).
+- O enlace tem 10 Mbit/s fixos, dividido em partes iguais entre as respostas em andamento. Não há slow start, controle de congestionamento nem priorização de fluxos ([RFC 9218](https://www.rfc-editor.org/rfc/rfc9218)).
 - Os tamanhos de cabeçalho, de handshake e do tempo de processamento do servidor (10 ms) são ilustrativos. O HPACK e o QPACK não são codificados de verdade.
 - O HTML é pedido primeiro e os demais recursos só depois de ele chegar por inteiro. Os navegadores reais começam a pedir enquanto o HTML ainda chega (preload scanner).
 - A perda atinge um pacote de `/app.js`, na metade da resposta. A recuperação leva cerca de 1 RTT. O simulador supõe que o pacote perdido contém dados de um único fluxo.

@@ -490,6 +490,35 @@ if (DOCS) {
   delete files['simuladores.md'];
 }
 
+/**
+ * Transforma cada citação de RFC e de BCP em link para o rfc-editor.org (mesmo endereço dos chips do cabeçalho).
+ * Intervalos como "RFC 4033 a 4035" têm o segundo número linkado também. Blocos de código (inclusive os diagramas
+ * Mermaid), código em linha e links já existentes não são tocados. IEEE e ISO ficam em texto: não têm endereço gratuito estável.
+ */
+const rfcUrl = (n) => `https://www.rfc-editor.org/rfc/rfc${n}`;
+const bcpUrl = (n) => `https://www.rfc-editor.org/info/bcp${n}`;
+function linkRfcs(text) {
+  const SKIP = /(`[^`\n]*`|\[[^\]\n]*\]\([^)\n]*\))/;
+  let fenced = false;
+  return text
+    .split('\n')
+    .map((line) => {
+      if (/^```/.test(line)) { fenced = !fenced; return line; }
+      if (fenced) return line;
+      return line
+        .split(SKIP)
+        .map((part, i) => {
+          if (i % 2 === 1) return part; // código em linha ou link existente
+          return part
+            .replace(/\bRFC (\d{2,5})(?: a (\d{2,5}))?\b/g, (_, a, b) => `[RFC ${a}](${rfcUrl(a)})` + (b ? ` a [${b}](${rfcUrl(b)})` : ''))
+            .replace(/\bBCP (\d{1,3})\b/g, (_, n) => `[BCP ${n}](${bcpUrl(n)})`);
+        })
+        .join('');
+    })
+    .join('\n');
+}
+for (const k of Object.keys(files)) files[k] = linkRfcs(files[k]);
+
 for (const [name, text] of Object.entries(files)) fs.writeFileSync(path.join(out, name), text, 'utf8');
 console.log(`${Object.keys(files).length} arquivos em ${out}; ${nNative} nativos, ${nScen} cenários`);
 await server.close();
