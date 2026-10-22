@@ -67,7 +67,7 @@ describe('página de um simulador', () => {
   });
 
   it('simulador em preparação não incorpora nada', () => {
-    renderAt('/sim/dnssec');
+    renderAt('/sim/vpn');
     expect(screen.getByText(/em preparação/)).toBeTruthy();
     expect(screen.queryByTitle(/Simulador:/)).toBeNull();
   });

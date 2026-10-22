@@ -66,6 +66,8 @@ describe('páginas dos simuladores nativos', () => {
 
   it('NAT: carrega, percorre os três modos e não tem violações de acessibilidade', () => checkSim('nat', /^NAT \(SNAT, DNAT e NAPT\)$/), 120000);
 
+  it('DNS: carrega, percorre os cinco modos e não tem violações de acessibilidade', () => checkSim('dns', /^DNS e DNSSEC$/), 120000);
+
   it('ICMP: carrega, percorre os três modos e não tem violações de acessibilidade', () => checkSim('icmp', /^ICMP \(ping e traceroute\)$/), 120000);
 
   it('ARP: carrega, percorre todos os cenários e não tem violações de acessibilidade', () => checkSim('arp', /^ARP$/), 60000);

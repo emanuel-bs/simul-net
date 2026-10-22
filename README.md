@@ -10,9 +10,9 @@ Projeto acadêmico do curso de Engenharia de Redes de Comunicação, sob respons
 | --- | --- |
 | Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), ARP (resolução de endereços, proxy ARP, ARP gratuito, conflito de endereço, failover e envenenamento de cache com as defesas), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN) |
 | Camada de transporte e segurança | TCP e UDP (com SACK, download TCP e vídeo UDP), Ataques e defesas TCP/UDP, HTTP/1.1, HTTP/2 e HTTP/3 (conexões, fluxos, QUIC, 0-RTT, perda de pacote e fallback) |
-| Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH) |
+| Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), DNS e DNSSEC (resolução, cache e TTL, cadeia de confiança, envenenamento de cache, amplificação, DoT e DoH), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH) |
 
-Em preparação: DNS e DNSSEC, VPN (IPsec e WireGuard), SMTP e segurança de e-mail, IS-IS, SNMP, HTTP/1.1, 2 e 3, controle de congestionamento (Reno, CUBIC e BBR), 802.1X e RADIUS.
+Em preparação: VPN (IPsec e WireGuard), SMTP e segurança de e-mail, IS-IS, SNMP, HTTP/1.1, 2 e 3, controle de congestionamento (Reno, CUBIC e BBR), 802.1X e RADIUS.
 
 > Os simuladores têm finalidade didática. Valores de chaves, hashes e assinaturas são ilustrativos e não oferecem segurança real.
 
