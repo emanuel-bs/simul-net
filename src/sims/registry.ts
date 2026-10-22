@@ -69,8 +69,7 @@ export const SIMS: SimMeta[] = [
     topics: ['DORA', 'Leases e renovação', 'Conflitos de endereço (ARP)'],
     rfcs: ['RFC 2131', 'RFC 2132', 'RFC 5227'],
     status: 'available',
-    novo: true,
-    engine: 'nativo',
+        engine: 'nativo',
   },
   {
     id: 'icmp',
@@ -210,6 +209,17 @@ export const SIMS: SimMeta[] = [
     topics: ['Requisição e resposta', 'Tabela ARP (REACHABLE, STALE, FAILED)', 'Gateway e proxy ARP', 'ARP Probe e Announce', 'Conflito de endereço e failover', 'Envenenamento de cache e defesas (DAI, entradas estáticas)'],
     rfcs: ['RFC 826', 'RFC 1027', 'RFC 1122', 'RFC 5227'],
     status: 'available',
+    engine: 'nativo',
+  },
+  {
+    id: 'nat',
+    category: 'camada-de-rede',
+    title: 'NAT (SNAT, DNAT e NAPT)',
+    summary: 'Tradução de endereços e portas: Basic NAT estático e dinâmico, NAPT (PAT), SNAT e DNAT, com a tabela de traduções, colisão de portas, esgotamento, expiração, hairpinning, ESP com NAT-T e CGNAT.',
+    topics: ['Basic NAT e NAPT (PAT)', 'SNAT e DNAT', 'Tabela de traduções e portas', 'Hairpinning e redirecionamento transparente', 'Esgotamento de portas e expiração', 'ESP, NAT-T e CGNAT'],
+    rfcs: ['RFC 2663', 'RFC 3022', 'RFC 4787', 'RFC 5382', 'RFC 5508', 'RFC 6598', 'RFC 6888'],
+    status: 'available',
+    novo: true,
     engine: 'nativo',
   },
   {

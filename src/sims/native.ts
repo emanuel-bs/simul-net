@@ -12,4 +12,5 @@ export const NATIVE: Record<string, () => Promise<{ default: ProtocolDef }>> = {
   'icmp': () => import('./icmp/protocol'),
   'dhcp': () => import('./dhcp/protocol'),
   'http-versoes': () => import('./http-versoes/protocol'),
+  'nat': () => import('./nat/protocol'),
 };

@@ -1,0 +1,49 @@
+// Aba Referência do NAT.
+export const reference: string = [
+  '<h3>O que é o NAT</h3><p>O <b>Network Address Translation</b> reescreve campos do cabeçalho IP (e, quando há, das portas) de pacotes que atravessam um roteador. Nasceu para poupar endereços IPv4: a rede interna usa endereços privados (RFC 1918) e o roteador os traduz para endereços públicos. A terminologia está na RFC 2663 e a técnica tradicional, na RFC 3022. Nos exemplos, os endereços 203.0.113.0/24 e 198.51.100.0/24 são de documentação (RFC 5737) e fazem o papel de endereços públicos.</p>',
+  '<h3>Os tipos de tradução (RFC 3022)</h3><table class="sc-msgs"><thead><tr><th>Termo da RFC</th><th>Termo de uso comum</th><th>O que traduz</th></tr></thead><tbody>' +
+    '<tr><td>Basic NAT</td><td>NAT estático ou dinâmico</td><td class="meaning">Só o endereço IP, 1:1, a partir de um mapeamento fixo ou de um pool</td></tr>' +
+    '<tr><td>NAPT (<i>Network Address Port Translation</i>)</td><td>PAT, <i>overload</i> (Cisco), <i>masquerade</i> (Linux)</td><td class="meaning">Endereço e porta (ou identificador ICMP); muitos hosts em um endereço</td></tr>' +
+    '<tr><td>Traditional NAT</td><td>NAT comum</td><td class="meaning">Basic NAT e NAPT, com sessões iniciadas de dentro</td></tr>' +
+    '<tr><td>Twice NAT</td><td>SNAT e DNAT no mesmo pacote</td><td class="meaning">Origem e destino reescritos (por exemplo, em hairpin e em redes com endereços sobrepostos)</td></tr>' +
+    '</tbody></table>',
+  '<h3>SNAT e DNAT</h3><p>SNAT e DNAT são termos de uso consagrado na prática (netfilter/Linux e documentação de fabricantes), e não da RFC 2663 ou da RFC 3022. Descrevem <b>qual campo</b> é reescrito:</p><ul>' +
+    '<li><b>SNAT</b> (<i>source NAT</i>): reescreve a <b>origem</b>. É o caso típico de saída: um host privado acessa a internet. O NAPT é um SNAT com tradução de porta; o <i>masquerade</i> é a variante em que o endereço externo é o da interface, útil quando ele muda (DHCP, PPPoE). Corresponde ao NAT de saída (<i>outbound</i>).</li>' +
+    '<li><b>DNAT</b> (<i>destination NAT</i>): reescreve o <b>destino</b>. É o caso típico de entrada: publicar um serviço interno, redirecionar o tráfego a um proxy. Corresponde ao NAT de entrada (<i>inbound</i>).</li>' +
+    '<li><b>Twice NAT:</b> as duas reescritas no mesmo pacote.</li></ul>' +
+    '<p>O tipo (Basic NAT ou NAPT) e a direção (SNAT ou DNAT) são eixos independentes: o port forwarding, por exemplo, é um DNAT estático.</p>',
+  '<h3>Ordem de processamento</h3><p>No Linux (netfilter), o DNAT é aplicado na cadeia <b>PREROUTING</b>, antes da decisão de roteamento: o roteamento já enxerga o destino reescrito e escolhe a interface certa. O SNAT é aplicado na <b>POSTROUTING</b>, depois da decisão de roteamento: a interface de saída já está definida. A resposta é revertida pela tabela de conexões, sem regra adicional. Outros sistemas organizam o processamento de forma diferente, mas a lógica é a mesma.</p>',
+  '<h3>A tabela de traduções</h3><p>A entrada liga o par interno (endereço, porta) ao par externo, e guarda o outro extremo da conexão. É consultada na volta para reverter a tradução e removida depois de um tempo de inatividade. A RFC 4787 pede, para UDP, que o tempo não seja menor que 2 minutos; a RFC 5382 pede, para TCP estabelecido, no mínimo 2 horas e 4 minutos. <b>O simulador usa tempos bem menores só para a visualização</b>, e o modelo tem um único tempo por entrada, sem os estados do TCP.</p>',
+  '<h3>Comportamento de mapeamento e de filtragem (RFC 4787)</h3><ul>' +
+    '<li><b>Mapeamento independente do destino (EIM):</b> a porta externa depende só do endereço e da porta internos. É o comportamento exigido pela RFC 4787 para UDP, porque permite aplicações ponto a ponto.</li>' +
+    '<li><b>Mapeamento dependente de endereço (e porta):</b> cada destino distinto cria um novo mapeamento. É o NAT chamado "simétrico".</li>' +
+    '<li><b>Filtragem:</b> define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta).</li></ul>',
+  '<h3>ICMP e ESP</h3><ul>' +
+    '<li><b>ICMP:</b> sem portas, o NAT usa o <i>Identifier</i> do Echo como chave (RFC 5508). Mensagens de erro ICMP carregam o cabeçalho do pacote original e exigem tradução adicional, que o simulador não modela.</li>' +
+    '<li><b>ESP (IPsec):</b> não tem portas. O Basic NAT atravessa, desde que não haja AH (ele protege o cabeçalho IP). O NAPT não distingue hosts. O <b>NAT-T</b> (RFC 3947 e RFC 3948) detecta o NAT no IKE e encapsula o ESP em UDP porta 4500 (RFC 3715 reúne os requisitos de compatibilidade entre IPsec e NAT).</li></ul>',
+  '<h3>Hairpinning</h3><p>Quando um cliente interno usa o endereço público de um serviço da própria rede, o pacote volta pela mesma interface. Para funcionar, o roteador aplica DNAT e SNAT: sem o SNAT, o servidor responde direto ao cliente (mesma rede) e a resposta não casa com a conexão. Alternativas: DNS interno (split DNS) ou NAT loopback.</p>',
+  '<h3>CGNAT</h3><p>O <i>carrier-grade NAT</i> (RFC 6888) traduz os endereços de muitos assinantes para poucos endereços públicos. O espaço 100.64.0.0/10 (RFC 6598) é reservado ao trecho entre o CPE e o CGN. O CGN divide as portas entre assinantes (limites por assinante e alocação por blocos de portas) e precisa registrar as traduções para identificar o responsável por uma conexão. O assinante deixa de receber conexões de fora.</p>',
+  '<h3>NAT e protocolos que carregam endereços</h3><p>Protocolos que escrevem endereços ou portas no payload (o FTP ativo, o SIP, o IKE) quebram quando o NAT só reescreve o cabeçalho. A solução tradicional é um <b>ALG</b> (<i>application layer gateway</i>), que inspeciona e reescreve o payload, ou o uso de protocolos que evitam o problema (FTP passivo, STUN, ICE). O simulador <b>não modela ALG</b>.</p>',
+  '<h3>NAT e IPv6</h3><p>O IPv6 tem endereços suficientes para dispensar o NAT como poupança de endereços. Há mecanismos de tradução para outros fins, como o NAT64 (RFC 6146), para acessar redes IPv4 a partir de IPv6, e o NPTv6 (RFC 6296). Nenhum deles é modelado aqui.</p>',
+  '<h3>NAT e segurança</h3><ul>' +
+    '<li><b>NAT não é firewall.</b> O descarte de pacotes sem entrada na tabela é efeito da tradução. O Basic NAT estático, o DNAT e qualquer mapeamento ativo deixam o host alcançável. A proteção vem de regras de filtragem com estado.</li>' +
+    '<li><b>DNAT apenas redireciona.</b> Quem pode acessar o serviço publicado é decidido pela política de filtragem, não pela regra de tradução.</li>' +
+    '<li><b>Esgotamento de portas:</b> um host com muitas conexões pode consumir o pool e negar serviço aos demais. Limites de conexões por host e por assinante (RFC 6888) reduzem o risco.</li>' +
+    '<li><b>Rastreabilidade:</b> com muitos hosts atrás de um endereço, o registro da tradução (endereço, porta e horário) é o que permite identificar quem usou aquela conexão.</li></ul>',
+  '<h3>Limitações do simulador</h3><ul>' +
+    '<li>Modelo didático: a primeira mensagem de cada sentido representa a conexão (SYN e SYN+ACK no TCP), sem handshake completo, sem estados do TCP (FIN, RST) e sem fragmentação.</li>' +
+    '<li>Um único tempo de inatividade por entrada. Os valores são parâmetros do simulador, não padrões de equipamentos.</li>' +
+    '<li>A alocação de portas é determinística: preserva a porta de origem quando possível e, senão, usa a próxima livre. Equipamentos reais variam (alguns sorteiam a porta).</li>' +
+    '<li>Sem ALG, sem IPv6, sem tradução de mensagens de erro ICMP e sem regras de filtragem. Não há comandos de equipamentos específicos.</li></ul>',
+  '<h3>Roteiro de exercícios</h3><ol>' +
+    '<li>Em <b>NAPT: dois hosts, um endereço</b>, anote a origem de cada pacote antes e depois do R-NAT e a porta externa de cada conexão. Que campo o servidor enxerga?</li>' +
+    '<li>Em <b>Colisão de portas</b>, explique por que a segunda conexão recebe outra porta externa e por que o host não percebe.</li>' +
+    '<li>Compare <b>Basic NAT estático</b> e <b>NAPT</b> na aba Tabela NAT: o que existe antes do primeiro pacote? Qual deles limita o número de hosts pelo número de endereços?</li>' +
+    '<li>Compare os cenários de <b>mapeamento EIM e APDM</b>: quantas portas externas cada um consome? Por que o APDM atrapalha aplicações ponto a ponto?</li>' +
+    '<li>Em <b>Publicar um serviço</b>, localize no evento do R-NAT a ordem entre DNAT e roteamento. Depois, marque <b>O servidor interno usa outro gateway</b> e explique a falha.</li>' +
+    '<li>Percorra os três cenários de <b>hairpin</b> e explique o papel do SNAT na versão que funciona.</li>' +
+    '<li>No modo <b>Limites do NAT</b>, esgote as portas com a faixa pequena. Que defesa evita que um host consuma todo o pool?</li>' +
+    '<li>Compare a <b>entrada não solicitada</b> no NAPT e no Basic NAT estático. A diferença de resultado vem de alguma regra de segurança? Justifique.</li>' +
+    '<li>Compare <b>ESP atrás de NAPT</b> com <b>NAT-T</b>: o que muda para o NAT?</li>' +
+    '<li>No <b>CGNAT</b>, acompanhe as duas traduções e a reversão em ordem inversa. Por que o CGN precisa registrar as traduções?</li></ol>',
+].join('');

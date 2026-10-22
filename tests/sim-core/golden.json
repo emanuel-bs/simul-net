@@ -167,5 +167,33 @@
     "amostra:h2": "9007b0ceae20b7c8",
     "amostra:h3": "f152c1c56556394a",
     "textos": "f659d48b5f0b14eb"
+  },
+  "nat": {
+    "n-estatico": "d173552c45ba2f88",
+    "n-dinamico": "bb5acba654905095",
+    "n-pool": "02ab38118972a773",
+    "n-napt": "a8668f51ad033673",
+    "n-colisao": "b9835569c902831e",
+    "n-icmp": "096f39271956daad",
+    "n-eim": "369ed87227c93308",
+    "n-apdm": "e49c7a0db9e942ce",
+    "n-dnat": "db16c54711e76644",
+    "n-assimetrico": "453a8e53ff83c68a",
+    "n-hairpin-nao": "963191ac8be1400e",
+    "n-hairpin-dnat": "7b1059c22835367b",
+    "n-hairpin": "fbccf8340e532a7c",
+    "n-proxy": "952f29ae46a63c2d",
+    "n-portas": "39df9f94f0c64212",
+    "n-expira": "edd0fd4a77041e5a",
+    "n-entrada-napt": "902e29b0aeac5a9b",
+    "n-entrada-estatico": "cbf92474c3d9ce9f",
+    "n-esp": "227a06b47da7e8f1",
+    "n-esp-basic": "ab2e1dcc302b3e53",
+    "n-natt": "d1d4a18907c2a0aa",
+    "n-cgnat": "bcf949f7cd79a005",
+    "amostra:snat": "32998fec0b53fbbb",
+    "amostra:dnat": "d422ca17c89dd0a8",
+    "amostra:limites": "2d88f89da23582aa",
+    "textos": "4c786f3f26dec96e"
   }
 }
