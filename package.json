@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "wiki": "node scripts/gerar-wiki.mjs"
   },
   "dependencies": {
     "motion": "^12.0.0",
