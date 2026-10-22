@@ -21,6 +21,12 @@ describe('registro de simuladores', () => {
     });
   });
 
+  it('todo simulador disponível cita pelo menos uma RFC ou padrão', () => {
+    SIMS.filter((s) => s.status === 'available').forEach((s) => {
+      expect(s.rfcs.length, `${s.id}: sem RFC ou padrão em rfcs`).toBeGreaterThan(0);
+    });
+  });
+
   it('usa somente categorias existentes', () => {
     const cats = new Set(CATEGORIES.map((c) => c.id));
     SIMS.forEach((s) => expect(cats.has(s.category)).toBe(true));

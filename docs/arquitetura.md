@@ -84,11 +84,15 @@ O portal continua com suas páginas de simuladores até o Simul-Net estar public
 
 **Nativo (recomendado para simuladores novos):**
 
-1. Crie `src/sims/<nome>/` com o motor (`engine`, função pura que devolve um `Trace`), o conteúdo (`content`: controles, cenários, textos, abas, Experimento e Referência) e `protocol.ts`, que exporta um `ProtocolDef`.
-2. Registre o módulo em `src/sims/native.ts` e acrescente a entrada em `src/sims/registry.ts` com `engine: 'nativo'`.
-3. Inclua o módulo em `tests/sim-core/golden.test.ts`, grave as impressões digitais com `UPDATE_GOLDEN=1`, e rode `npm test` (integridade, páginas e registro são verificados) e `npm run test:e2e`.
+1. **Levante as fontes antes de escrever.** Liste as RFCs e os padrões vigentes do protocolo em https://www.rfc-editor.org e confira se algum foi substituído ou atualizado (por exemplo, a RFC 5246 foi atualizada pela RFC 8446). Anote o que o simulador vai simplificar em relação a elas.
+2. Crie `src/sims/<nome>/` com o motor (`engine`, função pura que devolve um `Trace`), o conteúdo (`content`: controles, cenários, textos, abas, Experimento e Referência) e `protocol.ts`, que exporta um `ProtocolDef`. Cada cenário precisa de `scenDoc` completo (conceito, o que observar, mensagens, por que importa), cada campo precisa de ajuda e a aba Referência precisa citar a RFC e a seção nos pontos técnicos e registrar as limitações. Declare `topology` quando houver topologia.
+3. Registre o módulo em `src/sims/native.ts` e acrescente a entrada em `src/sims/registry.ts` com `engine: 'nativo'`, preenchendo `rfcs`. O mesmo vale para `rfcs` no `protocol.ts`.
+4. Inclua o módulo em `tests/sim-core/golden.test.ts`, grave as impressões digitais com `UPDATE_GOLDEN=1`, e rode `npm test` (integridade, páginas e registro são verificados) e `npm run test:e2e`.
+5. **Documentação.** Rode `npm run docs:simuladores`. Isso gera `docs/simuladores/<id>.md` e atualiza o índice. Confira o arquivo (travessões, diagramas, textos) e versione-o junto com o simulador. O teste do registro falha se o documento não existir.
+6. **Wiki.** Rode `npm run wiki -- <pasta>`, clone `Simul-Net.wiki.git`, copie os `.md` gerados, faça o commit e o push. Como a wiki é pública, a publicação só é feita com autorização expressa do autor.
+7. **Link no cartão.** Nada a fazer: o cartão do hub mostra o link "Documentação" a partir do `id` do registro (`docUrl`).
 
-**Legado:** coloque o arquivo em `public/sims/` e acrescente a entrada em `src/sims/registry.ts` com `engine: 'legado'`; o registro verifica o arquivo e os requisitos da página.
+**Legado:** coloque o arquivo em `public/sims/` e acrescente a entrada em `src/sims/registry.ts` com `engine: 'legado'`; o registro verifica o arquivo e os requisitos da página. A documentação de um legado é extraída executando a página no jsdom. Modos escolhidos por botões e captura passo a passo são tratados em `LEGACY`, em `scripts/gerar-wiki.mjs`; páginas cujas mensagens não são determinísticas não geram diagrama de sequência.
 
 ## 11. Limitações
 
