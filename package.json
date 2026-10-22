@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "wiki": "node scripts/gerar-wiki.mjs"
+    "wiki": "node scripts/gerar-wiki.mjs",
+    "docs:simuladores": "node scripts/gerar-wiki.mjs docs/simuladores --docs"
   },
   "dependencies": {
     "motion": "^12.0.0",

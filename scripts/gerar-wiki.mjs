@@ -9,8 +9,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-if (!process.argv[2]) { console.error('Uso: npm run wiki -- <pasta-de-saida>'); process.exit(1); }
-const out = path.resolve(process.argv[2]);
+// --docs: gera os documentos por simulador (docs/simuladores) em vez das páginas da wiki.
+const DOCS = process.argv.includes('--docs');
+const outArg = process.argv.slice(2).find((a) => !a.startsWith('--'));
+if (!outArg) { console.error('Uso: npm run wiki -- <pasta-de-saida> [--docs]'); process.exit(1); }
+const out = path.resolve(outArg);
 fs.mkdirSync(out, { recursive: true });
 
 const server = await createServer({
@@ -66,9 +69,10 @@ const { SIMS, CATEGORIES } = await server.ssrLoadModule('/src/sims/registry.ts')
 const { NATIVE } = await server.ssrLoadModule('/src/sims/native.ts');
 
 const CRED = 'Simulador desenvolvido pelo Prof. Dr. Laerte Peotta de Melo. Conteúdo elaborado com apoio de IA generativa, sob revisão do autor. Uso exclusivo para fins de ensino e pesquisa.';
-// O crédito aparece em todas as páginas pelo _Footer.md da wiki; não repetir no corpo.
-const footer = '\n';
-const pageName = (id) => `simulador-${id}`;
+// Na wiki, o crédito vem do _Footer.md (não repetir no corpo); nos documentos, cada arquivo leva o seu.
+const footer = DOCS ? `\n\n---\n\n*${CRED}*\n` : '\n';
+const pageName = (id) => (DOCS ? id : `simulador-${id}`);
+const pageRef = (id) => (DOCS ? `${id}.md` : pageName(id));
 const catTitle = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.title]));
 const files = {};
 
@@ -408,7 +412,7 @@ for (const sim of avail) {
     L.push(`## ${c.title}\n`, `${c.description}\n`);
     L.push('| Simulador | Motor | Situação | RFCs e padrões |', '| --- | --- | --- | --- |');
     for (const s of SIMS.filter((x) => x.category === c.id)) {
-      const link = s.status === 'available' ? `[${s.title}](${pageName(s.id)})` : s.title;
+      const link = s.status === 'available' ? `[${s.title}](${pageRef(s.id)})` : s.title;
       L.push(`| ${link} | ${s.engine ?? '-'} | ${s.status === 'available' ? 'disponível' : 'planejado'} | ${s.rfcs.join(', ')} |`);
     }
     L.push('');
@@ -477,6 +481,14 @@ As páginas dos simuladores nativos são geradas a partir dos próprios módulos
 
 Edições manuais diretas nas páginas geradas são sobrescritas na próxima geração. As páginas \`Home\`, \`arquitetura\` (cópia de \`docs/arquitetura.md\`), \`simuladores\`, \`contribuindo\`, \`_Sidebar\` e \`_Footer\` também são geradas.
 ` + footer;
+
+if (DOCS) {
+  // Só os documentos dos simuladores e o índice; a arquitetura e as demais páginas da wiki não entram.
+  const keep = new Set(avail.map((x) => `${pageName(x.id)}.md`));
+  for (const k of Object.keys(files)) if (!keep.has(k) && k !== 'simuladores.md') delete files[k];
+  files['README.md'] = files['simuladores.md'].replace('# Simuladores\n', '# Documentação dos simuladores\n');
+  delete files['simuladores.md'];
+}
 
 for (const [name, text] of Object.entries(files)) fs.writeFileSync(path.join(out, name), text, 'utf8');
 console.log(`${Object.keys(files).length} arquivos em ${out}; ${nNative} nativos, ${nScen} cenários`);
