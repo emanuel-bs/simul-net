@@ -5,7 +5,7 @@ import { MotionConfig } from 'motion/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it } from 'vitest';
 import { AppRoutes } from '../src/App';
-import { SIMS } from '../src/sims/registry';
+import { SIMS, docUrl } from '../src/sims/registry';
 
 afterEach(cleanup);
 
@@ -35,6 +35,21 @@ describe('página inicial e categorias', () => {
       expect(screen.getAllByRole('link', { name: new RegExp(`Abrir simulador\\s*: ${s.title.replace(/[()]/g, '\\$&')}$`) }).length).toBe(1);
     });
     expect(screen.getByText('Simuladores futuros')).toBeTruthy();
+  });
+
+  it('cada cartão de simulador disponível tem o link Documentação para uma nova aba; os futuros não', () => {
+    renderAt('/');
+    const available = SIMS.filter((s) => s.status === 'available');
+    const links = screen.getAllByRole('link', { name: /^Documentação\s*:/ });
+    expect(links.length).toBe(available.length);
+    available.forEach((s) => {
+      const link = links.find((l) => l.getAttribute('href') === docUrl(s));
+      expect(link, s.id).toBeDefined();
+      expect(link!.textContent).toContain(s.title);
+      expect(link!.textContent).toContain('abre em nova aba');
+      expect(link!.getAttribute('target')).toBe('_blank');
+      expect(link!.getAttribute('rel')).toBe('noopener noreferrer');
+    });
   });
 
   it('a página inicial não tem violações de acessibilidade', async () => {

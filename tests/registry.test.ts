@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { CATEGORIES, SIMS } from '../src/sims/registry';
+import { CATEGORIES, DOCS_BASE, SIMS, docUrl } from '../src/sims/registry';
 
 const root = join(__dirname, '..');
 // Travessão longo e meia-risca (escritos por código para o próprio arquivo não conter os caracteres).
@@ -12,6 +12,13 @@ describe('registro de simuladores', () => {
     const ids = SIMS.map((s) => s.id);
     expect(new Set(ids).size).toBe(ids.length);
     ids.forEach((id) => expect(id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/));
+  });
+
+  it('todo simulador disponível tem o documento em docs/simuladores, apontado por docUrl', () => {
+    SIMS.filter((s) => s.status === 'available').forEach((s) => {
+      expect(existsSync(join(root, 'docs', 'simuladores', s.id + '.md')), s.id + ': documento ausente (npm run docs:simuladores)').toBe(true);
+      expect(docUrl(s)).toBe(DOCS_BASE + s.id + '.md');
+    });
   });
 
   it('usa somente categorias existentes', () => {

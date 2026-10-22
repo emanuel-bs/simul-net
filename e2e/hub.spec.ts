@@ -11,6 +11,7 @@ test('a página inicial lista as categorias e os simuladores disponíveis', asyn
   for (const c of CATEGORIES) await expect(page.getByRole('heading', { level: 3, name: c.title })).toBeVisible();
   const available = SIMS.filter((s) => s.status === 'available');
   await expect(page.getByRole('link', { name: /Abrir simulador/ })).toHaveCount(available.length);
+  await expect(page.getByRole('link', { name: /^Documentação\s*:/ })).toHaveCount(available.length);
   expect(errors).toEqual([]);
 });
 

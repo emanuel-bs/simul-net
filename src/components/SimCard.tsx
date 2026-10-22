@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { SimMeta } from '../sims/registry';
+import { docUrl, type SimMeta } from '../sims/registry';
 
 export function SimCard({ sim, headingLevel = 3 }: { sim: SimMeta; headingLevel?: 2 | 3 }) {
   const Heading = `h${headingLevel}` as 'h2' | 'h3';
@@ -31,9 +31,17 @@ export function SimCard({ sim, headingLevel = 3 }: { sim: SimMeta; headingLevel?
         </ul>
       )}
       {available && (
-        <Link to={`/sim/${sim.id}`} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-5 text-base font-semibold text-accent-ink hover:opacity-90">
-          Abrir simulador<span className="sr-only">: {sim.title}</span>
-        </Link>
+        <>
+          <Link to={`/sim/${sim.id}`} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-5 text-base font-semibold text-accent-ink hover:opacity-90">
+            Abrir simulador<span className="sr-only">: {sim.title}</span>
+          </Link>
+          <a href={docUrl(sim)} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex min-h-11 items-center justify-center gap-1 self-center text-base font-semibold text-accent underline">
+            Documentação<span className="sr-only">: {sim.title} (abre em nova aba)</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 17L17 7M8 7h9v9" />
+            </svg>
+          </a>
+        </>
       )}
     </article>
   );

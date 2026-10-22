@@ -315,5 +315,8 @@ export const SIMS: SimMeta[] = [
 
 export const simsByCategory = (id: CategoryId) => SIMS.filter((s) => s.category === id);
 export const findSim = (id: string | undefined) => SIMS.find((s) => s.id === id);
+/** Documentação completa de cada simulador (docs/simuladores/<id>.md), versionada junto com o código e gerada por `npm run docs:simuladores`. */
+export const DOCS_BASE = 'https://github.com/peotta/Simul-Net/blob/main/docs/simuladores/';
+export const docUrl = (sim: SimMeta) => `${DOCS_BASE}${sim.id}.md`;
 /** Endereço do arquivo de um simulador legado, respeitando o caminho base da publicação. */
 export const simUrl = (sim: SimMeta) => `${import.meta.env.BASE_URL}sims/${sim.file}`;
