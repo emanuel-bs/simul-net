@@ -75,14 +75,18 @@ interface Dev extends DevInfo {
   expired: string[];
 }
 
-/** Tempo simulado em escala humana: de milissegundos a minutos. */
+/** Tempo simulado em escala humana: de milissegundos a minutos (por exemplo "1,5s" e "1min 59s"). */
 export function fmtTime(ms: number): string {
   const f = (v: number) => (Math.round(v * 10) / 10).toString().replace('.', ',');
   if (ms < 1000) return f(ms) + 'ms';
-  const unit = ms >= 60000 ? 60000 : 1000;
-  const base = Math.floor(ms / unit);
-  const rem = ms - base * unit;
-  return base + (unit === 60000 ? 'min' : 's') + (rem < 0.05 ? '' : '+' + fmtTime(rem));
+  if (ms < 60000) return f(ms / 1000) + 's';
+  let min = Math.floor(ms / 60000);
+  let sec = Math.round((ms - min * 60000) / 1000);
+  if (sec === 60) {
+    min++;
+    sec = 0;
+  }
+  return min + 'min' + (sec ? ' ' + sec + 's' : '');
 }
 
 export const epText = (e: Ep) => e.ip + (e.port !== undefined ? ':' + e.port : '');
