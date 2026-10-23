@@ -553,7 +553,7 @@
             <li><b>Filtro de prefixos de clientes:</b> o provedor aceita de cada cliente só os prefixos do cone de clientes dele (listas feitas com registros IRR e contrato). Precisa estar no provedor direto de quem anuncia.</li>
             <li><b>RPKI / ROV (RFC 6811):</b> o dono do prefixo publica um ROA com o AS autorizado, e o roteador rejeita rotas cuja origem não confere. Protege quem valida, e o efeito cresce com a adoção. Valida só a origem, não o caminho.</li>
             <li><b>Filtro de rotas de peers:</b> de um peer, aceita-se só o cone de clientes dele. Barra vazamentos, mas não sequestros que partem do próprio cone.</li>
-            <li><b>Flap damping (RFC 2439):</b> suprime prefixos instáveis. É pouco usado hoje, porque também tira do ar prefixos legítimos.</li>
+            <li><b>Flap damping (RFC 2439):</b> suprime prefixos instáveis. Com os padrões antigos (limiar de supressão em torno de 2.000 a 3.000), também tirava do ar prefixos legítimos, e o RIPE (ripe-378, 2006) deixou de recomendá-lo. Desde o RIPE-580 (2013) e a RFC 7196 (2014), a recomendação é usá-lo com limiar de supressão de pelo menos 6.000. O simulador suprime na segunda oscilação, para fins didáticos.</li>
           </ul>
           <p><i>Não simulados: limite de prefixos por sessão (max-prefix), papéis BGP com atributo OTC (RFC 9234), ASPA, BGPsec, proteção da sessão com TCP-AO e GTSM, e blackhole por community (RTBH, RFC 7999). Nos cenários de segurança, o AS64666 (Atacante) é cliente do ISP B; os ROAs e as listas de prefixos são fixos.</i></p>
           <h3>Roteiro de exercícios</h3>
