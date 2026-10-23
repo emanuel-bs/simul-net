@@ -47,7 +47,7 @@ function concepts(j: JournalEntry[]): string {
   if (j.some((e) => e.type === 'offer' && e.offers.length > 1)) items.push('Com dois servidores, o REQUEST vai em <b>broadcast</b> e leva a opção 54 (Server Identifier): o escolhido confirma e os outros sabem que devem devolver a oferta ao pool.');
   if (has('bound') || has('conflict')) items.push('Antes de usar o endereço, o cliente faz um <b>ARP Probe</b> (RFC 2131, seção 3.1) para descobrir se alguém já o usa.');
   if (has('conflict')) items.push('O <b>DHCPDECLINE</b> avisa o servidor do conflito; o endereço sai do pool e o cliente recomeça do zero.');
-  if (has('nooffer')) items.push('Sem resposta, o cliente retransmite com <b>backoff exponencial</b> (4, 8, 16 s... até 64 s), para não inundar a rede.');
+  if (has('nooffer')) items.push('Sem resposta, o cliente retransmite com <b>backoff exponencial</b> (4, 8, 16 s... até 64 s, com sorteio de ±1 s), para não inundar a rede. Os valores são os do exemplo da RFC 2131 (seção 4.1), dado para Ethernet de 10 Mb/s; implementações reais variam.');
   if (has('renew')) items.push('A renovação no <b>T1</b> é feita em unicast, direto com o servidor que concedeu o lease; o cliente mantém o endereço o tempo todo.');
   if (has('expire')) items.push('No <b>T2</b>, o cliente tenta qualquer servidor em broadcast (REBINDING). Se ninguém confirmar até o fim do lease, ele perde o endereço. Por isso redes com dois servidores precisam de failover ou pools coordenados.');
   if (has('release')) items.push('O <b>DHCPRELEASE</b> não tem resposta. Se ele se perde, o endereço só volta ao pool quando o lease expira.');

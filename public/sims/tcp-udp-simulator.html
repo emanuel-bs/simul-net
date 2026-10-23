@@ -622,7 +622,7 @@
           <h3>TCP, UDP e segurança</h3>
           <ul>
             <li><b>SYN flood:</b> muitos SYN sem o ACK final esgotam a fila de conexões semiabertas do servidor. SYN cookies (RFC 4987) evitam reservar estado antes do handshake terminar.</li>
-            <li><b>Números de sequência:</b> um ISN previsível permite injetar segmentos ou derrubar conexões de fora do caminho. Pilhas modernas sorteiam o ISN (RFC 6528) e só aceitam RST com a sequência exata (RFC 5961).</li>
+            <li><b>Números de sequência:</b> um ISN previsível permite injetar segmentos ou derrubar conexões de fora do caminho. Pilhas modernas sorteiam o ISN (RFC 9293) e só aceitam RST com a sequência exata (RFC 5961).</li>
             <li><b>UDP sem conexão:</b> nada confirma a origem de um datagrama. Isso permite falsificação, reflexão e amplificação (DNS, NTP, memcached). A defesa começa na rede de origem (BCP 38) e no próprio serviço (sem recursão aberta, limite de respostas).</li>
             <li><b>Varreduras:</b> o TCP responde SYN-ACK em porta aberta e RST em porta fechada; o UDP só denuncia porta fechada com ICMP Port Unreachable. Política padrão de descarte e firewall stateful reduzem o que a varredura revela.</li>
             <li><b>Download:</b> o TCP entrega os bytes, mas não garante que são os bytes certos. Use HTTPS (TLS) e confira o hash do arquivo; sem TLS, um atacante no caminho pode alterar a transferência.</li>

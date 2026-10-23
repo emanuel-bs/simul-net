@@ -146,7 +146,7 @@ export const SIMS: SimMeta[] = [
     title: 'HTTPS e TLS',
     summary: 'Handshake TLS 1.3 e 1.2, validação de certificados X.509, retomada e 0-RTT, HSTS e a comparação entre HTTP e HTTPS, com nota de hardening.',
     topics: ['Handshake TLS 1.3 e 1.2', 'Certificados e validação', 'Retomada, 0-RTT e HSTS', 'Comparação HTTP x HTTPS'],
-    rfcs: ['RFC 8446', 'RFC 5246', 'RFC 6797', 'RFC 5280'],
+    rfcs: ['RFC 9846', 'RFC 6797', 'RFC 5280'],
     status: 'available',
     engine: 'nativo',
   },
@@ -196,7 +196,7 @@ export const SIMS: SimMeta[] = [
     title: 'WAF e firewall de aplicação',
     summary: 'Decisão pelo conteúdo, não pela porta: identificação de aplicação, regras e pontuação de anomalia do WAF, detecção versus bloqueio, inspeção de TLS e limitação de taxa.',
     topics: [],
-    rfcs: ['RFC 9110', 'RFC 8446', 'RFC 8404'],
+    rfcs: ['RFC 9110', 'RFC 9846', 'RFC 8404'],
     status: 'planned',
   },
   {
@@ -205,7 +205,7 @@ export const SIMS: SimMeta[] = [
     title: 'SMTP e segurança de e-mail',
     summary: 'Entrega de e-mail passo a passo: diálogo SMTP, STARTTLS e a autenticação de domínio com SPF, DKIM e DMARC.',
     topics: [],
-    rfcs: ['RFC 5321', 'RFC 3207', 'RFC 7208', 'RFC 6376', 'RFC 7489'],
+    rfcs: ['RFC 5321', 'RFC 3207', 'RFC 7208', 'RFC 6376', 'RFC 9989', 'RFC 9990', 'RFC 9991'],
     status: 'planned',
   },
   {

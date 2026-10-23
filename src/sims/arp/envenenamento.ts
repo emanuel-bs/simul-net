@@ -124,7 +124,7 @@ export function buildEnvenenamento(P: EnvParams): Trace {
   tr.mile(tr.t, 'Tráfego', https ? 'HTTPS' : 'HTTP');
   const kind = (req: boolean): Field[] =>
     https
-      ? fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Registro', 'Application Data (cifrado)', 'o conteúdo só é legível nas pontas', 'expert'], ['Visível a quem captura', 'tamanho e momento dos registros', 'metadados, não o conteúdo'])
+      ? fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Registro', 'Application Data (cifrado)', 'o conteúdo só é legível nas pontas', 'expert'], ['Visível a quem captura', 'tamanho e momento dos registros', 'metadados, não o conteúdo'])
       : req
         ? fl({ sec: 'HTTP (RFC 9110)' }, ['Requisição', 'GET /notas HTTP/1.1', 'em texto puro'], ['Cookie', 'sessao=abc123 (ilustrativo)', 'em texto puro', 'expert'])
         : fl({ sec: 'HTTP (RFC 9110)' }, ['Resposta', '200 OK', 'em texto puro'], ['Corpo', 'notas do aluno (ilustrativo)', 'em texto puro', 'expert']);

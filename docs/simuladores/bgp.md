@@ -75,7 +75,7 @@ Acompanhe os estados na aba Sessões e abra um OPEN na aba Mensagem BGP.
 **O que observar.**
 
 - Na aba Sessões: o estado de cada vizinho mudando a cada fase.
-- Na aba Mensagem BGP de um OPEN: AS, hold time de 180 s, router ID e capacidades.
+- Na aba Mensagem BGP de um OPEN: AS, hold time de 180 s (padrão Cisco IOS), router ID e capacidades.
 - Na Captura: o handshake TCP antes de qualquer mensagem BGP.
 
 **Mensagens envolvidas.**
@@ -96,7 +96,7 @@ Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anun
 
 **O que é.**
 
-Cada lado envia um **KEEPALIVE** a cada 60 s e espera receber alguma mensagem dentro do **hold time** (180 s). Quando o vizinho trava sem derrubar o enlace, só o **hold timer** percebe: ao expirar, o roteador envia **NOTIFICATION** (código 4, Hold Timer Expired), encerra a sessão e retira as rotas aprendidas por ela.
+Cada lado envia um **KEEPALIVE** a cada 60 s e espera receber alguma mensagem dentro do **hold time** (180 s), valores padrão do Cisco IOS; a [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271) sugere 30 s e 90 s. Quando o vizinho trava sem derrubar o enlace, só o **hold timer** percebe: ao expirar, o roteador envia **NOTIFICATION** (código 4, Hold Timer Expired), encerra a sessão e retira as rotas aprendidas por ela.
 
 **Neste cenário.**
 
@@ -571,7 +571,7 @@ Vizinhos BGP conversam por uma conexão **TCP na porta 179**, configurada manual
 - **OPEN (tipo 1):** versão, número do AS, hold time proposto e BGP Identifier (router ID), mais as capacidades negociadas.
 - **UPDATE (tipo 2):** anuncia prefixos (NLRI) com seus atributos ou retira prefixos (withdrawn routes).
 - **NOTIFICATION (tipo 3):** informa um erro e encerra a sessão, por exemplo Hold Timer Expired (código 4).
-- **KEEPALIVE (tipo 4):** só o cabeçalho de 19 bytes; mostra que o vizinho continua vivo. O padrão é um KEEPALIVE a cada 60 s e hold time de 180 s.
+- **KEEPALIVE (tipo 4):** só o cabeçalho de 19 bytes; mostra que o vizinho continua vivo. O Cisco IOS usa por padrão um KEEPALIVE a cada 60 s e hold time de 180 s; a [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271) (seção 10) sugere hold time de 90 s e KEEPALIVE a cada 30 s (um terço do hold time).
 
           
 

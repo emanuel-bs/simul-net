@@ -521,7 +521,7 @@
             <li><b>OPEN (tipo 1):</b> versão, número do AS, hold time proposto e BGP Identifier (router ID), mais as capacidades negociadas.</li>
             <li><b>UPDATE (tipo 2):</b> anuncia prefixos (NLRI) com seus atributos ou retira prefixos (withdrawn routes).</li>
             <li><b>NOTIFICATION (tipo 3):</b> informa um erro e encerra a sessão, por exemplo Hold Timer Expired (código 4).</li>
-            <li><b>KEEPALIVE (tipo 4):</b> só o cabeçalho de 19 bytes; mostra que o vizinho continua vivo. O padrão é um KEEPALIVE a cada 60 s e hold time de 180 s.</li>
+            <li><b>KEEPALIVE (tipo 4):</b> só o cabeçalho de 19 bytes; mostra que o vizinho continua vivo. O Cisco IOS usa por padrão um KEEPALIVE a cada 60 s e hold time de 180 s; a RFC 4271 (seção 10) sugere hold time de 90 s e KEEPALIVE a cada 30 s (um terço do hold time).</li>
           </ul>
           <p>Depois que a sessão sobe, os vizinhos trocam a tabela completa uma vez; dali em diante, só enviam <b>mudanças</b> (UPDATE incremental).</p>
           <h3>Atributos e processo de decisão</h3>
@@ -1337,11 +1337,11 @@
   const SCEN_DOC={
     open:{short:'TCP 179, OPEN e KEEPALIVE até Established.',
       concept:'Uma sessão BGP é uma conexão <b>TCP na porta 179</b> entre dois roteadores configurados um como vizinho do outro. A sessão passa por <b>Connect</b> (TCP subindo), <b>OpenSent</b> (OPEN enviado), <b>OpenConfirm</b> (OPEN recebido) e <b>Established</b> (OPEN confirmado por KEEPALIVE). Só então as rotas são trocadas.',
-      observe:['Na aba Sessões: o estado de cada vizinho mudando a cada fase.','Na aba Mensagem BGP de um OPEN: AS, hold time de 180 s, router ID e capacidades.','Na Captura: o handshake TCP antes de qualquer mensagem BGP.'],
+      observe:['Na aba Sessões: o estado de cada vizinho mudando a cada fase.','Na aba Mensagem BGP de um OPEN: AS, hold time de 180 s (padrão Cisco IOS), router ID e capacidades.','Na Captura: o handshake TCP antes de qualquer mensagem BGP.'],
       msgs:[['TCP SYN / SYN-ACK / ACK','abre a conexão na porta 179','um dos vizinhos'],['OPEN','AS, hold time, router ID, capacidades','os dois lados'],['KEEPALIVE','confirma o OPEN','os dois lados']],
       why:'O BGP não descobre vizinhos sozinho: toda sessão é configurada à mão, dos dois lados. Se os parâmetros do OPEN não batem (por exemplo, o AS esperado), a sessão termina com NOTIFICATION.'},
     hold:{short:'Sem KEEPALIVE por 180 s, a sessão cai com NOTIFICATION.',
-      concept:'Cada lado envia um <b>KEEPALIVE</b> a cada 60 s e espera receber alguma mensagem dentro do <b>hold time</b> (180 s). Quando o vizinho trava sem derrubar o enlace, só o <b>hold timer</b> percebe: ao expirar, o roteador envia <b>NOTIFICATION</b> (código 4, Hold Timer Expired), encerra a sessão e retira as rotas aprendidas por ela.',
+      concept:'Cada lado envia um <b>KEEPALIVE</b> a cada 60 s e espera receber alguma mensagem dentro do <b>hold time</b> (180 s), valores padrão do Cisco IOS; a RFC 4271 sugere 30 s e 90 s. Quando o vizinho trava sem derrubar o enlace, só o <b>hold timer</b> percebe: ao expirar, o roteador envia <b>NOTIFICATION</b> (código 4, Hold Timer Expired), encerra a sessão e retira as rotas aprendidas por ela.',
       observe:['No log: os 180 s sem KEEPALIVE e a NOTIFICATION.','Na aba Mensagem BGP da NOTIFICATION: código 4.','Compare com Derrubar enlace: a queda da interface derruba a sessão na hora (fast-external-fallover).'],
       msgs:[['KEEPALIVE','param de chegar','ISP B'],['NOTIFICATION','Hold Timer Expired (código 4)','Cliente'],['UPDATE (withdraw)','retira as rotas que dependiam da sessão','AS afetados']],
       why:'O hold time define quanto tempo o tráfego pode ir para um vizinho morto. Valores menores detectam falhas mais rápido; em produção, o BFD faz isso em milissegundos.'},

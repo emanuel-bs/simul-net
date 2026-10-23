@@ -108,7 +108,7 @@ export interface RunOptions {
   resp?: string;
 }
 
-// ---------- Handshake TLS completo (RFC 8446 e RFC 5246) ----------
+// ---------- Handshake TLS completo (RFC 9846 e RFC 5246) ----------
 export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, any> {
   const K = toolkit(tr);
   const C = CPROF[P.cProf];
@@ -400,7 +400,7 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
       tr.lg(tr.t, 'Downgrade detectado: o random do ServerHello termina em "DOWNGRD". O cliente aborta com illegal_parameter.', 'loss');
       plain('c', 's', 'Alert: illegal_parameter (fatal)', null, [['Alert level', '2 (fatal)', ''], ['Alert description', '47 (illegal_parameter)', 'o cliente detectou a tentativa de rebaixar a versão']], {
         ctype: 21, cname: 'Alert', bad: true, color: C0.bad, len: 70, info: 'Client: Alert (illegal_parameter)',
-        about: 'A proteção contra downgrade do TLS 1.3 (RFC 8446, seção 4.1.3): o cliente que suporta 1.3 recusa um ServerHello 1.2 com o sentinela.',
+        about: 'A proteção contra downgrade do TLS 1.3 (RFC 9846, seção 4.2.3): o cliente que suporta 1.3 recusa um ServerHello 1.2 com o sentinela.',
       });
       closeTcp('c');
       tr.mile(tr.t, 'Downgrade detectado', 'alerta illegal_parameter');

@@ -215,7 +215,7 @@ Cenário, Captura, Mensagem, Cache (modos: Resolução; DNSSEC; Envenenamento de
   - Por isso todo domínio deve ter ao menos dois servidores de nomes, em redes diferentes.
 - **A resposta não cabe no UDP (truncada)** (ajuste avançado). Valores: caixa de seleção. Padrão: não. Modos: Resolução.
   - O servidor marca TC=1 e o resolvedor usa TCP.
-  - Respostas maiores que o limite do datagrama (1232 bytes com EDNS) são truncadas.
+  - Respostas maiores que o limite do datagrama (1232 bytes com EDNS no simulador, valor proposto pelo DNS Flag Day 2020; a [RFC 9715](https://www.rfc-editor.org/rfc/rfc9715) recomenda 1400 como padrão) são truncadas.
   - O resolvedor abre uma conexão TCP na porta 53 e repete a consulta ([RFC 7766](https://www.rfc-editor.org/rfc/rfc7766)).
 
 ### 5.4 Zona example.com

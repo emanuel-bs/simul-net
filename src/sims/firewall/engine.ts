@@ -1,8 +1,8 @@
 // Motor do Firewall: filtragem sem estado (lista de regras), filtragem com estado (tabela de conexões), zonas
-// (interna, DMZ e externa) e filtro de origem (BCP 38). Função pura: dados os parâmetros, devolve o Trace.
+// (interna, DMZ e externa) e filtro de origem (anti-spoofing; BCP 38). Função pura: dados os parâmetros, devolve o Trace.
 // É um modelo didático, não um produto: não há NAT, fragmentação, IPv6, inspeção de aplicação nem desempenho, e os
-// tempos de expiração são ilustrativos (cada produto usa os seus). Os nomes dos estados seguem os do TCP (RFC 9293,
-// seção 3.3.2) e os que firewalls com estado costumam mostrar. Endereços de documentação (RFC 5737).
+// tempos de expiração são ilustrativos (cada produto usa os seus). Os nomes dos estados se inspiram nos do TCP (RFC 9293,
+// seção 3.3.2) e nos que firewalls com estado costumam mostrar, sem serem idênticos: o firewall os deduz dos pacotes que vê. Endereços de documentação (RFC 5737).
 import { COLORS as C0, newTrace, type Column, type Field, type StateDef, type Trace } from '../../sim-core';
 
 export type Zone = 'int' | 'dmz' | 'ext';
@@ -295,7 +295,7 @@ export function buildFirewall(P: FwParams, sub: string): Trace {
     sweep(t);
     if (sub === 'def' && P.fAntispoof) {
       const z = zoneOf(p.src);
-      if (p.inIf === 'ext' && z !== 'ext') return V(false, 'antispoof', 'a origem ' + p.src + ' é da zona ' + ZN[z] + ', mas o pacote chegou pela interface externa (filtro de origem, BCP 38)');
+      if (p.inIf === 'ext' && z !== 'ext') return V(false, 'antispoof', 'a origem ' + p.src + ' é da zona ' + ZN[z] + ', mas o pacote chegou pela interface externa (filtro de origem)');
       if (p.inIf === 'int' && z !== 'int') return V(false, 'antispoof', 'a origem ' + p.src + ' não é da zona interna, mas o pacote chegou pela interface interna (filtro de origem, BCP 38)');
     }
     if (set.stateful) {

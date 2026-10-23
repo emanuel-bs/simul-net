@@ -166,7 +166,7 @@ Como o TLS abre a conexão: versões, retomada e 0-RTT.
 
 Navegador e servidor modernos. O ClientHello já leva a metade do ECDHE (key_share), e o servidor responde com o ServerHello e, **cifrados**, o certificado, a assinatura e o Finished. Depois de 1 RTT, o cliente envia a requisição HTTP.
 
-**Conceito.** O **TLS 1.3** ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) reduziu o handshake a **1 RTT**: o ClientHello já leva a metade pública do ECDHE (**key_share**). O ServerHello devolve a do servidor e, a partir daí, as duas pontas derivam as chaves de handshake com HKDF. O certificado, a assinatura (**CertificateVerify**) e o **Finished** já vão cifrados.
+**Conceito.** O **TLS 1.3** ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846)) reduziu o handshake a **1 RTT**: o ClientHello já leva a metade pública do ECDHE (**key_share**). O ServerHello devolve a do servidor e, a partir daí, as duas pontas derivam as chaves de handshake com HKDF. O certificado, a assinatura (**CertificateVerify**) e o **Finished** já vão cifrados.
 
 **O que observar**
 
@@ -221,7 +221,7 @@ sequenceDiagram
 
 Os dois lados só falam TLS 1.2. O handshake leva 2 RTT: ClientHello e ServerHello, depois a troca de chaves do cliente e o Finished. O **certificado trafega em claro**, visível a quem observa a rede.
 
-**Conceito.** No **TLS 1.2** ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246)), o servidor responde com ServerHello, **Certificate** (em claro), ServerKeyExchange e ServerHelloDone. O cliente só então envia o ClientKeyExchange e o Finished: **2 RTT** até a primeira requisição. Com ECDHE há sigilo futuro; com troca RSA, não.
+**Conceito.** No **TLS 1.2** ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), atualizada pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), apêndice D), o servidor responde com ServerHello, **Certificate** (em claro), ServerKeyExchange e ServerHelloDone. O cliente só então envia o ClientKeyExchange e o Finished: **2 RTT** até a primeira requisição. Com ECDHE há sigilo futuro; com troca RSA, não.
 
 **O que observar**
 
@@ -1648,7 +1648,7 @@ O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. 
 
 ### TLS 1.3 contra TLS 1.2
 
-| Aspecto | TLS 1.3 ([RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)) | TLS 1.2 ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246)) |
+| Aspecto | TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846)) | TLS 1.2 ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), atualizada pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), apêndice D) |
 | --- | --- | --- |
 | Handshake | 1 RTT (0-RTT na retomada) | 2 RTT (1 RTT na retomada) |
 | Certificado | cifrado | em claro |

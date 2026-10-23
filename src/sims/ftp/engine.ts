@@ -113,17 +113,17 @@ function synLost(tr: Trace, from: string, to: string, pFrom: number, pTo: number
 function tlsHello(tr: Trace, what: string) {
   const a = tr.add('c', 's', {
     label: 'Client Hello', proto: 'TLS', color: C0.plain, len: 310, info: 'Client Hello', phaseName: what,
-    fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Tipo', 'Client Hello (1)', ''], ['Versões', 'TLS 1.3 e 1.2', ''], ['SNI', HOST, 'o nome do servidor vai em claro', 'expert'], ['Suites', 'TLS_AES_256_GCM_SHA384, ...', '']),
+    fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Tipo', 'Client Hello (1)', ''], ['Versões', 'TLS 1.3 e 1.2', ''], ['SNI', HOST, 'o nome do servidor vai em claro', 'expert'], ['Suites', 'TLS_AES_256_GCM_SHA384, ...', '']),
     about: 'O cliente propõe versões e cifras. O nome do servidor (SNI) é visível a quem captura.', dump: { text: 'TLS  Client Hello   SNI=' + HOST + '   (em claro)', hot: false },
   });
   const b = tr.add('s', 'c', {
     label: 'Server Hello', proto: 'TLS', color: C0.plain, len: 130, info: 'Server Hello', phaseName: what,
-    fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Tipo', 'Server Hello (2)', ''], ['Versão', 'TLS 1.3', ''], ['Suite', 'TLS_AES_256_GCM_SHA384', '']),
+    fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Tipo', 'Server Hello (2)', ''], ['Versão', 'TLS 1.3', ''], ['Suite', 'TLS_AES_256_GCM_SHA384', '']),
     about: 'O servidor escolhe a versão e a cifra e envia sua parte da troca de chaves. Daqui em diante tudo vai cifrado.', dump: { text: 'TLS  Server Hello   TLS 1.3, TLS_AES_256_GCM_SHA384', hot: false },
   });
   const c = tr.add('s', 'c', {
     label: 'Certificate, Finished', proto: 'TLS', color: C0.enc, enc: true, len: 1180, info: 'Encrypted Extensions, Certificate, Finished', phaseName: what, par: true, at: b.tSend + 0.2,
-    fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Mensagens', 'EncryptedExtensions, Certificate, CertificateVerify, Finished', 'o certificado também vai cifrado no TLS 1.3'], ['Certificado', HOST + ' (emitido por uma CA pública)', '']),
+    fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Mensagens', 'EncryptedExtensions, Certificate, CertificateVerify, Finished', 'o certificado também vai cifrado no TLS 1.3'], ['Certificado', HOST + ' (emitido por uma CA pública)', '']),
     about: 'O servidor prova quem é: certificado, assinatura e Finished, já cifrados.', dump: { text: 'TLS  17 03 03  ' + sp(hex('cert' + tr.msgs.length, 10)) + ' ...  (1180 B, cifrado)', hot: false },
   });
   return { hello: a, flight: b, cert: c };
@@ -132,7 +132,7 @@ function tlsHello(tr: Trace, what: string) {
 function tlsFinish(tr: Trace, what: string): Message {
   return tr.add('c', 's', {
     label: 'Finished', proto: 'TLS', color: C0.enc, enc: true, len: 80, info: 'Finished', phaseName: what,
-    fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Mensagem', 'Finished', 'confirma a troca de chaves']), about: 'O cliente confirma. A partir daqui o canal está protegido nos dois sentidos.',
+    fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Mensagem', 'Finished', 'confirma a troca de chaves']), about: 'O cliente confirma. A partir daqui o canal está protegido nos dois sentidos.',
     dump: { text: 'TLS  17 03 03  ' + sp(hex('fin' + tr.msgs.length, 10)) + ' ...  (80 B, cifrado)', hot: false },
   });
 }
@@ -194,7 +194,7 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
   const rejectCert = () => {
     tr.add('c', 's', {
       label: 'Alert: unknown_ca', proto: 'TLS', color: C0.bad, enc: true, len: 60, info: 'Alert: unknown_ca', phaseName: 'TLS',
-      fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Alerta', 'unknown_ca (48)', 'a CA do certificado não é conhecida']),
+      fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Alerta', 'unknown_ca (48)', 'a CA do certificado não é conhecida']),
       about: 'O cliente não confia no certificado e encerra a conexão antes de enviar qualquer senha.', tags: ['certificado rejeitado'], dump: { text: 'TLS  Alert  unknown_ca', hot: false },
     });
     st(tr.t, 'ctrl', 'TLS recusado', 'bad');
@@ -374,17 +374,17 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
   if (dataEnc) {
     tr.add('c', 's', {
       label: 'Client Hello (retoma a sessão)', proto: 'TLS', color: C0.plain, len: 260, info: 'Client Hello com ticket de sessão', phaseName: 'TLS dos dados',
-      fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Tipo', 'Client Hello (1)', 'reaproveita a sessão do canal de controle'], ['pre_shared_key', 'ticket da sessão do controle', 'muitos servidores exigem o reuso da sessão']),
+      fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Tipo', 'Client Hello (1)', 'reaproveita a sessão do canal de controle'], ['pre_shared_key', 'ticket da sessão do controle', 'muitos servidores exigem o reuso da sessão']),
       about: 'O canal de dados também é protegido por TLS (PROT P). O cliente reaproveita a sessão do controle, o que prova que as duas conexões são da mesma pessoa.',
       dump: { text: 'TLS  Client Hello (retomada)   SNI=' + HOST, hot: false },
     });
     tr.add('s', 'c', {
       label: 'Server Hello, Finished', proto: 'TLS', color: C0.enc, enc: true, len: 200, info: 'Server Hello, Finished', phaseName: 'TLS dos dados',
-      fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Mensagens', 'Server Hello, Finished', 'sessão retomada']), about: 'O servidor aceita a retomada.',
+      fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Mensagens', 'Server Hello, Finished', 'sessão retomada']), about: 'O servidor aceita a retomada.',
       dump: { text: 'TLS  17 03 03  ' + sp(hex('dh' + tr.msgs.length, 10)) + ' ...  (200 B, cifrado)', hot: false },
     });
     tr.add('c', 's', {
-      label: 'Finished', proto: 'TLS', color: C0.enc, enc: true, len: 80, info: 'Finished', phaseName: 'TLS dos dados', fields: fl({ sec: 'TLS 1.3 (RFC 8446)' }, ['Mensagem', 'Finished', '']), about: 'Canal de dados protegido.',
+      label: 'Finished', proto: 'TLS', color: C0.enc, enc: true, len: 80, info: 'Finished', phaseName: 'TLS dos dados', fields: fl({ sec: 'TLS 1.3 (RFC 9846)' }, ['Mensagem', 'Finished', '']), about: 'Canal de dados protegido.',
       dump: { text: 'TLS  17 03 03  ' + sp(hex('df' + tr.msgs.length, 10)) + ' ...  (80 B, cifrado)', hot: false },
     });
     st(tr.t, 'data', 'TLS (cifrado)', 'est');

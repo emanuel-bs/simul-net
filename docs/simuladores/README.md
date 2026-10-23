@@ -48,13 +48,13 @@ SSH, HTTPS e transferência de arquivos por dentro: negociação, troca de chave
 | Simulador | Motor | Situação | RFCs e padrões |
 | --- | --- | --- | --- |
 | [SSH](ssh.md) | nativo | disponível | [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253), [RFC 4252](https://www.rfc-editor.org/rfc/rfc4252), [RFC 4254](https://www.rfc-editor.org/rfc/rfc4254), [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709) |
-| [HTTPS e TLS](https.md) | nativo | disponível | [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446), [RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797), [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) |
+| [HTTPS e TLS](https.md) | nativo | disponível | [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797), [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) |
 | [FTP, FTPS e SFTP](ftp.md) | nativo | disponível | [RFC 959](https://www.rfc-editor.org/rfc/rfc959), [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217), [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428), [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) |
 | [DNS e DNSSEC](dns.md) | nativo | disponível | [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035), [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858), [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484) |
 | [Firewall: filtragem e estado](firewall.md) | nativo | disponível | [RFC 2979](https://www.rfc-editor.org/rfc/rfc2979), [RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), [BCP 38](https://www.rfc-editor.org/info/bcp38) |
 | VPN (IPsec e WireGuard) | - | planejado | [RFC 7296](https://www.rfc-editor.org/rfc/rfc7296), [RFC 4303](https://www.rfc-editor.org/rfc/rfc4303) |
-| WAF e firewall de aplicação | - | planejado | [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446), [RFC 8404](https://www.rfc-editor.org/rfc/rfc8404) |
-| SMTP e segurança de e-mail | - | planejado | [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321), [RFC 3207](https://www.rfc-editor.org/rfc/rfc3207), [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208), [RFC 6376](https://www.rfc-editor.org/rfc/rfc6376), [RFC 7489](https://www.rfc-editor.org/rfc/rfc7489) |
+| WAF e firewall de aplicação | - | planejado | [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), [RFC 8404](https://www.rfc-editor.org/rfc/rfc8404) |
+| SMTP e segurança de e-mail | - | planejado | [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321), [RFC 3207](https://www.rfc-editor.org/rfc/rfc3207), [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208), [RFC 6376](https://www.rfc-editor.org/rfc/rfc6376), [RFC 9989](https://www.rfc-editor.org/rfc/rfc9989), [RFC 9990](https://www.rfc-editor.org/rfc/rfc9990), [RFC 9991](https://www.rfc-editor.org/rfc/rfc9991) |
 | Wi-Fi: segurança (WPA2 e WPA3) | - | planejado | IEEE 802.11i, IEEE 802.11w, IEEE 802.1X, [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748) |
 | 802.1X e RADIUS (EAP) | - | planejado | [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748), [RFC 2865](https://www.rfc-editor.org/rfc/rfc2865), IEEE 802.1X |
 

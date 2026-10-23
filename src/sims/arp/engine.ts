@@ -4,7 +4,7 @@
 //   - destino fora da sub-rede: o host pergunta pelo IP do gateway;
 //   - sem gateway (máscara errada): o host pergunta pelo IP remoto e só o proxy ARP do roteador responde.
 // Os tempos de retransmissão seguem os padrões do Linux (3 tentativas, 1 s entre elas); outros sistemas variam.
-// Não há tráfego real: endereços físicos e IPs são valores de documentação (RFC 5737 e RFC 7042).
+// Não há tráfego real: endereços físicos e IPs são valores de documentação (RFC 5737 e RFC 9542).
 import { COLORS as C0, newTrace, type Column, type Field, type Message, type StateDef, type Trace } from '../../sim-core';
 
 export interface ArpParams {

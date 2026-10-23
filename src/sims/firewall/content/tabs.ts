@@ -25,7 +25,7 @@ const regras: TabDef = {
       h += '<tr><td>Fora de estado (não pertence a nenhuma conexão)</td><td class="meaning">0</td><td class="meaning">' + count((x) => x.via === 'invalido') + '</td></tr>';
       h += '<tr><td>Tabela cheia</td><td class="meaning">0</td><td class="meaning">' + count((x) => x.via === 'tabela') + '</td></tr>';
       h += '<tr><td>Limite de taxa</td><td class="meaning">0</td><td class="meaning">' + count((x) => x.via === 'taxa') + '</td></tr>';
-      h += '<tr><td>Filtro de origem (BCP 38)</td><td class="meaning">0</td><td class="meaning">' + count((x) => x.via === 'antispoof') + '</td></tr>';
+      h += '<tr><td>Filtro de origem (anti-spoofing)</td><td class="meaning">0</td><td class="meaning">' + count((x) => x.via === 'antispoof') + '</td></tr>';
       h += '</tbody></table>';
     }
     h += '<p class="muted">A notação das regras é genérica: não segue a sintaxe de nenhum produto. Uma regra com "origem interna" casa com o endereço de origem do pacote, e uma com "pela interface" casa com o lado por onde ele chegou.</p>';

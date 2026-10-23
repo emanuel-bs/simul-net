@@ -118,7 +118,7 @@ export function dnsFields(m: DnsMsg, e: Ends): Field[] {
     ['RCODE', m.rcode ?? 0 ? (m.rcode ?? 0) + ' (' + rcodeName(m.rcode ?? 0) + ')' : '0 (NOERROR)', ''],
     ['Contagens', 'QD=1 AN=' + (m.an?.length || 0) + ' NS=' + (m.ns?.length || 0) + ' AR=' + (m.ar?.length || 0), 'pergunta, resposta, autoridade e adicional'],
   );
-  if (m.edns) f.push({ sec: 'EDNS(0) (RFC 6891)' }, ['Tamanho UDP', '1232', 'maior datagrama que o remetente aceita'], ['DO', m.dok ? '1' : '0', m.dok ? 'DNSSEC OK: quer RRSIG, DNSKEY, DS e NSEC na resposta' : 'não pede dados DNSSEC']);
+  if (m.edns) f.push({ sec: 'EDNS(0) (RFC 6891)' }, ['Tamanho UDP', '1232', 'maior datagrama que o remetente aceita (valor do DNS Flag Day 2020; RFC 9715 recomenda 1400)'], ['DO', m.dok ? '1' : '0', m.dok ? 'DNSSEC OK: quer RRSIG, DNSKEY, DS e NSEC na resposta' : 'não pede dados DNSSEC']);
   f.push({ sec: 'Pergunta' }, [m.q[0], 'IN ' + m.q[1], 'nome e tipo consultados']);
   const sect = (title: string, rrs?: RR[]) => {
     if (!rrs || !rrs.length) return;
@@ -1110,7 +1110,7 @@ export function buildPriv(P: DnsParams): Trace {
     tr.ev(sy.tSend + WAN / 2, 'ob', 'Vê: conexão para ' + IPS.rs + ':' + port, '');
     seg('rs', 'cl', 'SYN+ACK', 'SYN ACK', 'O resolvedor aceita a conexão.', { dur: WAN });
     const tls = (from: string, to: string, label: string, about: string, enc: boolean): Message =>
-      tr.add(from, to, { label, info: label, about, proto: 'TLS 1.3', color: enc ? C0.enc : C0.plain, len: 220, enc, dur: WAN, tags: enc ? ['cifrado'] : [], phaseName: 'TLS', fields: [{ sec: 'TLS 1.3 (RFC 8446)' }, ['Mensagem', label, ''], ['Extensão SNI', enc ? '(cifrada)' : 'dns.example.net', enc ? '' : 'nome do servidor, ainda em claro']] });
+      tr.add(from, to, { label, info: label, about, proto: 'TLS 1.3', color: enc ? C0.enc : C0.plain, len: 220, enc, dur: WAN, tags: enc ? ['cifrado'] : [], phaseName: 'TLS', fields: [{ sec: 'TLS 1.3 (RFC 9846)' }, ['Mensagem', label, ''], ['Extensão SNI', enc ? '(cifrada)' : 'dns.example.net', enc ? '' : 'nome do servidor, ainda em claro']] });
     const ch = tls('cl', 'rs', 'ClientHello', 'O cliente propõe o TLS 1.3 e informa o nome do servidor (SNI). É a única informação em claro que revela <b>com quem</b> se fala, não <b>o que</b> se pergunta.', false);
     tr.ev(ch.tSend + WAN / 2, 'ob', 'Vê: SNI dns.example.net', '');
     tr.st(ch.tSend + WAN / 2, 'ob', 'o resolvedor usado, não os nomes', 'est');

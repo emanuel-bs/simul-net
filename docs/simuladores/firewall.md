@@ -287,9 +287,9 @@ Cenário, Captura, Mensagem, Regras, Conexões (modos: Filtro com estado; Perím
 
 ### 5.6 Defesas
 
-- **Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38))**. Valores: caixa de seleção. Padrão: não. Modos: Forja, varredura e limite de taxa.
+- **Filtro de origem (anti-spoofing)**. Valores: caixa de seleção. Padrão: não. Modos: Forja, varredura e limite de taxa.
   - Confere se o endereço de origem combina com a interface de entrada.
-  - Pelo [BCP 38](https://www.rfc-editor.org/info/bcp38), uma rede não deve aceitar de fora pacotes com origem dos seus próprios endereços, nem deixar sair pacotes com origem que não lhe pertence.
+  - De fora para dentro, um pacote com origem da própria rede interna só pode ser forjado e deve ser negado. De dentro para fora, o [BCP 38](https://www.rfc-editor.org/info/bcp38) recomenda que quem origina o tráfego só deixe sair pacotes com origem dos prefixos que lhe pertencem.
   - Ligado, os dois casos são negados antes de qualquer regra.
 - **Resposta ao que é negado (varredura)**. Valores: Descartar em silêncio; Rejeitar com RST. Padrão: Descartar em silêncio. Modos: Forja, varredura e limite de taxa.
   - Descartar ou rejeitar o pacote negado.
@@ -655,7 +655,7 @@ sequenceDiagram
 
 A mesma conexão, acompanhada até o fim: **SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT e TIME_WAIT**. Depois do encerramento, a entrada some quando o prazo vence.
 
-**Conceito.** O firewall acompanha o estado do TCP: SYN_SENT (viu o SYN), SYN_RECV (viu o SYN+ACK), ESTABLISHED (viu o ACK), FIN_WAIT (viu o primeiro FIN) e TIME_WAIT (viu os dois). Depois de um tempo, a entrada é removida. Os nomes seguem os do TCP ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), seção 3.3.2); os prazos do simulador são ilustrativos.
+**Conceito.** O firewall acompanha o estado do TCP: SYN_SENT (viu o SYN), SYN_RECV (viu o SYN+ACK), ESTABLISHED (viu o ACK), FIN_WAIT (viu o primeiro FIN) e TIME_WAIT (viu os dois). Depois de um tempo, a entrada é removida. Os nomes se inspiram nos estados do TCP ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), seção 3.3.2), sem serem idênticos, porque o firewall os deduz dos pacotes que vê; os prazos do simulador são ilustrativos.
 
 **O que observar**
 
@@ -1218,15 +1218,15 @@ sequenceDiagram
 
 ### 6.4 Modo: Forja, varredura e limite de taxa
 
-> **Grupo:** Origem forjada ([BCP 38](https://www.rfc-editor.org/info/bcp38))
+> **Grupo:** Origem forjada
 
-O endereço de origem de um pacote IP não é autenticado. O filtro de origem confere se ele é plausível para a interface por onde o pacote passa ([BCP 38](https://www.rfc-editor.org/info/bcp38)).
+O endereço de origem de um pacote IP não é autenticado. O filtro de origem confere se ele é plausível para a interface por onde o pacote passa. Na saída, é a recomendação do [BCP 38](https://www.rfc-editor.org/info/bcp38).
 
 #### 6.4.1 Origem interna vinda de fora, sem filtro
 
 *Sem filtro de origem, uma origem interna vinda de fora é aceita.*
 
-**Configuração aplicada:** O que acontece = forja-in; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = forja-in; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 Um pacote chega pela interface **externa** com origem de um endereço da rede **interna**. Sem filtro de origem, a regra que permite o tráfego interno para a DMZ o aceita.
 
@@ -1270,11 +1270,11 @@ sequenceDiagram
 
 *O filtro de origem nega antes de qualquer regra.*
 
-**Configuração aplicada:** O que acontece = forja-in; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = sim; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = forja-in; Filtro de origem (anti-spoofing) = sim; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 Com o filtro de origem ligado, o pacote é negado **antes das regras**, porque uma origem da zona interna não pode chegar pela interface externa.
 
-**Conceito.** Com o filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) ligado, o firewall compara o endereço de origem com a interface de chegada. Uma origem da zona interna chegando pela externa só pode ser forjada, e o pacote é negado antes das regras.
+**Conceito.** Com o filtro de origem ligado, o firewall compara o endereço de origem com a interface de chegada. Uma origem da zona interna chegando pela externa só pode ser forjada, e o pacote é negado antes das regras.
 
 **O que observar**
 
@@ -1305,7 +1305,7 @@ sequenceDiagram
 
 *Sem filtro, a regra de saída deixa passar origem alheia.*
 
-**Configuração aplicada:** O que acontece = forja-out; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = forja-out; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 Um host interno envia um pacote cuja origem **não pertence à rede interna**. Sem filtro, a regra de saída só olha a interface e o destino, e o pacote sai.
 
@@ -1340,7 +1340,7 @@ sequenceDiagram
 
 *O filtro de saída é a medida central do [BCP 38](https://www.rfc-editor.org/info/bcp38).*
 
-**Configuração aplicada:** O que acontece = forja-out; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = sim; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = forja-out; Filtro de origem (anti-spoofing) = sim; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 Com o filtro de origem ligado, o pacote não sai: a origem não pertence à zona interna. É a medida central do [BCP 38](https://www.rfc-editor.org/info/bcp38): **cada rede cuida do que sai dela**.
 
@@ -1378,7 +1378,7 @@ Quem sonda portas aprende com as respostas, ou com o silêncio. O firewall escol
 
 *O descarte silencioso não diz o que há na porta.*
 
-**Configuração aplicada:** O que acontece = varredura; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = varredura; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 Um host da Internet sonda cinco portas do servidor web. As portas 80 e 443 respondem; as demais são **descartadas em silêncio**, e quem sonda só conclui que estão filtradas.
 
@@ -1424,7 +1424,7 @@ sequenceDiagram
 
 *A rejeição por RST responde rápido e informa mais.*
 
-**Configuração aplicada:** O que acontece = varredura; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = rejeitar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = varredura; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = rejeitar; Limite de 3 novas conexões por segundo por origem = não
 
 Mesma sondagem, mas o firewall **rejeita** as portas negadas com RST. A resposta é imediata e as portas parecem fechadas, o que informa mais a quem sonda.
 
@@ -1477,7 +1477,7 @@ Um limite de taxa por origem reduz o efeito de uma rajada de pedidos, sem impedi
 
 *Sem limite, uma rajada de pedidos chega inteira ao servidor.*
 
-**Configuração aplicada:** O que acontece = rajada; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = rajada; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 Seis pedidos de conexão da mesma origem em poucos milissegundos. Sem limite, **todos passam** e chegam ao servidor, que deixa cada um semiaberto.
 
@@ -1535,7 +1535,7 @@ sequenceDiagram
 
 *O limite por origem corta o excedente da rajada.*
 
-**Configuração aplicada:** O que acontece = rajada; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = sim
+**Configuração aplicada:** O que acontece = rajada; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = sim
 
 A regra aceita até **3 novas conexões por segundo** por origem. Os três primeiros pedidos passam; os demais são negados pelo limite.
 
@@ -1589,7 +1589,7 @@ Um firewall de camadas 3 e 4 decide por cabeçalhos e estado. O conteúdo de uma
 
 *O firewall decide por cabeçalho e estado, não por conteúdo.*
 
-**Configuração aplicada:** O que acontece = cego; Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38)) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
+**Configuração aplicada:** O que acontece = cego; Filtro de origem (anti-spoofing) = não; Resposta ao que é negado (varredura) = descartar; Limite de 3 novas conexões por segundo por origem = não
 
 A regra permite a porta 443 do servidor web. A conexão passa, e o firewall **não vê o conteúdo**: decide por endereços, protocolo, portas e estado. O que for enviado dentro da sessão cifrada não é examinado.
 
@@ -1635,7 +1635,7 @@ sequenceDiagram
 
 ### O que um firewall faz
 
-Um **firewall** é um ponto de controle entre redes que decide, segundo uma política, quais pacotes passam. A **[RFC 2979](https://www.rfc-editor.org/rfc/rfc2979)** descreve o comportamento esperado de firewalls na Internet, e o **NIST SP 800-41 Rev. 1** traz orientações sobre tipos de firewall e sobre a escrita da política. Este simulador trata do firewall de rede que decide por **camadas 3 e 4** (endereços, protocolo, portas e estado). O firewall que examina o conteúdo da aplicação é assunto de outro simulador.
+Um **firewall** é um ponto de controle entre redes que decide, segundo uma política, quais pacotes passam. A **[RFC 2979](https://www.rfc-editor.org/rfc/rfc2979)** descreve o comportamento esperado de firewalls na Internet, e o **NIST SP 800-41 Rev. 1** (2009) traz orientações sobre tipos de firewall e sobre a escrita da política. Este simulador trata do firewall de rede que decide por **camadas 3 e 4** (endereços, protocolo, portas e estado). O firewall que examina o conteúdo da aplicação é assunto de outro simulador.
 
 ### Filtro sem estado (lista de regras)
 
@@ -1657,7 +1657,7 @@ O firewall com estado registra cada conexão permitida numa **tabela**. Só o pr
 | TIME_WAIT | viu os dois FIN; a entrada sai ao fim do prazo |
 | NEW e REPLIED | UDP e ICMP, sem e com resposta |
 
-Os nomes seguem os estados do TCP ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), seção 3.3.2) e os que firewalls com estado costumam exibir. Os **prazos de expiração** do simulador (60 s em SYN_SENT e SYN_RECV, 30 s em FIN_WAIT e em UDP, 10 s em ICMP, 5 s em TIME_WAIT) são **ilustrativos**: cada produto usa os seus e permite ajustá-los.
+Os nomes se inspiram nos estados do TCP ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), seção 3.3.2, que descreve os estados das pontas) e nos que firewalls com estado costumam exibir, sem serem idênticos: o firewall deduz o estado dos pacotes que observa. Os **prazos de expiração** do simulador (60 s em SYN_SENT e SYN_RECV, 30 s em FIN_WAIT e em UDP, 10 s em ICMP, 5 s em TIME_WAIT) são **ilustrativos**: cada produto usa os seus e permite ajustá-los.
 
 UDP e ICMP não têm conexão. O firewall associa a resposta ao pedido por endereços e portas invertidos (UDP) ou pelo identificador (ICMP Echo), durante um tempo limitado.
 
@@ -1668,9 +1668,9 @@ UDP e ICMP não têm conexão. O firewall associa a resposta ao pedido por ender
 - A política típica: a Internet alcança só o serviço público da DMZ; a rede interna alcança a DMZ para administração; a DMZ **não inicia** conexões para a rede interna e, em geral, nem para a Internet.
 - O **filtro de saída** (egresso) é tão importante quanto o de entrada: limita o que um servidor comprometido consegue baixar ou enviar para fora.
 
-### Filtro de origem ([BCP 38](https://www.rfc-editor.org/info/bcp38))
+### Filtro de origem (anti-spoofing)
 
-O endereço de origem de um pacote IP não é autenticado. O **[BCP 38](https://www.rfc-editor.org/info/bcp38) ([RFC 2827](https://www.rfc-editor.org/rfc/rfc2827))** recomenda o **filtro de ingresso**: a rede de borda descarta pacotes cuja origem não é plausível para a interface por onde chegam. Na prática, duas verificações: de fora para dentro, negar origem que pertence à rede interna; de dentro para fora, negar origem que não pertence a ela. O segundo caso protege terceiros, e por isso depende de cada operador. Firewalls que classificam o tráfego pela **interface**, e não pelo endereço, já evitam parte do problema.
+O endereço de origem de um pacote IP não é autenticado. O **[BCP 38](https://www.rfc-editor.org/info/bcp38) ([RFC 2827](https://www.rfc-editor.org/rfc/rfc2827))** recomenda o **filtro de ingresso**: o provedor aceita de cada cliente só pacotes com origem nos prefixos que o cliente de fato usa, e a RFC pede também que administradores de redes corporativas filtrem para que suas redes não sejam origem de tráfego forjado. Este simulador mostra as duas direções: **de dentro para fora**, negar origem que não pertence à rede interna (o caso do [BCP 38](https://www.rfc-editor.org/info/bcp38), que protege terceiros e por isso depende de cada operador); e **de fora para dentro**, negar origem que pertence à rede interna, que só pode ser forjada (prática comum de borda, que não é o foco do [BCP 38](https://www.rfc-editor.org/info/bcp38)). Firewalls que classificam o tráfego pela **interface**, e não pelo endereço, já evitam parte do problema.
 
 ### Descartar ou rejeitar
 

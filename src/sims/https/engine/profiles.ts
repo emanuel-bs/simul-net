@@ -1,5 +1,5 @@
 // Motor HTTPS (TLS 1.3, TLS 1.2, certificados X.509 e HSTS).
-// RFC 8446 (TLS 1.3), RFC 5246 (TLS 1.2), RFC 6066 (SNI e OCSP stapling), RFC 6797 (HSTS), RFC 5280 (X.509).
+// RFC 9846 (TLS 1.3), RFC 5246 (TLS 1.2, atualizada pela RFC 9846, apêndice D), RFC 6066 (SNI e OCSP stapling), RFC 6797 (HSTS), RFC 5280 (X.509).
 // Não há criptografia real: valores de chaves, hashes e assinaturas são determinísticos e ilustrativos.
 
 export type TlsVersion = 'TLS 1.3' | 'TLS 1.2' | 'TLS 1.1' | 'TLS 1.0';
