@@ -16,6 +16,7 @@ import { dhcpProtocol } from '../../src/sims/dhcp/protocol';
 import { httpProtocol } from '../../src/sims/http-versoes/protocol';
 import { natProtocol } from '../../src/sims/nat/protocol';
 import { dnsProtocol } from '../../src/sims/dns/protocol';
+import { firewallProtocol } from '../../src/sims/firewall/protocol';
 import { icmpProtocol } from '../../src/sims/icmp/protocol';
 import { httpsProtocol } from '../../src/sims/https/protocol';
 import { sshProtocol } from '../../src/sims/ssh/protocol';
@@ -66,6 +67,7 @@ const SIMS: [string, ProtocolDef][] = [
   ['http-versoes', httpProtocol],
   ['nat', natProtocol],
   ['dns', dnsProtocol],
+  ['firewall', firewallProtocol],
 ];
 
 describe.each(SIMS)('impressões digitais: %s', (name, def) => {

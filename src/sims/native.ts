@@ -14,4 +14,5 @@ export const NATIVE: Record<string, () => Promise<{ default: ProtocolDef }>> = {
   'http-versoes': () => import('./http-versoes/protocol'),
   'nat': () => import('./nat/protocol'),
   'dns': () => import('./dns/protocol'),
+  'firewall': () => import('./firewall/protocol'),
 };
