@@ -477,8 +477,12 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
       cfin.enc = true;
       R.keys = { kind: '1.2', kex: rsaKt ? 'RSA' : 'ECDHE', pms: hex('pms' + P.cProf, 32), ms: hex('ms' + P.cProf + P.sProf, 48), tMs: cfin.tSend, block: hex('kb' + P.cProf + P.sProf, 40) };
       tr.t = cfin.tArr + 0.4;
-      const sfin = enc('s', 'c', 'New Session Ticket, Change Cipher Spec, Finished', [['NewSessionTicket', 'ticket de sessão', 'permite retomar a sessão'], ['Finished', 'verify_data', 'confirma o handshake do lado do servidor']], {
-        len: 360, info: 'Server: New Session Ticket, Change Cipher Spec, Encrypted Handshake Message', about: 'O servidor também liga a cifragem e confirma.',
+      // RFC 5077, seção 3.3: o NewSessionTicket vem antes do ChangeCipherSpec, portanto ainda em claro.
+      plain('s', 'c', 'New Session Ticket', 4, [['ticket de sessão', 'blob opaco', 'permite retomar a sessão (RFC 5077)']], {
+        len: 260, info: 'Server: New Session Ticket', about: 'O ticket é enviado antes do Change Cipher Spec: ainda em claro (o conteúdo é cifrado pelo servidor com a chave dele).',
+      });
+      const sfin = enc('s', 'c', 'Change Cipher Spec, Finished', [['Change Cipher Spec', '1', 'a partir daqui o servidor cifra'], ['Finished', 'verify_data', 'confirma o handshake do lado do servidor']], {
+        len: 100, info: 'Server: Change Cipher Spec, Encrypted Handshake Message', about: 'O servidor liga a cifragem e confirma.',
       });
       tr.t = sfin.tArr + 0.4;
     } else {

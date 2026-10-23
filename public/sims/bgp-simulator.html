@@ -1336,7 +1336,7 @@
   };
   const SCEN_DOC={
     open:{short:'TCP 179, OPEN e KEEPALIVE até Established.',
-      concept:'Uma sessão BGP é uma conexão <b>TCP na porta 179</b> entre dois roteadores configurados um como vizinho do outro. A sessão passa por <b>Connect</b> (TCP subindo), <b>OpenSent</b> (OPEN enviado), <b>OpenConfirm</b> (OPEN recebido) e <b>Established</b> (OPEN confirmado por KEEPALIVE). Só então as rotas são trocadas.',
+      concept:'Uma sessão BGP é uma conexão <b>TCP na porta 179</b> entre dois roteadores configurados um como vizinho do outro. A sessão parte de <b>Idle</b>, passa por <b>Connect</b> (TCP subindo; se falhar, vai a <b>Active</b> e tenta de novo), <b>OpenSent</b> (OPEN enviado), <b>OpenConfirm</b> (OPEN recebido) e <b>Established</b> (OPEN confirmado por KEEPALIVE). Só então as rotas são trocadas.',
       observe:['Na aba Sessões: o estado de cada vizinho mudando a cada fase.','Na aba Mensagem BGP de um OPEN: AS, hold time de 180 s (padrão Cisco IOS), router ID e capacidades.','Na Captura: o handshake TCP antes de qualquer mensagem BGP.'],
       msgs:[['TCP SYN / SYN-ACK / ACK','abre a conexão na porta 179','um dos vizinhos'],['OPEN','AS, hold time, router ID, capacidades','os dois lados'],['KEEPALIVE','confirma o OPEN','os dois lados']],
       why:'O BGP não descobre vizinhos sozinho: toda sessão é configurada à mão, dos dois lados. Se os parâmetros do OPEN não batem (por exemplo, o AS esperado), a sessão termina com NOTIFICATION.'},
@@ -1419,7 +1419,7 @@
       observe:['Na Captura: duas sequências de retirada seguidas de novo anúncio.','No log: cada ciclo e a convergência acumulada.','Com o damping ligado: o número de mensagens cai, mas o prefixo do Cliente fica suprimido nos provedores. Compare o tráfego Conteúdo → Cliente.'],
       cols:['Mensagem','Efeito','Quem envia'],
       msgs:[['UPDATE (withdraw)','retira 203.0.113.0/24','Cliente e AS que perderam o caminho'],['UPDATE','anuncia de novo','Cliente e AS que recuperaram o caminho']],
-      why:'O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fica fora do ar até a penalidade decair. Por isso é pouco usado hoje e, quando usado, com parâmetros conservadores.'}
+      why:'O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fica fora do ar até a penalidade decair. Por isso o RIPE-580 e a RFC 7196 recomendam usá-lo, se for o caso, só com parâmetros conservadores.'}
   };
   const SC={list:()=>SCENARIOS,group:x=>x.group,active:()=>activeScenario,apply:x=>applyScenario(x),
     setup:x=>'Configuração: <code>LOCAL_PREF '+x.cfg.lpA+' para o ISP A; prepend '+(x.cfg.prependB?x.cfg.prependB+'x para o ISP B':'nenhum')+'; 203.0.113.0/24 anunciado'+(x.cfg.attack?'; '+({hijack:'o Atacante origina 203.0.113.0/24','route-leak':'o ISP B vaza a rota do Conteúdo ao ISP A','route-flap':'o Cliente oscila o anúncio'})[x.cfg.attack]:'')+'; defesas: '+(defenseText(x.cfg.def)||'nenhuma')+'</code>',

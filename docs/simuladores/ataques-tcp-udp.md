@@ -244,7 +244,7 @@ Controle essencial: **Hardening de serviços**. A eficácia, o ponto de atuaçã
 | Fonte | Registro |
 | --- | --- |
 | tcpdump | `IP 198.51.100.23.40211 > 203.0.113.10.161: Flags [S], seq 381927113, win 1024, length 0` |
-| tcpdump | `IP 203.0.113.10.161 > 198.51.100.23.40211: Flags [R.], seq 0, ack 381927113, length 0` |
+| tcpdump | `IP 203.0.113.10.161 > 198.51.100.23.40211: Flags [R.], seq 0, ack 381927114, length 0` |
 | IDS | `nenhuma origem ultrapassou o limiar de 30 portas em 10 s` |
 
 **Por que importa.**
@@ -517,7 +517,7 @@ No **DNS water torture**, os bots consultam nomes aleatórios por meio de resolv
 
           
 
-O painel lateral acompanha as fases do NIST SP 800-61r2: **preparação** (controles ativos antes do ataque), **detecção e análise** (primeiro alerta do IDS ou carga acima de 60%), **contenção** (controles essenciais ativos e proteção de pelo menos 85%), **erradicação e recuperação** (carga de volta abaixo de 30%) e **atividade pós-incidente** (lições aprendidas na avaliação). Os indicadores **MTTD** e **MTTC** medem, em ciclos, o tempo até detectar e até conter. Observe que, sem IDS, ataques de baixo volume podem nunca ser detectados.
+O painel lateral acompanha as fases do NIST SP 800-61r2 (substituída pela Rev. 3 em abril de 2025, alinhada ao CSF 2.0; as fases abaixo seguem a r2 por serem didáticas): **preparação** (controles ativos antes do ataque), **detecção e análise** (primeiro alerta do IDS ou carga acima de 60%), **contenção** (controles essenciais ativos e proteção de pelo menos 85%), **erradicação e recuperação** (carga de volta abaixo de 30%) e **atividade pós-incidente** (lições aprendidas na avaliação). Os indicadores **MTTD** e **MTTC** medem, em ciclos, o tempo até detectar e até conter. Observe que, sem IDS, ataques de baixo volume podem nunca ser detectados.
 
           
 

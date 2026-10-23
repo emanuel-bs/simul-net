@@ -445,7 +445,7 @@
           <p>Em um <b>DDoS distribuído</b>, cada bot usa seu IP real e envia pouco, então rate limiting por origem e anti-spoofing quase não atuam, e o enlace satura antes do firewall: descartar no firewall não devolve a banda. A resposta é <b>upstream</b>: FlowSpec (RFC 8955) descarta só o padrão do ataque na operadora, scrubbing centers limpam o tráfego e devolvem o legítimo por túnel, e <b>RTBH</b> (RFC 7999) descarta todo o tráfego para o /32 da vítima, o que protege o resto da rede mas completa o DoS contra aquele host. Sem contrato always-on, o acionamento leva tempo; no simulador, a mitigação ativada durante o ataque só age após alguns ciclos.</p>
           <p>No <b>DNS water torture</b>, os bots consultam nomes aleatórios por meio de resolvedores legítimos. Bloquear por IP derruba os resolvedores que também atendem os usuários (falso positivo em massa); a defesa deve olhar o nome consultado: proporção de NXDOMAIN, RRL com <code>nxdomains-per-second</code> e Aggressive NSEC (RFC 8198) nos resolvedores.</p>
           <h3>Ciclo de resposta a incidente</h3>
-          <p>O painel lateral acompanha as fases do NIST SP 800-61r2: <b>preparação</b> (controles ativos antes do ataque), <b>detecção e análise</b> (primeiro alerta do IDS ou carga acima de 60%), <b>contenção</b> (controles essenciais ativos e proteção de pelo menos 85%), <b>erradicação e recuperação</b> (carga de volta abaixo de 30%) e <b>atividade pós-incidente</b> (lições aprendidas na avaliação). Os indicadores <b>MTTD</b> e <b>MTTC</b> medem, em ciclos, o tempo até detectar e até conter. Observe que, sem IDS, ataques de baixo volume podem nunca ser detectados.</p>
+          <p>O painel lateral acompanha as fases do NIST SP 800-61r2 (substituída pela Rev. 3 em abril de 2025, alinhada ao CSF 2.0; as fases abaixo seguem a r2 por serem didáticas): <b>preparação</b> (controles ativos antes do ataque), <b>detecção e análise</b> (primeiro alerta do IDS ou carga acima de 60%), <b>contenção</b> (controles essenciais ativos e proteção de pelo menos 85%), <b>erradicação e recuperação</b> (carga de volta abaixo de 30%) e <b>atividade pós-incidente</b> (lições aprendidas na avaliação). Os indicadores <b>MTTD</b> e <b>MTTC</b> medem, em ciclos, o tempo até detectar e até conter. Observe que, sem IDS, ataques de baixo volume podem nunca ser detectados.</p>
           <h3>Roteiro de exercícios</h3>
           <ol>
             <li>SYN flood na intensidade 4 sem defesas: anote carga e serviço legítimo. Ative só rate limiting e depois só SYN cookies. Qual protege a fila e por quê?</li>
@@ -610,7 +610,7 @@
           indicators: ['Poucas conexões incompletas espalhadas ao longo de horas', 'Mesma origem ou ASN tocando portas diferentes em dias distintos', 'Só aparece em correlação de longo prazo (SIEM)'],
           mitigations: ['Expor somente as portas necessárias', 'Correlação de longo prazo no SIEM (horas ou dias)', 'Portas-armadilha (honeypots) que alertam no primeiro toque'],
           residual: 'Com paciência, o atacante sempre descobre as portas realmente abertas; o objetivo é reduzir a exposição e detectar cedo.',
-          evidence: ['tcpdump: IP {src}.{sport} > ' + VICTIM + '.{dport}: Flags [S], seq {seq}, win 1024, length 0', 'tcpdump: IP ' + VICTIM + '.{dport} > {src}.{sport}: Flags [R.], seq 0, ack {seq}, length 0', 'IDS: nenhuma origem ultrapassou o limiar de 30 portas em 10 s'],
+          evidence: ['tcpdump: IP {src}.{sport} > ' + VICTIM + '.{dport}: Flags [S], seq {seq}, win 1024, length 0', 'tcpdump: IP ' + VICTIM + '.{dport} > {src}.{sport}: Flags [R.], seq 0, ack {seq1}, length 0', 'IDS: nenhuma origem ultrapassou o limiar de 30 portas em 10 s'],
           controls: {
             hardening: { w: .7, at: 'firewall', why: 'Política padrão de descarte e só as portas necessárias publicadas: a varredura, lenta ou rápida, encontra pouco.', cfg: CFG.stateBase },
             ids: { w: .12, why: 'Com janela de 10 s o IDS não enxerga nada. É preciso correlação longa (SIEM) ou portas-armadilha que alertem no primeiro toque.', cfg: '# Suricata: janela longa por origem (1 hora)\nalert tcp any any -> $HOME_NET any (msg:"Possivel varredura lenta"; flags:S,12; threshold: type both, track by_src, count 20, seconds 3600; sid:1000007; rev:1;)\n\n# Porta-armadilha: qualquer toque gera alerta\nalert tcp any any -> $HOME_NET 2323 (msg:"Toque em porta-armadilha"; flags:S,12; sid:1000008; rev:1;)' },
@@ -743,7 +743,8 @@
       const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
       const randLabel = () => Array.from({ length: 6 }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[rnd(0, 35)]).join('');
       function fmt(text) {
-        const v = { src: '198.51.100.' + rnd(2, 254), refl: '192.0.2.' + rnd(2, 254), sport: rnd(1024, 65535), dport: rnd(1, 1024), seq: rnd(1e8, 4e9), pct: rnd(70, 99), rand: randLabel() };
+        const v = { src: '198.51.100.' + rnd(2, 254), refl: '192.0.2.' + rnd(2, 254), sport: rnd(1024, 65535), dport: rnd(1, 1024), seq: rnd(1e8, 4e9), seq1: 0, pct: rnd(70, 99), rand: randLabel() };
+        v.seq1 = v.seq + 1; // o SYN consome um número de sequência (RFC 9293)
         return text.replace(/\{(\w+)\}/g, (m, k) => (k in v ? v[k] : m));
       }
       function current() { return scenarios[scenarioId]; }
@@ -1483,7 +1484,7 @@
     return 'O atacante envia o tráfego direto à vítima ('+VICTIM+'), passando pela operadora e pelo firewall da borda.';
   }
   const SCEN_DOC={};
-  const exampleOf=e=>e.replace(/\{src\}/g,'198.51.100.23').replace(/\{refl\}/g,'192.0.2.53').replace(/\{sport\}/g,'40211').replace(/\{dport\}/g,'161').replace(/\{seq\}/g,'381927113').replace(/\{rand\}/g,'x7f3k2').replace(/\{pct\}/g,'92');
+  const exampleOf=e=>e.replace(/\{src\}/g,'198.51.100.23').replace(/\{refl\}/g,'192.0.2.53').replace(/\{sport\}/g,'40211').replace(/\{dport\}/g,'161').replace(/\{seq\}/g,'381927113').replace(/\{seq1\}/g,'381927114').replace(/\{rand\}/g,'x7f3k2').replace(/\{pct\}/g,'92');
   const SCEN_LIST=Object.keys(scenarios).map(id=>{
     const s=scenarios[id];
     SCEN_DOC[id]={

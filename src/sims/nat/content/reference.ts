@@ -17,7 +17,7 @@ export const reference: string = [
   '<h3>Comportamento de mapeamento e de filtragem (RFC 4787)</h3><ul>' +
     '<li><b>Mapeamento independente do destino (EIM):</b> a porta externa depende só do endereço e da porta internos. É o comportamento exigido pela RFC 4787 para UDP, porque permite aplicações ponto a ponto.</li>' +
     '<li><b>Mapeamento dependente de endereço (e porta):</b> cada destino distinto cria um novo mapeamento. É o NAT chamado "simétrico".</li>' +
-    '<li><b>Filtragem:</b> define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta).</li></ul>',
+    '<li><b>Filtragem:</b> define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta), por simplicidade didática: a RFC 4787 (REQ-8) recomenda a filtragem independente do endereço ou dependente só do endereço, para não prejudicar aplicações ponto a ponto.</li></ul>',
   '<h3>ICMP e ESP</h3><ul>' +
     '<li><b>ICMP:</b> sem portas, o NAT usa o <i>Identifier</i> do Echo como chave (RFC 5508). Mensagens de erro ICMP carregam o cabeçalho do pacote original e exigem tradução adicional, que o simulador não modela.</li>' +
     '<li><b>ESP (IPsec):</b> não tem portas. O Basic NAT atravessa, desde que não haja AH (ele protege o cabeçalho IP). O NAPT não distingue hosts. O <b>NAT-T</b> (RFC 3947 e RFC 3948) detecta o NAT no IKE e encapsula o ESP em UDP porta 4500 (RFC 3715 reúne os requisitos de compatibilidade entre IPsec e NAT).</li></ul>',

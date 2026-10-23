@@ -5,7 +5,7 @@ SSH-2 por dentro: negociação de versão e algoritmos, troca de chaves, known_h
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/ssh/`
-- **RFCs e padrões:** [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) (transporte), [RFC 4252](https://www.rfc-editor.org/rfc/rfc4252) (autenticação), [RFC 4254](https://www.rfc-editor.org/rfc/rfc4254) (conexão), [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709) (Ed25519)
+- **RFCs e padrões:** [RFC 4251](https://www.rfc-editor.org/rfc/rfc4251) (arquitetura), [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) (transporte), [RFC 4252](https://www.rfc-editor.org/rfc/rfc4252) (autenticação), [RFC 4254](https://www.rfc-editor.org/rfc/rfc4254) (conexão), [RFC 4256](https://www.rfc-editor.org/rfc/rfc4256) (keyboard-interactive), [RFC 8332](https://www.rfc-editor.org/rfc/rfc8332) (rsa-sha2), [RFC 8709](https://www.rfc-editor.org/rfc/rfc8709) (Ed25519)
 - **Tópicos:** Negociação e troca de chaves; known_hosts e autenticação; Canais e SFTP; Túneis e encaminhamento
 
 ## 1. Modos
@@ -1429,7 +1429,7 @@ O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acess
 ### Canais, SFTP e túneis
 
 - Cada canal tem número e janela de fluxo (WINDOW_ADJUST). Sessão, SFTP e túneis compartilham a mesma conexão cifrada.
-- **SFTP** é um subsistema do SSH, não é FTP sobre SSL.
+- **SFTP** é um subsistema do SSH, não é FTP sobre SSL. Não tem RFC publicada (só drafts do IETF, o mais usado é o draft-ietf-secsh-filexfer-02, versão 3). O encaminhamento de agente (auth-agent-req@openssh.com) também é extensão do OpenSSH, sem RFC.
 - **-L** (direct-tcpip): porta local até um destino alcançado pelo servidor. **-R** (tcpip-forward e forwarded-tcpip): porta no servidor até o cliente. **-D**: proxy SOCKS5. **-J**: salto por bastion com SSH de ponta a ponta.
 - O trecho entre o servidor SSH e o destino final **não é protegido pelo SSH**.
 - **ForwardAgent** expõe o agente a quem tem privilégio no servidor; prefira ProxyJump.

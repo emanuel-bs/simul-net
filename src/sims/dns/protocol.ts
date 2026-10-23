@@ -12,7 +12,7 @@ export const dnsProtocol: ProtocolDef = {
   id: 'dns',
   label: 'DNS e DNSSEC',
   stateTitle: 'Estado da consulta',
-  rfcs: [[1034, 'Conceitos'], [1035, 'Implementação'], [2308, 'Cache negativo'], [4033, 'DNSSEC'], [4035, 'Protocolo DNSSEC'], [5452, 'Resistência a forja'], [7858, 'DoT'], [8484, 'DoH']],
+  rfcs: [[1034, 'Conceitos'], [1035, 'Implementação'], [2308, 'Cache negativo'], [4033, 'DNSSEC'], [4035, 'Protocolo DNSSEC'], [5452, 'Resistência a forja'], [7858, 'DoT'], [8310, 'Perfis de uso do DoT'], [8484, 'DoH']],
   subs: [
     { key: 'res', label: 'Resolução', default: 'r-completa' },
     { key: 'sec', label: 'DNSSEC', default: 's-ok' },

@@ -5,7 +5,7 @@ Transferência de arquivos por dentro: FTP com canais de controle e de dados (mo
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/ftp/`
-- **RFCs e padrões:** [RFC 959](https://www.rfc-editor.org/rfc/rfc959) (FTP), [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217) (FTP sobre TLS), [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428) (EPSV e EPRT), [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253) (SSH (SFTP))
+- **RFCs e padrões:** [RFC 959](https://www.rfc-editor.org/rfc/rfc959) (FTP), [RFC 4217](https://www.rfc-editor.org/rfc/rfc4217) (FTP sobre TLS), [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428) (EPSV e EPRT), [RFC 2228](https://www.rfc-editor.org/rfc/rfc2228) (Extensões de segurança)
 - **Tópicos:** Canais de controle e de dados; Modos ativo e passivo atrás de NAT; FTPS: AUTH TLS, PROT P e PROT C; SFTP e comparação dos três
 
 ## 1. Modos

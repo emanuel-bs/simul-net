@@ -667,6 +667,12 @@ Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o rot
 5. Desmarque **DHCP-1 ativo** e observe as retransmissões do DISCOVER: como cresce o intervalo entre as retransmissões, e por quê?
 6. **Segurança:** um colega liga um roteador doméstico com DHCP ativo na rede do laboratório. O que acontece com os clientes e que configuração no switch evita o problema?
 
+### Limitações do simulador
+
+- Na renovação, não há retransmissão em RENEWING e REBINDING (a [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131), seção 4.4.5, manda repetir a cada metade do tempo restante, com mínimo de 60 s).
+- Não são simulados o INIT-REBOOT (cliente que reinicia com lease válido), o DHCPNAK, o agente de retransmissão (relay) nem o atraso aleatório de 1 a 10 s antes do primeiro DISCOVER.
+- Os tempos de lease são curtos e didáticos; os temporizadores T1 (50%) e T2 (87,5%) seguem os valores padrão da [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131).
+
 
 ---
 

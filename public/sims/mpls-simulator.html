@@ -484,6 +484,13 @@
             <li><b>Proteção do LDP e do BGP:</b> autenticação TCP-MD5 ou TCP-AO (RFC 5925) e filtros que aceitem LDP e BGP só de vizinhos conhecidos.</li>
             <li><b>Ocultação da topologia:</b> desativar a propagação de TTL esconde o núcleo no traceroute. As extensões da RFC 4950, por outro lado, revelam os rótulos em uso.</li>
           </ul>
+          <h3>Limitações do simulador</h3>
+          <ul>
+            <li>Seis LSRs e um único IGP (OSPF simplificado): sem iBGP completo, sem Route Reflector e sem Inter-AS.</li>
+            <li>O LDP mostra Hello, sessão e Label Mapping; não simula temporizadores de Hello e KeepAlive, Label Withdraw, Label Release nem a sincronização LDP-IGP.</li>
+            <li>A L3VPN usa dois rótulos e um par de PEs; os Route Targets e o Route Distinguisher são explicados, mas não configurados.</li>
+            <li>Os rótulos de cada LSR usam uma faixa própria só para facilitar a leitura (a RFC 5036 deixa a escolha livre).</li>
+          </ul>
           <h3>Roteiro de exercícios</h3>
           <ol>
             <li>Rode um <b>ping</b> antes de avançar as fases e outro depois da fase LSP. Compare na aba Captura: onde aparecem push, swap e pop?</li>

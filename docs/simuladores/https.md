@@ -5,7 +5,7 @@ Handshake TLS 1.3 e 1.2, validação de certificados X.509, retomada e 0-RTT, HS
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/https/`
-- **RFCs e padrões:** [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) (TLS 1.3), [RFC 5246](https://www.rfc-editor.org/rfc/rfc5246) (TLS 1.2), [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) (X.509), [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797) (HSTS)
+- **RFCs e padrões:** [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846) (TLS 1.3), [RFC 5246](https://www.rfc-editor.org/rfc/rfc5246) (TLS 1.2), [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) (verificação de nome), [RFC 8996](https://www.rfc-editor.org/rfc/rfc8996) (TLS 1.0 e 1.1), [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) (X.509), [RFC 6797](https://www.rfc-editor.org/rfc/rfc6797) (HSTS)
 - **Tópicos:** Handshake TLS 1.3 e 1.2; Certificados e validação; Retomada, 0-RTT e HSTS; Comparação HTTP x HTTPS
 
 ## 1. Modos
@@ -221,13 +221,13 @@ sequenceDiagram
 
 Os dois lados só falam TLS 1.2. O handshake leva 2 RTT: ClientHello e ServerHello, depois a troca de chaves do cliente e o Finished. O **certificado trafega em claro**, visível a quem observa a rede.
 
-**Conceito.** No **TLS 1.2** ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), atualizada pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), apêndice D), o servidor responde com ServerHello, **Certificate** (em claro), ServerKeyExchange e ServerHelloDone. O cliente só então envia o ClientKeyExchange e o Finished: **2 RTT** até a primeira requisição. Com ECDHE há sigilo futuro; com troca RSA, não.
+**Conceito.** No **TLS 1.2** ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), obsoleta pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), que mantém o TLS 1.2 no apêndice D), o servidor responde com ServerHello, **Certificate** (em claro), ServerKeyExchange e ServerHelloDone. O cliente só então envia o ClientKeyExchange e o Finished: **2 RTT** até a primeira requisição. Com ECDHE há sigilo futuro; com troca RSA, não.
 
 **O que observar**
 
 - O Certificate aparece em claro na captura (aba Mensagem).
 - Dois ciclos de ida e volta antes dos dados.
-- O Finished e o NewSessionTicket já vão cifrados.
+- O NewSessionTicket ainda vai em claro (vem antes do Change Cipher Spec); só o Finished do servidor vai cifrado.
 
 ```mermaid
 sequenceDiagram
@@ -244,7 +244,8 @@ sequenceDiagram
   Note over n_c,n_s: 3. Troca de chaves do cliente e Finished
   n_c ->> n_s: Client Key Exchange
   n_c ->> n_s: [cifrado] Change Cipher Spec, Finished
-  n_s ->> n_c: [cifrado] New Session Ticket, Change Cipher Spec, Finished
+  n_s ->> n_c: New Session Ticket
+  n_s ->> n_c: [cifrado] Change Cipher Spec, Finished
   Note over n_c,n_s: 4. Dados da aplicação
   n_c ->> n_s: [cifrado] HTTP/2 GET /
   n_s ->> n_c: [cifrado] HTTP/2 200 OK
@@ -256,7 +257,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "TLS 1.2 completo (2 RTT)", na ordem do tempo, entre Navegador, Servidor HTTPS: 16 mensagens (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "TLS 1.2 completo (2 RTT)", na ordem do tempo, entre Navegador, Servidor HTTPS: 17 mensagens (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -265,6 +266,7 @@ sequenceDiagram
 | ClientHello | abre a negociação | navegador |
 | Certificate, ServerKeyExchange, ServerHelloDone | certificado e parâmetros ECDHE | servidor |
 | ClientKeyExchange, ChangeCipherSpec, Finished | troca de chaves e confirmação | navegador |
+| NewSessionTicket | ticket para retomar a sessão (em claro) | servidor |
 | ChangeCipherSpec, Finished | confirmação do servidor | servidor |
 
 **Por que importa.** O TLS 1.2 ainda é muito usado. Os servidores que só o oferecem pagam mais latência e expõem o certificado e metadados.
@@ -545,7 +547,8 @@ sequenceDiagram
   Note over n_c,n_s: 3. Troca de chaves do cliente e Finished
   n_c ->> n_s: Client Key Exchange
   n_c ->> n_s: [cifrado] Change Cipher Spec, Finished
-  n_s ->> n_c: [cifrado] New Session Ticket, Change Cipher Spec, Finished
+  n_s ->> n_c: New Session Ticket
+  n_s ->> n_c: [cifrado] Change Cipher Spec, Finished
   Note over n_c,n_s: 4. Dados da aplicação
   n_c ->> n_s: [cifrado] GET / HTTP/1.1
   n_s ->> n_c: [cifrado] HTTP/1.1 200 OK
@@ -557,7 +560,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "TLS legado sem sigilo futuro", na ordem do tempo, entre Navegador, Servidor HTTPS: 16 mensagens (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "TLS legado sem sigilo futuro", na ordem do tempo, entre Navegador, Servidor HTTPS: 17 mensagens (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -676,7 +679,7 @@ sequenceDiagram
 
 O certificado passou do notAfter. O navegador recusa, envia `certificate_expired` e mostra ERR_CERT_DATE_INVALID. Certificados vencem de propósito, para limitar o dano de chaves comprometidas.
 
-**Conceito.** Todo certificado tem **notBefore** e **notAfter**. Depois do prazo, o navegador recusa. Os prazos são curtos (hoje, até 398 dias, e a tendência é diminuir) para limitar o efeito de chaves comprometidas e forçar a automação da renovação (ACME).
+**Conceito.** Todo certificado tem **notBefore** e **notAfter**. Depois do prazo, o navegador recusa. Os prazos são curtos (desde 15/03/2026, até 200 dias; 100 dias em 2027 e 47 dias em 2029, pelas regras do CA/B Forum, SC-081v3) para limitar o efeito de chaves comprometidas e forçar a automação da renovação (ACME).
 
 **O que observar**
 
@@ -905,7 +908,7 @@ Como o navegador descobre que um certificado foi revogado.
 
 Sem stapling, o navegador pergunta à CA, por conta própria, se o certificado foi revogado. Isso gasta 1 RTT extra e **revela à CA qual site você visita**. É o motivo de o stapling ser recomendado.
 
-**Conceito.** Sem **OCSP stapling**, o navegador consulta o responder OCSP da CA em uma conexão separada (HTTP, porta 80). Isso custa **1 RTT** e **a CA fica sabendo qual site você visita**. Se o responder estiver fora do ar, o navegador costuma seguir mesmo assim (soft-fail).
+**Conceito.** Sem **OCSP stapling**, o navegador consulta o responder OCSP da CA em uma conexão separada (HTTP, porta 80). Isso custa **1 RTT** e **a CA fica sabendo qual site você visita**. Se o responder estiver fora do ar, o navegador costuma seguir mesmo assim (soft-fail). Nota: o OCSP está em retirada na prática (o Let’s Encrypt encerrou o serviço em 2025 e adotou listas de revogação, CRL); o cenário mostra o mecanismo clássico da [RFC 6960](https://www.rfc-editor.org/rfc/rfc6960).
 
 **O que observar**
 
@@ -1556,7 +1559,8 @@ sequenceDiagram
   Note over n_c,n_s: 3. Troca de chaves do cliente e Finished
   n_c ->> n_s: Client Key Exchange
   n_c ->> n_s: [cifrado] Change Cipher Spec, Finished
-  n_s ->> n_c: [cifrado] New Session Ticket, Change Cipher Spec, Finished
+  n_s ->> n_c: New Session Ticket
+  n_s ->> n_c: [cifrado] Change Cipher Spec, Finished
   Note over n_c,n_s: 4. Dados da aplicação
   n_c ->> n_s: [cifrado] HTTP/2 POST /login
   n_s ->> n_c: [cifrado] HTTP/2 200 OK
@@ -1568,7 +1572,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.5 (Tipo B, sequência).* Mensagens do cenário "Custo do HTTPS com TLS 1.2", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 23 mensagens (em 7 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.5 (Tipo B, sequência).* Mensagens do cenário "Custo do HTTPS com TLS 1.2", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 24 mensagens (em 7 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1648,7 +1652,7 @@ O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. 
 
 ### TLS 1.3 contra TLS 1.2
 
-| Aspecto | TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846)) | TLS 1.2 ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), atualizada pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), apêndice D) |
+| Aspecto | TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846)) | TLS 1.2 ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), obsoleta pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), que mantém o TLS 1.2 no apêndice D) |
 | --- | --- | --- |
 | Handshake | 1 RTT (0-RTT na retomada) | 2 RTT (1 RTT na retomada) |
 | Certificado | cifrado | em claro |
@@ -1668,9 +1672,9 @@ O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. 
 ### Certificados e validação
 
 - O navegador valida: **cadeia** até uma raiz confiável, **assinaturas**, **validade**, **nome no SAN**, **uso permitido** (EKU), **revogação** e **Certificate Transparency** (SCT).
-- A identidade vem do **SAN**; o campo CN é ignorado.
-- **Revogação:** OCSP (consulta à CA) ou **OCSP stapling** (o servidor anexa a resposta assinada). O stapling é mais rápido e preserva a privacidade.
-- Os prazos são curtos (até 398 dias hoje), e a renovação deve ser automática (ACME, Let's Encrypt).
+- A identidade vem do **SAN**; o campo CN é ignorado ([RFC 9525](https://www.rfc-editor.org/rfc/rfc9525)).
+- **Revogação:** OCSP (consulta à CA) ou **OCSP stapling** (o servidor anexa a resposta assinada). O stapling é mais rápido e preserva a privacidade. Na prática o OCSP está em retirada (o Let’s Encrypt o encerrou em 2025 e usa CRL), e a extensão do stapling da [RFC 6961](https://www.rfc-editor.org/rfc/rfc6961) foi obsoleta pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846).
+- Os prazos são curtos (até 200 dias desde 15/03/2026, caindo para 100 em 2027 e 47 em 2029, CA/B Forum SC-081v3), e a renovação deve ser automática (ACME, Let's Encrypt).
 - O servidor deve enviar o **fullchain** (leaf e intermediários).
 
 ### Retomada, 0-RTT e privacidade

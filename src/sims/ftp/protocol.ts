@@ -11,7 +11,7 @@ export const ftpProtocol: ProtocolDef = {
   id: 'ftp',
   label: 'FTP, FTPS e SFTP',
   stateTitle: 'Estado da transferência',
-  rfcs: [[959, 'FTP'], [4217, 'FTP sobre TLS'], [2428, 'EPSV e EPRT'], [4253, 'SSH (SFTP)']],
+  rfcs: [[959, 'FTP'], [4217, 'FTP sobre TLS'], [2428, 'EPSV e EPRT'], [2228, 'Extensões de segurança']],
   subs: [
     { key: 'ftp', label: 'FTP', default: 'f-pasv' },
     { key: 'ftps', label: 'FTPS', default: 's-exp' },

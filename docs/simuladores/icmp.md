@@ -1049,7 +1049,7 @@ O **Internet Control Message Protocol** ([RFC 792](https://www.rfc-editor.org/rf
 
           
 
-Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um host e respondidas pelo destino. As **mensagens de erro** são geradas por um roteador ou host que não conseguiu processar um datagrama e são sempre enviadas à **origem** do datagrama, nunca ao destino. Cada erro carrega o **cabeçalho IP original mais os 8 primeiros bytes** do datagrama que o provocou; é assim que o ping e o traceroute associam o erro à sonda certa (pelo identificador e sequência ICMP ou pelas portas UDP).
+Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um host e respondidas pelo destino. As **mensagens de erro** são geradas por um roteador ou host que não conseguiu processar um datagrama e são sempre enviadas à **origem** do datagrama, nunca ao destino. Cada erro carrega o **cabeçalho IP original mais pelo menos os 8 primeiros bytes** do datagrama que o provocou (8 bytes é o mínimo da [RFC 792](https://www.rfc-editor.org/rfc/rfc792); os roteadores atuais citam o máximo possível, até 576 bytes no total, [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812) seção 4.3.2.3); é assim que o ping e o traceroute associam o erro à sonda certa (pelo identificador e sequência ICMP ou pelas portas UDP).
 
 ### Regras de geração de erros ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) e [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812))
 

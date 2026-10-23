@@ -123,7 +123,7 @@ export const scenDoc: Record<string, ScenarioDoc> = {
   },
   'n-hairpin-nao': {
     short: 'O cliente interno usa o endereço público e o roteador não o trata.',
-    concept: 'Um cliente interno que usa o nome público do serviço resolve para 203.0.113.1, o endereço externo do próprio roteador. Sem <b>hairpinning</b> (também chamado NAT loopback ou reflexão), o roteador não aplica o DNAT a pacotes que chegam pela interface interna com esse destino: o pacote é descartado ou tratado como destino local do roteador.',
+    concept: 'Um cliente interno que usa o nome público do serviço resolve para 203.0.113.1, o endereço externo do próprio roteador. Sem <b>hairpinning</b> (também chamado NAT loopback ou reflexão), o roteador não aplica o DNAT a pacotes que chegam pela interface interna com esse destino: o pacote é descartado ou tratado como destino local do roteador. A RFC 4787 (REQ-9) manda o NAT suportar o hairpinning; este cenário mostra o que ocorre quando não suporta.',
     observe: ['O pacote do PC1 chega ao R-NAT e é descartado.', 'O estado "pacotes descartados" sobe para 1.'],
     msgs: [['SYN para 203.0.113.1:443', 'origem interna, destino externo do roteador', 'PC1']],
     why: 'Por isso muitas redes usam DNS interno (split DNS) para que o nome resolva para o endereço privado dentro da rede.',

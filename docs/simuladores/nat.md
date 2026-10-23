@@ -754,7 +754,7 @@ sequenceDiagram
 
 Um cliente interno tenta acessar o endereço público do serviço. O roteador não aplica o DNAT nesse caminho e o pacote é descartado.
 
-**Conceito.** Um cliente interno que usa o nome público do serviço resolve para 203.0.113.1, o endereço externo do próprio roteador. Sem **hairpinning** (também chamado NAT loopback ou reflexão), o roteador não aplica o DNAT a pacotes que chegam pela interface interna com esse destino: o pacote é descartado ou tratado como destino local do roteador.
+**Conceito.** Um cliente interno que usa o nome público do serviço resolve para 203.0.113.1, o endereço externo do próprio roteador. Sem **hairpinning** (também chamado NAT loopback ou reflexão), o roteador não aplica o DNAT a pacotes que chegam pela interface interna com esse destino: o pacote é descartado ou tratado como destino local do roteador. A [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (REQ-9) manda o NAT suportar o hairpinning; este cenário mostra o que ocorre quando não suporta.
 
 **O que observar**
 
@@ -1322,7 +1322,7 @@ A entrada liga o par interno (endereço, porta) ao par externo, e guarda o outro
 
 - **Mapeamento independente do destino (EIM):** a porta externa depende só do endereço e da porta internos. É o comportamento exigido pela [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) para UDP, porque permite aplicações ponto a ponto.
 - **Mapeamento dependente de endereço (e porta):** cada destino distinto cria um novo mapeamento. É o NAT chamado "simétrico".
-- **Filtragem:** define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta).
+- **Filtragem:** define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta), por simplicidade didática: a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (REQ-8) recomenda a filtragem independente do endereço ou dependente só do endereço, para não prejudicar aplicações ponto a ponto.
 
 ### ICMP e ESP
 

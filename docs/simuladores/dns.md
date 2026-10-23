@@ -5,7 +5,7 @@ Resolução de nomes por dentro: raiz, TLD e autoritativo, cache e TTL, tipos de
 - **Categoria:** Protocolos de rede seguros
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/dns/`
-- **RFCs e padrões:** [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) (Conceitos), [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035) (Implementação), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308) (Cache negativo), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033) (DNSSEC), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035) (Protocolo DNSSEC), [RFC 5452](https://www.rfc-editor.org/rfc/rfc5452) (Resistência a forja), [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858) (DoT), [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484) (DoH)
+- **RFCs e padrões:** [RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) (Conceitos), [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035) (Implementação), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308) (Cache negativo), [RFC 4033](https://www.rfc-editor.org/rfc/rfc4033) (DNSSEC), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035) (Protocolo DNSSEC), [RFC 5452](https://www.rfc-editor.org/rfc/rfc5452) (Resistência a forja), [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858) (DoT), [RFC 8310](https://www.rfc-editor.org/rfc/rfc8310) (Perfis de uso do DoT), [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484) (DoH)
 - **Tópicos:** Resolução recursiva e cache; DNSSEC e cadeia de confiança; Envenenamento e amplificação; DoT e DoH
 
 ## 1. Modos
@@ -655,7 +655,7 @@ sequenceDiagram
 
 O nome não existe. O autoritativo responde NXDOMAIN com o SOA, e o resolvedor guarda a negação (cache negativo).
 
-**Conceito.** Quando o nome não existe, o autoritativo responde **NXDOMAIN** (RCODE 3) com o **SOA** da zona. O campo "minimum" do SOA define por quanto tempo a negação pode ser guardada: é o **cache negativo** ([RFC 2308](https://www.rfc-editor.org/rfc/rfc2308)).
+**Conceito.** Quando o nome não existe, o autoritativo responde **NXDOMAIN** (RCODE 3) com o **SOA** da zona. O TTL da negação é o menor entre o TTL do SOA e o campo "minimum" dele: é o **cache negativo** ([RFC 2308](https://www.rfc-editor.org/rfc/rfc2308), seção 5).
 
 **O que observar**
 
@@ -903,7 +903,7 @@ sequenceDiagram
 
 O nome não existe, e o NXDOMAIN vem com NSEC assinado: a inexistência é provada, não apenas afirmada.
 
-**Conceito.** Dizer "não existe" também precisa de prova. O registro **NSEC** lista o próximo nome da zona em ordem alfabética: se o nome consultado cai entre dois nomes consecutivos, ele não existe. Tudo vem assinado. **NSEC3** faz o mesmo sobre nomes com hash, para dificultar listar a zona (zone walking).
+**Conceito.** Dizer "não existe" também precisa de prova. O registro **NSEC** lista o próximo nome da zona em ordem canônica ([RFC 4034](https://www.rfc-editor.org/rfc/rfc4034), seção 6.1): se o nome consultado cai entre dois nomes consecutivos, ele não existe. Tudo vem assinado. **NSEC3** faz o mesmo sobre nomes com hash, para dificultar listar a zona (zone walking).
 
 **O que observar**
 
@@ -1852,9 +1852,9 @@ O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [
 
 ### DNS e segurança
 
-- **Envenenamento de cache:** o resolvedor aceita e guarda uma resposta forjada. Defesas: porta e ID aleatórios ([RFC 5452](https://www.rfc-editor.org/rfc/rfc5452)), 0x20 e, sobretudo, DNSSEC.
+- **Envenenamento de cache:** o resolvedor aceita e guarda uma resposta forjada. Defesas: porta e ID aleatórios ([RFC 5452](https://www.rfc-editor.org/rfc/rfc5452)), 0x20 (mistura de caixa, que a [RFC 4343](https://www.rfc-editor.org/rfc/rfc4343) manda preservar na resposta) e, sobretudo, DNSSEC.
 - **Reflexão e amplificação:** consultas pequenas com origem forjada geram respostas grandes contra a vítima. Defesas: [BCP 38](https://www.rfc-editor.org/info/bcp38), resolvedor fechado, limite de taxa (RRL) e respostas ANY reduzidas ([RFC 8482](https://www.rfc-editor.org/rfc/rfc8482)).
-- **Privacidade:** o DNS puro expõe os nomes consultados. DoT ([RFC 7858](https://www.rfc-editor.org/rfc/rfc7858)) e DoH ([RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)) cifram o trecho cliente-resolvedor; o resolvedor continua vendo as consultas.
+- **Privacidade:** o DNS puro expõe os nomes consultados. DoT ([RFC 7858](https://www.rfc-editor.org/rfc/rfc7858)) e DoH ([RFC 8484](https://www.rfc-editor.org/rfc/rfc8484)) cifram o trecho cliente-resolvedor; o resolvedor continua vendo as consultas. A [RFC 8310](https://www.rfc-editor.org/rfc/rfc8310) define os perfis de uso do DoT: o **estrito** exige autenticar o servidor e recusa a consulta se falhar; o **oportunista** volta ao texto puro.
 - **Outros riscos:** domínio pendente por CNAME (takeover), domínios gerados por malware (DGA), tunelamento de dados por DNS, sequestro de registro do domínio. Registro de consultas e monitoração de NXDOMAIN ajudam a detectá-los.
 - **Boas práticas:** resolvedor fechado e com validação, DNSSEC na zona com renovação automática, ao menos dois autoritativos em redes diferentes, TCP 53 liberado.
 

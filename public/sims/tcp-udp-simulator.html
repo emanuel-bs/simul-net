@@ -583,7 +583,7 @@
           <ul>
             <li><b>Abertura:</b> SYN, SYN-ACK e ACK. Cada lado escolhe um número de sequência inicial (ISN). O Wireshark, assim como este simulador, mostra números <b>relativos</b> (o ISN aparece como 0).</li>
             <li><b>Estados:</b> o cliente passa por SYN_SENT e ESTABLISHED; o servidor por LISTEN, SYN_RCVD e ESTABLISHED.</li>
-            <li><b>Encerramento:</b> cada sentido é fechado com FIN e ACK. Quem fecha primeiro passa por FIN_WAIT_1, FIN_WAIT_2 e <b>TIME_WAIT</b>, onde espera 2×MSL (60 s no Linux) para absorver segmentos atrasados da conexão.</li>
+            <li><b>Encerramento:</b> cada sentido é fechado com FIN e ACK. Quem fecha primeiro passa por FIN_WAIT_1, FIN_WAIT_2 e <b>TIME_WAIT</b>, onde espera 2×MSL (a RFC 9293 usa MSL de 2 min; o Linux fixa 60 s) para absorver segmentos atrasados da conexão.</li>
           </ul>
           <h3>Confiabilidade e janela deslizante</h3>
           <ul>
@@ -595,9 +595,9 @@
           <ul>
             <li><b>Slow start:</b> a cwnd começa pequena (1 a 4 segmentos; 10 no Linux, RFC 6928) e cresce 1 segmento por ACK, o que a <b>dobra a cada RTT</b>.</li>
             <li><b>Congestion avoidance:</b> acima do ssthresh, cresce cerca de 1 segmento por RTT (crescimento linear).</li>
-            <li><b>Fast retransmit e fast recovery:</b> 3 ACKs duplicados indicam uma perda isolada. O emissor retransmite sem esperar o RTO e faz ssthresh = metade do que está em voo. O NewReno trata os ACKs parciais quando há várias perdas na mesma janela.</li>
+            <li><b>Fast retransmit e fast recovery:</b> 3 ACKs duplicados indicam uma perda isolada. O emissor retransmite sem esperar o RTO e faz ssthresh = metade do que está em voo (no mínimo 2 segmentos, RFC 5681). O NewReno trata os ACKs parciais quando há várias perdas na mesma janela.</li>
             <li><b>Timeout:</b> sinal de congestionamento grave. ssthresh = metade do que está em voo e cwnd = 1.</li>
-            <li><b>SACK (RFC 2018):</b> opção negociada no SYN (SACK_PERM). Cada ACK duplicado leva até 3 blocos (SLE e SRE) com os bytes recebidos além da lacuna, e o emissor mantém um placar (scoreboard). Este simulador usa uma versão simplificada: dá como perdido todo buraco abaixo do maior byte confirmado (como o FACK do Linux), sem DSACK e sem os detalhes da RFC 6675.</li>
+            <li><b>SACK (RFC 2018):</b> opção negociada no SYN (SACK_PERM). Cada ACK duplicado leva até 4 blocos (3 quando a opção Timestamps está em uso) (SLE e SRE) com os bytes recebidos além da lacuna, e o emissor mantém um placar (scoreboard). Este simulador usa uma versão simplificada: dá como perdido todo buraco abaixo do maior byte confirmado (como o FACK do Linux), sem DSACK e sem os detalhes da RFC 6675.</li>
             <li>O Linux usa <b>CUBIC</b> (RFC 9438) por padrão. A lógica de crescer até perceber perda e então reduzir é a mesma mostrada aqui com Reno/NewReno.</li>
           </ul>
           <h3>UDP na prática</h3>
@@ -628,6 +628,14 @@
             <li><b>Download:</b> o TCP entrega os bytes, mas não garante que são os bytes certos. Use HTTPS (TLS) e confira o hash do arquivo; sem TLS, um atacante no caminho pode alterar a transferência.</li>
             <li><b>Streaming:</b> o RTP simples vai em claro e sem autenticação; use SRTP (RFC 3711) ou DTLS-SRTP. Servidores de mídia UDP expostos também podem ser usados em ataques de reflexão e inundação.</li>
             <li>Para praticar a defesa contra esses ataques, use o <a href="tcp-udp-security-simulator.html">Simulador de Ataques e Defesas TCP/UDP</a>.</li>
+          </ul>
+          <h3>Limitações do simulador</h3>
+          <ul>
+            <li>Cada segmento é confirmado por um ACK. Os ACKs atrasados (um ACK a cada dois segmentos, RFC 1122 e RFC 5681) não são simulados; com eles, a cwnd cresceria cerca de 1,5 vez por RTT, e não 2.</li>
+            <li>O handshake não negocia Window Scale nem Timestamps (RFC 7323). Por isso a rwnd de 256 e 1024 segmentos (acima de 64 kB) é um valor didático: na prática exigiria a opção Window Scale.</li>
+            <li>Não são simulados o algoritmo de Nagle, o TCP Fast Open, o ECN, o PMTUD nem o CUBIC; o controle de congestionamento é o Reno/NewReno.</li>
+            <li>O simulador trabalha por rodada (uma janela por RTT) e usa SACK simplificado, sem DSACK e sem os detalhes da RFC 6675.</li>
+            <li>No UDP, o tempo de repetição do DNS (1 s) e o RTO mínimo de 200 ms são valores didáticos.</li>
           </ul>
           <h3>Roteiro de exercícios</h3>
           <ol>
@@ -1772,7 +1780,7 @@
     {g:'UDP',id:'ustream',label:'Fluxo com perdas',set:{mode:'udp',app:'stream',N:20,loss:10,drops:'',reorder:10},
       what:'<p>Vinte datagramas de mídia saem sem handshake e sem esperar confirmação. Os perdidos não são recuperados e os atrasados chegam fora de ordem.</p><p>Para voz e vídeo, isso é aceitável: um áudio atrasado já não serve.</p>'},
     {g:'UDP',id:'udns',label:'DNS com repetição',set:{mode:'udp',app:'dns',loss:0,drops:'1',reorder:0},
-      what:'<p>A primeira consulta se perde. O UDP não percebe; quem percebe é o resolvedor, que espera 1 s e repete a consulta.</p><p>É o padrão de quem usa UDP: a confiabilidade, quando necessária, fica com a aplicação.</p>'},
+      what:'<p>A primeira consulta se perde. O UDP não percebe; quem percebe é o resolvedor, que espera 1 s (valor didático; a RFC 1035, seção 7.2, sugere intervalo mínimo de 2 a 5 s) e repete a consulta.</p><p>É o padrão de quem usa UDP: a confiabilidade, quando necessária, fica com a aplicação.</p>'},
     {g:'Comparação',id:'closs',label:'TCP x UDP: 10% de perda',set:{mode:'cmp',N:20,loss:10,drops:'',iw:4,rwnd:16,ssth:64,reorder:0},
       what:'<p>Os dois protocolos enviam 20 segmentos pela mesma rede, com as mesmas perdas. O UDP termina antes e entrega o que chegou; o TCP leva mais tempo e entrega tudo, em ordem.</p><p>Veja a aba Resultados.</p>'},
     {g:'Comparação',id:'cord',label:'TCP x UDP: reordenação',set:{mode:'cmp',N:20,loss:0,drops:'',iw:4,rwnd:16,ssth:64,reorder:15},

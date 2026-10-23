@@ -11,7 +11,7 @@ export const httpsProtocol: ProtocolDef = {
   id: 'https',
   label: 'HTTPS',
   stateTitle: 'Estado da conexão HTTPS',
-  rfcs: [[8446, 'TLS 1.3'], [5246, 'TLS 1.2'], [5280, 'X.509'], [6797, 'HSTS']],
+  rfcs: [[9846, 'TLS 1.3'], [5246, 'TLS 1.2'], [9525, 'verificação de nome'], [8996, 'TLS 1.0 e 1.1'], [5280, 'X.509'], [6797, 'HSTS']],
   subs: [
     { key: 'handshake', label: 'Handshake TLS', default: 'h13' },
     { key: 'cert', label: 'Certificados', default: 'c-ok' },

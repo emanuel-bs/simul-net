@@ -391,6 +391,17 @@ Os PEs mantêm uma tabela de roteamento por cliente (**VRF**) e trocam as rotas 
 
           
 
+### Limitações do simulador
+
+          
+
+- Seis LSRs e um único IGP (OSPF simplificado): sem iBGP completo, sem Route Reflector e sem Inter-AS.
+- O LDP mostra Hello, sessão e Label Mapping; não simula temporizadores de Hello e KeepAlive, Label Withdraw, Label Release nem a sincronização LDP-IGP.
+- A L3VPN usa dois rótulos e um par de PEs; os Route Targets e o Route Distinguisher são explicados, mas não configurados.
+- Os rótulos de cada LSR usam uma faixa própria só para facilitar a leitura (a [RFC 5036](https://www.rfc-editor.org/rfc/rfc5036) deixa a escolha livre).
+
+          
+
 ### Roteiro de exercícios
 
           

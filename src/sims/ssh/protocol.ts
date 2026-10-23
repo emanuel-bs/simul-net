@@ -11,7 +11,7 @@ export const sshProtocol: ProtocolDef = {
   id: 'ssh',
   label: 'SSH',
   stateTitle: 'Estado da sessão SSH',
-  rfcs: [[4253, 'transporte'], [4252, 'autenticação'], [4254, 'conexão'], [8709, 'Ed25519']],
+  rfcs: [[4251, 'arquitetura'], [4253, 'transporte'], [4252, 'autenticação'], [4254, 'conexão'], [4256, 'keyboard-interactive'], [8332, 'rsa-sha2'], [8709, 'Ed25519']],
   subs: [
     { key: 'session', label: 'Sessão e autenticação', default: 'ok' },
     { key: 'tunnel', label: 'Túneis e encaminhamento', default: 't-local' },

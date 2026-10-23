@@ -64,7 +64,7 @@ Configuração: LOCAL_PREF 100 para o ISP A; prepend nenhum; 203.0.113.0/24 anun
 
 **O que é.**
 
-Uma sessão BGP é uma conexão **TCP na porta 179** entre dois roteadores configurados um como vizinho do outro. A sessão passa por **Connect** (TCP subindo), **OpenSent** (OPEN enviado), **OpenConfirm** (OPEN recebido) e **Established** (OPEN confirmado por KEEPALIVE). Só então as rotas são trocadas.
+Uma sessão BGP é uma conexão **TCP na porta 179** entre dois roteadores configurados um como vizinho do outro. A sessão parte de **Idle**, passa por **Connect** (TCP subindo; se falhar, vai a **Active** e tenta de novo), **OpenSent** (OPEN enviado), **OpenConfirm** (OPEN recebido) e **Established** (OPEN confirmado por KEEPALIVE). Só então as rotas são trocadas.
 
 **Neste cenário.**
 
@@ -544,7 +544,7 @@ Reinicie com o **flap damping nos provedores** ligado: compare o número de mens
 
 **Por que importa.**
 
-O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fica fora do ar até a penalidade decair. Por isso é pouco usado hoje e, quando usado, com parâmetros conservadores.
+O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fica fora do ar até a penalidade decair. Por isso o RIPE-580 e a [RFC 7196](https://www.rfc-editor.org/rfc/rfc7196) recomendam usá-lo, se for o caso, só com parâmetros conservadores.
 
 ## 4. Referência
 
