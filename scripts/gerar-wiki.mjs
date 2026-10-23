@@ -68,7 +68,7 @@ const q = (v) => (typeof v === 'boolean' ? (v ? 'sim' : 'não') : String(v));
 const { SIMS, CATEGORIES } = await server.ssrLoadModule('/src/sims/registry.ts');
 const { NATIVE } = await server.ssrLoadModule('/src/sims/native.ts');
 
-const CRED = 'Simulador desenvolvido pelo Prof. Dr. Laerte Peotta de Melo. Conteúdo elaborado com apoio de IA generativa, sob revisão do autor. Uso exclusivo para fins de ensino e pesquisa.';
+const CRED = 'Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).';
 // Na wiki, o crédito vem do _Footer.md (não repetir no corpo); nos documentos, cada arquivo leva o seu.
 const footer = DOCS ? `\n\n---\n\n*${CRED}*\n` : '\n';
 const pageName = (id) => (DOCS ? id : `simulador-${id}`);
