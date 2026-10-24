@@ -1,29 +1,52 @@
 # Simul-Net
 
+[![Publicação no GitHub Pages](https://github.com/peotta/Simul-Net/actions/workflows/deploy.yml/badge.svg)](https://github.com/peotta/Simul-Net/actions/workflows/deploy.yml)
+[![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
+
+**Site:** <https://peotta.github.io/Simul-Net/> | **Wiki:** <https://github.com/peotta/Simul-Net/wiki> | **Documentação:** [docs/simuladores](docs/simuladores/README.md)
+
 Simuladores visuais de redes e protocolos seguros, da Universidade de Brasília (UnB). Cada simulador mostra, passo a passo, como um protocolo funciona, como falha e como se defende, com diagrama de sequência, captura de pacotes, campos das mensagens e explicação do experimento. Tudo roda no navegador, sem servidor.
 
 Projeto acadêmico do curso de Engenharia de Redes de Comunicação, sob responsabilidade do Prof. Dr. Laerte Peotta de Melo. Projeto irmão: [CryptoNet Lab](https://peotta.github.io/CryptoNet/#/).
+
+![Página inicial do Simul-Net, com as categorias de simuladores](docs/imagens/hub.png)
+
+Destaques: diagrama de sequência, captura de pacotes e campos das mensagens em cada simulador; cenários de falha e de defesa; conteúdo conferido nas RFCs vigentes, com link para o [rfc-editor.org](https://www.rfc-editor.org); acessibilidade verificada por testes automáticos (axe-core e contraste WCAG AA).
 
 ## Simuladores
 
 | Categoria | Simulador |
 | --- | --- |
-| Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), ARP (resolução de endereços, proxy ARP, ARP gratuito, conflito de endereço, failover e envenenamento de cache com as defesas), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN), NAT, Firewall (filtragem sem estado e com estado, DMZ e defesas) |
+| Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), ARP (resolução de endereços, proxy ARP, ARP gratuito, conflito de endereço, failover e envenenamento de cache com as defesas), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN), NAT (SNAT, DNAT e NAPT) |
 | Camada de transporte e segurança | TCP e UDP (com SACK, download TCP e vídeo UDP), Ataques e defesas TCP/UDP, HTTP/1.1, HTTP/2 e HTTP/3 (conexões, fluxos, QUIC, 0-RTT, perda de pacote e fallback) |
-| Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), DNS e DNSSEC (resolução, cache e TTL, cadeia de confiança, envenenamento de cache, amplificação, DoT e DoH), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH) |
+| Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), DNS e DNSSEC (resolução, cache e TTL, cadeia de confiança, envenenamento de cache, amplificação, DoT e DoH), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH), Firewall (filtragem sem estado e com estado, DMZ e defesas) |
 
-Em preparação: VPN (IPsec e WireGuard), SMTP e segurança de e-mail, IS-IS, SNMP, HTTP/1.1, 2 e 3, controle de congestionamento (Reno, CUBIC e BBR), 802.1X e RADIUS.
+Em preparação: VPN (IPsec e WireGuard), WAF, SMTP e segurança de e-mail, IS-IS, SNMP, NTP, switching e aprendizado de MAC, STP/RSTP/MSTP, VLAN e trunking (802.1Q), Wi-Fi (operação e segurança WPA2/WPA3), controle de congestionamento (Reno, CUBIC e BBR), 802.1X e RADIUS (EAP). A situação de cada um está no [índice de documentação](docs/simuladores/README.md).
 
 > Os simuladores têm finalidade didática. Valores de chaves, hashes e assinaturas são ilustrativos e não oferecem segurança real.
+>
+> Os cenários de ataque ficam no nível defensivo: mostram o aviso, o efeito e a defesa, sem passo a passo ofensivo. Uso exclusivo para fins de ensino e pesquisa.
 
 ## Desenvolvimento
 
-Requer Node.js 20 ou superior.
+Requer Node.js 22.12 ou superior (o fluxo de publicação usa o Node 24). Pilha: React 19, TypeScript, Vite 7, Tailwind CSS 4, Vitest e Playwright.
 
 ```bash
 npm install          # instala as dependências
 npm run dev          # servidor de desenvolvimento (http://localhost:5173)
 ```
+
+### Estrutura de pastas
+
+| Pasta | Conteúdo |
+| --- | --- |
+| `src/sims/` | simuladores nativos (um por pasta: `engine`, `content` e `protocol.ts`), `native.ts` e o registro `registry.ts`, fonte única dos simuladores |
+| `src/sim-core/` | núcleo compartilhado: contrato do motor, `Trace` e componentes das abas |
+| `src/components/`, `src/pages/`, `src/layouts/` | hub, cartões, páginas e layout |
+| `public/sims/` | simuladores legados, em HTML |
+| `docs/` | arquitetura, documentos dos simuladores (`docs/simuladores/`) e imagens |
+| `scripts/` | gerador da documentação e da wiki (`gerar-wiki.mjs`) |
+| `tests/` e `e2e/` | testes unitários (Vitest) e de ponta a ponta (Playwright) |
 
 ## Testes
 
@@ -31,7 +54,8 @@ npm run dev          # servidor de desenvolvimento (http://localhost:5173)
 npm test             # executa os testes (Vitest) uma vez
 npm run test:watch   # modo contínuo
 npm run typecheck    # verificação de tipos
-npm run build && npm run test:e2e   # testes de ponta a ponta (veja abaixo)
+npm run build        # gera o dist/, necessário antes do teste de ponta a ponta
+npm run test:e2e     # testes de ponta a ponta, em um Chrome instalado (veja abaixo)
 ```
 
 Os testes unitários verificam a integridade do registro de simuladores (arquivos existentes, identificadores, categorias, pontuação), os requisitos de cada página legada (título, descrição, canônica, crédito, volta ao Simul-Net) e a acessibilidade da interface (axe-core).
@@ -83,6 +107,28 @@ npm run wiki -- <pasta-de-saida>   # gera as páginas .md da wiki
 ```
 
 Para publicar, clone `Simul-Net.wiki.git`, copie os `.md` gerados, faça o commit e o push. Como a wiki é pública, a publicação só ocorre com autorização expressa do autor.
+
+## Como contribuir
+
+Para criar ou alterar um simulador, siga o passo a passo da seção 10 de [docs/arquitetura.md](docs/arquitetura.md). Convenções do projeto:
+
+- Idioma: português do Brasil, em tom acadêmico, direto e impessoal. Termos técnicos consagrados em inglês podem ser mantidos, com o significado esclarecido na primeira ocorrência.
+- Pontuação: não usar travessão longo nem meia-risca (use hífen, dois-pontos, barra ou parênteses). Há teste automático.
+- Rigor técnico: levantar as RFCs e os padrões vigentes no [rfc-editor.org](https://www.rfc-editor.org), conferir versões substituídas (por exemplo, a RFC 8446 foi substituída pela RFC 9846), citar RFC e seção e registrar as simplificações do simulador.
+- Segurança: cenários de ataque somente no nível defensivo.
+- Todo simulador novo entra em `src/sims/registry.ts`, com documento em `docs/simuladores/<id>.md` gerado por `npm run docs:simuladores`.
+- Antes de enviar: `npm run typecheck` e `npm test`.
+- Commits em português, no formato `tipo(escopo): descricao`, sem acentos.
+
+## Como citar
+
+Os metadados de citação estão em [CITATION.cff](CITATION.cff), e o GitHub oferece o botão "Cite this repository". Exemplo:
+
+> MELO, Laerte Peotta de. *Simul-Net: simuladores visuais de redes e protocolos seguros*. Brasília: Universidade de Brasília, Departamento de Engenharia Elétrica, 2026. Disponível em: https://github.com/peotta/Simul-Net.
+
+## Créditos
+
+Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).
 
 ## Licença
 

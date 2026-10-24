@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "Se este software for útil ao seu trabalho, cite-o conforme os metadados abaixo."
+title: "Simul-Net: simuladores visuais de redes e protocolos seguros"
+type: software
+version: 0.1.0
+date-released: 2026-10-23
+license: MIT
+authors:
+  - family-names: "Melo"
+    given-names: "Laerte Peotta de"
+    affiliation: "Universidade de Brasília (UnB), Departamento de Engenharia Elétrica"
+repository-code: "https://github.com/peotta/Simul-Net"
+url: "https://peotta.github.io/Simul-Net/"
+keywords:
+  - redes de computadores
+  - protocolos seguros
+  - simulação
+  - ensino
+language: por
