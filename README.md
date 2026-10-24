@@ -8,7 +8,7 @@ Projeto acadêmico do curso de Engenharia de Redes de Comunicação, sob respons
 
 | Categoria | Simulador |
 | --- | --- |
-| Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), ARP (resolução de endereços, proxy ARP, ARP gratuito, conflito de endereço, failover e envenenamento de cache com as defesas), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN) |
+| Roteamento e serviços de rede | Roteamento (OSPF e RIPv2), ARP (resolução de endereços, proxy ARP, ARP gratuito, conflito de endereço, failover e envenenamento de cache com as defesas), DHCP (DORA), ICMP (ping e traceroute), BGP (sessões e seleção de caminho), MPLS (LDP e L3VPN), NAT, Firewall (filtragem sem estado e com estado, DMZ e defesas) |
 | Camada de transporte e segurança | TCP e UDP (com SACK, download TCP e vídeo UDP), Ataques e defesas TCP/UDP, HTTP/1.1, HTTP/2 e HTTP/3 (conexões, fluxos, QUIC, 0-RTT, perda de pacote e fallback) |
 | Protocolos de rede seguros | SSH (negociação, chaves, autenticação, túneis), HTTPS e TLS (handshake, certificados, HSTS e comparação HTTP x HTTPS), DNS e DNSSEC (resolução, cache e TTL, cadeia de confiança, envenenamento de cache, amplificação, DoT e DoH), FTP, FTPS e SFTP (canais de controle e dados, NAT e firewall, TLS e SSH) |
 
@@ -60,7 +60,29 @@ Para publicar no GitHub Pages: em *Settings > Pages*, escolha *Source: GitHub Ac
 
 ## Documentação
 
-A arquitetura, o contrato do motor de simulação, o modelo misto (simuladores nativos em React e TypeScript e simuladores legados em HTML) e os testes estão em [docs/arquitetura.md](docs/arquitetura.md).
+### Arquitetura
+
+A arquitetura, o contrato do motor de simulação, o modelo misto (simuladores nativos em React e TypeScript e simuladores legados em HTML) e os testes estão em [docs/arquitetura.md](docs/arquitetura.md). O passo a passo para adicionar um simulador está na seção 10 desse documento.
+
+### Documentação dos simuladores
+
+Cada simulador disponível tem um documento em [docs/simuladores/](docs/simuladores/) (arquivo `<id>.md`, com índice em [docs/simuladores/README.md](docs/simuladores/README.md)). O documento reúne conceito, cenários, mensagens, campos, ajuda, referências e limitações, e todas as RFCs citadas têm link para o [rfc-editor.org](https://www.rfc-editor.org). Ele é gerado a partir dos próprios módulos, para não divergir do código, e o cartão de cada simulador no hub mostra o link "Documentação" automaticamente.
+
+```bash
+npm run docs:simuladores   # gera ou atualiza docs/simuladores/
+```
+
+O teste do registro falha se faltar o documento de algum simulador disponível. Versione o documento junto com o simulador.
+
+### Wiki
+
+A [wiki do projeto](https://github.com/peotta/Simul-Net/wiki) reúne a mesma documentação em formato de páginas navegáveis: página inicial, arquitetura, índice de simuladores, guia para contribuir e uma página por simulador. Também é gerada pelo código:
+
+```bash
+npm run wiki -- <pasta-de-saida>   # gera as páginas .md da wiki
+```
+
+Para publicar, clone `Simul-Net.wiki.git`, copie os `.md` gerados, faça o commit e o push. Como a wiki é pública, a publicação só ocorre com autorização expressa do autor.
 
 ## Licença
 
