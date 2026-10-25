@@ -91,7 +91,7 @@ A arquitetura, o contrato do motor de simulação, o modelo misto (simuladores n
 
 ### Documentação dos simuladores
 
-Cada simulador disponível tem um documento em [docs/simuladores/](docs/simuladores/) (arquivo `<id>.md`, com índice em [docs/simuladores/README.md](docs/simuladores/README.md)). O documento reúne conceito, cenários, mensagens, campos, ajuda, referências e limitações, e todas as RFCs citadas têm link para o [rfc-editor.org](https://www.rfc-editor.org). Ele é gerado a partir dos próprios módulos, para não divergir do código, e o cartão de cada simulador no hub mostra o link "Documentação" automaticamente.
+Cada simulador disponível tem um documento em [docs/simuladores/](docs/simuladores/) (arquivo `<id>.md`, com índice em [docs/simuladores/README.md](docs/simuladores/README.md)). O documento reúne conceito, cenários, mensagens, campos, ajuda, referências e limitações, e todas as RFCs citadas têm link para o [rfc-editor.org](https://www.rfc-editor.org). Ele é gerado a partir dos próprios módulos, para não divergir do código, e o cartão de cada simulador no hub mostra o link "Documentação" automaticamente. Esse link abre a página interna `#/sim/<id>/documentacao`, que lê o arquivo Markdown e o apresenta com o visual da aplicação (`react-markdown` e `remark-gfm`), desenhando os diagramas de sequência e de topologia com o Mermaid nas cores padrão, como no GitHub. O Mermaid é carregado sob demanda, só ao abrir uma documentação, e a página tem o link "Ver no GitHub" para o arquivo original.
 
 ```bash
 npm run docs:simuladores   # gera ou atualiza docs/simuladores/

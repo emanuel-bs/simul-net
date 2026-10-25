@@ -19,6 +19,7 @@ Simul-Net/
     pages/                Home, Category, SimPage, NativeSim, NotFound
     components/           SimCard
     layouts/              AppLayout (cabeçalho, navegação, tema, rodapé de crédito)
+    docs/                 página de documentação: leitor de Markdown (DocView), diagramas (Mermaid) e âncoras
     hooks/                useTheme
   tests/                  registro, interface, núcleo, motores, integridade e impressões digitais dos módulos
   e2e/                    testes ponta a ponta (Playwright)
@@ -64,6 +65,7 @@ A verificação de paridade foi feita enquanto os dois lados coexistiam: cada ce
 - **Registro:** identificadores únicos, categorias válidas, arquivos existentes, ausência de travessão longo e de meia-risca, e redirecionamentos dos endereços antigos.
 - **Páginas legadas:** título, descrição, canônica, crédito e link de volta ao Simul-Net.
 - **Interface:** páginas inicial, de categoria e de simulador, com verificação de acessibilidade (axe-core).
+- **Página de documentação (`doc-ui.test.tsx`):** leitura dos documentos, índice lateral, âncoras, links, diagramas (o Mermaid é simulado no jsdom), página 404 e axe-core.
 - **Núcleo e bancada (`tests/sim-core/`):** valores determinísticos e trace (`core.test.ts`); geometria do diagrama, reprodução e cenários (`ui-logic.test.ts`); e a bancada completa com um protocolo de exemplo, incluindo destacar, maximizar, recolher, Esc, zoom, a alça de altura e a alternância entre sequência e topologia, com axe-core em todas as abas (`workbench.test.tsx`).
 - **Motores (`ssh-engine`, `https-engine`, `ftp-engine`, `http-engine`):** regras específicas de cada protocolo (negociação, downgrade, adulteração, política de encaminhamento, modos ativo e passivo, certificado inválido, RTT de abertura, bloqueio de cabeça de fila e fallback do QUIC).
 - **Integridade (`protocol-integrity.test.ts`):** vale para qualquer módulo registrado em `src/sims/native.ts`: ids únicos, parâmetros dos cenários existentes e com valores permitidos, documentação completa de cada cenário e modo, e ausência de travessão nos textos.
