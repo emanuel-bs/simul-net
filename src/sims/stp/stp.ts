@@ -126,7 +126,8 @@ export function buildStp(P: StpParams): Trace {
   const tE = tr.t;
   R.root0 = tree.root;
   setRoles(pe, tree, brs, links, tE, (r) => (r === 'alternate' ? 'Bloqueio' : 'Escuta'));
-  brs.forEach((b) => tr.ev(tE, b.key, roleSummary(tree, brs, links, b), b.n === tree.root ? 'ok' : ''));
+  brs.forEach((b, i) => tr.ev(tE + 0.4 * i, b.key, roleSummary(tree, brs, links, b), b.n === tree.root ? 'ok' : ''));
+  tr.wait(0.4 * brs.length);
   tr.st(tE, 'root', by(tree.root).name, 'est');
   tr.st(tE, 'ports', blockedText(tree, brs, links), blockedText(tree, brs, links) === 'nenhuma' ? 'closed' : 'warn');
   tr.mile(tE, 'Raiz eleita', by(tree.root).name);

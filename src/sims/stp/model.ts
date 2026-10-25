@@ -262,7 +262,7 @@ export function elect(tr: Trace, brs: Bridge[], links: Link[], o: ElectOpts): Tr
       const rb = by(s.root);
       const kind: BpduKind = o.legacy && (s.b.n === o.legacy || s.to.n === o.legacy) ? 'stp' : o.kind;
       bpdu(tr, s.b, s.to, {
-        kind, root: rb, cost: s.cost, port: portId(links, s.b.n, s.l), at: t0, par: true, age: s.root === s.b.n ? 0 : 1, flags: kind === 'rstp' ? ['porta designada', 'em descarte'] : [], role: kind === 'rstp' ? 'designada' : undefined,
+        kind, root: rb, cost: s.cost, port: portId(links, s.b.n, s.l), at: t0, par: true, age: s.root === s.b.n ? 0 : 1, flags: kind === 'rstp' ? ['porta designada'] : [], role: kind === 'rstp' ? 'designada' : undefined,
         info: s.root === s.b.n ? s.b.name + ' anuncia: "a raiz sou eu" (custo 0)' : s.b.name + ' anuncia a raiz ' + rb.name + ' (custo ' + s.cost + ')',
         about: s.root === s.b.n ? 'Toda ponte começa achando que é a raiz e anuncia isso em todas as portas.' : 'A ponte repassa, pelas portas que não levam à raiz, o que aprendeu: quem é a raiz e quanto custa chegar a ela.',
         extra: o.extra ? o.extra(s.b) : undefined, phaseName: 'Eleição',

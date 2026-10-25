@@ -1254,6 +1254,10 @@ Uma porta que sai do Bloqueio leva **30 s** para encaminhar. Se as BPDUs deixam 
 | Detecção de enlace unidirecional e Loop Guard | nos enlaces entre pontes | evitam laços quando as BPDUs param de chegar sem queda do enlace; recursos de fabricantes, fora do simulador |
 | Limite de broadcast (storm control) | nas portas | reduz o estrago de uma tempestade, sem impedir o laço |
 
+### Gerência por SNMP
+
+O funcionamento do spanning tree é definido pelo IEEE, e não por uma RFC. A **[RFC 4188](https://www.rfc-editor.org/rfc/rfc4188)** (Standards Track, setembro de 2005, substitui a [RFC 1493](https://www.rfc-editor.org/rfc/rfc1493)) define o **BRIDGE-MIB**, o módulo SNMP para pontes IEEE 802.1D, que inclui objetos do spanning tree e da ponte transparente. Serve para consultar uma ponte real (a raiz, o custo e o estado das portas, por exemplo). O simulador não implementa SNMP.
+
 ### Limitações do simulador
 
 O simulador mostra um triângulo de três switches (quatro pontes, no modo de proteções). Os endereços são de documentação ([RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)), os tempos de trânsito são didáticos, e os temporizadores do protocolo (Hello 2 s, Max Age 20 s e Forward Delay 15 s) são os padrões. A eleição é simulada por rodadas de BPDUs, sem os temporizadores de Hello nem o envelhecimento da informação (Max Age). Na falha da raiz, o simulador refaz a eleição entre as pontes que sobraram. Uma porta que já encaminha e muda de papel continua encaminhando. A topologia usa a tabela longa de custos e uma só instância de STP. No RSTP, os papéis de backup e as portas de borda não aparecem, e o MSTP mostra a sincronização só do CIST (as instâncias seguem a mesma lógica). Não foram citadas cláusulas do IEEE 802.1D, 802.1w, 802.1s e 802.1Q por falta de um texto aberto para conferência. Fora do escopo: PVST+, Rapid PVST+, agregação de enlaces e o spanning tree de camada 3.

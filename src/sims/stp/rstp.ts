@@ -1,4 +1,4 @@
-// Motor do modo RSTP (IEEE 802.1D-2004, cláusula 17; antes, 802.1w). Mesma rede do STP, mas a convergência usa o
+// Motor do modo RSTP (IEEE 802.1D-2004, antes 802.1w). Mesma rede do STP, mas a convergência usa o
 // handshake de proposta e acordo entre pontes vizinhas, em vez de esperar os temporizadores. A porta alternativa vira porta
 // raiz na hora quando a porta raiz falha. Uma ponte que só fala STP obriga os enlaces dela a usar os temporizadores.
 import { COLORS as C0, type Trace } from '../../sim-core';
@@ -32,7 +32,7 @@ const isLegacyLink = (c: Ctx, l: Link) => !!c.legacy && (l.a === c.legacy || l.b
 /** Portas em enlaces com ponte STP: seguem os temporizadores (Escuta e Aprendizado, 15 s cada). Devolve as pontes que ganharam porta raiz assim. */
 function slowTimers(c: Ctx, ports: [number, string][], tStart: number): number[] {
   if (!ports.length) return [];
-  const { tr, pe, brs, links, tree } = c;
+  const { tr, pe, brs, tree } = c;
   const rootOwners: number[] = [];
   const tL = tStart + FD;
   const tF = tStart + 2 * FD;
@@ -48,7 +48,6 @@ function slowTimers(c: Ctx, ports: [number, string][], tStart: number): number[]
   tr.ev(tL, 'sw' + c.legacy, 'Aprendizado nas portas dos enlaces com a ponte STP (' + names + ')', '');
   tr.ev(tF, 'sw' + c.legacy, 'Encaminhamento (30 s depois)', 'ok');
   tr.lg(tStart, 'Enlaces com a ponte STP: ' + ports.length + ' portas dependem dos temporizadores (2 x Forward Delay = ' + sec(2 * FD) + ').', 'loss');
-  void links;
   if (tr.t < tF) tr.t = tF;
   return rootOwners;
 }
@@ -74,7 +73,7 @@ function handshake(c: Ctx, start: [number, string][]): [number, string][] {
       const b = by(n);
       const nb = by(other(l, n));
       bpdu(tr, b, nb, {
-        kind: 'rstp', root: by(tree.root), cost: tree.cost[n], port: portId(links, n, l), at: t0, par: true, age: n === tree.root ? 0 : 1, flags: ['proposta', 'porta designada', 'aprendizado'], role: 'designada',
+        kind: 'rstp', root: by(tree.root), cost: tree.cost[n], port: portId(links, n, l), at: t0, par: true, age: n === tree.root ? 0 : 1, flags: ['proposta', 'porta designada'], role: 'designada',
         label: 'RST BPDU (proposta)', info: b.name + ' propõe a ' + nb.name + ': "posso encaminhar?"', phaseName: 'Proposta',
         about: 'A porta designada ainda em descarte pergunta ao vizinho se pode passar a encaminhar já, sem esperar os temporizadores.',
       });
@@ -138,7 +137,8 @@ export function buildRstp(P: RstpParams): Trace {
   R.root0 = tree.root;
   const c: Ctx = { tr, brs, links, tree, pe, legacy };
   setRoles(pe, tree, brs, links, tE, () => 'Descarte');
-  brs.forEach((b) => tr.ev(tE, b.key, roleSummary(tree, brs, links, b), b.n === tree.root ? 'ok' : ''));
+  brs.forEach((b, i) => tr.ev(tE + 0.4 * i, b.key, roleSummary(tree, brs, links, b), b.n === tree.root ? 'ok' : ''));
+  tr.wait(0.4 * brs.length);
   tr.st(tE, 'root', by(tree.root).name, 'est');
   tr.st(tE, 'ports', blockedText(tree, brs, links), blockedText(tree, brs, links) === 'nenhuma' ? 'closed' : 'warn');
   tr.mile(tE, 'Raiz eleita', by(tree.root).name);
@@ -152,7 +152,7 @@ export function buildRstp(P: RstpParams): Trace {
   while (slow.length && guard++ < 3) {
     tr.phase('3. Enlaces com a ponte STP: temporizadores', 'temporizadores');
     tr.st(tr.t, 'phase', 'temporizadores do STP', 'warn');
-    const owners = slowTimers(c, slow, tE);
+    const owners = slowTimers(c, slow, guard === 1 ? tE : tr.t);
     slow = [];
     owners.forEach((n) => slow.push(...handshake(c, startPorts(n))));
   }

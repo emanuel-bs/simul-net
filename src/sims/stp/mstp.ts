@@ -1,4 +1,4 @@
-// Motor do modo MSTP (IEEE 802.1s, hoje na cláusula 13 do IEEE 802.1Q). Uma região com os três switches e uma única BPDU
+// Motor do modo MSTP (IEEE 802.1s, hoje no IEEE 802.1Q). Uma região com os três switches e uma única BPDU
 // por enlace, que leva o CIST e as instâncias (MSTI). Cada instância tem a própria raiz e a própria árvore, e o mapa
 // VLAN-instância decide qual árvore cada VLAN segue. Com duas instâncias, os dois enlaces ociosos são diferentes.
 import type { Field, Trace } from '../../sim-core';
@@ -67,10 +67,11 @@ export function buildMstp(P: MstpParams): Trace {
   const tE = tr.t;
   tr.st(tE, 'root', 'CIST: ' + by(tree.root).name + (two ? '; MSTI 1: SW1; MSTI 2: SW3' : ''), 'est');
   tr.mile(tE, 'Raiz do CIST', by(tree.root).name);
-  brs.forEach((b) => {
+  brs.forEach((b, i) => {
     const parts = inst.map((i) => i.name.split(' ')[0] + ': ' + i.roles.filter((r) => r.br === b.n).map((r) => 'p' + portNo(links, b.n, links.find((l) => l.id === r.link)!) + ' ' + ROLE_TXT[r.role]).join(', '));
-    tr.ev(tE, b.key, parts.join(' | '), '');
+    tr.ev(tE + 0.4 * i, b.key, parts.join(' | '), '');
   });
+  tr.wait(0.4 * brs.length);
   const blocked = inst.map((i) => i.name.split(' ')[0] + ': ' + (i.roles.filter((r) => r.role === 'alternate').map((r) => 'enlace ' + r.link.slice(1, 2) + '-' + r.link.slice(2)).join(', ') || 'nenhum'));
   tr.st(tE, 'ports', blocked.join('; '), 'warn');
 
