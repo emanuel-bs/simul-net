@@ -297,5 +297,30 @@
     "amostra:inu": "20ae0697c78bc0e5",
     "amostra:esp": "6aa6ac10138d9f20",
     "textos": "de6fee3f8f07577f"
+  },
+  "stp": {
+    "s-elect": "89f16a0012ebf2fa",
+    "s-prio": "c1c249f96a013558",
+    "s-cost": "ba923c6eab644252",
+    "s-fail-link": "afad748dfda4df86",
+    "s-fail-root": "fb958abecb923c6f",
+    "s-fail-blocked": "0960a421aefbf3ef",
+    "r-elect": "0097d0a603980521",
+    "r-fail-link": "c4fbe73d6a45c518",
+    "r-fail-root": "db2135331a0c8147",
+    "r-legacy": "009204f1da7dd4b0",
+    "m-one": "54d6e5209c0b0311",
+    "m-two": "ac504940e64e700d",
+    "l-nostp": "e0b32e8571fbda6f",
+    "l-stp": "0caca45fe70ba6c4",
+    "p-none": "416276e69fb8afa2",
+    "p-bpdu": "8b514febf3fd6be1",
+    "p-root": "abdf69e6b1cb05a4",
+    "amostra:stp": "b80919f0cd2acb7a",
+    "amostra:rstp": "768772e4df09ae6e",
+    "amostra:mstp": "6cda5cc28e9682ac",
+    "amostra:laco": "70ce6c44ccdbd885",
+    "amostra:prot": "907143662443c480",
+    "textos": "9e0cf91d519ce549"
   }
 }

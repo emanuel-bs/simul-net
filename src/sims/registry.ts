@@ -240,10 +240,12 @@ export const SIMS: SimMeta[] = [
     id: 'stp',
     category: 'camada-de-enlace',
     title: 'STP, RSTP e MSTP',
-    summary: 'Spanning tree: eleição da bridge raiz, papéis e estados das portas, BPDUs, reconvergência após falha, tempestade de broadcast sem STP e proteções (BPDU Guard e Root Guard).',
-    topics: [],
+    summary: 'Spanning tree em um triângulo de switches: eleição da ponte raiz, papéis e estados das portas, falhas e reconvergência no STP (30 s) e no RSTP (proposta e acordo), instâncias e balanceamento por VLAN no MSTP, tempestade de broadcast sem STP e as proteções BPDU Guard e Root Guard.',
+    topics: ['Eleição da raiz e papéis das portas', 'Estados, falhas e reconvergência', 'RSTP: proposta e acordo', 'MSTP: instâncias por VLAN', 'Laço e tempestade de broadcast', 'BPDU Guard e Root Guard'],
     rfcs: ['IEEE 802.1D', 'IEEE 802.1w', 'IEEE 802.1s'],
-    status: 'planned',
+    status: 'available',
+    novo: true,
+    engine: 'nativo',
   },
   {
     id: 'vlan',
@@ -299,7 +301,6 @@ export const SIMS: SimMeta[] = [
     topics: ['Basic NAT e NAPT (PAT)', 'SNAT e DNAT', 'Tabela de traduções e portas', 'Hairpinning e redirecionamento transparente', 'Esgotamento de portas e expiração', 'ESP, NAT-T e CGNAT'],
     rfcs: ['RFC 2663', 'RFC 3022', 'RFC 4787', 'RFC 5382', 'RFC 5508', 'RFC 6598', 'RFC 6888'],
     status: 'available',
-    novo: true,
     engine: 'nativo',
   },
   {
