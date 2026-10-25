@@ -71,6 +71,12 @@ const { NATIVE } = await server.ssrLoadModule('/src/sims/native.ts');
 const CRED = 'Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).';
 // Na wiki, o crédito vem do _Footer.md (não repetir no corpo); nos documentos, cada arquivo leva o seu.
 const footer = DOCS ? `\n\n---\n\n*${CRED}*\n` : '\n';
+/** Rebaixa os títulos da Referência para o nível 3 e os numera (<seção>.1, <seção>.2, ...), como as demais seções. */
+const numberSubs = (text, sec) => {
+  let n = 0;
+  return text.replace(/^#{3,4} (.+)$/gm, (_, t) => `### ${sec}.${++n} ${t}`);
+};
+
 const pageName = (id) => (DOCS ? id : `simulador-${id}`);
 const pageRef = (id) => (DOCS ? `${id}.md` : pageName(id));
 const catTitle = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.title]));
@@ -339,7 +345,7 @@ function nativePage(sim, def) {
   }
 
   L.push(`## ${S.ref}. Referência\n`);
-  L.push(md(def.reference).replace(/^#### /gm, '### ') + '\n');
+  L.push(numberSubs(md(def.reference), S.ref) + '\n');
   L.splice(lerAt, 0, ...howToRead(S.ler, usa, figs));
   return L.join('\n') + footer;
 }
@@ -517,7 +523,7 @@ function legacyPage(sim) {
       figs.push({ tipo: 'B', num, heading, titulo: `sequência de "${s.title ?? s.label}"` });
     }
   }
-  L.push(`## ${S.ref}. Referência\n`, md(x.ref).replace(/^#### /gm, '### ') + '\n');
+  L.push(`## ${S.ref}. Referência\n`, numberSubs(md(x.ref), S.ref) + '\n');
   if (hasB) L.splice(lerAt, 0, ...howToRead(S.ler, { A: false, B: true }, figs));
   return L.join('\n') + footer;
 }

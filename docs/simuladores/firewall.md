@@ -1633,18 +1633,18 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que um firewall faz
+### 7.1 O que um firewall faz
 
 Um **firewall** é um ponto de controle entre redes que decide, segundo uma política, quais pacotes passam. A **[RFC 2979](https://www.rfc-editor.org/rfc/rfc2979)** descreve o comportamento esperado de firewalls na Internet, e o **NIST SP 800-41 Rev. 1** (2009) traz orientações sobre tipos de firewall e sobre a escrita da política. Este simulador trata do firewall de rede que decide por **camadas 3 e 4** (endereços, protocolo, portas e estado). O firewall que examina o conteúdo da aplicação é assunto de outro simulador.
 
-### Filtro sem estado (lista de regras)
+### 7.2 Filtro sem estado (lista de regras)
 
 - Cada pacote é avaliado **isoladamente**, só pelo cabeçalho: origem, destino, protocolo, portas e, no TCP, os flags.
 - As regras são percorridas **de cima para baixo**, e a **primeira que casa decide**. Regras depois dela não são consultadas.
 - Se nenhuma regra casa, vale a **política padrão** do fim da lista. Negar o que não foi permitido (negação implícita) é a postura mais segura.
 - Como o filtro não lembra dos pacotes anteriores, o **retorno** de uma conexão precisa de regra própria, escrita por porta de origem ou por flag ACK. Ambas são palpites sobre o cabeçalho que um pacote de fora pode imitar.
 
-### Filtro com estado e tabela de conexões
+### 7.3 Filtro com estado e tabela de conexões
 
 O firewall com estado registra cada conexão permitida numa **tabela**. Só o primeiro pacote (o SYN, no TCP) passa pelas regras. Os seguintes são aceitos se pertencem a uma entrada da tabela, nos dois sentidos, e um pacote que não pertence a nenhuma e não é um pedido novo é negado como **fora de estado**.
 
@@ -1661,28 +1661,28 @@ Os nomes se inspiram nos estados do TCP ([RFC 9293](https://www.rfc-editor.org/r
 
 UDP e ICMP não têm conexão. O firewall associa a resposta ao pedido por endereços e portas invertidos (UDP) ou pelo identificador (ICMP Echo), durante um tempo limitado.
 
-### Zonas e DMZ
+### 7.4 Zonas e DMZ
 
 - Uma **zona** é um conjunto de redes tratado da mesma forma. O simulador usa três: **interna** (192.0.2.0/24), **DMZ** (198.51.100.0/24) e **externa** (a Internet). São faixas de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737)).
 - A **DMZ** abriga o que precisa ser acessível de fora (por exemplo, um servidor web). Se ele for comprometido, a política entre zonas impede que seja ponto de partida para a rede interna.
 - A política típica: a Internet alcança só o serviço público da DMZ; a rede interna alcança a DMZ para administração; a DMZ **não inicia** conexões para a rede interna e, em geral, nem para a Internet.
 - O **filtro de saída** (egresso) é tão importante quanto o de entrada: limita o que um servidor comprometido consegue baixar ou enviar para fora.
 
-### Filtro de origem (anti-spoofing)
+### 7.5 Filtro de origem (anti-spoofing)
 
 O endereço de origem de um pacote IP não é autenticado. O **[BCP 38](https://www.rfc-editor.org/info/bcp38) ([RFC 2827](https://www.rfc-editor.org/rfc/rfc2827))** recomenda o **filtro de ingresso**: o provedor aceita de cada cliente só pacotes com origem nos prefixos que o cliente de fato usa, e a RFC pede também que administradores de redes corporativas filtrem para que suas redes não sejam origem de tráfego forjado. Este simulador mostra as duas direções: **de dentro para fora**, negar origem que não pertence à rede interna (o caso do [BCP 38](https://www.rfc-editor.org/info/bcp38), que protege terceiros e por isso depende de cada operador); e **de fora para dentro**, negar origem que pertence à rede interna, que só pode ser forjada (prática comum de borda, que não é o foco do [BCP 38](https://www.rfc-editor.org/info/bcp38)). Firewalls que classificam o tráfego pela **interface**, e não pelo endereço, já evitam parte do problema.
 
-### Descartar ou rejeitar
+### 7.6 Descartar ou rejeitar
 
 - **Descartar** (*drop*): não responde. Quem sonda espera o tempo esgotar e conclui que a porta está **filtrada**.
 - **Rejeitar**: responde com RST (TCP) ou com uma mensagem ICMP de destino inalcançável. A porta parece **fechada**, e a resposta é imediata.
 - Nenhuma das duas esconde que há um dispositivo no caminho. A escolha equilibra o que se revela a quem sonda e o comportamento para quem erra a porta.
 
-### Limite de taxa
+### 7.7 Limite de taxa
 
 Uma regra pode aceitar um número máximo de novas conexões por segundo por origem. Reduz o efeito de rajadas de pedidos, mas pode atingir usuários legítimos atrás de um mesmo endereço (por exemplo, atrás de um NAT) e não substitui as defesas do servidor.
 
-### O que o simulador não modela
+### 7.8 O que o simulador não modela
 
 - **NAT**: os endereços não são traduzidos. O NAT tem simulador próprio.
 - **Fragmentação, IPv6 e opções de IP**.
@@ -1692,7 +1692,7 @@ Uma regra pode aceitar um número máximo de novas conexões por segundo por ori
 - **Retransmissão do TCP**: o SYN é retransmitido uma vez, depois de 1 s ([RFC 6298](https://www.rfc-editor.org/rfc/rfc6298), seção 2.1). Os sistemas reais continuam tentando com intervalos crescentes.
 - **Segurança**: os cenários de forja, varredura e rajada mostram o ponto de vista do defensor (o que o firewall vê, decide e registra), sem ensinar a executá-los.
 
-### Para ir além
+### 7.9 Para ir além
 
 - [RFC 2979](https://www.rfc-editor.org/rfc/rfc2979): comportamento e requisitos de firewalls na Internet.
 - NIST SP 800-41 Rev. 1: guia de firewalls e de política de firewall.

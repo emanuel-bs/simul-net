@@ -1803,25 +1803,25 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que é o DNS
+### 7.1 O que é o DNS
 
 O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035)) traduz nomes em dados: endereços IP, servidores de e-mail, textos de política. É um banco de dados **hierárquico e distribuído**: a raiz delega os domínios de primeiro nível (.com, .br), que delegam os domínios de cada organização. O DNS usa a porta **53**, em UDP por padrão e em TCP para respostas grandes e transferências de zona.
 
-### Papéis
+### 7.2 Papéis
 
 - **Cliente (stub resolver):** faz uma pergunta só, com RD=1, ao resolvedor configurado.
 - **Resolvedor recursivo:** percorre a hierarquia pelo cliente e guarda as respostas no cache. Atende à própria rede.
 - **Servidor autoritativo:** dono dos dados de uma zona; responde com AA=1 e não faz recursão.
 - **Raiz e TLD:** só delegam, indicando os servidores do nível seguinte.
 
-### Resolução e cache ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308))
+### 7.3 Resolução e cache ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034), [RFC 2308](https://www.rfc-editor.org/rfc/rfc2308))
 
 - **Delegação (NS) e glue:** a resposta de um nível indica o próximo; o glue (A do servidor de nomes) evita a dependência circular.
 - **TTL:** prazo, em segundos, em que uma resposta pode ser reutilizada. TTL alto reduz carga; TTL baixo acelera mudanças.
 - **Cache negativo:** NXDOMAIN também é guardado, pelo menor valor entre o TTL do SOA e o campo "minimum".
 - **Redundância:** toda zona precisa de pelo menos dois servidores de nomes, em redes diferentes.
 
-### Tipos de registro
+### 7.4 Tipos de registro
 
 | Tipo | Função | Exemplo |
 | --- | --- | --- |
@@ -1833,14 +1833,14 @@ O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [
 | SOA | parâmetros da zona e cache negativo | ns1.example.com ... 3600 |
 | DS / DNSKEY / RRSIG / NSEC | DNSSEC | veja a seção seguinte |
 
-### Flags e códigos do cabeçalho
+### 7.5 Flags e códigos do cabeçalho
 
 - **QR:** 0 consulta, 1 resposta. **AA:** resposta autoritativa. **TC:** truncada, refazer por TCP.
 - **RD / RA:** recursão desejada / disponível. **AD / CD:** dados autenticados / validação desligada.
 - **RCODE:** 0 NOERROR, 2 SERVFAIL, 3 NXDOMAIN, 5 REFUSED.
 - **EDNS(0) ([RFC 6891](https://www.rfc-editor.org/rfc/rfc6891)):** amplia o tamanho do datagrama e carrega o bit DO (DNSSEC OK).
 
-### DNSSEC ([RFC 4033](https://www.rfc-editor.org/rfc/rfc4033), [RFC 4034](https://www.rfc-editor.org/rfc/rfc4034), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035))
+### 7.6 DNSSEC ([RFC 4033](https://www.rfc-editor.org/rfc/rfc4033), [RFC 4034](https://www.rfc-editor.org/rfc/rfc4034), [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035))
 
 - **RRSIG:** assinatura de um conjunto de registros, com início e fim de validade.
 - **DNSKEY:** chaves públicas da zona: a **ZSK** assina os dados; a **KSK** assina as chaves.
@@ -1850,7 +1850,7 @@ O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [
 - **Resultados:** segura (cadeia completa, AD=1), insegura (sem DS, resposta aceita sem AD) e bogus (falha de validação: SERVFAIL).
 - **Erros estendidos ([RFC 8914](https://www.rfc-editor.org/rfc/rfc8914)):** explicam o SERVFAIL, como "Signature Expired" e "DNSSEC Bogus".
 
-### DNS e segurança
+### 7.7 DNS e segurança
 
 - **Envenenamento de cache:** o resolvedor aceita e guarda uma resposta forjada. Defesas: porta e ID aleatórios ([RFC 5452](https://www.rfc-editor.org/rfc/rfc5452)), 0x20 (mistura de caixa, que a [RFC 4343](https://www.rfc-editor.org/rfc/rfc4343) manda preservar na resposta) e, sobretudo, DNSSEC.
 - **Reflexão e amplificação:** consultas pequenas com origem forjada geram respostas grandes contra a vítima. Defesas: [BCP 38](https://www.rfc-editor.org/info/bcp38), resolvedor fechado, limite de taxa (RRL) e respostas ANY reduzidas ([RFC 8482](https://www.rfc-editor.org/rfc/rfc8482)).
@@ -1858,14 +1858,14 @@ O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [
 - **Outros riscos:** domínio pendente por CNAME (takeover), domínios gerados por malware (DGA), tunelamento de dados por DNS, sequestro de registro do domínio. Registro de consultas e monitoração de NXDOMAIN ajudam a detectá-los.
 - **Boas práticas:** resolvedor fechado e com validação, DNSSEC na zona com renovação automática, ao menos dois autoritativos em redes diferentes, TCP 53 liberado.
 
-### Limites do simulador
+### 7.8 Limites do simulador
 
 - Nomes e endereços são de documentação (example.com, [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 3849](https://www.rfc-editor.org/rfc/rfc3849)); a raiz e o .com aparecem com um servidor cada e os endereços são fictícios.
 - Chaves, resumos e assinaturas são valores ilustrativos: não há criptografia real.
 - Tamanhos de mensagem e tempos são aproximados. O resolvedor não faz minimização de nome ([RFC 9156](https://www.rfc-editor.org/rfc/rfc9156)).
 - O envenenamento e a amplificação são apresentados em nível defensivo: mostram o efeito e as contramedidas, sem o passo a passo operacional.
 
-### Roteiro de exercícios
+### 7.9 Roteiro de exercícios
 
 1. No modo **Resolução**, rode a resolução completa e anote o que cada servidor devolveu. Depois escolha **Delegações em cache** e compare consultas e tempo.
 2. Pergunte por **MX** e por **CNAME**; na aba Mensagem, localize as seções Resposta e Adicional.

@@ -548,7 +548,7 @@ O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fic
 
 ## 4. Referência
 
-### O que é o BGP
+### 4.1 O que é o BGP
 
           
 
@@ -560,7 +560,7 @@ O BGP é um protocolo de **vetor de caminho**: cada rota carrega a lista dos AS 
 
           
 
-### Sessões e mensagens ([RFC 4271](https://www.rfc-editor.org/rfc/rfc4271))
+### 4.2 Sessões e mensagens ([RFC 4271](https://www.rfc-editor.org/rfc/rfc4271))
 
           
 
@@ -579,7 +579,7 @@ Depois que a sessão sobe, os vizinhos trocam a tabela completa uma vez; dali em
 
           
 
-### Atributos e processo de decisão
+### 4.3 Atributos e processo de decisão
 
           
 
@@ -601,7 +601,7 @@ O **NEXT_HOP** indica para onde mandar o tráfego; em eBGP, cada AS troca o NEXT
 
           
 
-### Relações comerciais e exportação
+### 4.4 Relações comerciais e exportação
 
           
 
@@ -618,7 +618,7 @@ Assim, nenhum AS oferece trânsito gratuito entre dois provedores ou dois peers.
 
           
 
-### Convergência e falhas
+### 4.5 Convergência e falhas
 
           
 
@@ -630,7 +630,7 @@ Quando um enlace cai, a sessão termina e cada lado descarta as rotas aprendidas
 
           
 
-### BGP e segurança
+### 4.6 BGP e segurança
 
           
 
@@ -653,7 +653,7 @@ As defesas simuladas aqui atuam na **importação** de rotas:
 
           
 
-### Roteiro de exercícios
+### 4.7 Roteiro de exercícios
 
           
 

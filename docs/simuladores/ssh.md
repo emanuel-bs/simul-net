@@ -1381,11 +1381,11 @@ sequenceDiagram
 
 ## 6. Referência
 
-### O SSH em três camadas
+### 6.1 O SSH em três camadas
 
 O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acesso remoto a sistemas com três camadas sobre uma conexão TCP, normalmente na porta 22. A **camada de transporte** ([RFC 4253](https://www.rfc-editor.org/rfc/rfc4253)) negocia algoritmos, troca chaves, autentica o servidor e cifra os pacotes. A **camada de autenticação** ([RFC 4252](https://www.rfc-editor.org/rfc/rfc4252)) identifica o usuário. A **camada de conexão** ([RFC 4254](https://www.rfc-editor.org/rfc/rfc4254)) multiplexa canais (sessões, SFTP, túneis) sobre a mesma conexão cifrada.
 
-### Fases e o que cada uma protege
+### 6.2 Fases e o que cada uma protege
 
 | Fase | Mensagens | Em claro? | Objetivo |
 | --- | --- | --- | --- |
@@ -1395,14 +1395,14 @@ O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acess
 | Autenticação | SERVICE_REQUEST (5), USERAUTH_* (50 a 61) | não | identificar o usuário (chave, senha, 2 fatores) |
 | Canais | CHANNEL_* (90 a 100) | não | shell, comando, SFTP, túneis, com janela de fluxo por canal |
 
-### Troca de chaves e sigilo futuro
+### 6.3 Troca de chaves e sigilo futuro
 
 - Cada lado gera um par **efêmero** e envia só a parte pública. O segredo **K** é calculado nas pontas e nunca trafega.
 - O servidor assina o hash **H** da troca com a chave de host. Isso prova que ele possui a chave e amarra a troca à identidade: um intermediário não consegue forjar.
 - Como o par é descartado, o comprometimento futuro da chave de host não decifra sessões antigas (**forward secrecy**).
 - As seis chaves da sessão (IVs, cifra e integridade nos dois sentidos) saem de `HASH(K || H || letra || session_id)` ([RFC 4253](https://www.rfc-editor.org/rfc/rfc4253), seção 7.2).
 
-### Algoritmos recomendados e legados
+### 6.4 Algoritmos recomendados e legados
 
 | Categoria | Preferir | Evitar |
 | --- | --- | --- |
@@ -1411,14 +1411,14 @@ O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acess
 | Cifra | chacha20-poly1305, aes256-gcm, aes-ctr | 3des-cbc, aes-cbc |
 | MAC | hmac-sha2-512-etm, hmac-sha2-256-etm (ou AEAD) | hmac-md5, hmac-sha1 |
 
-### known_hosts e confiança no primeiro uso (TOFU)
+### 6.5 known_hosts e confiança no primeiro uso (TOFU)
 
 - O cliente guarda o **fingerprint** de cada servidor em ~/.ssh/known_hosts e compara nas conexões seguintes.
 - Na primeira conexão não há o que comparar: o usuário decide (**TOFU**). Conferir o fingerprint por outro canal fecha essa janela.
 - Chave diferente gera **WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED**. Pode ser reinstalação ou interceptação (MITM).
 - Alternativas: certificados de host (CA SSH) e registros SSHFP no DNS (com DNSSEC).
 
-### Autenticação do usuário
+### 6.6 Autenticação do usuário
 
 - **Chave pública:** o cliente assina o session_id com a chave privada. Não trafega segredo reutilizável.
 - **Senha:** viaja dentro do canal cifrado, mas o servidor a recebe. Vulnerável a adivinhação e a reutilização de credenciais vazadas.
@@ -1426,7 +1426,7 @@ O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acess
 - **AuthenticationMethods publickey,keyboard-interactive:** exige as duas etapas. A primeira termina em sucesso parcial.
 - **MaxAuthTries** limita falhas por conexão; **fail2ban** e firewall limitam por origem.
 
-### Canais, SFTP e túneis
+### 6.7 Canais, SFTP e túneis
 
 - Cada canal tem número e janela de fluxo (WINDOW_ADJUST). Sessão, SFTP e túneis compartilham a mesma conexão cifrada.
 - **SFTP** é um subsistema do SSH, não é FTP sobre SSL. Não tem RFC publicada (só drafts do IETF, o mais usado é o draft-ietf-secsh-filexfer-02, versão 3). O encaminhamento de agente (auth-agent-req@openssh.com) também é extensão do OpenSSH, sem RFC.
@@ -1434,7 +1434,7 @@ O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acess
 - O trecho entre o servidor SSH e o destino final **não é protegido pelo SSH**.
 - **ForwardAgent** expõe o agente a quem tem privilégio no servidor; prefira ProxyJump.
 
-### Boas práticas de hardening
+### 6.8 Boas práticas de hardening
 
 - Desativar a senha e usar chaves (com passphrase) ou, melhor, certificados de usuário.
 - PermitRootLogin no ou prohibit-password; contas nominais com sudo.
@@ -1444,17 +1444,17 @@ O **SSH-2** ([RFC 4251](https://www.rfc-editor.org/rfc/rfc4251)) protege o acess
 - AllowTcpForwarding no (ou restrito com PermitOpen) nos servidores que não precisam de túneis.
 - Manter o OpenSSH atualizado e monitorar o auth.log.
 
-### O que este simulador simplifica
+### 6.9 O que este simulador simplifica
 
 Não há criptografia real: chaves, fingerprints e hashes são valores determinísticos e ilustrativos. O SSH-1, o group-exchange, a compressão, o rekeying, o X11 forwarding e os certificados SSH não são simulados. As sequências seguem o OpenSSH, mas os tamanhos de pacote são aproximados.
 
-### Segurança
+### 6.10 Segurança
 
 - Um canal cifrado não protege contra um servidor **malicioso** nem contra o uso de algoritmos fracos negociados.
 - Banners e versões expostos facilitam o inventário por atacantes: mantenha o software atualizado em vez de depender de esconder a versão.
 - Para praticar a defesa dos serviços que usam TCP, use o Simulador de Ataques e Defesas TCP/UDP.
 
-### Roteiro de exercícios
+### 6.11 Roteiro de exercícios
 
 1. **Conexão moderna com chave:** identifique na aba Captura quais mensagens estão em claro e a partir de qual aparecem só "Encrypted packet". O que o NEWKEYS faz?
 2. **Primeira conexão (TOFU):** o que o usuário precisa conferir antes de digitar "yes"? Por que isso é uma fraqueza?

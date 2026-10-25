@@ -1112,17 +1112,17 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que um switch faz
+### 7.1 O que um switch faz
 
 Um **switch** Ethernet é uma ponte multiporta (*MAC bridge*, IEEE 802.1D): recebe quadros em cada porta e decide, **só pelo endereço MAC**, por onde enviá-los. Ele não olha o endereço IP. A especificação de pontes do 802.1D foi incorporada ao IEEE 802.1Q, que hoje é a referência vigente; o simulador usa os dois nomes como os livros-texto. A Ethernet em si é definida pelo IEEE 802.3.
 
-### Os três passos para cada quadro
+### 7.2 Os três passos para cada quadro
 
 1. **Aprendizado:** o MAC de **origem** é associado à porta de entrada, ou o relógio da entrada é renovado. Endereços de grupo e de broadcast nunca são aprendidos como origem.
 2. **Decisão:** o switch procura o MAC de **destino** na tabela. Destino conhecido em outra porta: **encaminha**. Destino conhecido na própria porta de entrada: **filtra**. Destino desconhecido, broadcast ou multicast: **inunda** (todas as portas, menos a de entrada).
 3. **Envelhecimento:** sem tráfego da origem, a entrada expira. O valor recomendado é de 300 s e é configurável.
 
-### Quadro Ethernet II
+### 7.3 Quadro Ethernet II
 
 | Campo | Tamanho | Observação |
 | --- | --- | --- |
@@ -1134,23 +1134,23 @@ Um **switch** Ethernet é uma ponte multiporta (*MAC bridge*, IEEE 802.1D): rece
 
 O menor quadro tem 64 bytes (do destino ao FCS). Os tamanhos mostrados no simulador (42 para o ARP, 98 para o ping) são os do cabeçalho e dos dados, sem o preenchimento e sem o FCS.
 
-### Hub, switch e domínios
+### 7.4 Hub, switch e domínios
 
 - Um **hub** (repetidor) repete cada bit para todas as portas: todos os hosts atrás dele formam um único **domínio de colisão** e ouvem tudo. É o segmento da porta 3 do simulador.
 - Um **switch** isola o tráfego por porta: cada porta é um domínio de colisão à parte, e em full-duplex nem há colisão. O **domínio de broadcast**, porém, continua sendo a rede local inteira.
 - Para dividir o domínio de broadcast é preciso VLANs ou um roteador (outros simuladores do projeto).
 
-### Multicast e IGMP snooping
+### 7.5 Multicast e IGMP snooping
 
 - O endereço MAC de um grupo IP é derivado do IP: os 23 bits de baixa ordem do IP entram em `01:00:5e:00:00:00` ([RFC 1112](https://www.rfc-editor.org/rfc/rfc1112), seção 6.4). Como o IP tem 28 bits de grupo, 32 grupos IP diferentes compartilham o mesmo MAC.
 - Sem ajuda, o switch trata o multicast como broadcast. O **IGMP snooping** lê os relatórios dos hosts e encaminha cada grupo só às portas com assinantes. O simulador usa o relatório do IGMPv3 ([RFC 9776](https://www.rfc-editor.org/rfc/rfc9776)), enviado a 224.0.0.22.
 - A [RFC 4541](https://www.rfc-editor.org/rfc/rfc4541) (informativa, não normativa) descreve as regras de encaminhamento de um switch com snooping, entre elas a de que os grupos 224.0.0.x (de controle local) continuam sendo inundados. Um switch real precisa também de um consultor IGMP (*querier*) para renovar as assinaturas, e envia o fluxo às portas de roteador multicast; o simulador não tem nenhum dos dois.
 
-### Endereços de grupo reservados
+### 7.6 Endereços de grupo reservados
 
 Os endereços de `01-80-C2-00-00-00` a `01-80-C2-00-00-0F` são reservados pelo IEEE a protocolos que valem só entre vizinhos diretos, como o spanning tree (00) e o LLDP (0E). Uma ponte processa esses quadros e **não os encaminha**. Alguns equipamentos simples não respeitam isso e os inundam.
 
-### Inundação de MAC e segurança de porta (nível defensivo)
+### 7.7 Inundação de MAC e segurança de porta (nível defensivo)
 
 - **Por que é possível:** a tabela de endereços é finita e o switch aprende qualquer origem, sem autenticá-la. Um host que envia quadros com origens inventadas ocupa as vagas.
 - **Efeito:** com a tabela cheia, hosts novos (e os que expiraram) não são aprendidos. O tráfego para eles é inundado e chega a todas as portas, inclusive à do atacante. O switch passa a se comportar como um hub.
@@ -1158,7 +1158,7 @@ Os endereços de `01-80-C2-00-00-00` a `01-80-C2-00-00-0F` são reservados pelo 
 - **Impacto:** em tráfego sem cifra, o conteúdo é lido. Com TLS ou SSH, o conteúdo segue protegido, mas há perda de desempenho, pelo tráfego a mais.
 - **Aviso:** este modo explica o mecanismo para fins de defesa. Atacar a rede de terceiros pode configurar crime; pratique apenas em laboratório isolado, com autorização.
 
-### Defesas
+### 7.8 Defesas
 
 | Defesa | Onde atua | Observação |
 | --- | --- | --- |
@@ -1168,11 +1168,11 @@ Os endereços de `01-80-C2-00-00-00` a `01-80-C2-00-00-0F` são reservados pelo 
 | Monitoramento de alertas e de MACs por porta | na rede | detecta o ataque e permite isolar a porta |
 | Cifra de ponta a ponta (TLS, SSH, VPN) | nas aplicações | protege o conteúdo mesmo com a rede local comprometida |
 
-### Segurança
+### 7.9 Segurança
 
 O aprendizado de endereços **não tem autenticação**: o switch confia no MAC de origem de qualquer quadro. É a base de ataques de camada 2 como a inundação de MAC e o envenenamento de ARP (outro simulador do projeto). A proteção vem de limites por porta, de autenticação de acesso (802.1X) e da cifra de ponta a ponta.
 
-### Limitações do simulador
+### 7.10 Limitações do simulador
 
 O simulador mostra um único switch com quatro portas, sem VLANs, sem spanning tree e sem agregação de enlaces. Os endereços são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) para IPv4; [RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542) para MAC). A tabela do modo de inundação tem 4 ou 6 entradas, enquanto a de um switch real guarda de milhares a centenas de milhares. Quando a tabela enche, o simulador não aprende o endereço novo e inunda o destino desconhecido, mas o comportamento de um equipamento real varia (alguns removem entradas antigas, outros descartam o quadro). Os tempos de trânsito são didáticos e o simulador não representa colisões, modos de encaminhamento (*store-and-forward* e *cut-through*), velocidade das portas nem a negociação automática. Os modos da segurança de porta seguem a terminologia de um fabricante comum. Não foram citadas subcláusulas do IEEE 802.1D e do 802.1Q por falta de um texto aberto para conferência; as RFCs citadas foram conferidas no rfc-editor.org. Fora do escopo: IPv6 (MLD snooping), VLANs, STP, QoS e as funções de camada 3 do switch.
 

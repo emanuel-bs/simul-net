@@ -453,7 +453,7 @@ Ambiente didático isolado: todos os hosts, pacotes e resultados existem apenas 
 
           
 
-### Como ler a simulação
+### 4.1 Como ler a simulação
 
           
 
@@ -465,7 +465,7 @@ Na telemetria, vale sempre: **ataque rumo à vítima = neutralizados + chegaram 
 
           
 
-### TCP e abuso de estado
+### 4.2 TCP e abuso de estado
 
           
 
@@ -473,7 +473,7 @@ O TCP mantém estado e usa flags, números de sequência e confirmações. Ataqu
 
           
 
-### UDP e abuso sem conexão
+### 4.3 UDP e abuso sem conexão
 
           
 
@@ -481,7 +481,7 @@ O UDP não estabelece sessão e não confirma a origem. Isso favorece falsifica�
 
           
 
-### Onde cada controle atua
+### 4.4 Onde cada controle atua
 
           
 
@@ -493,7 +493,7 @@ O UDP não estabelece sessão e não confirma a origem. Isso favorece falsifica�
 
           
 
-### Ataques de baixo volume e de aplicação
+### 4.5 Ataques de baixo volume e de aplicação
 
           
 
@@ -501,7 +501,7 @@ O UDP não estabelece sessão e não confirma a origem. Isso favorece falsifica�
 
           
 
-### Ataques volumétricos e mitigação upstream
+### 4.6 Ataques volumétricos e mitigação upstream
 
           
 
@@ -513,7 +513,7 @@ No **DNS water torture**, os bots consultam nomes aleatórios por meio de resolv
 
           
 
-### Ciclo de resposta a incidente
+### 4.7 Ciclo de resposta a incidente
 
           
 
@@ -521,7 +521,7 @@ O painel lateral acompanha as fases do NIST SP 800-61r2 (substituída pela Rev. 
 
           
 
-### Roteiro de exercícios
+### 4.8 Roteiro de exercícios
 
           
 

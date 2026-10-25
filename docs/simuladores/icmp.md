@@ -1039,7 +1039,7 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que é o ICMP
+### 7.1 O que é o ICMP
 
 
           
@@ -1051,7 +1051,7 @@ O **Internet Control Message Protocol** ([RFC 792](https://www.rfc-editor.org/rf
 
 Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um host e respondidas pelo destino. As **mensagens de erro** são geradas por um roteador ou host que não conseguiu processar um datagrama e são sempre enviadas à **origem** do datagrama, nunca ao destino. Cada erro carrega o **cabeçalho IP original mais pelo menos os 8 primeiros bytes** do datagrama que o provocou (8 bytes é o mínimo da [RFC 792](https://www.rfc-editor.org/rfc/rfc792); os roteadores atuais citam o máximo possível, até 576 bytes no total, [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812) seção 4.3.2.3); é assim que o ping e o traceroute associam o erro à sonda certa (pelo identificador e sequência ICMP ou pelas portas UDP).
 
-### Regras de geração de erros ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) e [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812))
+### 7.2 Regras de geração de erros ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) e [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812))
 
 
           
@@ -1062,7 +1062,7 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 - Sem nenhuma rota para o destino, o roteador gera o código 0 (Network Unreachable). Se a rede está conectada mas o host não responde ao ARP, gera o código 1 (Host Unreachable).
 - Roteadores limitam a taxa de geração de erros (rate limiting). Na prática, isso faz aparecer asteriscos esporádicos no traceroute mesmo sem filtro.
 
-### Tipos e códigos principais
+### 7.3 Tipos e códigos principais
 
 
           
@@ -1085,7 +1085,7 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 | 12 | 0 | Parameter Problem | Cabeçalho IP com campo inválido (ponteiro indica o byte) |
 | 13 / 14 | 0 | Timestamp / Timestamp Reply | Consulta de relógio; frequentemente bloqueada |
 
-### Como funcionam as ferramentas
+### 7.4 Como funcionam as ferramentas
 
 
           
@@ -1102,7 +1102,7 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 
 **Path MTU Discovery** ([RFC 1191](https://www.rfc-editor.org/rfc/rfc1191)): o host envia com DF ligado; o roteador cujo enlace de saída tem MTU menor descarta e devolve tipo 3 código 4 com a MTU do próximo salto. O host guarda esse valor (cache de PMTU) e passa a usar pacotes menores. No Linux, `-M want` (padrão) fragmenta localmente depois de aprender a PMTU, `-M do` recusa enviar e `-M dont` desliga o DF e deixa o roteador fragmentar.
 
-### ICMP e segurança
+### 7.5 ICMP e segurança
 
 
           
@@ -1112,7 +1112,7 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 - **Buraco negro de PMTUD** ([RFC 2923](https://www.rfc-editor.org/rfc/rfc2923)): bloquear todo ICMP de erro impede o 3/4 de chegar. Pacotes pequenos funcionam, mas os grandes com DF somem; conexões TCP travam após o handshake. Nunca filtre o tipo 3 código 4.
 - **Ataques históricos:** Smurf (Echo para broadcast direcionado, mitigado pela [RFC 2644](https://www.rfc-editor.org/rfc/rfc2644)), Ping of Death (datagrama remontado acima de 65535 bytes), túneis ICMP (dados escondidos no payload do Echo) e Redirect forjado para desviar tráfego.
 
-### Roteiro de exercícios
+### 7.6 Roteiro de exercícios
 
 
           

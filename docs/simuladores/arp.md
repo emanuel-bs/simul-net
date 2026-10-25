@@ -1270,11 +1270,11 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que o ARP resolve
+### 7.1 O que o ARP resolve
 
 O **ARP** (*Address Resolution Protocol*, [RFC 826](https://www.rfc-editor.org/rfc/rfc826)) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, **dentro da mesma rede local**. A Ethernet entrega quadros por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.
 
-### Formato do pacote ([RFC 826](https://www.rfc-editor.org/rfc/rfc826), para IPv4 sobre Ethernet)
+### 7.2 Formato do pacote ([RFC 826](https://www.rfc-editor.org/rfc/rfc826), para IPv4 sobre Ethernet)
 
 | Campo | Tamanho | Valor |
 | --- | --- | --- |
@@ -1290,13 +1290,13 @@ O **ARP** (*Address Resolution Protocol*, [RFC 826](https://www.rfc-editor.org/r
 
 O quadro Ethernet que carrega o pacote usa o tipo 0x0806. São 28 bytes de ARP e 14 do cabeçalho Ethernet: 42 bytes, que a placa completa até o mínimo de 60 bytes no meio físico.
 
-### Requisição, resposta e aprendizado
+### 7.3 Requisição, resposta e aprendizado
 
 - A **requisição** vai para o broadcast (ff:ff:ff:ff:ff:ff): todos os hosts da rede a recebem e só o dono do IP perguntado responde.
 - A **resposta** vai em unicast para quem perguntou.
 - Quem é o alvo da requisição guarda o par IP e MAC do remetente ([RFC 826](https://www.rfc-editor.org/rfc/rfc826)), e por isso a resposta de volta (o *Echo Reply* do ping) não exige outra consulta.
 
-### Tabela ARP e estados das entradas
+### 7.4 Tabela ARP e estados das entradas
 
 O resultado fica numa tabela, que no Linux se vê com `ip neigh`. Os estados mostrados pelo simulador são os do kernel Linux:
 
@@ -1309,12 +1309,12 @@ O resultado fica numa tabela, que no Linux se vê com `ip neigh`. Os estados mos
 
 Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s com 3 tentativas, e a validade (REACHABLE) é de algumas dezenas de segundos, sorteada. Em roteadores, o padrão costuma ser de horas. O simulador usa os valores do Linux.
 
-### Fora da sub-rede e proxy ARP
+### 7.5 Fora da sub-rede e proxy ARP
 
 - O broadcast **não atravessa roteadores**. Para um destino em outra rede, o host faz o ARP do **gateway**, e o quadro leva o MAC do gateway com o IP de destino remoto.
 - No **proxy ARP** ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027)), o roteador responde a requisições por endereços de outras redes usando o próprio MAC. Serve para hosts sem gateway, mas esconde erros de máscara e de rota.
 
-### ARP gratuito, Probe e Announce ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227))
+### 7.6 ARP gratuito, Probe e Announce ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227))
 
 - O **ARP Probe** é uma requisição com o IP do remetente **zerado** (0.0.0.0): pergunta se alguém usa o endereço sem contaminar as tabelas dos vizinhos. A RFC prevê 3 Probes, com 1 a 2 s entre eles, depois de uma espera inicial de até 1 s.
 - O **ARP Announce** é uma requisição em que o IP do remetente e o do alvo são o mesmo endereço. A RFC prevê 2 Announces, a cada 2 s, depois de uma espera de 2 s. Os vizinhos que já tinham uma entrada para o IP a atualizam; ninguém cria entrada por causa de um Announce.
@@ -1322,7 +1322,7 @@ Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s co
 - Se o dono de um endereço vê um conflito, ele o **defende** com um Announce, no máximo uma vez a cada 10 s. Um segundo conflito dentro desse intervalo faz o host abandonar o endereço.
 - Com DHCP, quem detecta o endereço em uso recusa a oferta com `DHCPDECLINE` ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)).
 
-### Envenenamento do cache ARP (nível defensivo)
+### 7.7 Envenenamento do cache ARP (nível defensivo)
 
 - **Por que é possível:** o ARP não autentica quem responde e muitos sistemas aceitam respostas que ninguém pediu. Um host da mesma rede local pode declarar o IP de outro no próprio MAC.
 - **Efeito:** quem aceita a resposta passa a enviar o tráfego daquele IP ao host malicioso, que o repassa ao destino verdadeiro. A comunicação continua funcionando, o que torna o desvio difícil de notar.
@@ -1330,7 +1330,7 @@ Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s co
 - **Impacto:** em HTTP, o conteúdo é lido. Com HTTPS ou SSH, o conteúdo continua cifrado de ponta a ponta, mas o tráfego ainda pode ser atrasado ou descartado.
 - **Aviso:** este modo explica o mecanismo para fins de defesa. Interceptar o tráfego de uma rede que não é sua pode configurar crime; pratique apenas em laboratório isolado, com autorização.
 
-### Defesas
+### 7.8 Defesas
 
 | Defesa | Onde atua | Observação |
 | --- | --- | --- |
@@ -1341,11 +1341,11 @@ Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s co
 | Cifra de ponta a ponta (HTTPS, SSH, VPN) | nas aplicações | protege o conteúdo mesmo com a rede local comprometida |
 | Segmentação (VLANs) e redes confiáveis | na arquitetura | reduz quem consegue enviar ARP à vítima |
 
-### Segurança
+### 7.9 Segurança
 
 O ARP **não tem autenticação**: o host aceita qualquer resposta que pareça válida e a guarda na tabela. É o que torna a camada 2 uma superfície de ataque dentro da rede local, e é a razão de existirem entradas estáticas, inspeção de ARP em switches (DAI) e monitoramento da tabela. O ARP gratuito e a defesa de endereço tratam conflitos acidentais: um host malicioso pode enviar os mesmos pacotes para enganar a tabela dos vizinhos.
 
-### Limitações do simulador
+### 7.10 Limitações do simulador
 
 O simulador mostra um único segmento Ethernet com três hosts (o switch não aparece, mas é ele que entrega o broadcast a todos). Os endereços são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)), os tempos são didáticos e, no destino remoto, a resposta do ping é gerada pelo gateway, sem simular a rede além dele. No modo de conflito, os tempos da [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) são valores fixos (a RFC sorteia intervalos). O estado STALE revalida por unicast antes do ping (o Linux usa o estado DELAY, de 5 s, e envia o pacote antes de revalidar). O failover usa Gratuitous ARP Reply; a [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) (seção 3) descreve o Request. Fora do escopo: o NDP do IPv6.
 

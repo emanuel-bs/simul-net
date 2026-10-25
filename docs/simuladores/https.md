@@ -1646,11 +1646,11 @@ sequenceDiagram
 
 ## 6. Referência
 
-### HTTPS = HTTP sobre TLS
+### 6.1 HTTPS = HTTP sobre TLS
 
 O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. O TLS oferece **confidencialidade** (cifragem), **integridade** (detecção de alteração) e **autenticação do servidor** (por certificado X.509) e, opcionalmente, do cliente (mTLS). Ele roda sobre o TCP; o QUIC (HTTP/3) integra o TLS 1.3 sobre UDP.
 
-### TLS 1.3 contra TLS 1.2
+### 6.2 TLS 1.3 contra TLS 1.2
 
 | Aspecto | TLS 1.3 ([RFC 9846](https://www.rfc-editor.org/rfc/rfc9846)) | TLS 1.2 ([RFC 5246](https://www.rfc-editor.org/rfc/rfc5246), obsoleta pela [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), que mantém o TLS 1.2 no apêndice D) |
 | --- | --- | --- |
@@ -1662,14 +1662,14 @@ O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. 
 | Derivação | HKDF | PRF |
 | Downgrade | sentinela DOWNGRD no random | sem proteção própria |
 
-### O handshake do TLS 1.3
+### 6.3 O handshake do TLS 1.3
 
 - **ClientHello:** versões (supported_versions), cifras, **key_share** (metade do ECDHE), **SNI** (nome do site, em claro), ALPN e outras extensões.
 - **ServerHello:** versão, cifra e key_share. A partir daqui, as chaves de handshake saem do HKDF e tudo é cifrado.
 - **EncryptedExtensions, Certificate, CertificateVerify, Finished:** identidade do servidor, assinatura do hash da conversa e confirmação.
 - **Finished do cliente:** o cliente já pode enviar dados. Depois, o servidor entrega o **NewSessionTicket**.
 
-### Certificados e validação
+### 6.4 Certificados e validação
 
 - O navegador valida: **cadeia** até uma raiz confiável, **assinaturas**, **validade**, **nome no SAN**, **uso permitido** (EKU), **revogação** e **Certificate Transparency** (SCT).
 - A identidade vem do **SAN**; o campo CN é ignorado ([RFC 9525](https://www.rfc-editor.org/rfc/rfc9525)).
@@ -1677,14 +1677,14 @@ O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. 
 - Os prazos são curtos (até 200 dias desde 15/03/2026, caindo para 100 em 2027 e 47 em 2029, CA/B Forum SC-081v3), e a renovação deve ser automática (ACME, Let's Encrypt).
 - O servidor deve enviar o **fullchain** (leaf e intermediários).
 
-### Retomada, 0-RTT e privacidade
+### 6.5 Retomada, 0-RTT e privacidade
 
 - **Ticket (PSK):** evita novo certificado e assinatura. Em modo psk_dhe_ke mantém o sigilo futuro.
 - **0-RTT:** envia dados no primeiro voo. Sem proteção contra **replay** e sem sigilo futuro para esses dados: só para requisições idempotentes.
 - **SNI** em claro revela o site visitado; o **ECH** (Encrypted Client Hello) o esconde.
 - **ALPN** negocia o protocolo de aplicação (h2 ou http/1.1).
 
-### HTTP x HTTPS: o que muda
+### 6.6 HTTP x HTTPS: o que muda
 
 | Aspecto | HTTP | HTTPS |
 | --- | --- | --- |
@@ -1697,13 +1697,13 @@ O **HTTPS** é o HTTP dentro de uma conexão **TLS**, normalmente na porta 443. 
 
 O custo do HTTPS é pago uma vez por conexão e diminui com TLS 1.3, retomada de sessão, conexões persistentes e HTTP/2 ou HTTP/3. Por isso, hoje o HTTPS é o padrão mínimo, inclusive para conteúdo público.
 
-### HSTS e a primeira requisição
+### 6.7 HSTS e a primeira requisição
 
 - Sem HSTS, a primeira requisição pode sair em **HTTP** e o redirecionamento 301 também: um intermediário pode alterá-lo ou impedir o upgrade (*SSL stripping*).
 - O cabeçalho `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` ([RFC 6797](https://www.rfc-editor.org/rfc/rfc6797)) faz o navegador usar só HTTPS, trocando http por https internamente.
 - A **lista de preload** protege até a primeira visita, mas exige HTTPS em todo o domínio e é difícil de desfazer.
 
-### Boas práticas de hardening
+### 6.8 Boas práticas de hardening
 
 - Habilitar TLS 1.3 e 1.2; desativar TLS 1.0, 1.1 e SSL.
 - Só suítes com sigilo futuro e AEAD; sem CBC, 3DES e RC4.
@@ -1712,18 +1712,18 @@ O custo do HTTPS é pago uma vez por conexão e diminui com TLS 1.3, retomada de
 - 0-RTT só quando o servidor tem proteção contra replay.
 - Testar com SSL Labs ou testssl.sh e acompanhar os logs de Certificate Transparency do próprio domínio.
 
-### O que este simulador simplifica
+### 6.9 O que este simulador simplifica
 
 Não há criptografia real: chaves, assinaturas e hashes são valores ilustrativos. Não são simulados o HelloRetryRequest, o pós-handshake (KeyUpdate), a compressão, o DTLS, o QUIC, o ECH, o certificate pinning e o Must-Staple. Os tamanhos de registro são aproximados.
 
-### Segurança
+### 6.10 Segurança
 
 - O TLS protege o **canal**: não protege contra um servidor malicioso nem contra vulnerabilidades da aplicação.
 - Aceitar exceções de certificado por hábito remove a proteção contra interceptação.
 - Proxies de inspeção TLS corporativos reencerram a conexão com uma CA privada: a confiança passa a ser neles.
 - Para praticar a defesa de serviços sobre TCP, use o Simulador de Ataques e Defesas TCP/UDP. Para o acesso remoto seguro, veja o SSH neste simulador.
 
-### Roteiro de exercícios
+### 6.11 Roteiro de exercícios
 
 1. **TLS 1.3 completo:** a partir de qual mensagem as setas ficam cifradas? O que continua visível a quem observa a rede (SNI, tamanhos, tempos)?
 2. **TLS 1.2 completo:** compare o número de RTTs e a visibilidade do certificado com o TLS 1.3.

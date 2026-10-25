@@ -308,7 +308,7 @@ A convergência do MPLS depende do IGP. Em produção, mecanismos como a sincron
 
 ## 4. Referência
 
-### O que é o MPLS
+### 4.1 O que é o MPLS
 
           
 
@@ -322,7 +322,7 @@ No **Multiprotocol Label Switching** ([RFC 3031](https://www.rfc-editor.org/rfc/
 
           
 
-### Cabeçalho de rótulo ([RFC 3032](https://www.rfc-editor.org/rfc/rfc3032))
+### 4.2 Cabeçalho de rótulo ([RFC 3032](https://www.rfc-editor.org/rfc/rfc3032))
 
           
 
@@ -346,7 +346,7 @@ O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada 
 
           
 
-### LDP ([RFC 5036](https://www.rfc-editor.org/rfc/rfc5036))
+### 4.3 LDP ([RFC 5036](https://www.rfc-editor.org/rfc/rfc5036))
 
           
 
@@ -358,7 +358,7 @@ O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada 
 
           
 
-### PHP e modelos de TTL
+### 4.4 PHP e modelos de TTL
 
           Com **PHP** (Penultimate Hop Popping), o egresso anuncia implicit-null (3) e o penúltimo LSR remove o rótulo. Assim, o egresso faz uma única consulta (IP) em vez de duas (rótulo e IP). Com **explicit-null** (0), o rótulo chega ao egresso, o que preserva o campo TC para QoS. A [RFC 3032](https://www.rfc-editor.org/rfc/rfc3032) só permitia o explicit-null no fundo da pilha; a [RFC 4182](https://www.rfc-editor.org/rfc/rfc4182) removeu essa restrição, o que permite usá-lo também sobre o rótulo VPN.
 
@@ -372,7 +372,7 @@ Quando o TTL expira dentro do LSP, o LSR gera o ICMP Time Exceeded, copia a pilh
 
           
 
-### L3VPN ([RFC 4364](https://www.rfc-editor.org/rfc/rfc4364))
+### 4.5 L3VPN ([RFC 4364](https://www.rfc-editor.org/rfc/rfc4364))
 
           
 
@@ -380,7 +380,7 @@ Os PEs mantêm uma tabela de roteamento por cliente (**VRF**) e trocam as rotas 
 
           
 
-### MPLS e segurança
+### 4.6 MPLS e segurança
 
           
 
@@ -391,7 +391,7 @@ Os PEs mantêm uma tabela de roteamento por cliente (**VRF**) e trocam as rotas 
 
           
 
-### Limitações do simulador
+### 4.7 Limitações do simulador
 
           
 
@@ -402,7 +402,7 @@ Os PEs mantêm uma tabela de roteamento por cliente (**VRF**) e trocam as rotas 
 
           
 
-### Roteiro de exercícios
+### 4.8 Roteiro de exercícios
 
           
 

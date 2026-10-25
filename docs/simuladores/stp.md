@@ -1179,20 +1179,20 @@ sequenceDiagram
 
 ## 7. Referência
 
-### Para que serve
+### 7.1 Para que serve
 
 Uma rede local com enlaces redundantes forma **laços**. Como o quadro Ethernet não tem TTL, um broadcast preso num laço circula para sempre, e as tabelas MAC dos switches perdem a estabilidade. O **spanning tree** escolhe, entre as pontes, uma árvore sem laços e deixa em **Bloqueio** as portas que a formariam. Se um enlace da árvore falha, uma porta bloqueada é reaberta.
 
 As versões são três: o **STP** (IEEE 802.1D), o **RSTP** (IEEE 802.1w, hoje parte do 802.1D-2004) e o **MSTP** (IEEE 802.1s). Os três foram incorporados ao IEEE 802.1Q, que é a referência vigente. Fabricantes oferecem ainda versões por VLAN (como o PVST+ e o Rapid PVST+), que não são tratadas aqui.
 
-### Identificador da ponte e eleição da raiz
+### 7.2 Identificador da ponte e eleição da raiz
 
 - O **identificador da ponte** tem 8 bytes: prioridade (padrão 32768) e MAC. No 802.1D-2004 e no 802.1Q, a prioridade usa os 4 bits mais altos, em múltiplos de 4096, e os 12 bits restantes formam a extensão de identificador de sistema (o número da VLAN ou da instância).
 - Todas as pontes começam achando que são a **raiz**. A de menor identificador vence; o desempate é o MAC.
 - Cada ponte escolhe a **porta raiz**: a de menor **custo acumulado** até a raiz (desempate: identificador da ponte vizinha e depois o número da porta).
 - Em cada enlace, a ponte com o melhor vetor (custo até a raiz e, no empate, identificador) fica com a **porta designada**. A porta que não é raiz nem designada vira **alternativa** (bloqueada).
 
-### Custo de porta
+### 7.3 Custo de porta
 
 | Velocidade | Custo (tabela longa, 802.1D-2004) | Custo (tabela curta, 802.1D-1998) |
 | --- | --- | --- |
@@ -1203,7 +1203,7 @@ As versões são três: o **STP** (IEEE 802.1D), o **RSTP** (IEEE 802.1w, hoje p
 
 O simulador usa a tabela longa. Pontes que usam tabelas diferentes na mesma rede podem escolher caminhos inesperados.
 
-### A BPDU
+### 7.4 A BPDU
 
 | Campo | Valor ou função |
 | --- | --- |
@@ -1214,7 +1214,7 @@ O simulador usa a tabela longa. Pontes que usam tabelas diferentes na mesma rede
 | Message Age, Max Age, Hello Time, Forward Delay | idade da informação e os temporizadores da raiz (padrões 0, 20 s, 2 s e 15 s) |
 | Flags | STP: TC e TCA. RSTP: proposta, papel da porta, aprendizado, encaminhamento e acordo |
 
-### Estados e tempos do STP
+### 7.5 Estados e tempos do STP
 
 | Estado | Aprende MACs | Encaminha dados |
 | --- | --- | --- |
@@ -1225,26 +1225,26 @@ O simulador usa a tabela longa. Pontes que usam tabelas diferentes na mesma rede
 
 Uma porta que sai do Bloqueio leva **30 s** para encaminhar. Se as BPDUs deixam de chegar sem que o enlace caia (por exemplo, por um conversor de mídia no meio ou um enlace unidirecional), a informação só expira em **Max Age (20 s)**, e o total chega a 50 s. Em uma mudança de topologia, um **TCN** sobe até a raiz, que sinaliza a flag TC por Max Age mais Forward Delay (35 s): as pontes reduzem o envelhecimento da tabela MAC para o Forward Delay.
 
-### RSTP
+### 7.6 RSTP
 
 - Os estados viram **Descarte**, **Aprendizado** e **Encaminhamento**. Os papéis incluem a porta **alternativa** (reserva da porta raiz) e a **de backup** (reserva de uma porta designada na mesma ponte).
 - **Proposta e acordo:** a porta designada em descarte envia uma BPDU com a flag de proposta. O vizinho sincroniza (põe as outras portas dele em descarte) e responde com o acordo. A porta raiz do vizinho encaminha na hora, e a designada encaminha ao receber o acordo. O simulador considera que uma porta alternativa, já em descarte, concorda com a proposta.
 - Quando a **porta raiz falha**, a alternativa vira porta raiz e encaminha imediatamente. As portas de borda (de acesso, ligadas a computadores) encaminham sem esperar nada.
 - Uma ponte que só fala STP obriga os enlaces com ela a usar o STP clássico e os temporizadores.
 
-### MSTP
+### 7.7 MSTP
 
 - Uma **região** é um conjunto de pontes com o mesmo **nome**, a mesma **revisão** e o mesmo **mapa VLAN-instância** (resumido num digest de 16 bytes na BPDU). Se um deles difere, a ponte fica em outra região.
 - O **CIST** (instância 0) liga todas as pontes e regiões; as **MSTIs** existem só dentro da região, cada uma com a própria raiz e árvore. Uma só BPDU por enlace leva o CIST e os registros de todas as MSTIs (16 bytes cada).
 - O ganho é de capacidade: cada instância bloqueia enlaces diferentes e o tráfego das VLANs se distribui entre os enlaces.
 
-### Proteções e segurança (nível defensivo)
+### 7.8 Proteções e segurança (nível defensivo)
 
 - **Por que é possível atacar:** o spanning tree **não autentica as BPDUs**. Quem se anuncia com a melhor prioridade passa a ser a raiz, e a rede se reorganiza ao redor dele. O tráfego pode passar a atravessar o equipamento do intruso e há interrupção durante a reconvergência.
 - **Alcance:** só dentro do domínio de camada 2 (a rede local ou a VLAN). As BPDUs não atravessam roteadores.
 - **Aviso:** este modo explica o mecanismo para fins de defesa. Interferir na rede de terceiros pode configurar crime; pratique apenas em laboratório isolado, com autorização.
 
-### Defesas
+### 7.9 Defesas
 
 | Defesa | Onde atua | Observação |
 | --- | --- | --- |
@@ -1254,11 +1254,11 @@ Uma porta que sai do Bloqueio leva **30 s** para encaminhar. Se as BPDUs deixam 
 | Detecção de enlace unidirecional e Loop Guard | nos enlaces entre pontes | evitam laços quando as BPDUs param de chegar sem queda do enlace; recursos de fabricantes, fora do simulador |
 | Limite de broadcast (storm control) | nas portas | reduz o estrago de uma tempestade, sem impedir o laço |
 
-### Gerência por SNMP
+### 7.10 Gerência por SNMP
 
 O funcionamento do spanning tree é definido pelo IEEE, e não por uma RFC. A **[RFC 4188](https://www.rfc-editor.org/rfc/rfc4188)** (Standards Track, setembro de 2005, substitui a [RFC 1493](https://www.rfc-editor.org/rfc/rfc1493)) define o **BRIDGE-MIB**, o módulo SNMP para pontes IEEE 802.1D, que inclui objetos do spanning tree e da ponte transparente. Serve para consultar uma ponte real (a raiz, o custo e o estado das portas, por exemplo). O simulador não implementa SNMP.
 
-### Limitações do simulador
+### 7.11 Limitações do simulador
 
 O simulador mostra um triângulo de três switches (quatro pontes, no modo de proteções). Os endereços são de documentação ([RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)), os tempos de trânsito são didáticos, e os temporizadores do protocolo (Hello 2 s, Max Age 20 s e Forward Delay 15 s) são os padrões. A eleição é simulada por rodadas de BPDUs, sem os temporizadores de Hello nem o envelhecimento da informação (Max Age). Na falha da raiz, o simulador refaz a eleição entre as pontes que sobraram. Uma porta que já encaminha e muda de papel continua encaminhando. A topologia usa a tabela longa de custos e uma só instância de STP. No RSTP, os papéis de backup e as portas de borda não aparecem, e o MSTP mostra a sincronização só do CIST (as instâncias seguem a mesma lógica). Não foram citadas cláusulas do IEEE 802.1D, 802.1w, 802.1s e 802.1Q por falta de um texto aberto para conferência. Fora do escopo: PVST+, Rapid PVST+, agregação de enlaces e o spanning tree de camada 3.
 

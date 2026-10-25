@@ -1287,11 +1287,11 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que é o NAT
+### 7.1 O que é o NAT
 
 O **Network Address Translation** reescreve campos do cabeçalho IP (e, quando há, das portas) de pacotes que atravessam um roteador. Nasceu para poupar endereços IPv4: a rede interna usa endereços privados ([RFC 1918](https://www.rfc-editor.org/rfc/rfc1918)) e o roteador os traduz para endereços públicos. A terminologia está na [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) e a técnica tradicional, na [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022). Nos exemplos, os endereços 203.0.113.0/24 e 198.51.100.0/24 são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737)) e fazem o papel de endereços públicos.
 
-### Os tipos de tradução ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022))
+### 7.2 Os tipos de tradução ([RFC 3022](https://www.rfc-editor.org/rfc/rfc3022))
 
 | Termo da RFC | Termo de uso comum | O que traduz |
 | --- | --- | --- |
@@ -1300,7 +1300,7 @@ O **Network Address Translation** reescreve campos do cabeçalho IP (e, quando h
 | Traditional NAT | NAT comum | Basic NAT e NAPT, com sessões iniciadas de dentro |
 | Twice NAT | SNAT e DNAT no mesmo pacote | Origem e destino reescritos (por exemplo, em hairpin e em redes com endereços sobrepostos) |
 
-### SNAT e DNAT
+### 7.3 SNAT e DNAT
 
 SNAT e DNAT são termos de uso consagrado na prática (netfilter/Linux e documentação de fabricantes), e não da [RFC 2663](https://www.rfc-editor.org/rfc/rfc2663) ou da [RFC 3022](https://www.rfc-editor.org/rfc/rfc3022). Descrevem **qual campo** é reescrito:
 
@@ -1310,56 +1310,56 @@ SNAT e DNAT são termos de uso consagrado na prática (netfilter/Linux e documen
 
 O tipo (Basic NAT ou NAPT) e a direção (SNAT ou DNAT) são eixos independentes: o port forwarding, por exemplo, é um DNAT estático.
 
-### Ordem de processamento
+### 7.4 Ordem de processamento
 
 No Linux (netfilter), o DNAT é aplicado na cadeia **PREROUTING**, antes da decisão de roteamento: o roteamento já enxerga o destino reescrito e escolhe a interface certa. O SNAT é aplicado na **POSTROUTING**, depois da decisão de roteamento: a interface de saída já está definida. A resposta é revertida pela tabela de conexões, sem regra adicional. Outros sistemas organizam o processamento de forma diferente, mas a lógica é a mesma.
 
-### A tabela de traduções
+### 7.5 A tabela de traduções
 
 A entrada liga o par interno (endereço, porta) ao par externo, e guarda o outro extremo da conexão. É consultada na volta para reverter a tradução e removida depois de um tempo de inatividade. A [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) pede, para UDP, que o tempo não seja menor que 2 minutos; a [RFC 5382](https://www.rfc-editor.org/rfc/rfc5382) pede, para TCP estabelecido, no mínimo 2 horas e 4 minutos. **O simulador usa tempos bem menores só para a visualização**, e o modelo tem um único tempo por entrada, sem os estados do TCP.
 
-### Comportamento de mapeamento e de filtragem ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787))
+### 7.6 Comportamento de mapeamento e de filtragem ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787))
 
 - **Mapeamento independente do destino (EIM):** a porta externa depende só do endereço e da porta internos. É o comportamento exigido pela [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) para UDP, porque permite aplicações ponto a ponto.
 - **Mapeamento dependente de endereço (e porta):** cada destino distinto cria um novo mapeamento. É o NAT chamado "simétrico".
 - **Filtragem:** define quem pode enviar pacotes para uma porta já mapeada (qualquer origem, só o endereço contatado, ou só o endereço e a porta contatados). O simulador usa a mais restritiva (endereço e porta), por simplicidade didática: a [RFC 4787](https://www.rfc-editor.org/rfc/rfc4787) (REQ-8) recomenda a filtragem independente do endereço ou dependente só do endereço, para não prejudicar aplicações ponto a ponto.
 
-### ICMP e ESP
+### 7.7 ICMP e ESP
 
 - **ICMP:** sem portas, o NAT usa o *Identifier* do Echo como chave ([RFC 5508](https://www.rfc-editor.org/rfc/rfc5508)). Mensagens de erro ICMP carregam o cabeçalho do pacote original e exigem tradução adicional, que o simulador não modela.
 - **ESP (IPsec):** não tem portas. O Basic NAT atravessa, desde que não haja AH (ele protege o cabeçalho IP). O NAPT não distingue hosts. O **NAT-T** ([RFC 3947](https://www.rfc-editor.org/rfc/rfc3947) e [RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)) detecta o NAT no IKE e encapsula o ESP em UDP porta 4500 ([RFC 3715](https://www.rfc-editor.org/rfc/rfc3715) reúne os requisitos de compatibilidade entre IPsec e NAT).
 
-### Hairpinning
+### 7.8 Hairpinning
 
 Quando um cliente interno usa o endereço público de um serviço da própria rede, o pacote volta pela mesma interface. Para funcionar, o roteador aplica DNAT e SNAT: sem o SNAT, o servidor responde direto ao cliente (mesma rede) e a resposta não casa com a conexão. Alternativas: DNS interno (split DNS) ou NAT loopback.
 
-### CGNAT
+### 7.9 CGNAT
 
 O *carrier-grade NAT* ([RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)) traduz os endereços de muitos assinantes para poucos endereços públicos. O espaço 100.64.0.0/10 ([RFC 6598](https://www.rfc-editor.org/rfc/rfc6598)) é reservado ao trecho entre o CPE e o CGN. O CGN divide as portas entre assinantes (limites por assinante e alocação por blocos de portas) e precisa registrar as traduções para identificar o responsável por uma conexão. O assinante deixa de receber conexões de fora.
 
-### NAT e protocolos que carregam endereços
+### 7.10 NAT e protocolos que carregam endereços
 
 Protocolos que escrevem endereços ou portas no payload (o FTP ativo, o SIP, o IKE) quebram quando o NAT só reescreve o cabeçalho. A solução tradicional é um **ALG** (*application layer gateway*), que inspeciona e reescreve o payload, ou o uso de protocolos que evitam o problema (FTP passivo, STUN, ICE). O simulador **não modela ALG**.
 
-### NAT e IPv6
+### 7.11 NAT e IPv6
 
 O IPv6 tem endereços suficientes para dispensar o NAT como poupança de endereços. Há mecanismos de tradução para outros fins, como o NAT64 ([RFC 6146](https://www.rfc-editor.org/rfc/rfc6146)), para acessar redes IPv4 a partir de IPv6, e o NPTv6 ([RFC 6296](https://www.rfc-editor.org/rfc/rfc6296)). Nenhum deles é modelado aqui.
 
-### NAT e segurança
+### 7.12 NAT e segurança
 
 - **NAT não é firewall.** O descarte de pacotes sem entrada na tabela é efeito da tradução. O Basic NAT estático, o DNAT e qualquer mapeamento ativo deixam o host alcançável. A proteção vem de regras de filtragem com estado.
 - **DNAT apenas redireciona.** Quem pode acessar o serviço publicado é decidido pela política de filtragem, não pela regra de tradução.
 - **Esgotamento de portas:** um host com muitas conexões pode consumir o pool e negar serviço aos demais. Limites de conexões por host e por assinante ([RFC 6888](https://www.rfc-editor.org/rfc/rfc6888)) reduzem o risco.
 - **Rastreabilidade:** com muitos hosts atrás de um endereço, o registro da tradução (endereço, porta e horário) é o que permite identificar quem usou aquela conexão.
 
-### Limitações do simulador
+### 7.13 Limitações do simulador
 
 - Modelo didático: a primeira mensagem de cada sentido representa a conexão (SYN e SYN+ACK no TCP), sem handshake completo, sem estados do TCP (FIN, RST) e sem fragmentação.
 - Um único tempo de inatividade por entrada. Os valores são parâmetros do simulador, não padrões de equipamentos.
 - A alocação de portas é determinística: preserva a porta de origem quando possível e, senão, usa a próxima livre. Equipamentos reais variam (alguns sorteiam a porta).
 - Sem ALG, sem IPv6, sem tradução de mensagens de erro ICMP e sem regras de filtragem. Não há comandos de equipamentos específicos.
 
-### Roteiro de exercícios
+### 7.14 Roteiro de exercícios
 
 1. Em **NAPT: dois hosts, um endereço**, anote a origem de cada pacote antes e depois do R-NAT e a porta externa de cada conexão. Que campo o servidor enxerga?
 2. Em **Colisão de portas**, explique por que a segunda conexão recebe outra porta externa e por que o host não percebe.

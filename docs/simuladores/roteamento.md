@@ -263,7 +263,7 @@ Enquanto a contagem não termina, os pacotes ficam em laço e se perdem. Split h
 
 ## 4. Referência
 
-### Roteamento dinâmico
+### 4.1 Roteamento dinâmico
 
           
 
@@ -271,7 +271,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### OSPF ([RFC 2328](https://www.rfc-editor.org/rfc/rfc2328))
+### 4.2 OSPF ([RFC 2328](https://www.rfc-editor.org/rfc/rfc2328))
 
           
 
@@ -284,7 +284,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### RIPv2 ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453))
+### 4.3 RIPv2 ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453))
 
           
 
@@ -296,7 +296,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### Comparação
+### 4.4 Comparação
 
           
 
@@ -312,7 +312,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### Roteamento e segurança
+### 4.5 Roteamento e segurança
 
           
 
@@ -322,7 +322,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 
           
 
-### Roteiro de exercícios
+### 4.6 Roteiro de exercícios
 
           
 

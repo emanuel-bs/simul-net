@@ -601,13 +601,13 @@ sequenceDiagram
 
 ## 7. Referência
 
-### O que é o DHCP
+### 7.1 O que é o DHCP
 
           
 
 O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)) entrega automaticamente a um host o endereço IP, a máscara, o gateway e os servidores DNS. As opções que carregam cada parâmetro estão na [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132). O DHCP usa **UDP**: o servidor escuta na porta **67** e o cliente, na porta **68**. O endereço é **emprestado** por um tempo (lease) e precisa ser renovado.
 
-### Troca DORA
+### 7.2 Troca DORA
 
           
 
@@ -616,7 +616,7 @@ O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org
 - **Request:** o cliente escolhe uma oferta e a pede em broadcast. A opção 54 (Server Identifier) avisa os servidores não escolhidos para liberarem suas reservas.
 - **Acknowledge:** o servidor escolhido confirma e grava o lease. Antes de usar o endereço, o cliente pode testá-lo com um ARP Probe ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227)).
 
-### Ciclo de vida do lease
+### 7.3 Ciclo de vida do lease
 
           
 
@@ -626,7 +626,7 @@ O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org
 - **DHCPDECLINE:** enviado quando o ARP Probe revela que o endereço já está em uso. O servidor marca o endereço como indisponível.
 - **DHCPRELEASE:** o cliente devolve o endereço antes do fim do lease. O servidor não responde a essa mensagem.
 
-### Mensagens DHCP (opção 53)
+### 7.4 Mensagens DHCP (opção 53)
 
           
 
@@ -641,13 +641,13 @@ O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org
 | 7 | DHCPRELEASE | Cliente → servidor | Devolver o endereço |
 | 8 | DHCPINFORM | Cliente → servidor | Pedir só parâmetros (o IP já foi configurado manualmente) |
 
-### Relay agent
+### 7.5 Relay agent
 
           
 
 Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o roteador atua como **relay agent** (comando **ip helper-address** no Cisco IOS): ele recebe o broadcast, preenche o campo **giaddr** com o IP da interface e repassa o pedido em unicast ao servidor, que usa o giaddr para escolher o pool certo.
 
-### DHCP e segurança
+### 7.6 DHCP e segurança
 
           
 
@@ -656,7 +656,7 @@ Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o rot
 - **DHCP snooping:** o switch só aceita Offer e Ack vindos de portas confiáveis e monta uma tabela de vínculos (MAC, IP e porta). Essa tabela também é a base do Dynamic ARP Inspection e do IP Source Guard.
 - **Port security:** limitar o número de MACs por porta reduz o efeito do starvation.
 
-### Roteiro de exercícios
+### 7.7 Roteiro de exercícios
 
           
 
@@ -667,7 +667,7 @@ Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o rot
 5. Desmarque **DHCP-1 ativo** e observe as retransmissões do DISCOVER: como cresce o intervalo entre as retransmissões, e por quê?
 6. **Segurança:** um colega liga um roteador doméstico com DHCP ativo na rede do laboratório. O que acontece com os clientes e que configuração no switch evita o problema?
 
-### Limitações do simulador
+### 7.8 Limitações do simulador
 
 - Na renovação, não há retransmissão em RENEWING e REBINDING (a [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131), seção 4.4.5, manda repetir a cada metade do tempo restante, com mínimo de 60 s).
 - Não são simulados o INIT-REBOOT (cliente que reinicia com lease válido), o DHCPNAK, o agente de retransmissão (relay) nem o atraso aleatório de 1 a 10 s antes do primeiro DISCOVER.

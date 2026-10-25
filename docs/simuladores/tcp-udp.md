@@ -2418,7 +2418,7 @@ sequenceDiagram
 
 ## 5. Referência
 
-### A camada de transporte
+### 5.1 A camada de transporte
 
           
 
@@ -2438,7 +2438,7 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 
           
 
-### Conexão TCP
+### 5.2 Conexão TCP
 
           
 
@@ -2448,7 +2448,7 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 
           
 
-### Confiabilidade e janela deslizante
+### 5.3 Confiabilidade e janela deslizante
 
           
 
@@ -2458,7 +2458,7 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 
           
 
-### Controle de congestionamento ([RFC 5681](https://www.rfc-editor.org/rfc/rfc5681) e [RFC 6582](https://www.rfc-editor.org/rfc/rfc6582))
+### 5.4 Controle de congestionamento ([RFC 5681](https://www.rfc-editor.org/rfc/rfc5681) e [RFC 6582](https://www.rfc-editor.org/rfc/rfc6582))
 
           
 
@@ -2471,7 +2471,7 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 
           
 
-### UDP na prática
+### 5.5 UDP na prática
 
           
 
@@ -2479,7 +2479,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-### Download de arquivo com TCP
+### 5.6 Download de arquivo com TCP
 
           
 
@@ -2492,7 +2492,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-### Vídeo em streaming com UDP
+### 5.7 Vídeo em streaming com UDP
 
           
 
@@ -2504,7 +2504,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-### TCP, UDP e segurança
+### 5.8 TCP, UDP e segurança
 
           
 
@@ -2518,7 +2518,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-### Limitações do simulador
+### 5.9 Limitações do simulador
 
           
 
@@ -2530,7 +2530,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 
           
 
-### Roteiro de exercícios
+### 5.10 Roteiro de exercícios
 
           
 
