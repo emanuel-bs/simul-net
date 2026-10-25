@@ -273,5 +273,29 @@
     "amostra:dmz": "bb282c0ce5732b5a",
     "amostra:def": "1a67d943786b2585",
     "textos": "da4e89f6a31e0b98"
+  },
+  "switching": {
+    "a-first": "297a73f258ad2a1c",
+    "a-noreply": "3947b85341beb945",
+    "a-bcast": "20a6efe1612e4368",
+    "a-known": "79fe06c73d292b2d",
+    "a-filter": "a5bdef8e41d231f7",
+    "a-move": "d978fda48a746606",
+    "a-aging": "a25017f66f1b7d20",
+    "i-normal": "8e6a3b5c9b3b2a23",
+    "i-leak": "c6e0aae4ac76106c",
+    "i-present": "329915b336590108",
+    "i-protect": "0c25686dcc7b7a88",
+    "i-restrict": "1072365bd2689338",
+    "i-shutdown": "a06ac57d3cb7b159",
+    "e-bcast": "f3786af15ab8c434",
+    "e-mc-flood": "b5f89bb0ac90a93e",
+    "e-mc-snoop": "f45afebe8dfad7c9",
+    "e-mc-none": "7285b9db7bc93321",
+    "e-reserved": "5cc1d61a43516db6",
+    "amostra:apr": "3c410872cc7097f6",
+    "amostra:inu": "20ae0697c78bc0e5",
+    "amostra:esp": "6aa6ac10138d9f20",
+    "textos": "de6fee3f8f07577f"
   }
 }

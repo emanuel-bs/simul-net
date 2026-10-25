@@ -70,6 +70,8 @@ describe('páginas dos simuladores nativos', () => {
 
   it('Firewall: carrega, percorre os quatro modos e não tem violações de acessibilidade', () => checkSim('firewall', /^Firewall: filtragem e estado$/), 120000);
 
+  it('Switching: carrega, percorre os três modos e não tem violações de acessibilidade', () => checkSim('switching', /^Switching e aprendizado de MAC$/), 120000);
+
   it('ICMP: carrega, percorre os três modos e não tem violações de acessibilidade', () => checkSim('icmp', /^ICMP \(ping e traceroute\)$/), 120000);
 
   it('ARP: carrega, percorre todos os cenários e não tem violações de acessibilidade', () => checkSim('arp', /^ARP$/), 60000);
