@@ -112,6 +112,9 @@ for (const sim of natives) {
       const errors = watchErrors(page);
       await page.setViewportSize({ width: 1600, height: 900 });
       await open(page, sim.id);
+      // o quadro de estados começa dentro do palco: o botão o devolve ao painel lateral
+      await page.getByRole('button', { name: 'Estados no diagrama' }).click();
+      await expect(page.locator('.side-col > .fpanel')).toBeVisible();
       for (const sel of ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', '.simnet .cfg']) {
         const el = page.locator(sel).first();
         const before = await el.boundingBox();
