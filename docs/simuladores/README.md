@@ -56,7 +56,7 @@ SSH, HTTPS e transferência de arquivos por dentro: negociação, troca de chave
 | WAF e firewall de aplicação | - | planejado | [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), [RFC 8404](https://www.rfc-editor.org/rfc/rfc8404) |
 | SMTP e segurança de e-mail | - | planejado | [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321), [RFC 3207](https://www.rfc-editor.org/rfc/rfc3207), [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208), [RFC 6376](https://www.rfc-editor.org/rfc/rfc6376), [RFC 9989](https://www.rfc-editor.org/rfc/rfc9989), [RFC 9990](https://www.rfc-editor.org/rfc/rfc9990), [RFC 9991](https://www.rfc-editor.org/rfc/rfc9991) |
 | Wi-Fi: segurança (WPA2 e WPA3) | - | planejado | IEEE 802.11-2020 (inclui 802.11i e 802.11w), IEEE 802.1X, [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748) |
-| 802.1X e RADIUS (EAP) | - | planejado | [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748), [RFC 2865](https://www.rfc-editor.org/rfc/rfc2865), IEEE 802.1X |
+| [802.1X e RADIUS (EAP)](802-1x.md) | nativo | disponível | [RFC 3748](https://www.rfc-editor.org/rfc/rfc3748), [RFC 2865](https://www.rfc-editor.org/rfc/rfc2865), [RFC 3579](https://www.rfc-editor.org/rfc/rfc3579), [RFC 5216](https://www.rfc-editor.org/rfc/rfc5216), [RFC 9190](https://www.rfc-editor.org/rfc/rfc9190), [RFC 5080](https://www.rfc-editor.org/rfc/rfc5080), IEEE 802.1X |
 
 
 ---

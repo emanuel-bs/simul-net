@@ -233,8 +233,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Aprendizado e tabela de endereços', 'Inundação, filtragem e envelhecimento', 'Broadcast, multicast e IGMP snooping', 'Inundação de MAC e segurança de porta'],
     rfcs: ['IEEE 802.1Q-2022 (inclui 802.1D)', 'IEEE 802.3', 'RFC 1112', 'RFC 4541', 'RFC 9776'],
     status: 'available',
-    novo: true,
-    engine: 'nativo',
+        engine: 'nativo',
   },
   {
     id: 'stp',
@@ -329,9 +328,11 @@ export const SIMS: SimMeta[] = [
     category: 'protocolos-seguros',
     title: '802.1X e RADIUS (EAP)',
     summary: 'Autenticação de acesso à rede: suplicante, autenticador e servidor RADIUS trocando mensagens EAP até liberar ou bloquear a porta.',
-    topics: [],
-    rfcs: ['RFC 3748', 'RFC 2865', 'IEEE 802.1X'],
-    status: 'planned',
+    topics: ['Autenticação EAP: EAP-TLS, PEAP e EAP-MD5', 'EAP sobre EAPOL e sobre RADIUS', 'Estado da porta controlada', 'Falhas: recusa, servidor inalcançável, segredo diferente e sem suplicante', 'Reautenticação, logoff e segundo dispositivo na porta', 'Riscos: sem autenticação mútua e PEAP sem validar o servidor'],
+    rfcs: ['RFC 3748', 'RFC 2865', 'RFC 3579', 'RFC 5216', 'RFC 9190', 'RFC 5080', 'IEEE 802.1X'],
+    status: 'available',
+    novo: true,
+    engine: 'nativo',
   },
 ];
 

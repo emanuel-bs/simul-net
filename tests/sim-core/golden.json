@@ -347,5 +347,28 @@
     "amostra:nativa": "7b09dd6368c1e90f",
     "amostra:hop": "983ace155246b347",
     "textos": "43445cc9180b09ec"
+  },
+  "802-1x": {
+    "a-tls": "a943a29186402b9e",
+    "a-peap": "89a0ac1f02673fb1",
+    "a-md5": "91fcde999fdc489b",
+    "f-cred": "ec336b5fc64396d0",
+    "f-cert": "f97aade6a1ab4c00",
+    "f-noserver": "e4e0529afa681b5f",
+    "f-secret": "0dc8e2943f4c6460",
+    "f-nosup": "4df190fbddaea23e",
+    "p-reauth": "26eceee59a74c962",
+    "p-logoff": "65498ede12c7f6e0",
+    "p-extra": "8323cf02f10bbde8",
+    "p-extra-def": "e71623f4a7a366e6",
+    "s-md5": "87ce0aed7c25aa0d",
+    "s-md5-def": "5a4338683867c43b",
+    "s-peap": "e1e296cfd93f244d",
+    "s-peap-def": "199179d8691d67f3",
+    "amostra:auth": "ec1811e334ef9710",
+    "amostra:falha": "ec52a3f7e775a9e3",
+    "amostra:porta": "b24eb3e83af79a4f",
+    "amostra:seg": "2e94ceeaa06f843b",
+    "textos": "1b71e2dcf3e9ad82"
   }
 }
