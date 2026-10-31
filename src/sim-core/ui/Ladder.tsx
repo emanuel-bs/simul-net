@@ -9,8 +9,11 @@ const OUTLINE = { stroke: '#0B2447', strokeWidth: '4px', paintOrder: 'stroke', s
 export const ZOOM_STEPS = [0.5, 0.65, 0.8, 1, 1.25, 1.5, 2];
 export const ZOOM_FIT = ZOOM_STEPS.indexOf(1);
 
-export function zoomStyle(zoom: number, minWidth: number): CSSProperties {
-  if (zoom === 1) return { minWidth };
+/** Em "Ajustada" o desenho acompanha a largura do painel, mas não passa de 1,4 vez o tamanho natural: em telas largas o texto não fica gigante. */
+const FIT_MAX = 1.4;
+
+export function zoomStyle(zoom: number, minWidth: number, naturalWidth?: number): CSSProperties {
+  if (zoom === 1) return naturalWidth ? { minWidth, maxWidth: Math.round(naturalWidth * FIT_MAX), margin: '0 auto' } : { minWidth };
   return zoom < 1 ? { width: `${Math.round(zoom * 100)}%`, minWidth: 0, margin: '0 auto' } : { width: `${Math.round(zoom * 100)}%`, minWidth };
 }
 
@@ -30,7 +33,7 @@ export const Ladder = forwardRef<HTMLDivElement, Props>(function Ladder({ layout
         className="ladder"
         xmlns="http://www.w3.org/2000/svg"
         viewBox={`0 0 ${layout.width} ${layout.height}`}
-        style={zoomStyle(zoom, layout.minWidth)}
+        style={zoomStyle(zoom, layout.minWidth, layout.width)}
         role="group"
         aria-label="Diagrama de sequência da conexão"
       >
@@ -96,7 +99,7 @@ export const Ladder = forwardRef<HTMLDivElement, Props>(function Ladder({ layout
               <line x1={xa} y1={y1} x2={x} y2={yy} style={{ stroke: m.color, strokeWidth: m.enc ? '2.4px' : '2px' }} />
               {p.done && !m.lost && <polygon points="0,0 -9,-4 -9,4" transform={`translate(${x},${yy}) rotate(${ang})`} style={{ fill: m.color }} />}
               {p.done && m.lost && (
-                <text x={x} y={yy + 5} textAnchor="middle" className="seg-label" style={{ fill: 'var(--red)', fontSize: '15px' }}>
+                <text x={x} y={yy + 9} textAnchor="middle" className="seg-label" style={{ fill: 'var(--red)', fontSize: '15px' }}>
                   ✕
                 </text>
               )}

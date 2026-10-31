@@ -7,6 +7,8 @@ import { messageProgress } from './playback';
 const OUTLINE = { stroke: '#0B2447', strokeWidth: '4px', paintOrder: 'stroke', strokeLinejoin: 'round' } as const;
 const NODE_W = 128;
 const NODE_H = 44;
+// Largura do nó: a informada ou, se o texto não couber (nome a 15 px e subtítulo a 12 px, ambos monoespaçados), a que o texto pede.
+const nodeW = (n: { w?: number; label: string; sub?: string }) => Math.max(n.w || NODE_W, Math.ceil(Math.max(n.label.length * 9.2, (n.sub || '').length * 7.3)) + 24);
 const KIND_LABEL: Record<TopoNode['kind'], string> = { host: 'host', switch: 'switch', router: 'roteador', cloud: 'outras redes', attacker: 'host malicioso' };
 
 interface Pt {
@@ -108,9 +110,9 @@ export const Topology = forwardRef<HTMLDivElement, Props>(function Topology({ de
           return (
             <g key={n.key} className={'topo-node ' + n.kind}>
               {n.kind === 'cloud' ? (
-                <ellipse cx={n.x} cy={n.y} rx={(n.w || NODE_W) / 2} ry={NODE_H / 2 + 4} className="topo-box" />
+                <ellipse cx={n.x} cy={n.y} rx={nodeW(n) / 2} ry={NODE_H / 2 + 4} className="topo-box" />
               ) : (
-                <rect x={n.x - (n.w || NODE_W) / 2} y={n.y - NODE_H / 2} width={n.w || NODE_W} height={NODE_H} rx={n.kind === 'switch' ? 4 : 10} className="topo-box" />
+                <rect x={n.x - nodeW(n) / 2} y={n.y - NODE_H / 2} width={nodeW(n)} height={NODE_H} rx={n.kind === 'switch' ? 4 : 10} className="topo-box" />
               )}
               <text x={n.x} y={n.y - 4} textAnchor="middle" className="col-title">
                 {n.label}

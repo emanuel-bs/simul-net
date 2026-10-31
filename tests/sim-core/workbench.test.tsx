@@ -76,7 +76,10 @@ describe('Workbench', () => {
     expect(screen.queryByRole('tab', { name: 'Aba do modo B' })).toBeNull();
     expect(screen.getByText('Conceito A.')).toBeTruthy();
     expect(screen.getByText(/Simulador desenvolvido pelo/)).toBeTruthy();
-    expect(screen.getByText('Estado da demonstração')).toBeTruthy();
+    // o quadro de estados fica dentro do palco, e a lateral começa com as configurações
+    expect(screen.getAllByText('Estado da demonstração').length).toBe(1);
+    expect(document.querySelector('.stage-body .state-overlay')).toBeTruthy();
+    expect(document.querySelector('.side-col .fpanel')).toBeNull();
     expect(screen.getByRole('link', { name: /RFC 9293/ }).getAttribute('href')).toBe('https://www.rfc-editor.org/rfc/rfc9293');
   });
 
@@ -206,6 +209,8 @@ describe('Workbench', () => {
 
     // Esc encaixa o quadro mais recente
     fireEvent.click(stageBtn('Destacar'));
+    // o painel lateral de estados volta quando o quadro do palco é desligado
+    fireEvent.click(screen.getByRole('button', { name: 'Estados no diagrama' }));
     const state = container.querySelector('.fpanel') as HTMLElement;
     fireEvent.click(within(state).getByRole('button', { name: 'Destacar' }));
     expect(state.className).toMatch(/is-floating/);

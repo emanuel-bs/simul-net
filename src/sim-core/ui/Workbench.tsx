@@ -96,6 +96,10 @@ function Bench({ def }: Props) {
   const [selId, setSelId] = useState<number | null>(null);
   const [zi, setZi] = useState(ZOOM_FIT);
   const [view, setView] = useState<'seq' | 'topo'>('seq');
+  // Prova de conceito: o quadro de estados dentro do palco (acompanha a mensagem atual no diagrama de sequência)
+  const [statesInStage, setStatesInStage] = useState(true);
+  const [ovTop, setOvTop] = useState(8);
+  const ovRef = useRef<HTMLElement>(null);
 
   // Quadros da bancada: diagrama, estados, configurações e abas (o painel de abas começa recolhido em telas baixas).
   const stageF = useFrame();
@@ -174,13 +178,37 @@ function Bench({ def }: Props) {
   useEffect(() => {
     const wrap = ladderRef.current;
     if (!wrap || !wrap.clientWidth) return;
-    const k = wrap.getBoundingClientRect().width / layout.width;
+    // A escala é a do desenho (SVG), não a do painel: em "Ajustada" e nos zooms menores o desenho pode ser mais estreito que o painel.
+    const k = (wrap.querySelector('svg') ?? wrap).getBoundingClientRect().width / layout.width;
     if (clock === 0) wrap.scrollTop = 0;
     else if (player.playing) {
       const target = layout.y(clock) * k - wrap.clientHeight * 0.6;
       if (target > wrap.scrollTop) wrap.scrollTop = target;
     } else if (lastAction.current === 'step') wrap.scrollTop = Math.max(0, layout.y(clock) * k - wrap.clientHeight * 0.5);
   }, [clock, player.playing, layout]);
+
+  // O quadro de estados do palco desce junto com a mensagem atual (na topologia fica no topo)
+  const placeOverlay = () => {
+    const ov = ovRef.current;
+    const wrap = ladderRef.current;
+    if (!ov) return;
+    if (showTopo || !wrap) return setOvTop(8);
+    const svg = wrap.querySelector('svg');
+    const k = (svg ?? wrap).getBoundingClientRect().width / layout.width;
+    const yy = layout.y(clock) * k - wrap.scrollTop;
+    const max = Math.max(8, wrap.clientHeight - ov.offsetHeight - 8);
+    setOvTop(Math.round(Math.min(max, Math.max(8, yy - ov.offsetHeight / 2))));
+  };
+  const placeRef = useRef(placeOverlay);
+  placeRef.current = placeOverlay;
+  useEffect(() => placeRef.current());
+  useEffect(() => {
+    const wrap = ladderRef.current;
+    if (!wrap) return;
+    const on = () => placeRef.current();
+    wrap.addEventListener('scroll', on, { passive: true });
+    return () => wrap.removeEventListener('scroll', on);
+  }, [showTopo, statesInStage]);
 
   // Captura e Log acompanham a simulação: a rolagem desce com as linhas novas, a menos que o aluno suba para reler.
   const capRef = useRef<HTMLDivElement>(null);
@@ -258,6 +286,24 @@ function Bench({ def }: Props) {
 
   const changes = base ? changedControls(def.controls, sub, P, base) : [];
   const explainHtml = useMemo(() => def.explain(tr, P, active), [def, tr, P, active]);
+
+  const statesBody = (
+    <>
+      <div className="state-title">{def.stateTitle || 'Estado da conexão'}</div>
+      {tr.stateDefs.map((d) => {
+        const s = stateAt(tr, d.key, clock);
+        return (
+          <div className="cfg-line" key={d.key}>
+            {d.label}
+            <span className={'spill ' + (s ? s.cls : 'closed')}>{s ? s.val : '-'}</span>
+          </div>
+        );
+      })}
+      <div className="cfg-line">
+        Relógio<b>{def.timeLabel ? def.timeLabel(timeAt(tr, clock)) : timeAt(tr, clock).toFixed(1) + ' ms'}</b>
+      </div>
+    </>
+  );
 
   return (
     <div className="simnet">
@@ -391,17 +437,32 @@ function Bench({ def }: Props) {
                   Zoom +
                 </button>
               </div>
+              <button type="button" className="fbtn" aria-pressed={statesInStage} title="Mostrar os estados do protocolo dentro do diagrama" onClick={() => setStatesInStage(!statesInStage)}>
+                Estados no diagrama
+              </button>
               {stageF.buttons}
             </div>
-            {showTopo ? (
-              <Topology def={topoDef} tr={tr} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
-            ) : (
-              <Ladder ref={ladderRef} layout={layout} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
-            )}
+            <div className={'stage-body' + (statesInStage ? ' with-states' : '')}>
+              {showTopo ? (
+                <Topology def={topoDef} tr={tr} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
+              ) : (
+                <Ladder ref={ladderRef} layout={layout} zoom={ZOOM_STEPS[zi]} clock={clock} selectedId={selId} onSelect={selectMsg} />
+              )}
+              {statesInStage && (
+                <aside ref={ovRef} className="state-overlay panel" style={{ top: ovTop }} aria-label="Estados do protocolo">
+                  <div className="state-overlay-title">Estados do protocolo</div>
+                  <div className="state-panel" aria-live="off">
+                    {statesBody}
+                  </div>
+                </aside>
+              )}
+            </div>
             {stageF.handles}
           </section>
 
           <aside className="side-col">
+            {!statesInStage && (
+              <>
             {stateF.placeholder}
             <div {...stateF.rootProps} className={stateF.className('fpanel')}>
               <div className="fbar" {...stateF.barProps}>
@@ -409,22 +470,12 @@ function Bench({ def }: Props) {
                 {stateF.buttons}
               </div>
               <div className="panel state-panel" aria-live="off">
-                <div className="state-title">{def.stateTitle || 'Estado da conexão'}</div>
-                {tr.stateDefs.map((d) => {
-                  const s = stateAt(tr, d.key, clock);
-                  return (
-                    <div className="cfg-line" key={d.key}>
-                      {d.label}
-                      <span className={'spill ' + (s ? s.cls : 'closed')}>{s ? s.val : '-'}</span>
-                    </div>
-                  );
-                })}
-                <div className="cfg-line">
-                  Relógio<b>{def.timeLabel ? def.timeLabel(timeAt(tr, clock)) : timeAt(tr, clock).toFixed(1) + ' ms'}</b>
-                </div>
+                {statesBody}
               </div>
               {stateF.handles}
             </div>
+              </>
+            )}
 
             {cfgF.placeholder}
             <section {...cfgF.rootProps} className={cfgF.className('panel cfg')}>

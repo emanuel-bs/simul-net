@@ -64,11 +64,11 @@
 .simnet .stage-panel{padding:0;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .simnet .ladder-wrap{flex:1;min-height:0;overflow:auto;background-image:linear-gradient(var(--border-soft) 1px,transparent 1px),linear-gradient(90deg,var(--border-soft) 1px,transparent 1px);background-size:34px 34px;background-color:var(--bg);}
 .simnet svg.ladder{display:block;width:100%;min-width:640px;}
-.simnet .col-title{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;fill:var(--ink);}
-.simnet .col-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--muted);}
-.simnet .time-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--muted);}
-.simnet .seg-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;}
-.simnet .ev-label{font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;fill:var(--ink);}
+.simnet .col-title{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;fill:var(--ink);}
+.simnet .col-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;fill:var(--muted);}
+.simnet .time-label{font-family:'IBM Plex Mono',monospace;font-size:10px;fill:var(--muted);}
+.simnet .seg-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+.simnet .ev-label{font-family:'IBM Plex Sans',sans-serif;font-size:10.5px;fill:var(--ink);}
 .simnet .half-title{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:700;fill:var(--teal);letter-spacing:0.04em;}
 .simnet g.seg-g{cursor:pointer;}
 .simnet .side-col{display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto;}
@@ -345,13 +345,18 @@
 
 .simnet .topo-wrap{flex:1;min-height:0;overflow:auto;background-image:linear-gradient(var(--border-soft) 1px,transparent 1px),linear-gradient(90deg,var(--border-soft) 1px,transparent 1px);background-size:34px 34px;background-color:var(--bg);}
 .simnet svg.topo{display:block;}
+/* Topologia: texto um pouco maior que o do diagrama de sequência (que compartilha estas classes) */
+.simnet svg.topo .col-title{font-size:15px;}
+.simnet svg.topo .col-sub{font-size:12px;}
+.simnet svg.topo .seg-label{font-size:12px;}
+.simnet svg.topo .ev-label{font-size:12.5px;}
 .simnet .topo-link{stroke:var(--muted-line);stroke-width:3px;}
 .simnet .topo-box{fill:var(--panel);stroke:var(--border);stroke-width:2px;}
 .simnet .topo-node.switch .topo-box{stroke:var(--blue);}
 .simnet .topo-node.router .topo-box{stroke:var(--teal);}
 .simnet .topo-node.attacker .topo-box{stroke:var(--red);}
 .simnet .topo-node.cloud .topo-box{stroke-dasharray:5,4;}
-.simnet .topo-notes{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--muted);}
+.simnet .topo-notes{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:var(--muted);}
 .simnet .mode-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .simnet .mode-seg{border:2px solid var(--teal);}
 .simnet .mode-seg button{padding:8px 18px;font-size:15px;font-weight:700;}
@@ -374,7 +379,7 @@
 .simnet .t-dim{color:var(--muted);}
 .simnet .topo-link.dashed{stroke-dasharray:6,5;}
 .simnet .topo-link.down{stroke:var(--red);stroke-dasharray:3,6;}
-.simnet .topo-linklabel{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--muted);}
+.simnet .topo-linklabel{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:var(--muted);}
 .simnet .topo-linklabel.down{fill:var(--red-text);font-weight:700;}
 .simnet .tag-req{color:var(--amber);}
 .simnet .tag-rep{color:var(--teal);}
@@ -389,3 +394,14 @@
 .simnet .tag-offer{color:var(--blue);}
 .simnet .tag-request{color:var(--purple);}
 .simnet .tag-ack{color:var(--teal);}
+
+/* Prova de conceito: quadro de estados dentro do palco */
+.simnet .stage-body{position:relative;flex:1;min-height:0;display:flex;}
+.simnet .stage-body>.ladder-wrap,.simnet .stage-body>.topo-wrap{flex:1 1 auto;min-width:0;}
+.simnet .stage-body.with-states>.ladder-wrap,.simnet .stage-body.with-states>.topo-wrap{margin-right:296px;}
+.simnet .state-overlay{position:absolute;right:10px;width:278px;z-index:3;padding:0;background:var(--panel);transition:top .35s ease;box-shadow:0 10px 28px -12px rgba(0,0,0,0.7);}
+.simnet .state-overlay-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 14px 0;}
+.simnet .state-overlay .state-panel{padding:8px 14px 12px;gap:6px;}
+.simnet .state-overlay .cfg-line{flex-direction:column;align-items:flex-start;gap:3px;}
+@media (prefers-reduced-motion:reduce){.simnet .state-overlay{transition:none;}}
+@media (max-width:960px){.simnet .stage-body{flex-direction:column;}.simnet .stage-body.with-states>.ladder-wrap,.simnet .stage-body.with-states>.topo-wrap{margin-right:0;}.simnet .state-overlay{position:static;width:auto;margin:8px;}}
