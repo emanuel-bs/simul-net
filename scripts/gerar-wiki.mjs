@@ -49,7 +49,8 @@ function md(html = '') {
     '\n\n' + [...t.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)].map((m) => `- ${inline(m[1])}`).join('\n') + '\n\n');
   s = s.replace(/<p[^>]*>([\s\S]*?)<\/p>/gi, (_, t) => `\n\n${inline(t)}\n\n`);
   s = inline(s);
-  return s.replace(/\n{3,}/g, '\n\n').trim();
+  // o recuo do HTML de origem não pode virar bloco de código no Markdown (4 ou mais espaços)
+  return s.replace(/^[ \t]+/gm, '').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 function inline(html = '') {
@@ -116,9 +117,16 @@ const pl = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
  * Diagrama de sequência Mermaid de um cenário, a partir das mensagens do trace (mesma fonte do diagrama da bancada).
  * Devolve também os dados que alimentam a legenda da figura.
  */
+/**
+ * Todo diagrama de sequência ganha `autonumber` do Mermaid: cada mensagem recebe um número, na ordem da comunicação.
+ * NUMERAR=nao desliga a numeração.
+ */
+const numerar = () => process.env.NUMERAR !== 'nao';
+
 function sequenceDiagram(def, s, base) {
   const tr = def.build({ ...base, ...(s.set ?? {}) }, s.sub);
   const L = ['sequenceDiagram'];
+  if (numerar()) L.push('  autonumber');
   for (const c of tr.cols) L.push(`  participant ${mmId(c.key)} as ${mmMsg(c.label)}${c.sub ? '<br/>' + mmMsg(c.sub) : ''}`);
   const msgs = [...tr.msgs].sort((a, b) => a.tSend - b.tSend || a.id - b.id);
   const phases = [...tr.phases].sort((a, b) => a.t - b.t);
@@ -138,6 +146,7 @@ function sequenceDiagram(def, s, base) {
     block: '```mermaid\n' + L.join('\n') + '\n```',
     parts: tr.cols.map((c) => mmMsg(c.label)),
     n: msgs.length,
+    numbered: numerar(),
     phases: phases.length,
     lost: msgs.filter((m) => m.lost).length,
     enc: msgs.filter((m) => m.enc).length,
@@ -147,7 +156,7 @@ function sequenceDiagram(def, s, base) {
 /** Texto da legenda de uma figura do tipo B (sequência). */
 function sequenceCaption(num, nome, info, onde) {
   const extra = [info.phases ? `em ${pl(info.phases, 'fase', 'fases')}` : '', info.lost ? pl(info.lost, 'perdida', 'perdidas') : '', info.enc ? pl(info.enc, 'cifrada', 'cifradas') : ''].filter(Boolean);
-  return `*Figura ${num} (Tipo B, sequência).* Mensagens do cenário "${nome}", na ordem do tempo, entre ${info.parts.join(', ')}: ${pl(info.n, 'mensagem', 'mensagens')}${extra.length ? ' (' + extra.join('; ') + ')' : ''}. ${onde}`;
+  return `*Figura ${num} (Tipo B, sequência).* Mensagens do cenário "${nome}", na ordem do tempo, entre ${info.parts.join(', ')}: ${pl(info.n, 'mensagem', 'mensagens')}${info.numbered ? ', numeradas de 1 a ' + info.n + ' na ordem da comunicação' : ''}${extra.length ? ' (' + extra.join('; ') + ')' : ''}. ${onde}`;
 }
 
 const KIND_PT = { host: 'host', switch: 'switch', router: 'roteador', cloud: 'servidor ou rede externa', attacker: 'atacante' };
@@ -538,17 +547,19 @@ function ataquesTopos(html, { x, S }) {
 }
 
 /** Diagrama de sequência a partir da tabela de captura: [nº, tempo, origem, destino, protocolo, tamanho, informação]. */
-function captureSequence(rows, hosts = {}) {
+function captureSequence(rows, hosts = {}, simId = '') {
   const ips = [];
   for (const r of rows) for (const ip of [r[2], r[3]]) if (!ips.includes(ip)) ips.push(ip);
   const id = (ip) => 'h_' + ip.replace(/[^A-Za-z0-9]/g, '_');
   const L = ['sequenceDiagram'];
+  if (numerar()) L.push('  autonumber');
   for (const ip of ips) L.push(`  participant ${id(ip)} as ${hosts[ip] ? hosts[ip] + '<br/>' : ''}${ip}`);
   for (const r of rows) L.push(`  ${id(r[2])} ${/perdid/i.test(r[6]) ? '-x' : '->>'} ${id(r[3])}: ${mmMsg(r[4] + ' ' + r[6])}`);
   return {
     block: '```mermaid\n' + L.join('\n') + '\n```',
     parts: ips.map((ip) => (hosts[ip] ? hosts[ip] + ' ' : '') + ip),
     n: rows.length,
+    numbered: numerar(),
     phases: 0,
     lost: rows.filter((r) => /perdid/i.test(r[6])).length,
     enc: 0,
@@ -730,7 +741,7 @@ async function legacyPage(sim) {
     if (s.cmd) L.push(`${md(s.cmd)}\n`);
     L.push(`${md(s.html.replace(/<h4>([\s\S]*?)<\/h4>/gi, '<p><b>$1.</b></p>'))}\n`);
     if (s.capture?.length) {
-      const sd = captureSequence(s.capture, LEGACY[sim.file]?.hosts);
+      const sd = captureSequence(s.capture, LEGACY[sim.file]?.hosts, sim.id);
       const filtro = s.seq ? cfgL.filtro(s.seq, topoInfo.ids) : '';
       const onde = `${filtro}Corresponde à aba Captura${multi ? `, no modo "${s.mode}"` : ''}, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.`;
       L.push(sd.block, '', sequenceCaption(num, s.title ?? s.label, sd, onde) + '\n');

@@ -320,6 +320,7 @@ Observe no terminal **ttl=61**: o Linux do servidor começa em 64 e três rotead
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -360,7 +361,7 @@ sequenceDiagram
   n_r1 ->> n_pc: ECHO REP ttl=61
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Echo (ping)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 32 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração padrão.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Echo (ping)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 32 mensagens, numeradas de 1 a 32 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração padrão.
 
 **Mensagens**
 
@@ -391,6 +392,7 @@ Abra o erro na aba Mensagem: o datagrama original citado mostra TTL 1 e o mesmo 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -407,7 +409,7 @@ sequenceDiagram
   n_r1 ->> n_pc: TIME EXCEEDED ttl=254
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "TTL expirado", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "TTL expirado", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -442,6 +444,7 @@ O endereço de origem do erro mostra **onde** o caminho termina. Tente também d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -458,7 +461,7 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/0 ttl=254
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Rede inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Rede inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -489,6 +492,7 @@ Repare no tempo: o erro só chega cerca de 3 s depois, a espera do ARP.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -515,7 +519,7 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/1 ttl=253
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Host inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 18 mensagens (em 2 fases; 6 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Host inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 2 fases; 6 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -551,6 +555,7 @@ Veja os campos Flags e Fragment Offset na aba Mensagem.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -575,7 +580,7 @@ sequenceDiagram
   n_r1 ->> n_pc: ECHO REP x2 frag ttl=61
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Fragmentação", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 16 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Fragmentação", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 16 mensagens, numeradas de 1 a 16 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -606,6 +611,7 @@ Repita com **-M want** (padrão do Linux): depois de aprender a PMTU, o PC-A fra
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -618,7 +624,7 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/4 ttl=254
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "PMTUD (DF)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 4 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "PMTUD (DF)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -653,6 +659,7 @@ O erro deixa claro que existe um filtro e onde ele está.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -673,7 +680,7 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/13 ttl=253
 ```
 
-*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Proibido (3/13)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Proibido (3/13)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -704,6 +711,7 @@ Mude **Dados** para 56 e rode de novo: pacotes pequenos funcionam. Esse é o sin
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -718,7 +726,7 @@ sequenceDiagram
   n_r2 ->> n_r1: UNREACH 3/4 ttl=255
 ```
 
-*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Buraco negro PMTUD", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 6 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Buraco negro PMTUD", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -749,6 +757,7 @@ O enlace da LAN do servidor caiu. R3 perde a rota conectada e usa a rota padrão
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -775,7 +784,7 @@ sequenceDiagram
   n_r1 ->> n_pc: TIME EXCEEDED ttl=254
 ```
 
-*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Loop de roteamento", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 18 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Loop de roteamento", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -812,6 +821,7 @@ O simulador desenha a primeira sonda de cada salto; as três aparecem no termina
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -840,7 +850,7 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/3 ttl=61
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "traceroute (UDP)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 20 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "traceroute (UDP)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 20 mensagens, numeradas de 1 a 20 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -872,6 +882,7 @@ Compare com o traceroute do Linux: um firewall que bloqueia UDP mas libera ping 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -900,7 +911,7 @@ sequenceDiagram
   n_r1 ->> n_pc: ECHO REP ttl=61
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "tracert (Windows)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 20 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "tracert (Windows)", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 20 mensagens, numeradas de 1 a 20 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -936,6 +947,7 @@ Compare com o cenário 3/13.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -965,7 +977,7 @@ sequenceDiagram
   n_r2 ->> n_r3: UDP :33449 ttl=4
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Filtro silencioso", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 21 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Filtro silencioso", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 21 mensagens, numeradas de 1 a 21 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Traceroute e tracert", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1002,6 +1014,7 @@ Troque para **-p 53**: a porta está aberta e não há resposta ICMP. É assim q
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>Linux, 64
   participant n_r1 as R1<br/>roteador, 255
   participant n_r2 as R2<br/>roteador, 255
@@ -1026,7 +1039,7 @@ sequenceDiagram
   n_r1 ->> n_pc: UNREACH 3/3 ttl=61
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Porta inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 16 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Scan UDP (hping3)", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Porta inalcançável", na ordem do tempo, entre PC-A, R1, R2, R3, SRV: 16 mensagens, numeradas de 1 a 16 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Scan UDP (hping3)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1042,19 +1055,16 @@ sequenceDiagram
 ### 7.1 O que é o ICMP
 
 
-          
 
 O **Internet Control Message Protocol** ([RFC 792](https://www.rfc-editor.org/rfc/rfc792)) é o canal de controle e diagnóstico do IPv4. Suas mensagens viajam dentro de datagramas IP com **protocolo 1**, mas o ICMP não é um protocolo de transporte: ele não carrega dados de aplicação e serve para relatar erros e responder consultas. Todo cabeçalho ICMP começa com **tipo** (1 byte), **código** (1 byte) e **checksum** (2 bytes).
 
 
-          
 
 Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um host e respondidas pelo destino. As **mensagens de erro** são geradas por um roteador ou host que não conseguiu processar um datagrama e são sempre enviadas à **origem** do datagrama, nunca ao destino. Cada erro carrega o **cabeçalho IP original mais pelo menos os 8 primeiros bytes** do datagrama que o provocou (8 bytes é o mínimo da [RFC 792](https://www.rfc-editor.org/rfc/rfc792); os roteadores atuais citam o máximo possível, até 576 bytes no total, [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812) seção 4.3.2.3); é assim que o ping e o traceroute associam o erro à sonda certa (pelo identificador e sequência ICMP ou pelas portas UDP).
 
 ### 7.2 Regras de geração de erros ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) e [RFC 1812](https://www.rfc-editor.org/rfc/rfc1812))
 
 
-          
 
 - Nunca se gera um erro ICMP sobre outra mensagem de erro ICMP (evita tempestades de erros).
 - Nunca se gera erro sobre broadcast, multicast ou fragmentos que não sejam o primeiro.
@@ -1065,7 +1075,6 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 ### 7.3 Tipos e códigos principais
 
 
-          
 
 | Tipo | Código | Nome | Quem gera / uso |
 | --- | --- | --- | --- |
@@ -1088,24 +1097,20 @@ Há duas famílias. As **consultas** (Echo Request/Reply) são iniciadas por um 
 ### 7.4 Como funcionam as ferramentas
 
 
-          
 
 **ping** envia Echo Request (tipo 8) com identificador e sequência e mede o RTT até o Echo Reply (tipo 0). O TTL exibido é o que chegou: 64 menos o número de roteadores indica um destino Linux; 255 menos os saltos indica um roteador.
 
 
-          
 
 **traceroute** (Linux) envia sondas UDP para portas altas (33434 em diante) com TTL 1, 2, 3... Cada roteador onde o TTL se esgota devolve Time Exceeded; o destino responde Port Unreachable, o que encerra o rastreamento. **tracert** (Windows) e **traceroute -I** usam Echo Request e terminam com Echo Reply. Anotações do Linux: `!N` rede, `!H` host, `!X` proibido, `!F` fragmentação necessária.
 
 
-          
 
 **Path MTU Discovery** ([RFC 1191](https://www.rfc-editor.org/rfc/rfc1191)): o host envia com DF ligado; o roteador cujo enlace de saída tem MTU menor descarta e devolve tipo 3 código 4 com a MTU do próximo salto. O host guarda esse valor (cache de PMTU) e passa a usar pacotes menores. No Linux, `-M want` (padrão) fragmenta localmente depois de aprender a PMTU, `-M do` recusa enviar e `-M dont` desliga o DF e deixa o roteador fragmentar.
 
 ### 7.5 ICMP e segurança
 
 
-          
 
 - **Reconhecimento:** ping sweep descobre hosts ativos; traceroute revela a topologia; Port Unreachable revela portas UDP fechadas (base do scan UDP do nmap).
 - **Filtragem:** descartar em silêncio produz timeouts (`* * *`); rejeitar com 3/13 revela que existe um filtro. Ambos são escolhas de projeto.
@@ -1119,7 +1124,6 @@ O modelo cobre o ICMP do IPv4 ([RFC 792](https://www.rfc-editor.org/rfc/rfc792))
 ### 7.7 Roteiro de exercícios
 
 
-          
 
 1. **Echo (ping):** anote o TTL recebido e calcule quantos roteadores existem até o SRV. Repita com `ping 10.0.23.2` e explique a diferença no TTL inicial.
 2. **traceroute (UDP)** e **tracert (Windows)**: compare os pacotes na aba Captura. Por que o último salto responde com mensagens diferentes nas duas ferramentas?

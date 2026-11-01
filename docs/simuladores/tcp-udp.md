@@ -163,6 +163,7 @@ O handshake garante que os dois lados estão prontos e sincronizados, mas custa 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -180,7 +181,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=3002 Ack=2 Len=0
 ```
 
-*Figura 4.1.1 (Tipo B, sequência).* Mensagens do cenário "Handshake e encerramento", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 13 mensagens. Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.1 (Tipo B, sequência).* Mensagens do cenário "Handshake e encerramento", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 13 mensagens, numeradas de 1 a 13 na ordem da comunicação. Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.2 Slow start
 
@@ -215,6 +216,7 @@ Evita que um emissor recém-chegado inunde a rede ([RFC 5681](https://www.rfc-ed
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -286,7 +288,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=30002 Ack=2 Len=0
 ```
 
-*Figura 4.1.2 (Tipo B, sequência).* Mensagens do cenário "Slow start", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 67 mensagens. Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.2 (Tipo B, sequência).* Mensagens do cenário "Slow start", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 67 mensagens, numeradas de 1 a 67 na ordem da comunicação. Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.3 Fast retransmit
 
@@ -322,6 +324,7 @@ Recupera perdas isoladas em cerca de 1 RTT e preserva boa parte da vazão. É o 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -374,7 +377,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=20002 Ack=2 Len=0
 ```
 
-*Figura 4.1.3 (Tipo B, sequência).* Mensagens do cenário "Fast retransmit", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 48 mensagens (1 perdida). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.3 (Tipo B, sequência).* Mensagens do cenário "Fast retransmit", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 48 mensagens, numeradas de 1 a 48 na ordem da comunicação (1 perdida). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.4 Timeout (RTO)
 
@@ -410,6 +413,7 @@ Timeouts custam caro: a conexão fica parada e a janela recomeça do zero. Por i
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -434,7 +438,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=6002 Ack=2 Len=0
 ```
 
-*Figura 4.1.4 (Tipo B, sequência).* Mensagens do cenário "Timeout (RTO)", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 20 mensagens (1 perdida). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.4 (Tipo B, sequência).* Mensagens do cenário "Timeout (RTO)", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 20 mensagens, numeradas de 1 a 20 na ordem da comunicação (1 perdida). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.5 Janela do receptor
 
@@ -469,6 +473,7 @@ Controle de fluxo (receptor) e controle de congestionamento (rede) são mecanism
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -520,7 +525,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=20002 Ack=2 Len=0
 ```
 
-*Figura 4.1.5 (Tipo B, sequência).* Mensagens do cenário "Janela do receptor", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 47 mensagens. Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.5 (Tipo B, sequência).* Mensagens do cenário "Janela do receptor", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 47 mensagens, numeradas de 1 a 47 na ordem da comunicação. Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.6 Perdas aleatórias
 
@@ -556,6 +561,7 @@ Mostra por que a vazão do TCP cai rápido com a perda: cada perda corta a janel
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -631,7 +637,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=30002 Ack=2 Len=0
 ```
 
-*Figura 4.1.6 (Tipo B, sequência).* Mensagens do cenário "Perdas aleatórias", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 71 mensagens (4 perdidas). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.6 (Tipo B, sequência).* Mensagens do cenário "Perdas aleatórias", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 71 mensagens, numeradas de 1 a 71 na ordem da comunicação (4 perdidas). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.7 Várias perdas sem SACK
 
@@ -668,6 +674,7 @@ Com perdas em rajada (comuns em filas cheias e em redes sem fio), a recuperaçã
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -722,7 +729,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=20002 Ack=2 Len=0
 ```
 
-*Figura 4.1.7 (Tipo B, sequência).* Mensagens do cenário "Várias perdas sem SACK", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 50 mensagens (3 perdidas). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.7 (Tipo B, sequência).* Mensagens do cenário "Várias perdas sem SACK", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 50 mensagens, numeradas de 1 a 50 na ordem da comunicação (3 perdidas). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.1.8 Várias perdas com SACK
 
@@ -758,6 +765,7 @@ O SACK é padrão em todos os sistemas atuais. Ele faz o TCP recuperar várias p
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000 SACK_PERM
@@ -812,7 +820,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=20002 Ack=2 Len=0
 ```
 
-*Figura 4.1.8 (Tipo B, sequência).* Mensagens do cenário "Várias perdas com SACK", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 50 mensagens (3 perdidas). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.1.8 (Tipo B, sequência).* Mensagens do cenário "Várias perdas com SACK", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 50 mensagens, numeradas de 1 a 50 na ordem da comunicação (3 perdidas). Corresponde à aba Captura, no modo "TCP: conexão", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 4.2 Modo: TCP: download de arquivo
 
@@ -855,6 +863,7 @@ Não há perda aleatória: a perda vem da própria rede. Quando a janela passa d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000 SACK_PERM
@@ -992,7 +1001,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: TCP 80 → 50432 [ACK] Seq=5000002 Ack=122 Len=0
 ```
 
-*Figura 4.2.1 (Tipo B, sequência).* Mensagens do cenário "Download de arquivo", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 133 mensagens (6 perdidas). Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.2.1 (Tipo B, sequência).* Mensagens do cenário "Download de arquivo", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 133 mensagens, numeradas de 1 a 133 na ordem da comunicação (6 perdidas). Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.2.2 Download com perdas
 
@@ -1028,6 +1037,7 @@ Explica por que enlaces com perda que não vem de congestionamento (Wi-Fi fraco,
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000 SACK_PERM
@@ -1194,7 +1204,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: TCP 80 → 50432 [ACK] Seq=5000002 Ack=122 Len=0
 ```
 
-*Figura 4.2.2 (Tipo B, sequência).* Mensagens do cenário "Download com perdas", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 162 mensagens (27 perdidas). Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.2.2 (Tipo B, sequência).* Mensagens do cenário "Download com perdas", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 162 mensagens, numeradas de 1 a 162 na ordem da comunicação (27 perdidas). Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.2.3 Download limitado pela janela
 
@@ -1229,6 +1239,7 @@ Por isso existe a escala de janela (window scale, [RFC 7323](https://www.rfc-edi
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000 SACK_PERM
@@ -1366,7 +1377,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: TCP 80 → 50432 [ACK] Seq=1000002 Ack=122 Len=0
 ```
 
-*Figura 4.2.3 (Tipo B, sequência).* Mensagens do cenário "Download limitado pela janela", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 133 mensagens. Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.2.3 (Tipo B, sequência).* Mensagens do cenário "Download limitado pela janela", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 133 mensagens, numeradas de 1 a 133 na ordem da comunicação. Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.2.4 Download com RTT alto
 
@@ -1401,6 +1412,7 @@ O primeiro byte só chega 400 ms depois do início, e o slow start ainda precisa
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000 SACK_PERM
@@ -1426,7 +1438,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: TCP 80 → 50432 [ACK] Seq=1000002 Ack=122 Len=0
 ```
 
-*Figura 4.2.4 (Tipo B, sequência).* Mensagens do cenário "Download com RTT alto", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 21 mensagens. Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.2.4 (Tipo B, sequência).* Mensagens do cenário "Download com RTT alto", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 21 mensagens, numeradas de 1 a 21 na ordem da comunicação. Corresponde à aba Captura, no modo "TCP: download de arquivo", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 4.3 Modo: UDP: fluxo de datagramas e DNS
 
@@ -1466,6 +1478,7 @@ Como não confirma nada, o UDP também não verifica a origem: é a base da fals
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: UDP 50432 → 5004 Len=1000
@@ -1490,7 +1503,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: UDP 50432 → 5004 Len=1000
 ```
 
-*Figura 4.3.1 (Tipo B, sequência).* Mensagens do cenário "Fluxo com perdas", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 20 mensagens (3 perdidas). Corresponde à aba Captura, no modo "UDP: fluxo de datagramas e DNS", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.3.1 (Tipo B, sequência).* Mensagens do cenário "Fluxo com perdas", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 20 mensagens, numeradas de 1 a 20 na ordem da comunicação (3 perdidas). Corresponde à aba Captura, no modo "UDP: fluxo de datagramas e DNS", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.3.2 DNS com repetição
 
@@ -1525,6 +1538,7 @@ Quem usa UDP assume a confiabilidade de que precisa. O DNS sobre UDP também é 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 -x h_203_0_113_80: UDP Standard query 0x2f1a A www.unb.br (perdido na rede)
@@ -1532,7 +1546,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: UDP Standard query response 0x2f1a A www.unb.br A 164.41.101.12
 ```
 
-*Figura 4.3.2 (Tipo B, sequência).* Mensagens do cenário "DNS com repetição", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 3 mensagens (1 perdida). Corresponde à aba Captura, no modo "UDP: fluxo de datagramas e DNS", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.3.2 (Tipo B, sequência).* Mensagens do cenário "DNS com repetição", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (1 perdida). Corresponde à aba Captura, no modo "UDP: fluxo de datagramas e DNS", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 4.4 Modo: UDP: vídeo em streaming
 
@@ -1574,6 +1588,7 @@ Em vídeo ao vivo, é melhor perder um pacote do que esperar a retransmissão: o
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro I nº 1: 53 pacotes, 62500 bytes
@@ -1703,7 +1718,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro P nº 125: 9 pacotes, 10417 bytes
 ```
 
-*Figura 4.4.1 (Tipo B, sequência).* Mensagens do cenário "Vídeo em streaming", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens. Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.4.1 (Tipo B, sequência).* Mensagens do cenário "Vídeo em streaming", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens, numeradas de 1 a 125 na ordem da comunicação. Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.4.2 Vídeo com perdas
 
@@ -1738,6 +1753,7 @@ Mostra por que redes de vídeo usam FEC (redundância), retransmissão seletiva 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro I nº 1: 53 pacotes, 62500 bytes
@@ -1867,7 +1883,7 @@ sequenceDiagram
   h_203_0_113_80 -x h_192_168_10_10: UDP 5004 → 50432 RTP quadro P nº 125: 9 pacotes, 10417 bytes (1 pacote(s) perdido(s) na re
 ```
 
-*Figura 4.4.2 (Tipo B, sequência).* Mensagens do cenário "Vídeo com perdas", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens (36 perdidas). Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.4.2 (Tipo B, sequência).* Mensagens do cenário "Vídeo com perdas", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens, numeradas de 1 a 125 na ordem da comunicação (36 perdidas). Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.4.3 Vídeo acima da capacidade
 
@@ -1902,6 +1918,7 @@ Aplicações de mídia sobre UDP precisam implementar a própria adaptação (ta
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro I nº 1: 84 pacotes, 100000 bytes (54 descartado(s) na fila do 
@@ -2031,7 +2048,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro P nº 125: 14 pacotes, 16667 bytes (6 descartado(s) na fila do 
 ```
 
-*Figura 4.4.3 (Tipo B, sequência).* Mensagens do cenário "Vídeo acima da capacidade", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens. Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.4.3 (Tipo B, sequência).* Mensagens do cenário "Vídeo acima da capacidade", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens, numeradas de 1 a 125 na ordem da comunicação. Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.4.4 Jitter e buffer do player
 
@@ -2066,6 +2083,7 @@ Em vídeo ao vivo e em chamadas, o tamanho do buffer é um compromisso entre flu
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro I nº 1: 53 pacotes, 62500 bytes (43 fora do prazo (descartado(
@@ -2195,7 +2213,7 @@ sequenceDiagram
   h_203_0_113_80 ->> h_192_168_10_10: UDP 5004 → 50432 RTP quadro P nº 125: 9 pacotes, 10417 bytes (4 fora do prazo (descartado(
 ```
 
-*Figura 4.4.4 (Tipo B, sequência).* Mensagens do cenário "Jitter e buffer do player", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens. Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.4.4 (Tipo B, sequência).* Mensagens do cenário "Jitter e buffer do player", na ordem do tempo, entre Servidor 203.0.113.80, Cliente 192.168.10.10: 125 mensagens, numeradas de 1 a 125 na ordem da comunicação. Corresponde à aba Captura, no modo "UDP: vídeo em streaming", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 4.5 Modo: Comparação TCP x UDP
 
@@ -2236,6 +2254,7 @@ Não existe protocolo melhor em geral: transferência de arquivos precisa do TCP
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -2310,7 +2329,7 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=20002 Ack=2 Len=0
 ```
 
-*Figura 4.5.1 (Tipo B, sequência).* Mensagens do cenário "TCP x UDP: 10% de perda", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 70 mensagens (6 perdidas). Corresponde à aba Captura, no modo "Comparação TCP x UDP", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.5.1 (Tipo B, sequência).* Mensagens do cenário "TCP x UDP: 10% de perda", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 70 mensagens, numeradas de 1 a 70 na ordem da comunicação (6 perdidas). Corresponde à aba Captura, no modo "Comparação TCP x UDP", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 #### 4.5.2 TCP x UDP: reordenação
 
@@ -2343,6 +2362,7 @@ Mostra que ACK duplicado nem sempre significa perda. Pilhas modernas detectam re
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_192_168_10_10 as Cliente<br/>192.168.10.10
   participant h_203_0_113_80 as Servidor<br/>203.0.113.80
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000
@@ -2414,17 +2434,13 @@ sequenceDiagram
   h_192_168_10_10 ->> h_203_0_113_80: TCP 50432 → 80 [ACK] Seq=20002 Ack=2 Len=0
 ```
 
-*Figura 4.5.2 (Tipo B, sequência).* Mensagens do cenário "TCP x UDP: reordenação", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 67 mensagens. Corresponde à aba Captura, no modo "Comparação TCP x UDP", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 4.5.2 (Tipo B, sequência).* Mensagens do cenário "TCP x UDP: reordenação", na ordem do tempo, entre Cliente 192.168.10.10, Servidor 203.0.113.80: 67 mensagens, numeradas de 1 a 67 na ordem da comunicação. Corresponde à aba Captura, no modo "Comparação TCP x UDP", na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ## 5. Referência
 
 ### 5.1 A camada de transporte
 
-          
-
 O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entrega dados entre **processos**, identificados por **portas**. O **UDP** ([RFC 768](https://www.rfc-editor.org/rfc/rfc768)) acrescenta apenas portas, comprimento e checksum: cada datagrama é independente, sem conexão, sem confirmação, sem ordem e sem controle de taxa. O **TCP** ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293)) oferece um fluxo de bytes confiável e ordenado, com controle de fluxo e de congestionamento, ao custo de abrir uma conexão e de esperar confirmações.
-
-          
 
 | Aspecto | TCP | UDP |
 | --- | --- | --- |
@@ -2436,31 +2452,19 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 | Cabeçalho | 20 a 60 bytes | 8 bytes |
 | Usos típicos | Web (HTTP/1.1 e 2), SSH, e-mail, transferência de arquivos | DNS, voz e vídeo (RTP), DHCP, NTP, QUIC (HTTP/3) |
 
-          
-
 ### 5.2 Conexão TCP
-
-          
 
 - **Abertura:** SYN, SYN-ACK e ACK. Cada lado escolhe um número de sequência inicial (ISN). O Wireshark, assim como este simulador, mostra números **relativos** (o ISN aparece como 0).
 - **Estados:** o cliente passa por SYN_SENT e ESTABLISHED; o servidor por LISTEN, SYN_RCVD e ESTABLISHED.
 - **Encerramento:** cada sentido é fechado com FIN e ACK. Quem fecha primeiro passa por FIN_WAIT_1, FIN_WAIT_2 e **TIME_WAIT**, onde espera 2×MSL (a [RFC 9293](https://www.rfc-editor.org/rfc/rfc9293) usa MSL de 2 min; o Linux fixa 60 s) para absorver segmentos atrasados da conexão.
 
-          
-
 ### 5.3 Confiabilidade e janela deslizante
-
-          
 
 - **ACK cumulativo:** informa o próximo byte esperado. Um segmento que chega fora de ordem faz o receptor repetir o último ACK (**ACK duplicado**).
 - **RTO ([RFC 6298](https://www.rfc-editor.org/rfc/rfc6298)):** o temporizador de retransmissão vale SRTT + 4×RTTVAR. Pelo **algoritmo de Karn**, segmentos retransmitidos não geram amostra de RTT. A cada timeout, o RTO dobra (backoff exponencial). A RFC recomenda mínimo de 1 s; o Linux usa 200 ms, valor adotado aqui.
 - **Controle de fluxo:** o receptor anuncia quanto ainda consegue armazenar (rwnd). O emissor nunca tem mais dados em voo que min(cwnd, rwnd).
 
-          
-
 ### 5.4 Controle de congestionamento ([RFC 5681](https://www.rfc-editor.org/rfc/rfc5681) e [RFC 6582](https://www.rfc-editor.org/rfc/rfc6582))
-
-          
 
 - **Slow start:** a cwnd começa pequena (1 a 4 segmentos; 10 no Linux; a [RFC 6928](https://www.rfc-editor.org/rfc/rfc6928) é Experimental) e cresce 1 segmento por ACK, o que a **dobra a cada RTT**.
 - **Congestion avoidance:** acima do ssthresh, cresce cerca de 1 segmento por RTT (crescimento linear).
@@ -2469,19 +2473,11 @@ O IP entrega pacotes entre **hosts**, sem garantias. A camada de transporte entr
 - **SACK ([RFC 2018](https://www.rfc-editor.org/rfc/rfc2018)):** opção negociada no SYN (SACK_PERM). Cada ACK duplicado leva até 4 blocos (3 quando a opção Timestamps está em uso) (SLE e SRE) com os bytes recebidos além da lacuna, e o emissor mantém um placar (scoreboard). Este simulador usa uma versão simplificada: dá como perdido todo buraco abaixo do maior byte confirmado (ideia do antigo FACK; o Linux atual usa RACK-TLP, [RFC 8985](https://www.rfc-editor.org/rfc/rfc8985), e o sysctl tcp_fack já não tem efeito), sem DSACK e sem os detalhes da [RFC 6675](https://www.rfc-editor.org/rfc/rfc6675).
 - O Linux usa **CUBIC** ([RFC 9438](https://www.rfc-editor.org/rfc/rfc9438)) por padrão. A lógica de crescer até perceber perda e então reduzir é a mesma mostrada aqui com Reno/NewReno.
 
-          
-
 ### 5.5 UDP na prática
-
-          
 
 Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta não chegar no tempo limite. A **voz e o vídeo** preferem perder um pacote a esperar por ele, porque um áudio atrasado já não serve. O **QUIC** ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) implementa sobre o UDP a confiabilidade e o controle de congestionamento, com criptografia embutida.
 
-          
-
 ### 5.6 Download de arquivo com TCP
-
-          
 
 - **Custo da conexão:** o primeiro byte do arquivo só chega depois de 2 RTT (handshake mais pedido HTTP). Em arquivos pequenos, esse custo e o slow start dominam o tempo.
 - **Slow start e fila do roteador:** a janela dobra a cada RTT até a rede não aguentar. O que passa da capacidade do caminho (banda × RTT mais a fila do roteador) é descartado no fim da fila (tail drop), o TCP reduz a janela e volta a crescer: é o dente de serra da cwnd.
@@ -2490,11 +2486,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 - **Perdas no fim da janela:** sem segmentos depois da perda, não há ACKs duplicados. As pilhas atuais, com SACK, usam a sonda de cauda (TLP, [RFC 8985](https://www.rfc-editor.org/rfc/rfc8985)): cerca de 2 RTT depois, o emissor reenvia o último segmento, descobre o que falta e recupera sem esperar o RTO. Só a perda de uma janela inteira cai em timeout.
 - **Modelo desta tela:** o simulador trabalha por rodada (uma janela inteira por RTT) e desenha uma seta por rodada. Rodadas parecidas são omitidas do diagrama, mas entram no gráfico e nas métricas.
 
-          
-
 ### 5.7 Vídeo em streaming com UDP
-
-          
 
 - **RTP sobre UDP** ([RFC 3550](https://www.rfc-editor.org/rfc/rfc3550)): cada pacote leva número de sequência e marca de tempo. O UDP não retransmite; o receptor usa esses campos para reordenar e para medir perdas e jitter.
 - **Quadros I e P:** o quadro I é completo e grande; os quadros P guardam só a diferença para o anterior. Por isso um pacote perdido num P estraga os quadros seguintes até o próximo I, e a perda num I congela a imagem até o próximo I.
@@ -2502,11 +2494,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 - **Sem controle de congestionamento:** o UDP não reduz a taxa quando a fila enche. Na prática, as aplicações usam taxa adaptativa (vários bitrates, como no DASH e no HLS) ou controle de taxa no próprio RTP (RTCP e algoritmos como o GCC do WebRTC).
 - **Recuperação de perdas:** pode usar FEC (redundância enviada junto) ou retransmissão seletiva (NACK do RTCP) quando o atraso permite. O simulador mostra o caso sem nenhuma proteção.
 
-          
-
 ### 5.8 TCP, UDP e segurança
-
-          
 
 - **SYN flood:** muitos SYN sem o ACK final esgotam a fila de conexões semiabertas do servidor. SYN cookies ([RFC 4987](https://www.rfc-editor.org/rfc/rfc4987)) evitam reservar estado antes do handshake terminar.
 - **Números de sequência:** um ISN previsível permite injetar segmentos ou derrubar conexões de fora do caminho. Pilhas modernas sorteiam o ISN ([RFC 9293](https://www.rfc-editor.org/rfc/rfc9293)) e só aceitam RST com a sequência exata ([RFC 5961](https://www.rfc-editor.org/rfc/rfc5961)).
@@ -2516,11 +2504,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 - **Streaming:** o RTP simples vai em claro e sem autenticação; use SRTP ([RFC 3711](https://www.rfc-editor.org/rfc/rfc3711)) ou DTLS-SRTP. Servidores de mídia UDP expostos também podem ser usados em ataques de reflexão e inundação.
 - Para praticar a defesa contra esses ataques, use o Simulador de Ataques e Defesas TCP/UDP.
 
-          
-
 ### 5.9 Limitações do simulador
-
-          
 
 - Cada segmento é confirmado por um ACK. Os ACKs atrasados (um ACK a cada dois segmentos, [RFC 1122](https://www.rfc-editor.org/rfc/rfc1122) e [RFC 5681](https://www.rfc-editor.org/rfc/rfc5681)) não são simulados; com eles, a cwnd cresceria cerca de 1,5 vez por RTT, e não 2.
 - O handshake não negocia Window Scale nem Timestamps ([RFC 7323](https://www.rfc-editor.org/rfc/rfc7323)). Por isso a rwnd de 256 e 1024 segmentos (acima de 64 kB) é um valor didático: na prática exigiria a opção Window Scale.
@@ -2528,11 +2512,7 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 - O simulador trabalha por rodada (uma janela por RTT) e usa SACK simplificado, sem DSACK e sem os detalhes da [RFC 6675](https://www.rfc-editor.org/rfc/rfc6675).
 - No UDP, o tempo de repetição do DNS (1 s) e o RTO mínimo de 200 ms são valores didáticos.
 
-          
-
 ### 5.10 Roteiro de exercícios
-
-          
 
 1. **Handshake e encerramento:** identifique na aba Captura os números de sequência e de confirmação de cada segmento. Por que o SYN e o FIN consomem um número de sequência?
 2. **Slow start:** acompanhe a aba Janela (cwnd) e mostre que a janela dobra a cada RTT. Em que momento o crescimento passa a ser linear?

@@ -191,6 +191,7 @@ Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no quadro de 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -208,7 +209,7 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "DORA básico", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração padrão.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "DORA básico", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração padrão.
 
 **Mensagens**
 
@@ -241,6 +242,7 @@ Repare que o servidor não escolhido devolve o endereço ao pool.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_s2 as DHCP-2<br/>servidor
@@ -263,7 +265,7 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Dois servidores", na ordem do tempo, entre PC-A, DHCP-1, DHCP-2, PC-B: 12 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Dois servidores", na ordem do tempo, entre PC-A, DHCP-1, DHCP-2, PC-B: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -295,6 +297,7 @@ Leases curtos devolvem endereços ao pool mais rápido, ao custo de mais renova�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -312,7 +315,7 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Lease curto", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Lease curto", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -348,6 +351,7 @@ Na segunda negociação, o servidor oferece o endereço seguinte.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -379,7 +383,7 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Conflito de IP", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 18 mensagens (em 8 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Conflito de IP", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 8 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -411,6 +415,7 @@ Marque **DHCP-1 ativo** e execute de novo para ver a negociação funcionar.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -431,7 +436,7 @@ sequenceDiagram
   n_pc ->> n_pcb: DISCOVER
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Servidor indisponível", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens (em 8 fases; 4 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Servidor indisponível", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 8 fases; 4 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -468,6 +473,7 @@ O endereço continua o mesmo durante todo o processo.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -488,7 +494,7 @@ sequenceDiagram
   n_s1 ->> n_pc: ACK
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Renovação (T1)", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 10 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Renovação (T1)", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -517,6 +523,7 @@ O servidor cai depois da concessão. Sem resposta no T1, o cliente tenta qualque
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -539,7 +546,7 @@ sequenceDiagram
   n_pc ->> n_pcb: REQUEST
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Falha na renovação", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 11 mensagens (em 7 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Falha na renovação", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 7 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -570,6 +577,7 @@ O servidor não responde ao RELEASE; veja na aba Leases o endereço voltar ao po
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc as PC-A<br/>cliente DHCP
   participant n_s1 as DHCP-1<br/>servidor
   participant n_pcb as PC-B<br/>IP estático
@@ -589,7 +597,7 @@ sequenceDiagram
   n_pc ->> n_s1: RELEASE
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "RELEASE", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 9 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "RELEASE", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Ciclo do lease", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -603,13 +611,9 @@ sequenceDiagram
 
 ### 7.1 O que é o DHCP
 
-          
-
 O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)) entrega automaticamente a um host o endereço IP, a máscara, o gateway e os servidores DNS. As opções que carregam cada parâmetro estão na [RFC 2132](https://www.rfc-editor.org/rfc/rfc2132). O DHCP usa **UDP**: o servidor escuta na porta **67** e o cliente, na porta **68**. O endereço é **emprestado** por um tempo (lease) e precisa ser renovado.
 
 ### 7.2 Troca DORA
-
-          
 
 - **Discover:** o cliente, ainda sem IP, envia em broadcast de 0.0.0.0 para 255.255.255.255 procurando servidores.
 - **Offer:** cada servidor que recebeu o pedido reserva um endereço do pool e o oferece no campo yiaddr.
@@ -618,8 +622,6 @@ O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org
 
 ### 7.3 Ciclo de vida do lease
 
-          
-
 - **T1 (50% do lease):** o cliente entra em RENEWING e pede a renovação em unicast ao servidor original.
 - **T2 (87,5%):** sem resposta, o cliente entra em REBINDING e pede a renovação em broadcast a qualquer servidor.
 - **Expiração:** sem renovação, o cliente abandona o endereço e volta ao estado INIT.
@@ -627,8 +629,6 @@ O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org
 - **DHCPRELEASE:** o cliente devolve o endereço antes do fim do lease. O servidor não responde a essa mensagem.
 
 ### 7.4 Mensagens DHCP (opção 53)
-
-          
 
 | Valor | Mensagem | Sentido | Função |
 | --- | --- | --- | --- |
@@ -643,13 +643,9 @@ O **Dynamic Host Configuration Protocol** ([RFC 2131](https://www.rfc-editor.org
 
 ### 7.5 Relay agent
 
-          
-
 Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o roteador atua como **relay agent** (comando **ip helper-address** no Cisco IOS): ele recebe o broadcast, preenche o campo **giaddr** com o IP da interface e repassa o pedido em unicast ao servidor, que usa o giaddr para escolher o pool certo.
 
 ### 7.6 DHCP e segurança
-
-          
 
 - **Servidor falso (rogue DHCP):** um atacante responde mais rápido que o servidor legítimo e entrega o próprio IP como gateway ou DNS, o que abre caminho para um man-in-the-middle.
 - **Esgotamento (starvation):** o atacante envia Discovers com MACs forjados até esvaziar o pool, negando serviço aos clientes legítimos.
@@ -657,8 +653,6 @@ Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o rot
 - **Port security:** limitar o número de MACs por porta reduz o efeito do starvation.
 
 ### 7.7 Roteiro de exercícios
-
-          
 
 1. Com **1 servidor** (cenário DORA básico), percorra a troca com o botão Passo e anote origem e destino (IP e MAC) de cada mensagem na aba Captura. Por que o DISCOVER e o REQUEST vão em broadcast?
 2. No cenário **Dois servidores**: que opção do REQUEST faz o servidor não escolhido devolver a oferta ao pool?

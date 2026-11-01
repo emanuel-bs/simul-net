@@ -314,6 +314,7 @@ Conte as consultas e some os tempos de cada salto.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -333,7 +334,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Resolução completa (cache frio)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração padrão.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Resolução completa (cache frio)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração padrão.
 
 **Mensagens**
 
@@ -363,6 +364,7 @@ O resolvedor já conhece o servidor do .com e **pula a raiz**.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -380,7 +382,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Delegação do .com em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 6 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Delegação do .com em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -408,6 +410,7 @@ As delegações do .com e de example.com estão no cache: uma única consulta, d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -423,7 +426,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Delegação do domínio em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Delegação do domínio em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -451,6 +454,7 @@ A resposta ainda está dentro do TTL: o resolvedor responde sozinho, sem consult
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -462,7 +466,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (cache)
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Resposta em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Resposta em cache", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -493,6 +497,7 @@ A mesma pergunta, mas o tipo AAAA devolve o endereço IPv6 do nome.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -508,7 +513,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "AAAA (IPv6)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "AAAA (IPv6)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -536,6 +541,7 @@ Quem entrega o e-mail de example.com? A resposta traz a preferência (10) e o no
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -551,7 +557,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "MX (e-mail)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "MX (e-mail)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -578,6 +584,7 @@ Registro de texto usado como política SPF: quais endereços podem enviar e-mail
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -593,7 +600,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "TXT (SPF)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "TXT (SPF)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -621,6 +628,7 @@ blog.example.com é um apelido de www.example.com. A resposta traz o CNAME e o r
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -636,7 +644,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "CNAME (apelido)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "CNAME (apelido)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -664,6 +672,7 @@ O nome não existe. O autoritativo responde NXDOMAIN com o SOA, e o resolvedor g
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -679,7 +688,7 @@ sequenceDiagram
   n_rs ->> n_cl: NXDOMAIN
 ```
 
-*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Nome inexistente (NXDOMAIN)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Nome inexistente (NXDOMAIN)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -711,6 +720,7 @@ A primeira consulta ao autoritativo se perde. O resolvedor espera 800 ms e retra
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -727,7 +737,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.10 (Tipo B, sequência).* Mensagens do cenário "Consulta perdida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 5 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.10 (Tipo B, sequência).* Mensagens do cenário "Consulta perdida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -756,6 +766,7 @@ O primeiro servidor autoritativo não responde. Depois do tempo limite, o resolv
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -773,7 +784,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.11 (Tipo B, sequência).* Mensagens do cenário "ns1 fora do ar (usa ns2)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1, ns2: 5 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.11 (Tipo B, sequência).* Mensagens do cenário "ns1 fora do ar (usa ns2)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1, ns2: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -802,6 +813,7 @@ A resposta não cabe no UDP: o servidor marca TC=1 e o resolvedor repete a consu
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -821,7 +833,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.1.12 (Tipo B, sequência).* Mensagens do cenário "Resposta truncada (TCP)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.12 (Tipo B, sequência).* Mensagens do cenário "Resposta truncada (TCP)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -856,6 +868,7 @@ A zona está assinada e o DS no .com bate com a chave. O resolvedor percorre a c
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -882,7 +895,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (AD)
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Cadeia de confiança válida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração padrão.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Cadeia de confiança válida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração padrão.
 
 **Mensagens**
 
@@ -912,6 +925,7 @@ O nome não existe, e o NXDOMAIN vem com NSEC assinado: a inexistência é prova
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -938,7 +952,7 @@ sequenceDiagram
   n_rs ->> n_cl: NXDOMAIN (AD)
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Negação autenticada (NSEC)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Negação autenticada (NSEC)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -968,6 +982,7 @@ O .com não tem DS para example.com. A cadeia termina no .com e a resposta é ac
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -992,7 +1007,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Zona sem DS (insegura)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 12 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Zona sem DS (insegura)", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1025,6 +1040,7 @@ O RRSIG do registro A venceu. O resolvedor que valida devolve **SERVFAIL**: o si
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -1051,7 +1067,7 @@ sequenceDiagram
   n_rs ->> n_cl: SERVFAIL
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Assinatura vencida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Assinatura vencida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1079,6 +1095,7 @@ A chave do domínio mudou e o DS no .com ficou desatualizado. A cadeia quebra e 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -1105,7 +1122,7 @@ sequenceDiagram
   n_rs ->> n_cl: SERVFAIL
 ```
 
-*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "DS que não casa com a chave", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "DS que não casa com a chave", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1134,6 +1151,7 @@ Mesma assinatura vencida, mas o resolvedor **não valida**: entrega a resposta s
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_rt as Raiz<br/>a.root-servers.net
@@ -1153,7 +1171,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta
 ```
 
-*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Resolvedor que não valida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Resolvedor que não valida", na ordem do tempo, entre Cliente, Resolvedor, Raiz, .com, ns1: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "DNSSEC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1187,6 +1205,7 @@ Porta de origem fixa e ID previsível: uma resposta forjada que chegue antes da 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_au as ns1<br/>autoritativo legítimo
@@ -1203,7 +1222,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (198.51.100.66)
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Sem defesa (porta fixa)", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 7 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração padrão.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Sem defesa (porta fixa)", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração padrão.
 
 **Mensagens**
 
@@ -1232,6 +1251,7 @@ Porta e ID aleatórios: as respostas forjadas não casam e são descartadas. A l
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_au as ns1<br/>autoritativo legítimo
@@ -1247,7 +1267,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (192.0.2.80)
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Porta e ID aleatórios", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Porta e ID aleatórios", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1276,6 +1296,7 @@ O atacante tem sorte e acerta porta e ID. Aleatoriedade é probabilidade, não g
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_au as ns1<br/>autoritativo legítimo
@@ -1292,7 +1313,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (198.51.100.66)
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Aleatórios, mas o palpite acerta", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 7 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Aleatórios, mas o palpite acerta", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1324,6 +1345,7 @@ Mesmo acertando porta e ID, a resposta forjada tem a **caixa das letras** errada
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_au as ns1<br/>autoritativo legítimo
@@ -1339,7 +1361,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (192.0.2.80)
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "0x20 + palpite certo", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "0x20 + palpite certo", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1367,6 +1389,7 @@ A resposta forjada passa em porta e ID, mas não tem RRSIG válido. A validaçã
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_rs as Resolvedor<br/>recursivo
   participant n_au as ns1<br/>autoritativo legítimo
@@ -1382,7 +1405,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta (192.0.2.80)
 ```
 
-*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "DNSSEC + palpite certo", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "DNSSEC + palpite certo", na ordem do tempo, entre Cliente, Resolvedor, ns1, Atacante: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1415,6 +1438,7 @@ Consultas pequenas com a origem trocada pela da vítima: o resolvedor aberto res
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_at as Atacante<br/>origem forjada
   participant n_rs as Resolvedor<br/>recursivo
   participant n_vi as Vítima<br/>alvo da inundação
@@ -1428,7 +1452,7 @@ sequenceDiagram
   n_rs ->> n_vi: Resposta grande
 ```
 
-*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Resolvedor aberto (ANY)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração padrão.
+*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Resolvedor aberto (ANY)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração padrão.
 
 **Mensagens**
 
@@ -1455,6 +1479,7 @@ Uma consulta A gera uma resposta curta: o fator de amplificação é pequeno. O 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_at as Atacante<br/>origem forjada
   participant n_rs as Resolvedor<br/>recursivo
   participant n_vi as Vítima<br/>alvo da inundação
@@ -1468,7 +1493,7 @@ sequenceDiagram
   n_rs ->> n_vi: Resposta grande
 ```
 
-*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Consulta A (pouco ganho)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Consulta A (pouco ganho)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1500,6 +1525,7 @@ O provedor do atacante descarta pacotes com origem forjada: a reflexão não che
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_at as Atacante<br/>origem forjada
   participant n_rs as Resolvedor<br/>recursivo
   participant n_vi as Vítima<br/>alvo da inundação
@@ -1509,7 +1535,7 @@ sequenceDiagram
   n_at -x n_rs: ANY example.com
 ```
 
-*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 3 mensagens (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "Provedor com [BCP 38](https://www.rfc-editor.org/info/bcp38)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1535,6 +1561,7 @@ O resolvedor só atende a rede interna e responde REFUSED a quem é de fora: a v
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_at as Atacante<br/>origem forjada
   participant n_rs as Resolvedor<br/>recursivo
   participant n_vi as Vítima<br/>alvo da inundação
@@ -1548,7 +1575,7 @@ sequenceDiagram
   n_rs ->> n_vi: REFUSED
 ```
 
-*Figura 6.4.4 (Tipo B, sequência).* Mensagens do cenário "Resolvedor fechado (ACL)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+*Figura 6.4.4 (Tipo B, sequência).* Mensagens do cenário "Resolvedor fechado (ACL)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1575,6 +1602,7 @@ O limite de taxa deixa passar uma resposta truncada e descarta o resto: o ganho 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_at as Atacante<br/>origem forjada
   participant n_rs as Resolvedor<br/>recursivo
   participant n_vi as Vítima<br/>alvo da inundação
@@ -1586,7 +1614,7 @@ sequenceDiagram
   n_at ->> n_rs: ANY example.com
 ```
 
-*Figura 6.4.5 (Tipo B, sequência).* Mensagens do cenário "Limite de taxa (RRL)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
+*Figura 6.4.5 (Tipo B, sequência).* Mensagens do cenário "Limite de taxa (RRL)", na ordem do tempo, entre Atacante, Resolvedor, Vítima: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Amplificação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1618,6 +1646,7 @@ Consulta e resposta em texto claro: o observador lê o nome consultado e pode al
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_ob as Observador<br/>na rede (provedor, Wi-Fi)
   participant n_rs as Resolvedor<br/>dns.example.net
@@ -1626,7 +1655,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta 192.0.2.80
 ```
 
-*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "DNS puro (UDP 53)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 2 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração padrão.
+*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "DNS puro (UDP 53)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração padrão.
 
 **Mensagens**
 
@@ -1655,6 +1684,7 @@ O DNS dentro do TLS, na porta 853. O observador vê a conexão e o SNI, mas não
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_ob as Observador<br/>na rede (provedor, Wi-Fi)
   participant n_rs as Resolvedor<br/>dns.example.net
@@ -1669,7 +1699,7 @@ sequenceDiagram
   n_rs ->> n_cl: [cifrado] Resposta 192.0.2.80 (cifrada)
 ```
 
-*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "DNS sobre TLS (DoT)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 7 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "DNS sobre TLS (DoT)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1698,6 +1728,7 @@ O DNS dentro de HTTPS, na porta 443, misturado ao tráfego web.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_ob as Observador<br/>na rede (provedor, Wi-Fi)
   participant n_rs as Resolvedor<br/>dns.example.net
@@ -1712,7 +1743,7 @@ sequenceDiagram
   n_rs ->> n_cl: [cifrado] Resposta 192.0.2.80 (cifrada)
 ```
 
-*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "DNS sobre HTTPS (DoH)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 7 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "DNS sobre HTTPS (DoH)", na ordem do tempo, entre Cliente, Observador, Resolvedor: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1746,6 +1777,7 @@ A rede bloqueia a 853. O cliente estrito prefere ficar sem resposta a consultar 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_ob as Observador<br/>na rede (provedor, Wi-Fi)
   participant n_rs as Resolvedor<br/>dns.example.net
@@ -1753,7 +1785,7 @@ sequenceDiagram
   n_cl -x n_rs: SYN :853
 ```
 
-*Figura 6.5.4 (Tipo B, sequência).* Mensagens do cenário "DoT bloqueado, política estrita", na ordem do tempo, entre Cliente, Observador, Resolvedor: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+*Figura 6.5.4 (Tipo B, sequência).* Mensagens do cenário "DoT bloqueado, política estrita", na ordem do tempo, entre Cliente, Observador, Resolvedor: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1780,6 +1812,7 @@ Com o bloqueio, o cliente oportunista volta ao UDP 53: o bloqueio força o rebai
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cl as Cliente<br/>stub resolver
   participant n_ob as Observador<br/>na rede (provedor, Wi-Fi)
   participant n_rs as Resolvedor<br/>dns.example.net
@@ -1790,7 +1823,7 @@ sequenceDiagram
   n_rs ->> n_cl: Resposta 192.0.2.80
 ```
 
-*Figura 6.5.5 (Tipo B, sequência).* Mensagens do cenário "DoT bloqueado, política oportunista", na ordem do tempo, entre Cliente, Observador, Resolvedor: 3 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
+*Figura 6.5.5 (Tipo B, sequência).* Mensagens do cenário "DoT bloqueado, política oportunista", na ordem do tempo, entre Cliente, Observador, Resolvedor: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "DoT e DoH", com a configuração aplicada acima.
 
 **Mensagens**
 

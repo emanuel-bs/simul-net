@@ -179,6 +179,7 @@ Comutar por rótulo permite engenharia de tráfego, VPNs e caminhos independente
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_H_A as Host<br/>H-A
   participant h_PE1 as PE<br/>PE1
   participant h_P1 as P<br/>P1
@@ -197,7 +198,7 @@ sequenceDiagram
   h_PE1 ->> h_H_A: Echo Reply: entrega na rede conectada
 ```
 
-*Figura 5.2 (Tipo B, sequência).* Mensagens do cenário "Push, swap e pop", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.2 (Tipo B, sequência).* Mensagens do cenário "Push, swap e pop", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 > **Grupo:** Rótulo do egresso
 
@@ -236,6 +237,7 @@ Provedores usam explicit-null quando a marcação de QoS do núcleo precisa vale
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_H_A as Host<br/>H-A
   participant h_PE1 as PE<br/>PE1
   participant h_P1 as P<br/>P1
@@ -254,7 +256,7 @@ sequenceDiagram
   h_PE1 ->> h_H_A: Echo Reply: entrega na rede conectada
 ```
 
-*Figura 5.3 (Tipo B, sequência).* Mensagens do cenário "explicit-null", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.3 (Tipo B, sequência).* Mensagens do cenário "explicit-null", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 5.4 Sem PHP
 
@@ -289,6 +291,7 @@ O PHP (penultimate hop popping) existe justamente para evitar essa consulta dupl
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_H_A as Host<br/>H-A
   participant h_PE1 as PE<br/>PE1
   participant h_P1 as P<br/>P1
@@ -307,7 +310,7 @@ sequenceDiagram
   h_PE1 ->> h_H_A: Echo Reply: entrega na rede conectada
 ```
 
-*Figura 5.4 (Tipo B, sequência).* Mensagens do cenário "Sem PHP", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.4 (Tipo B, sequência).* Mensagens do cenário "Sem PHP", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 > **Grupo:** TTL
 
@@ -411,6 +414,7 @@ Permite atender vários clientes, até com endereços repetidos, sobre o mesmo n
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_H_A as Host<br/>H-A
   participant h_PE1 as PE<br/>PE1
   participant h_P1 as P<br/>P1
@@ -429,7 +433,7 @@ sequenceDiagram
   h_PE1 ->> h_H_A: Echo Reply: entrega na rede conectada
 ```
 
-*Figura 5.7 (Tipo B, sequência).* Mensagens do cenário "L3VPN", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.7 (Tipo B, sequência).* Mensagens do cenário "L3VPN", na ordem do tempo, entre Host H-A, PE PE1, P P1, P P3, PE PE2, Host H-B: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação. Mostra um ping do host H-A ao H-B (ida e volta), depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 > **Grupo:** Falhas
 
@@ -470,29 +474,20 @@ A convergência do MPLS depende do IGP. Em produção, mecanismos como a sincron
 
 ### 6.1 O que é o MPLS
 
-          
-
 No **Multiprotocol Label Switching** ([RFC 3031](https://www.rfc-editor.org/rfc/rfc3031)), o roteador de entrada classifica o pacote uma única vez em uma **FEC** (Forwarding Equivalence Class, por exemplo um prefixo de destino) e cola nele um **rótulo** curto. No núcleo, cada LSR encaminha consultando só o rótulo, sem olhar o cabeçalho IP. O caminho percorrido por uma FEC é o **LSP** (Label Switched Path), que é **unidirecional**: ida e volta usam LSPs e rótulos diferentes.
-
-          
 
 - **LER / PE (Provider Edge):** borda. Faz **push** (impõe o rótulo) na entrada e remove a pilha na saída.
 - **LSR / P (Provider):** núcleo. Faz **swap** (troca o rótulo do topo) ou **pop** (remove).
 - **Rótulo de significado local:** cada LSR escolhe os próprios rótulos. O mesmo número pode significar FECs diferentes em LSRs diferentes. Neste simulador, cada LSR usa uma faixa própria (PE1 100+, P1 200+...) só para facilitar a leitura.
 
-          
-
 ### 6.2 Cabeçalho de rótulo ([RFC 3032](https://www.rfc-editor.org/rfc/rfc3032))
-
-          
 
 O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada entrada da pilha tem 32 bits:
 
 | Rótulo (20 bits) | TC (3) | S (1) | TTL (8) |
-  TC: Traffic Class, antes chamado EXP ([RFC 5462](https://www.rfc-editor.org/rfc/rfc5462)), usado para QoS
-  S:  1 na última entrada da pilha (fundo)
-  TTL: decrementado a cada LSR, como no IP
-          
+TC: Traffic Class, antes chamado EXP ([RFC 5462](https://www.rfc-editor.org/rfc/rfc5462)), usado para QoS
+S:  1 na última entrada da pilha (fundo)
+TTL: decrementado a cada LSR, como no IP
 
 | Rótulo | Nome | Uso |
 | --- | --- | --- |
@@ -504,11 +499,7 @@ O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada 
 | 13 | GAL | Canal de OAM do MPLS-TP ([RFC 5586](https://www.rfc-editor.org/rfc/rfc5586)) |
 | 16 em diante | Rótulos livres | Alocados pelos protocolos de distribuição |
 
-          
-
 ### 6.3 LDP ([RFC 5036](https://www.rfc-editor.org/rfc/rfc5036))
-
-          
 
 - **Discovery:** Hello em UDP 646 para 224.0.0.2 em cada interface. O LDP ID tem a forma roteador:espaço (ex.: 10.255.255.2:0).
 - **Sessão:** TCP 646. O LSR com o maior endereço de transporte assume o papel ativo e abre a conexão. Seguem Initialization e KeepAlive até o estado OPERATIONAL.
@@ -516,37 +507,21 @@ O rótulo fica entre o cabeçalho de enlace e o IP (EtherType **0x8847**). Cada 
 - **LIB e LFIB:** com **retenção liberal**, a LIB guarda os rótulos de todos os vizinhos. A LFIB usa só o do próximo salto escolhido pelo IGP. Se o IGP mudar de caminho, o rótulo novo já está na LIB e a convergência é rápida.
 - Outras mensagens: Address, Label Withdraw, Label Release e Notification.
 
-          
-
 ### 6.4 PHP e modelos de TTL
 
-          Com **PHP** (Penultimate Hop Popping), o egresso anuncia implicit-null (3) e o penúltimo LSR remove o rótulo. Assim, o egresso faz uma única consulta (IP) em vez de duas (rótulo e IP). Com **explicit-null** (0), o rótulo chega ao egresso, o que preserva o campo TC para QoS. A [RFC 3032](https://www.rfc-editor.org/rfc/rfc3032) só permitia o explicit-null no fundo da pilha; a [RFC 4182](https://www.rfc-editor.org/rfc/rfc4182) removeu essa restrição, o que permite usá-lo também sobre o rótulo VPN.
-
-          
+Com **PHP** (Penultimate Hop Popping), o egresso anuncia implicit-null (3) e o penúltimo LSR remove o rótulo. Assim, o egresso faz uma única consulta (IP) em vez de duas (rótulo e IP). Com **explicit-null** (0), o rótulo chega ao egresso, o que preserva o campo TC para QoS. A [RFC 3032](https://www.rfc-editor.org/rfc/rfc3032) só permitia o explicit-null no fundo da pilha; a [RFC 4182](https://www.rfc-editor.org/rfc/rfc4182) removeu essa restrição, o que permite usá-lo também sobre o rótulo VPN.
 
 No modelo **Uniform** ([RFC 3443](https://www.rfc-editor.org/rfc/rfc3443)), o TTL do IP é copiado para o rótulo na entrada e de volta na saída, e cada LSR do núcleo aparece no traceroute. No modelo **Pipe** (**no mpls ip propagate-ttl** no Cisco IOS), o rótulo começa com TTL 255 e o núcleo fica invisível: o traceroute mostra só os PEs.
 
-          
-
 Quando o TTL expira dentro do LSP, o LSR gera o ICMP Time Exceeded, copia a pilha de rótulos e o encaminha **adiante pelo LSP** até o egresso, que o devolve à origem ([RFC 3032](https://www.rfc-editor.org/rfc/rfc3032), seção 2.3.2). Por isso todos os saltos do núcleo mostram quase o mesmo RTT. A extensão ICMP da [RFC 4950](https://www.rfc-editor.org/rfc/rfc4950) informa a pilha recebida, que o traceroute do Linux exibe com **-e**.
-
-          
 
 ### 6.5 L3VPN ([RFC 4364](https://www.rfc-editor.org/rfc/rfc4364))
 
-          
-
 Os PEs mantêm uma tabela de roteamento por cliente (**VRF**) e trocam as rotas dos clientes por **MP-BGP** (VPNv4, com Route Distinguisher). Junto com cada rota vai um **rótulo VPN**. O PE de entrada empilha dois rótulos: o **rótulo de transporte** (LDP, leva até o PE de saída) e, embaixo, o **rótulo VPN** (diz ao PE de saída em qual VRF procurar). Os roteadores P só olham o rótulo de transporte e não conhecem as rotas dos clientes, por isso endereços privados repetidos entre clientes não conflitam.
-
-          
 
 Dois conceitos distintos aparecem nas rotas VPNv4. O **Route Distinguisher (RD)** é um prefixo de 64 bits acrescentado ao endereço IPv4 só para torná-lo único no MP-BGP: dois clientes podem usar 10.0.0.0/24 sem colisão. Ele não decide quem recebe a rota. Quem decide é o **Route Target (RT)**, uma extended community: cada VRF exporta suas rotas com um ou mais RT e importa apenas as rotas cujo RT está na sua lista de importação. Assim se montam topologias como full-mesh, hub-and-spoke e extranet. O RD é definido na seção 4.2 da [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364) e o RT, na seção 4.3.1. O simulador não configura RD nem RT.
 
-          
-
 ### 6.6 MPLS e segurança
-
-          
 
 - **Modelo de ameaças:** a [RFC 4381](https://www.rfc-editor.org/rfc/rfc4381) analisa a segurança das VPNs MPLS/BGP e as compara às VPNs de camada 2.
 - **MPLS não é criptografia:** a separação de uma L3VPN é lógica. Quem tem acesso ao núcleo lê o tráfego. Dados sensíveis exigem IPsec ou MACsec.
@@ -554,22 +529,14 @@ Dois conceitos distintos aparecem nas rotas VPNv4. O **Route Distinguisher (RD)*
 - **Proteção do LDP e do BGP:** autenticação TCP-MD5 ou TCP-AO ([RFC 5925](https://www.rfc-editor.org/rfc/rfc5925)) e filtros que aceitem LDP e BGP só de vizinhos conhecidos.
 - **Ocultação da topologia:** desativar a propagação de TTL esconde o núcleo no traceroute. As extensões da [RFC 4950](https://www.rfc-editor.org/rfc/rfc4950), por outro lado, revelam os rótulos em uso.
 
-          
-
 ### 6.7 Limitações do simulador
-
-          
 
 - Seis LSRs e um único IGP (OSPF simplificado): sem iBGP completo, sem Route Reflector e sem Inter-AS.
 - O LDP mostra Hello, sessão e Label Mapping; não simula temporizadores de Hello e KeepAlive, Label Withdraw, Label Release nem a sincronização LDP-IGP.
 - A L3VPN usa dois rótulos e um par de PEs; o Route Target e o Route Distinguisher são descritos na seção de L3VPN desta Referência, mas não são configurados nem trocados via MP-BGP (a [RFC 4364](https://www.rfc-editor.org/rfc/rfc4364) define os dois).
 - Os rótulos de cada LSR usam uma faixa própria só para facilitar a leitura (a [RFC 5036](https://www.rfc-editor.org/rfc/rfc5036) deixa a escolha livre).
 
-          
-
 ### 6.8 Roteiro de exercícios
-
-          
 
 1. Rode um **ping** antes de avançar as fases e outro depois da fase LSP. Compare na aba Captura: onde aparecem push, swap e pop?
 2. Na aba **LIB / LFIB**, escolha P1 e explique por que a LIB tem mais rótulos que a LFIB para a mesma FEC (retenção liberal).

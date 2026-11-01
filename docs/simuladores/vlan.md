@@ -414,6 +414,7 @@ O Host A envia um quadro comum, **sem tag**. O SW1 o põe na VLAN 10 pela porta 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
   participant n_sw2 as SW2<br/>switch
@@ -426,7 +427,7 @@ sequenceDiagram
   n_sw2 ->> n_c: Echo Request (sem tag)
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "O quadro ganha a tag no tronco", na ordem do tempo, entre Host A, SW1, SW2, Host C: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Marcação 802.1Q", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "O quadro ganha a tag no tronco", na ordem do tempo, entre Host A, SW1, SW2, Host C: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Marcação 802.1Q", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -455,6 +456,7 @@ A VLAN nativa do tronco é a 10. O quadro da VLAN 10 atravessa o tronco **sem ta
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
   participant n_sw2 as SW2<br/>switch
@@ -467,7 +469,7 @@ sequenceDiagram
   n_sw2 ->> n_c: Echo Request (sem tag)
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "A VLAN nativa não leva tag", na ordem do tempo, entre Host A, SW1, SW2, Host C: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Marcação 802.1Q", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "A VLAN nativa não leva tag", na ordem do tempo, entre Host A, SW1, SW2, Host C: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Marcação 802.1Q", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -494,6 +496,7 @@ A VLAN 10 foi retirada da lista de VLANs permitidas no tronco. O SW1 **descarta*
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
   participant n_sw2 as SW2<br/>switch
@@ -502,7 +505,7 @@ sequenceDiagram
   n_a ->> n_sw1: Echo Request (sem tag)
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "VLAN fora da lista do tronco", na ordem do tempo, entre Host A, SW1, SW2, Host C: 1 mensagem (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Marcação 802.1Q", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "VLAN fora da lista do tronco", na ordem do tempo, entre Host A, SW1, SW2, Host C: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Marcação 802.1Q", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -535,6 +538,7 @@ Hosts da VLAN 10 em switches diferentes se alcançam pelo tronco, como se estive
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -549,7 +553,7 @@ sequenceDiagram
   n_sw2 ->> n_c: Echo Request (sem tag)
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Mesma VLAN em dois switches", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Segmentação", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Mesma VLAN em dois switches", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Segmentação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -576,6 +580,7 @@ Um broadcast do Host A é entregue a **todos da VLAN 10** (no SW1 e no SW2) e a 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -590,7 +595,7 @@ sequenceDiagram
   n_sw2 ->> n_c: ARP Request (sem tag)
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "O broadcast fica na VLAN", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Segmentação", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "O broadcast fica na VLAN", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Segmentação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -618,6 +623,7 @@ O Host A usa o MAC do Host B (VLAN 20). Sem roteador, o switch só encaminha den
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -632,7 +638,7 @@ sequenceDiagram
   n_sw2 ->> n_c: Echo Request (sem tag)
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Entre VLANs não há caminho", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Segmentação", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Entre VLANs não há caminho", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Segmentação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -666,6 +672,7 @@ O quadro do Host A sobe ao R1 com a **tag 10**, é roteado e volta pelo mesmo ca
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -682,7 +689,7 @@ sequenceDiagram
   n_sw1 ->> n_b: Echo Request (sem tag)
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "A para B pelo roteador", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 4 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "A para B pelo roteador", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -710,6 +717,7 @@ O mesmo caminho até o R1, mas o destino está no outro switch. Depois de voltar
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -728,7 +736,7 @@ sequenceDiagram
   n_sw2 ->> n_d: Echo Request (sem tag)
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "A para D, cruzando o tronco", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 5 mensagens (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "A para D, cruzando o tronco", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -759,6 +767,7 @@ O R1 só tem a subinterface da VLAN 10. Ele não conhece a sub-rede da VLAN 20 e
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -775,7 +784,7 @@ sequenceDiagram
   n_sw1 ->> n_a: Net Unreachable (sem tag)
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Falta a subinterface da VLAN 20", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 4 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Falta a subinterface da VLAN 20", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -802,6 +811,7 @@ O R1 roteia certo, mas a porta do SW1 para o R1 só permite a VLAN 10. O quadro 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -816,7 +826,7 @@ sequenceDiagram
   n_r1 -x n_sw1: Echo Request (tag 20)
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Tronco do R1 sem a VLAN 20", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 3 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Tronco do R1 sem a VLAN 20", na ordem do tempo, entre Host A, Host B, SW1, R1, SW2, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Roteamento entre VLANs", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -849,6 +859,7 @@ A nativa é a 10 nos dois switches. O quadro do Host A (VLAN 10) trafega **sem t
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -863,7 +874,7 @@ sequenceDiagram
   n_sw2 ->> n_c: Echo Request (sem tag)
 ```
 
-*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Mesma nativa nas duas pontas", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN nativa", com a configuração aplicada acima.
+*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Mesma nativa nas duas pontas", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN nativa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -895,6 +906,7 @@ A nativa é 10 no SW1 e 20 no SW2. O quadro da VLAN 10 sai sem tag e o SW2 o cla
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -909,7 +921,7 @@ sequenceDiagram
   n_sw2 ->> n_d: Echo Request (sem tag)
 ```
 
-*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Divergência: o quadro muda de VLAN", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN nativa", com a configuração aplicada acima.
+*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Divergência: o quadro muda de VLAN", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN nativa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -937,6 +949,7 @@ Com a mesma divergência, o Host B (VLAN 20) fala com o Host D. O quadro sai **c
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>VLAN 10
   participant n_b as Host B<br/>VLAN 20
   participant n_sw1 as SW1<br/>switch
@@ -951,7 +964,7 @@ sequenceDiagram
   n_sw2 ->> n_d: Echo Request (sem tag)
 ```
 
-*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "O tráfego com tag não é afetado", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN nativa", com a configuração aplicada acima.
+*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "O tráfego com tag não é afetado", na ordem do tempo, entre Host A, Host B, SW1, SW2, Host C, Host D: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN nativa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -984,6 +997,7 @@ A porta do invasor negocia tronco. Aceita, ela passa a carregar **qualquer VLAN*
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_m as Invasor<br/>porta de acesso do SW1
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
@@ -1001,7 +1015,7 @@ sequenceDiagram
   n_sw2 ->> n_d: Echo Request (sem tag)
 ```
 
-*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "Porta dinâmica aceita virar tronco", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 5 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
+*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "Porta dinâmica aceita virar tronco", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1030,6 +1044,7 @@ A porta é fixa em modo acesso e não negocia. O SW1 ignora o pedido e **descart
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_m as Invasor<br/>porta de acesso do SW1
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
@@ -1042,7 +1057,7 @@ sequenceDiagram
   n_m -x n_sw1: Echo Request (tag 20)
 ```
 
-*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "Defesa: porta fixa em acesso", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 2 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
+*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "Defesa: porta fixa em acesso", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1075,6 +1090,7 @@ A nativa do tronco é a 10, a mesma VLAN do invasor. O SW1 remove a tag externa 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_m as Invasor<br/>porta de acesso do SW1
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
@@ -1091,7 +1107,7 @@ sequenceDiagram
   n_sw2 ->> n_d: Echo Request (sem tag)
 ```
 
-*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "Nativa igual à VLAN do invasor", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 4 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
+*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "Nativa igual à VLAN do invasor", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1120,6 +1136,7 @@ A nativa do tronco é a 999, sem hosts. A tag externa (10) não é removida no t
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_m as Invasor<br/>porta de acesso do SW1
   participant n_a as Host A<br/>VLAN 10
   participant n_sw1 as SW1<br/>switch
@@ -1136,7 +1153,7 @@ sequenceDiagram
   n_sw2 ->> n_c: Echo Request (tag 20)
 ```
 
-*Figura 6.5.4 (Tipo B, sequência).* Mensagens do cenário "Defesa: nativa em VLAN sem uso", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 4 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
+*Figura 6.5.4 (Tipo B, sequência).* Mensagens do cenário "Defesa: nativa em VLAN sem uso", na ordem do tempo, entre Invasor, Host A, SW1, SW2, Host C, Host D: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "VLAN hopping", com a configuração aplicada acima.
 
 **Mensagens**
 

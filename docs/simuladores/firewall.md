@@ -327,6 +327,7 @@ Um host interno abre uma conexão TCP para a porta 443 de um servidor externo. A
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -344,7 +345,7 @@ sequenceDiagram
   n_fw ->> n_int: [cifrado] Resposta (HTTPS)
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Ida e volta permitidas", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 10 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Ida e volta permitidas", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -375,6 +376,7 @@ Só a ida está permitida. O SYN chega ao servidor, mas o **SYN+ACK de volta é 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -387,7 +389,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN+ACK
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Falta a regra de retorno", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 6 mensagens (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Falta a regra de retorno", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -421,6 +423,7 @@ Uma regra genérica que **nega todo TCP vindo da rede interna** foi escrita ante
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -429,7 +432,7 @@ sequenceDiagram
   n_int -x n_fw: SYN
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Ordem invertida das regras", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 2 mensagens (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Ordem invertida das regras", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -458,6 +461,7 @@ Nenhuma regra fala de UDP 53. O pacote chega ao fim da lista e é negado pela **
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -465,7 +469,7 @@ sequenceDiagram
   n_int -x n_fw: Consulta DNS
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Negação implícita (consulta DNS)", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Negação implícita (consulta DNS)", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -492,6 +496,7 @@ Mesma consulta, com a política padrão em **permitir**. A consulta e a resposta
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -502,7 +507,7 @@ sequenceDiagram
   n_fw ->> n_int: Resposta DNS
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Política padrão permitir (consulta DNS)", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Política padrão permitir (consulta DNS)", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -535,6 +540,7 @@ A regra de retorno aceita qualquer TCP com **porta de origem 443** para a rede i
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>duas zonas
   participant n_int as Host interno<br/>zona interna
@@ -547,7 +553,7 @@ sequenceDiagram
   n_fw ->> n_int: ACK
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Retorno por porta de origem: pacote de fora passa", na ordem do tempo, entre Cliente externo, Firewall, Host interno: 6 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Retorno por porta de origem: pacote de fora passa", na ordem do tempo, entre Cliente externo, Firewall, Host interno: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -576,6 +582,7 @@ A regra de retorno exige o **flag ACK**. O pedido de conexão de fora (SYN, sem 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>duas zonas
   participant n_int as Host interno<br/>zona interna
@@ -583,7 +590,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN
 ```
 
-*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Retorno por flag ACK", na ordem do tempo, entre Cliente externo, Firewall, Host interno: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Retorno por flag ACK", na ordem do tempo, entre Cliente externo, Firewall, Host interno: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro sem estado (ACL)", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -617,6 +624,7 @@ Só há regras de **saída**. O SYN cria uma entrada na tabela, e o SYN+ACK, o A
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -634,7 +642,7 @@ sequenceDiagram
   n_fw ->> n_int: [cifrado] Resposta (HTTPS)
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Saída permitida, retorno pela tabela", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 10 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Saída permitida, retorno pela tabela", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -665,6 +673,7 @@ A mesma conexão, acompanhada até o fim: **SYN_SENT, SYN_RECV, ESTABLISHED, FIN
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -689,7 +698,7 @@ sequenceDiagram
   n_fw ->> n_ext: ACK
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Estados até o encerramento", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 16 mensagens (em 4 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Estados até o encerramento", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 16 mensagens, numeradas de 1 a 16 na ordem da comunicação (em 4 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -723,6 +732,7 @@ Um host da Internet envia um SYN+ACK e um ACK que respondem a nada, e um SYN par
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Cliente externo<br/>Internet
@@ -732,7 +742,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Pacotes de fora sem conexão registrada", na ordem do tempo, entre Host interno, Firewall, Cliente externo: 3 mensagens (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Pacotes de fora sem conexão registrada", na ordem do tempo, entre Host interno, Firewall, Cliente externo: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -765,6 +775,7 @@ O UDP não tem conexão. O firewall registra a consulta e aceita a resposta que 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -776,7 +787,7 @@ sequenceDiagram
   n_fw ->> n_int: Resposta DNS
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "UDP: resposta dentro da validade", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 4 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "UDP: resposta dentro da validade", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -805,6 +816,7 @@ A resposta demora mais que a validade da entrada (30 s no simulador). Quando che
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -815,7 +827,7 @@ sequenceDiagram
   n_ext -x n_fw: Resposta DNS
 ```
 
-*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "UDP: resposta depois da validade", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 3 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "UDP: resposta depois da validade", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -844,6 +856,7 @@ O Echo Reply é associado ao Echo Request pelo **identificador**. A primeira res
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -856,7 +869,7 @@ sequenceDiagram
   n_ext -x n_fw: Echo Reply
 ```
 
-*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "ICMP: ping e resposta repetida", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 5 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "ICMP: ping e resposta repetida", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -890,6 +903,7 @@ Seis pedidos de conexão de dentro para um servidor que não responde. As entrad
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>duas zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -906,7 +920,7 @@ sequenceDiagram
   n_int -x n_fw: SYN
 ```
 
-*Figura 6.2.7 (Tipo B, sequência).* Mensagens do cenário "Tabela de conexões cheia", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 10 mensagens (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
+*Figura 6.2.7 (Tipo B, sequência).* Mensagens do cenário "Tabela de conexões cheia", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Filtro com estado", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -941,6 +955,7 @@ Um cliente da Internet acessa a porta 443 do servidor web na DMZ. É o **único 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -958,7 +973,7 @@ sequenceDiagram
   n_fw ->> n_ext: [cifrado] Resposta (HTTPS)
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Internet acessa o servidor web da DMZ", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 10 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Internet acessa o servidor web da DMZ", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -986,6 +1001,7 @@ Um host da rede interna administra o servidor web pela porta 22. A política per
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1003,7 +1019,7 @@ sequenceDiagram
   n_fw ->> n_int: [cifrado] Sessão (SSH)
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Administrador interno acessa a DMZ", na ordem do tempo, entre Host interno, Firewall, Servidor web: 10 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Administrador interno acessa a DMZ", na ordem do tempo, entre Host interno, Firewall, Servidor web: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1035,6 +1051,7 @@ Um host da Internet tenta abrir a porta 3389 de um host interno. Nenhuma regra d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_int as Host interno<br/>zona interna
@@ -1043,7 +1060,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Internet tenta chegar à rede interna", na ordem do tempo, entre Cliente externo, Firewall, Host interno: 2 mensagens (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Internet tenta chegar à rede interna", na ordem do tempo, entre Cliente externo, Firewall, Host interno: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1072,6 +1089,7 @@ Suponha o servidor web comprometido. Ele tenta alcançar o banco de dados intern
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_web as Servidor web<br/>zona DMZ
   participant n_fw as Firewall<br/>três zonas
   participant n_db as Servidor interno<br/>zona interna
@@ -1080,7 +1098,7 @@ sequenceDiagram
   n_web -x n_fw: SYN
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "DMZ tenta chegar à rede interna (negado)", na ordem do tempo, entre Servidor web, Firewall, Servidor interno: 2 mensagens (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "DMZ tenta chegar à rede interna (negado)", na ordem do tempo, entre Servidor web, Firewall, Servidor interno: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1108,6 +1126,7 @@ O servidor web tenta abrir uma conexão para a Internet. A regra de **filtro de 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_web as Servidor web<br/>zona DMZ
   participant n_fw as Firewall<br/>três zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -1116,7 +1135,7 @@ sequenceDiagram
   n_web -x n_fw: SYN
 ```
 
-*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "DMZ tenta sair para a Internet (negado)", na ordem do tempo, entre Servidor web, Firewall, Servidor externo: 2 mensagens (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "DMZ tenta sair para a Internet (negado)", na ordem do tempo, entre Servidor web, Firewall, Servidor externo: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 1 fase; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1149,6 +1168,7 @@ Uma regra **permite qualquer protocolo da DMZ para a rede interna**, escrita par
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_web as Servidor web<br/>zona DMZ
   participant n_fw as Firewall<br/>três zonas
   participant n_db as Servidor interno<br/>zona interna
@@ -1166,7 +1186,7 @@ sequenceDiagram
   n_fw ->> n_web: Resultado
 ```
 
-*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "Regra permissiva de DMZ para a rede interna", na ordem do tempo, entre Servidor web, Firewall, Servidor interno: 10 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "Regra permissiva de DMZ para a rede interna", na ordem do tempo, entre Servidor web, Firewall, Servidor interno: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1194,6 +1214,7 @@ A saída da DMZ foi liberada para atualizações. A conexão passa, e **qualquer
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_web as Servidor web<br/>zona DMZ
   participant n_fw as Firewall<br/>três zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -1206,7 +1227,7 @@ sequenceDiagram
   n_fw ->> n_ext: ACK
 ```
 
-*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "Saída da DMZ liberada para TCP 80 e 443", na ordem do tempo, entre Servidor web, Firewall, Servidor externo: 6 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
+*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "Saída da DMZ liberada para TCP 80 e 443", na ordem do tempo, entre Servidor web, Firewall, Servidor externo: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Perímetro com DMZ", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1240,6 +1261,7 @@ Um pacote chega pela interface **externa** com origem de um endereço da rede **
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1254,7 +1276,7 @@ sequenceDiagram
   n_fw ->> n_web: RST
 ```
 
-*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Origem interna vinda de fora, sem filtro", na ordem do tempo, entre Cliente externo, Firewall, Servidor web, Host interno: 6 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Origem interna vinda de fora, sem filtro", na ordem do tempo, entre Cliente externo, Firewall, Servidor web, Host interno: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1283,6 +1305,7 @@ Com o filtro de origem ligado, o pacote é negado **antes das regras**, porque u
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1291,7 +1314,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN
 ```
 
-*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Origem interna vinda de fora, com filtro", na ordem do tempo, entre Cliente externo, Firewall, Servidor web, Host interno: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Origem interna vinda de fora, com filtro", na ordem do tempo, entre Cliente externo, Firewall, Servidor web, Host interno: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1318,6 +1341,7 @@ Um host interno envia um pacote cuja origem **não pertence à rede interna**. S
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>três zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -1326,7 +1350,7 @@ sequenceDiagram
   n_fw ->> n_ext: UDP 53 (origem forjada)
 ```
 
-*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "Saída com origem alheia, sem filtro", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 2 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.3 (Tipo B, sequência).* Mensagens do cenário "Saída com origem alheia, sem filtro", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1353,6 +1377,7 @@ Com o filtro de origem ligado, o pacote não sai: a origem não pertence à zona
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_int as Host interno<br/>zona interna
   participant n_fw as Firewall<br/>três zonas
   participant n_ext as Servidor externo<br/>Internet
@@ -1360,7 +1385,7 @@ sequenceDiagram
   n_int -x n_fw: UDP 53 (origem forjada)
 ```
 
-*Figura 6.4.4 (Tipo B, sequência).* Mensagens do cenário "Saída com origem alheia, com filtro", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.4 (Tipo B, sequência).* Mensagens do cenário "Saída com origem alheia, com filtro", na ordem do tempo, entre Host interno, Firewall, Servidor externo: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1392,6 +1417,7 @@ Um host da Internet sonda cinco portas do servidor web. As portas 80 e 443 respo
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1409,7 +1435,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN
 ```
 
-*Figura 6.4.5 (Tipo B, sequência).* Mensagens do cenário "Varredura com descarte silencioso", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 11 mensagens (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.5 (Tipo B, sequência).* Mensagens do cenário "Varredura com descarte silencioso", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1437,6 +1463,7 @@ Mesma sondagem, mas o firewall **rejeita** as portas negadas com RST. A resposta
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1457,7 +1484,7 @@ sequenceDiagram
   n_fw ->> n_ext: RST (recusado)
 ```
 
-*Figura 6.4.6 (Tipo B, sequência).* Mensagens do cenário "Varredura com rejeição por RST", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 14 mensagens (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.6 (Tipo B, sequência).* Mensagens do cenário "Varredura com rejeição por RST", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1490,6 +1517,7 @@ Seis pedidos de conexão da mesma origem em poucos milissegundos. Sem limite, **
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1520,7 +1548,7 @@ sequenceDiagram
   n_fw ->> n_ext: SYN+ACK
 ```
 
-*Figura 6.4.7 (Tipo B, sequência).* Mensagens do cenário "Rajada sem limite de taxa", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 24 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.7 (Tipo B, sequência).* Mensagens do cenário "Rajada sem limite de taxa", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 24 mensagens, numeradas de 1 a 24 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1548,6 +1576,7 @@ A regra aceita até **3 novas conexões por segundo** por origem. Os três prime
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1569,7 +1598,7 @@ sequenceDiagram
   n_ext -x n_fw: SYN
 ```
 
-*Figura 6.4.8 (Tipo B, sequência).* Mensagens do cenário "Rajada com limite de 3 por segundo", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 15 mensagens (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.8 (Tipo B, sequência).* Mensagens do cenário "Rajada com limite de 3 por segundo", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 1 fase; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1603,6 +1632,7 @@ A regra permite a porta 443 do servidor web. A conexão passa, e o firewall **n�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_ext as Cliente externo<br/>Internet
   participant n_fw as Firewall<br/>três zonas
   participant n_web as Servidor web<br/>zona DMZ
@@ -1620,7 +1650,7 @@ sequenceDiagram
   n_fw ->> n_ext: [cifrado] Resposta HTTPS (cifrada)
 ```
 
-*Figura 6.4.9 (Tipo B, sequência).* Mensagens do cenário "Conexão HTTPS permitida, conteúdo cifrado", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 10 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
+*Figura 6.4.9 (Tipo B, sequência).* Mensagens do cenário "Conexão HTTPS permitida, conteúdo cifrado", na ordem do tempo, entre Cliente externo, Firewall, Servidor web: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Forja, varredura e limite de taxa", com a configuração aplicada acima.
 
 **Mensagens**
 

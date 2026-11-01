@@ -172,6 +172,7 @@ Acompanhe como tudo passa a ser cifrado depois do NEWKEYS.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -220,7 +221,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "Conexão moderna com chave", na ordem do tempo, entre Cliente SSH, Servidor SSH: 37 mensagens (em 7 fases; 23 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração padrão.
+*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "Conexão moderna com chave", na ordem do tempo, entre Cliente SSH, Servidor SSH: 37 mensagens, numeradas de 1 a 37 na ordem da comunicação (em 7 fases; 23 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração padrão.
 
 **Mensagens**
 
@@ -255,6 +256,7 @@ O cliente nunca viu este servidor. Com StrictHostKeyChecking=ask, o ssh mostra o
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -303,7 +305,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "Primeira conexão (TOFU)", na ordem do tempo, entre Cliente SSH, Servidor SSH: 37 mensagens (em 7 fases; 23 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "Primeira conexão (TOFU)", na ordem do tempo, entre Cliente SSH, Servidor SSH: 37 mensagens, numeradas de 1 a 37 na ordem da comunicação (em 7 fases; 23 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -334,6 +336,7 @@ Pode ser uma reinstalação legítima ou uma interceptação (MITM). A resposta 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -354,7 +357,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Chave do servidor mudou", na ordem do tempo, entre Cliente SSH, Servidor SSH: 12 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Chave do servidor mudou", na ordem do tempo, entre Cliente SSH, Servidor SSH: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -389,6 +392,7 @@ Veja a mensagem "no matching key exchange method found".
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -407,7 +411,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "Sem algoritmo em comum", na ordem do tempo, entre Cliente SSH, Servidor SSH: 11 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "Sem algoritmo em comum", na ordem do tempo, entre Cliente SSH, Servidor SSH: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -438,6 +442,7 @@ Compare a nota na aba Configuração com a do cenário moderno.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -486,7 +491,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "Algoritmos fracos aceitos", na ordem do tempo, entre Cliente SSH, Servidor SSH: 37 mensagens (em 7 fases; 23 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "Algoritmos fracos aceitos", na ordem do tempo, entre Cliente SSH, Servidor SSH: 37 mensagens, numeradas de 1 a 37 na ordem da comunicação (em 7 fases; 23 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -518,6 +523,7 @@ O cliente autentica com senha. Ela viaja cifrada dentro do canal, então ningué
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -564,7 +570,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Login por senha", na ordem do tempo, entre Cliente SSH, Servidor SSH: 35 mensagens (em 7 fases; 21 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Login por senha", na ordem do tempo, entre Cliente SSH, Servidor SSH: 35 mensagens, numeradas de 1 a 35 na ordem da comunicação (em 7 fases; 21 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -594,6 +600,7 @@ O servidor está com PasswordAuthentication no. A lista de métodos devolvida ao
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -622,7 +629,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Senha desativada no servidor", na ordem do tempo, entre Cliente SSH, Servidor SSH: 19 mensagens (em 5 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Senha desativada no servidor", na ordem do tempo, entre Cliente SSH, Servidor SSH: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 5 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -652,6 +659,7 @@ Isso só limita tentativas por conexão: o atacante pode reconectar. A defesa re
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -685,7 +693,7 @@ sequenceDiagram
   n_s ->> n_c: ACK
 ```
 
-*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "Muitas tentativas de senha", na ordem do tempo, entre Cliente SSH, Servidor SSH: 24 mensagens (em 5 fases; 10 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "Muitas tentativas de senha", na ordem do tempo, entre Cliente SSH, Servidor SSH: 24 mensagens, numeradas de 1 a 24 na ordem da comunicação (em 5 fases; 10 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -715,6 +723,7 @@ O servidor exige duas etapas: chave pública e depois um código TOTP. A primeir
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -767,7 +776,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Chave + TOTP (2 fatores)", na ordem do tempo, entre Cliente SSH, Servidor SSH: 41 mensagens (em 7 fases; 27 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Chave + TOTP (2 fatores)", na ordem do tempo, entre Cliente SSH, Servidor SSH: 41 mensagens, numeradas de 1 a 41 na ordem da comunicação (em 7 fases; 27 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -798,6 +807,7 @@ O usuário root tenta entrar por senha, mesmo com a credencial correta. PermitRo
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -832,7 +842,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.10 (Tipo B, sequência).* Mensagens do cenário "Login de root bloqueado", na ordem do tempo, entre Cliente SSH, Servidor SSH: 25 mensagens (em 5 fases; 11 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.10 (Tipo B, sequência).* Mensagens do cenário "Login de root bloqueado", na ordem do tempo, entre Cliente SSH, Servidor SSH: 25 mensagens, numeradas de 1 a 25 na ordem da comunicação (em 5 fases; 11 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -865,6 +875,7 @@ Em vez de um shell, o cliente executa um único comando (`ssh servidor uname -a`
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -908,7 +919,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.11 (Tipo B, sequência).* Mensagens do cenário "Comando remoto", na ordem do tempo, entre Cliente SSH, Servidor SSH: 32 mensagens (em 7 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.11 (Tipo B, sequência).* Mensagens do cenário "Comando remoto", na ordem do tempo, entre Cliente SSH, Servidor SSH: 32 mensagens, numeradas de 1 a 32 na ordem da comunicação (em 7 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -939,6 +950,7 @@ O SFTP é um subsistema do SSH: abre um canal, pede o subsistema e troca pacotes
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -991,7 +1003,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.12 (Tipo B, sequência).* Mensagens do cenário "Transferência SFTP", na ordem do tempo, entre Cliente SSH, Servidor SSH: 41 mensagens (em 7 fases; 27 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.12 (Tipo B, sequência).* Mensagens do cenário "Transferência SFTP", na ordem do tempo, entre Cliente SSH, Servidor SSH: 41 mensagens, numeradas de 1 a 41 na ordem da comunicação (em 7 fases; 27 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1023,6 +1035,7 @@ Prefira ProxyJump, que não expõe o agente.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente SSH<br/>192.168.1.20
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   Note over n_c,n_s: 0. Conexão TCP (porta 22)
@@ -1073,7 +1086,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.13 (Tipo B, sequência).* Mensagens do cenário "ForwardAgent e seus riscos", na ordem do tempo, entre Cliente SSH, Servidor SSH: 39 mensagens (em 7 fases; 25 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
+*Figura 5.1.13 (Tipo B, sequência).* Mensagens do cenário "ForwardAgent e seus riscos", na ordem do tempo, entre Cliente SSH, Servidor SSH: 39 mensagens, numeradas de 1 a 39 na ordem da comunicação (em 7 fases; 25 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Sessão e autenticação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1108,6 +1121,7 @@ Uma porta do cliente (5433) leva ao banco interno, passando pelo servidor SSH. O
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Aplicação (psql)<br/>127.0.0.1:50122
   participant n_c as Cliente SSH<br/>127.0.0.1:5433
   participant n_s as Servidor SSH<br/>203.0.113.22:22
@@ -1132,7 +1146,7 @@ sequenceDiagram
   n_s ->> n_d: FIN
 ```
 
-*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "Túnel local (-L)", na ordem do tempo, entre Aplicação (psql), Cliente SSH, Servidor SSH, Banco interno: 15 mensagens (em 3 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
+*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "Túnel local (-L)", na ordem do tempo, entre Aplicação (psql), Cliente SSH, Servidor SSH, Banco interno: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 3 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1162,6 +1176,7 @@ O servidor abre a porta 9000 e encaminha as conexões de volta ao serviço local
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_x as Usuário externo<br/>198.51.100.7
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   participant n_c as Cliente SSH<br/>192.168.1.20
@@ -1185,7 +1200,7 @@ sequenceDiagram
   n_s ->> n_x: HTTP/1.1 200 OK
 ```
 
-*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "Túnel remoto (-R)", na ordem do tempo, entre Usuário externo, Servidor SSH, Cliente SSH, Serviço local: 14 mensagens (em 3 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
+*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "Túnel remoto (-R)", na ordem do tempo, entre Usuário externo, Servidor SSH, Cliente SSH, Serviço local: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 3 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1215,6 +1230,7 @@ Com o padrão (GatewayPorts no), a porta remota só existe no loopback do servid
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_x as Usuário externo<br/>198.51.100.7
   participant n_s as Servidor SSH<br/>203.0.113.22:22
   participant n_c as Cliente SSH<br/>192.168.1.20
@@ -1227,7 +1243,7 @@ sequenceDiagram
   n_s ->> n_x: RST (porta fechada)
 ```
 
-*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "Túnel remoto sem GatewayPorts", na ordem do tempo, entre Usuário externo, Servidor SSH, Cliente SSH, Serviço local: 4 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
+*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "Túnel remoto sem GatewayPorts", na ordem do tempo, entre Usuário externo, Servidor SSH, Cliente SSH, Serviço local: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1257,6 +1273,7 @@ O cliente SSH vira um proxy SOCKS5. Cada destino pedido pelo navegador abre um c
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_b as Navegador<br/>127.0.0.1:50300
   participant n_c as Cliente SSH (SOCKS5)<br/>127.0.0.1:1080
   participant n_s as Servidor SSH<br/>203.0.113.22:22
@@ -1279,7 +1296,7 @@ sequenceDiagram
   n_c ->> n_b: TLS ServerHello, Certificate
 ```
 
-*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Proxy SOCKS (-D)", na ordem do tempo, entre Navegador, Cliente SSH (SOCKS5), Servidor SSH, Site de destino: 14 mensagens (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
+*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Proxy SOCKS (-D)", na ordem do tempo, entre Navegador, Cliente SSH (SOCKS5), Servidor SSH, Site de destino: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 2 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1309,6 +1326,7 @@ O cliente chega a um alvo interno passando por um bastion. Dentro do canal abert
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_j as Bastion (ProxyJump)<br/>203.0.113.22:22
   participant n_t as Alvo interno<br/>10.0.0.50:22
@@ -1328,7 +1346,7 @@ sequenceDiagram
   n_c ->> n_t: [cifrado] CHANNEL_DATA (shell)
 ```
 
-*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "ProxyJump (bastion)", na ordem do tempo, entre Cliente, Bastion (ProxyJump), Alvo interno: 12 mensagens (em 2 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
+*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "ProxyJump (bastion)", na ordem do tempo, entre Cliente, Bastion (ProxyJump), Alvo interno: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 2 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1357,6 +1375,7 @@ O servidor está com AllowTcpForwarding no. O pedido direct-tcpip recebe CHANNEL
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Aplicação (psql)<br/>127.0.0.1:50122
   participant n_c as Cliente SSH<br/>127.0.0.1:5433
   participant n_s as Servidor SSH<br/>203.0.113.22:22
@@ -1368,7 +1387,7 @@ sequenceDiagram
   n_c ->> n_a: RST
 ```
 
-*Figura 5.2.6 (Tipo B, sequência).* Mensagens do cenário "Encaminhamento bloqueado", na ordem do tempo, entre Aplicação (psql), Cliente SSH, Servidor SSH, Banco interno: 4 mensagens (em 1 fase; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
+*Figura 5.2.6 (Tipo B, sequência).* Mensagens do cenário "Encaminhamento bloqueado", na ordem do tempo, entre Aplicação (psql), Cliente SSH, Servidor SSH, Banco interno: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 1 fase; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Túneis e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 

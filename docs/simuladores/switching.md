@@ -255,6 +255,7 @@ A tabela está vazia. O switch **não sabe onde B está** e inunda o quadro por 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -273,7 +274,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeiro quadro: inundação e aprendizado", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeiro quadro: inundação e aprendizado", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -302,6 +303,7 @@ B não responde. O switch só aprende quem **transmite**, então B continua desc
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -319,7 +321,7 @@ sequenceDiagram
   n_sw ->> n_d: Echo Request
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Destino que não responde", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Destino que não responde", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -348,6 +350,7 @@ O ARP Request vai a **ff:ff:ff:ff:ff:ff**, que nunca consta da tabela: é sempre
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -363,7 +366,7 @@ sequenceDiagram
   n_sw ->> n_a: ARP Reply
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Broadcast (ARP Request)", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 6 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Broadcast (ARP Request)", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -395,6 +398,7 @@ A tabela já tem os quatro hosts. O quadro para B sai **só pela porta 2**. O qu
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -409,7 +413,7 @@ sequenceDiagram
   n_sw ->> n_d: Echo Request
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Destinos já conhecidos", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 5 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Destinos já conhecidos", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -438,6 +442,7 @@ C e D estão atrás do mesmo hub. O quadro de C para D **é filtrado**: o destin
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -452,7 +457,7 @@ sequenceDiagram
   n_sw ->> n_a: Echo Request
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Origem e destino na mesma porta", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 5 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Origem e destino na mesma porta", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -485,6 +490,7 @@ O cabo de B vai da porta 2 para a 4. A tabela **continua apontando para a porta 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -504,7 +510,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Host que muda de porta", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Host que muda de porta", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -534,6 +540,7 @@ Passam-se 300 s sem tráfego. As entradas **expiram**, o destino volta a ser des
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -553,7 +560,7 @@ sequenceDiagram
   n_sw ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Envelhecimento da entrada", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Envelhecimento da entrada", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -588,6 +595,7 @@ Sem ataque, a tabela vazia faz o **primeiro** quadro ser inundado (e M o recebe)
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -602,7 +610,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Sem ataque", na ordem do tempo, entre Host A, Host B, Switch, Host M: 7 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Sem ataque", na ordem do tempo, entre Host A, Host B, Switch, Host M: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -636,6 +644,7 @@ M enche a tabela com origens forjadas. A e B **não podem mais ser aprendidos**,
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -665,7 +674,7 @@ sequenceDiagram
   n_sw ->> n_m: Echo Request
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Tabela cheia: A e B ficam expostos", na ordem do tempo, entre Host A, Host B, Switch, Host M: 21 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Tabela cheia: A e B ficam expostos", na ordem do tempo, entre Host A, Host B, Switch, Host M: 21 mensagens, numeradas de 1 a 21 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -693,6 +702,7 @@ A tabela enche, mas as entradas de A e B **já existiam** e continuam valendo. O
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -719,7 +729,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "A e B já estavam na tabela", na ordem do tempo, entre Host A, Host B, Switch, Host M: 18 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "A e B já estavam na tabela", na ordem do tempo, entre Host A, Host B, Switch, Host M: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -752,6 +762,7 @@ A porta 3 aceita **um só MAC**. Os demais quadros são descartados em silêncio
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -773,7 +784,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Segurança de porta: protect", na ordem do tempo, entre Host A, Host B, Switch, Host M: 13 mensagens (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Segurança de porta: protect", na ordem do tempo, entre Host A, Host B, Switch, Host M: 13 mensagens, numeradas de 1 a 13 na ordem da comunicação (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -800,6 +811,7 @@ Igual ao protect, mas cada violação é **contada e gera alerta**: a equipe fic
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -821,7 +833,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Segurança de porta: restrict", na ordem do tempo, entre Host A, Host B, Switch, Host M: 13 mensagens (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Segurança de porta: restrict", na ordem do tempo, entre Host A, Host B, Switch, Host M: 13 mensagens, numeradas de 1 a 13 na ordem da comunicação (em 2 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -849,6 +861,7 @@ Na primeira violação, a porta 3 é **desativada** (err-disable) e as entradas 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -867,7 +880,7 @@ sequenceDiagram
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Segurança de porta: shutdown", na ordem do tempo, entre Host A, Host B, Switch, Host M: 10 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Segurança de porta: shutdown", na ordem do tempo, entre Host A, Host B, Switch, Host M: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Inundação de MAC e segurança de porta", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -900,6 +913,7 @@ O ARP Request em broadcast sai por **todas as portas**, menos a de entrada. Todo
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -915,7 +929,7 @@ sequenceDiagram
   n_sw ->> n_a: ARP Reply
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Broadcast é inundado", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 6 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Broadcast é inundado", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -948,6 +962,7 @@ Só B assinou o grupo, mas o switch **não sabe disso** e inunda o fluxo. A, C e
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -969,7 +984,7 @@ sequenceDiagram
   n_sw ->> n_d: Dados do grupo nº 2
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Multicast sem snooping", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Multicast sem snooping", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -998,6 +1013,7 @@ O switch lê o relatório IGMP de B e envia o grupo **só pela porta 2**.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -1012,7 +1028,7 @@ sequenceDiagram
   n_sw ->> n_b: Dados do grupo nº 2
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Multicast com IGMP snooping", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 5 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Multicast com IGMP snooping", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1040,6 +1056,7 @@ Ninguém assinou o grupo. Com snooping, o fluxo **não sai por nenhuma porta de 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -1051,7 +1068,7 @@ sequenceDiagram
   n_a ->> n_sw: Dados do grupo nº 2
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Grupo sem assinantes", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Grupo sem assinantes", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1083,6 +1100,7 @@ Quadros para **01-80-C2-00-00-00** e **01-80-C2-00-00-0E** são consumidos pela 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta 1
   participant n_b as Host B<br/>porta 2
   participant n_sw as Switch<br/>camada 2
@@ -1098,7 +1116,7 @@ sequenceDiagram
   n_sw ->> n_d: Echo Request
 ```
 
-*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "BPDU e LLDP não são encaminhados", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 6 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "BPDU e LLDP não são encaminhados", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Broadcast, multicast e reservados", com a configuração aplicada acima.
 
 **Mensagens**
 

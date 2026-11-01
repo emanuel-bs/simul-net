@@ -151,6 +151,7 @@ Download em **modo passivo** com o cliente atrás de NAT. O cliente conecta a um
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -188,7 +189,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "Passivo atrás de NAT", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "Passivo atrás de NAT", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens, numeradas de 1 a 27 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -218,6 +219,7 @@ Download em **modo ativo**, com o cliente em um endereço alcançável e sem fil
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -255,7 +257,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "Ativo sem NAT", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "Ativo sem NAT", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens, numeradas de 1 a 27 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -285,6 +287,7 @@ Modo ativo atrás de NAT: o cliente anuncia o endereço **privado** no PORT. O s
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -315,7 +318,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Ativo atrás de NAT (falha)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 21 mensagens (em 4 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Ativo atrás de NAT (falha)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 21 mensagens, numeradas de 1 a 21 na ordem da comunicação (em 4 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -345,6 +348,7 @@ O NAT com **inspeção de FTP** lê o comando PORT, troca o endereço privado pe
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -382,7 +386,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "Ativo com helper de FTP", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "Ativo com helper de FTP", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens, numeradas de 1 a 27 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -411,6 +415,7 @@ O servidor anuncia a porta passiva **50000**, mas o firewall dele não libera a 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -439,7 +444,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "Passivo com faixa bloqueada", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 19 mensagens (em 4 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "Passivo com faixa bloqueada", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 4 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -471,6 +476,7 @@ Até uma **listagem** usa um canal de dados novo: o resultado do LIST não vem p
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -506,7 +512,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Listar diretório (LIST)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 25 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Listar diretório (LIST)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 25 mensagens, numeradas de 1 a 25 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -536,6 +542,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -573,7 +580,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Enviar arquivo (STOR)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Enviar arquivo (STOR)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens, numeradas de 1 a 27 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -602,6 +609,7 @@ Senha errada: o servidor responde **530**. Repare que a senha, certa ou errada, 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -621,7 +629,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "Senha incorreta (530)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "Senha incorreta (530)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -649,6 +657,7 @@ Login **anonymous**, com o e-mail como senha: comum em repositórios públicos. 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -686,7 +695,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Acesso anônimo", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
+*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Acesso anônimo", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 27 mensagens, numeradas de 1 a 27 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -721,6 +730,7 @@ O cliente conecta na porta 21 em claro, envia **AUTH TLS** e só então autentic
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -772,7 +782,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "FTPS explícito (AUTH TLS)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 40 mensagens (em 6 fases; 24 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "FTPS explícito (AUTH TLS)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 40 mensagens, numeradas de 1 a 40 na ordem da comunicação (em 6 fases; 24 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -801,6 +811,7 @@ No modo **implícito** o TLS começa no primeiro byte da conexão, na porta 990,
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:990
@@ -850,7 +861,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "FTPS implícito (porta 990)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 38 mensagens (em 6 fases; 25 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "FTPS implícito (porta 990)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 38 mensagens, numeradas de 1 a 38 na ordem da comunicação (em 6 fases; 25 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -878,6 +889,7 @@ Com **PROT C**, só o controle é cifrado: a senha fica protegida, mas o **arqui
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -926,7 +938,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "PROT C: dados em claro", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 37 mensagens (em 6 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "PROT C: dados em claro", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 37 mensagens, numeradas de 1 a 37 na ordem da comunicação (em 6 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -954,6 +966,7 @@ Com o controle cifrado, o **helper de FTP do NAT não consegue ler o PORT**. O s
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -995,7 +1008,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Ativo com helper (falha)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 31 mensagens (em 5 fases; 2 perdidas; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Ativo com helper (falha)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 31 mensagens, numeradas de 1 a 31 na ordem da comunicação (em 5 fases; 2 perdidas; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1024,6 +1037,7 @@ O certificado não é confiável. O cliente envia o alerta **unknown_ca** e ence
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor<br/>203.0.113.21:21
@@ -1042,7 +1056,7 @@ sequenceDiagram
   n_c ->> n_s: [cifrado] Alert: unknown_ca
 ```
 
-*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "Certificado inválido", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 10 mensagens (em 3 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
+*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "Certificado inválido", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 3 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "FTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1077,6 +1091,7 @@ Download por SFTP: TCP na porta 22, troca de chaves, autenticação e o subsiste
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor SFTP<br/>203.0.113.21:22
@@ -1118,7 +1133,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.3.1 (Tipo B, sequência).* Mensagens do cenário "Download (get)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+*Figura 5.3.1 (Tipo B, sequência).* Mensagens do cenário "Download (get)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens, numeradas de 1 a 31 na ordem da comunicação (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1147,6 +1162,7 @@ A autenticação por **chave pública** não envia segredo algum: o cliente assi
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor SFTP<br/>203.0.113.21:22
@@ -1188,7 +1204,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.3.2 (Tipo B, sequência).* Mensagens do cenário "Chave pública", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+*Figura 5.3.2 (Tipo B, sequência).* Mensagens do cenário "Chave pública", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens, numeradas de 1 a 31 na ordem da comunicação (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1216,6 +1232,7 @@ Upload por SFTP: pedidos **WRITE** dentro do túnel cifrado, na mesma conexão d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor SFTP<br/>203.0.113.21:22
@@ -1257,7 +1274,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.3.3 (Tipo B, sequência).* Mensagens do cenário "Upload (put)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+*Figura 5.3.3 (Tipo B, sequência).* Mensagens do cenário "Upload (put)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 31 mensagens, numeradas de 1 a 31 na ordem da comunicação (em 5 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1285,6 +1302,7 @@ Listagem por SFTP: **OPENDIR**, **READDIR** e **NAME**, sem canal de dados separ
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_f as Firewall / NAT<br/>do cliente (198.51.100.7)
   participant n_s as Servidor SFTP<br/>203.0.113.21:22
@@ -1324,7 +1342,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.3.4 (Tipo B, sequência).* Mensagens do cenário "Listar (ls)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 29 mensagens (em 5 fases; 16 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
+*Figura 5.3.4 (Tipo B, sequência).* Mensagens do cenário "Listar (ls)", na ordem do tempo, entre Cliente, Firewall / NAT, Servidor SFTP: 29 mensagens, numeradas de 1 a 29 na ordem da comunicação (em 5 fases; 16 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "SFTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1360,6 +1378,7 @@ O mesmo download feito em **FTP**, **FTPS** e **SFTP**, com um observador na red
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.21
@@ -1482,7 +1501,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.4.1 (Tipo B, sequência).* Mensagens do cenário "Download nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 98 mensagens (em 19 fases; 42 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
+*Figura 5.4.1 (Tipo B, sequência).* Mensagens do cenário "Download nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 98 mensagens, numeradas de 1 a 98 na ordem da comunicação (em 19 fases; 42 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1511,6 +1530,7 @@ O mesmo upload nos três protocolos, com o observador na rede.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.21
@@ -1633,7 +1653,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.4.2 (Tipo B, sequência).* Mensagens do cenário "Upload nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 98 mensagens (em 19 fases; 42 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
+*Figura 5.4.2 (Tipo B, sequência).* Mensagens do cenário "Upload nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 98 mensagens, numeradas de 1 a 98 na ordem da comunicação (em 19 fases; 42 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1661,6 +1681,7 @@ A mesma listagem de diretório nos três protocolos.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Cliente<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.21
@@ -1777,7 +1798,7 @@ sequenceDiagram
   n_s ->> n_c: FIN, ACK
 ```
 
-*Figura 5.4.3 (Tipo B, sequência).* Mensagens do cenário "Listagem nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 92 mensagens (em 19 fases; 38 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
+*Figura 5.4.3 (Tipo B, sequência).* Mensagens do cenário "Listagem nos três", na ordem do tempo, entre Cliente, Observador na rede, Servidor: 92 mensagens, numeradas de 1 a 92 na ordem da comunicação (em 19 fases; 38 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação", com a configuração aplicada acima.
 
 **Mensagens**
 

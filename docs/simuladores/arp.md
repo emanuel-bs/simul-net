@@ -308,6 +308,7 @@ O host A quer fazer um ping no host B, na mesma rede, e **não tem o endereço f
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -321,7 +322,7 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeira resolução", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeira resolução", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -350,6 +351,7 @@ A tabela ARP de A já tem o endereço de B. **Nenhuma mensagem ARP** é enviada:
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -359,7 +361,7 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Entrada já em cache", na ordem do tempo, entre Host A, Host B, Gateway: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Entrada já em cache", na ordem do tempo, entre Host A, Host B, Gateway: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -386,6 +388,7 @@ A entrada de B está **STALE**: o host ainda a usa, mas a confirma perguntando *
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -398,7 +401,7 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Entrada antiga (revalidação)", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Entrada antiga (revalidação)", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -430,6 +433,7 @@ O destino está em outra rede. O host A **não pergunta pelo IP remoto**: pergun
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -443,7 +447,7 @@ sequenceDiagram
   n_g ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Destino remoto via gateway", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Destino remoto via gateway", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -472,6 +476,7 @@ A máscara de A está errada e ele acha que o destino remoto é local. O roteado
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -485,7 +490,7 @@ sequenceDiagram
   n_g ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Proxy ARP (sem gateway)", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Proxy ARP (sem gateway)", na ordem do tempo, entre Host A, Host B, Gateway: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -513,6 +518,7 @@ Mesma máscara errada, mas o roteador **não faz proxy ARP**. Ninguém responde 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -526,7 +532,7 @@ sequenceDiagram
   n_a ->> n_g: ARP Request
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Sem gateway e sem proxy ARP", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Sem gateway e sem proxy ARP", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -557,6 +563,7 @@ B está desligado. A repete a requisição **3 vezes**, com 1 s entre elas, e de
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -570,7 +577,7 @@ sequenceDiagram
   n_a -x n_b: ARP Request
 ```
 
-*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Destino desligado", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens (em 3 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Destino desligado", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -597,6 +604,7 @@ A primeira requisição se perde. Sem resposta em 1 s, o host **retransmite** e 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -612,7 +620,7 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply
 ```
 
-*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Requisição perdida e retransmitida", na ordem do tempo, entre Host A, Host B, Gateway: 7 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Requisição perdida e retransmitida", na ordem do tempo, entre Host A, Host B, Gateway: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -641,6 +649,7 @@ A tabela ainda guarda o endereço de B, que foi desligado. O ping sai sem consul
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>origem
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -649,7 +658,7 @@ sequenceDiagram
   n_a -x n_b: Echo Request
 ```
 
-*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Entrada recente, host desligado", na ordem do tempo, entre Host A, Host B, Gateway: 1 mensagem (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Entrada recente, host desligado", na ordem do tempo, entre Host A, Host B, Gateway: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Resolução", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -683,6 +692,7 @@ O host A vai usar um endereço novo. Antes, faz **3 Probes** para saber se algu�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>configura o endereço
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -700,7 +710,7 @@ sequenceDiagram
   n_a ->> n_g: ARP Announce
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Endereço novo: Probe e Announce", na ordem do tempo, entre Host A, Host B, Gateway: 10 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Endereço novo: Probe e Announce", na ordem do tempo, entre Host A, Host B, Gateway: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -728,6 +738,7 @@ Mesma sequência, mas nenhum vizinho tinha entrada para o endereço: o Announce 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>configura o endereço
   participant n_b as Host B<br/>vizinho
   participant n_g as Gateway<br/>roteador
@@ -745,7 +756,7 @@ sequenceDiagram
   n_a ->> n_g: ARP Announce
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Anúncio sem entradas antigas", na ordem do tempo, entre Host A, Host B, Gateway: 10 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Anúncio sem entradas antigas", na ordem do tempo, entre Host A, Host B, Gateway: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -778,6 +789,7 @@ O endereço que A quer **já pertence ao host B**. B responde ao primeiro Probe 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>quer o endereço
   participant n_b as Host B<br/>dono do endereço
   participant n_g as Gateway<br/>roteador
@@ -787,7 +799,7 @@ sequenceDiagram
   n_b ->> n_a: ARP Reply
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Endereço já em uso (Probe)", na ordem do tempo, entre Host A, Host B, Gateway: 3 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Endereço já em uso (Probe)", na ordem do tempo, entre Host A, Host B, Gateway: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -815,6 +827,7 @@ B é configurado à mão com o endereço de A, sem verificar conflito. A **defen
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>dono do endereço
   participant n_b as Host B<br/>configurou o mesmo endereço
   participant n_g as Gateway<br/>roteador
@@ -826,7 +839,7 @@ sequenceDiagram
   n_a ->> n_g: ARP Announce (defesa)
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Disputa: o recém-chegado cede", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Disputa: o recém-chegado cede", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -854,6 +867,7 @@ B também defende o endereço. A recebe um **segundo conflito em menos de 10 s**
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>dono do endereço
   participant n_b as Host B<br/>configurou o mesmo endereço
   participant n_g as Gateway<br/>roteador
@@ -868,7 +882,7 @@ sequenceDiagram
   n_b ->> n_g: ARP Announce (defesa)
 ```
 
-*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Disputa: os dois defendem", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Disputa: os dois defendem", na ordem do tempo, entre Host A, Host B, Gateway: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -901,6 +915,7 @@ O principal cai e o reserva assume o IP. O reserva envia um **ARP gratuito**, o 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>reserva
   participant n_b as Host B<br/>principal (caiu)
   participant n_g as Gateway<br/>roteador
@@ -913,7 +928,7 @@ sequenceDiagram
   n_a ->> n_g: Echo Reply
 ```
 
-*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Failover com ARP gratuito", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Failover com ARP gratuito", na ordem do tempo, entre Host A, Host B, Gateway: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -941,6 +956,7 @@ O reserva assume o IP e **não avisa ninguém**. O gateway continua mandando ao 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>reserva
   participant n_b as Host B<br/>principal (caiu)
   participant n_g as Gateway<br/>roteador
@@ -958,7 +974,7 @@ sequenceDiagram
   n_a ->> n_g: Echo Reply
 ```
 
-*Figura 6.2.7 (Tipo B, sequência).* Mensagens do cenário "Failover sem ARP gratuito", na ordem do tempo, entre Host A, Host B, Gateway: 9 mensagens (em 3 fases; 5 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
+*Figura 6.2.7 (Tipo B, sequência).* Mensagens do cenário "Failover sem ARP gratuito", na ordem do tempo, entre Host A, Host B, Gateway: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 3 fases; 5 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "ARP gratuito e conflito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -993,6 +1009,7 @@ A situação normal: as tabelas de A e do gateway estão corretas e o tráfego v
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1002,7 +1019,7 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Sem ataque (referência)", na ordem do tempo, entre Host A, Host M, Gateway: 2 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Sem ataque (referência)", na ordem do tempo, entre Host A, Host M, Gateway: 2 mensagens, numeradas de 1 a 2 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1034,6 +1051,7 @@ O host M envia respostas ARP que ninguém pediu. A e o gateway as aceitam, e o t
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1048,7 +1066,7 @@ sequenceDiagram
   n_m ->> n_a: HTTP 200 (repassado)
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Cache envenenado (HTTP)", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Cache envenenado (HTTP)", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1076,6 +1094,7 @@ Só A recebe a resposta forjada. M vê **só a requisição**; a resposta do ser
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1088,7 +1107,7 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Só a vítima é enganada", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Só a vítima é enganada", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1117,6 +1136,7 @@ O desvio acontece do mesmo jeito, mas o tráfego é **HTTPS**: M recebe os quadr
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1131,7 +1151,7 @@ sequenceDiagram
   n_m ->> n_a: [cifrado] TLS dados (repassado)
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Mesmo desvio, tráfego HTTPS", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens (em 3 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Mesmo desvio, tráfego HTTPS", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases; 4 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1163,6 +1183,7 @@ Com **entradas ARP estáticas** no host e no gateway, as respostas forjadas são
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1175,7 +1196,7 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
-*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "Defesa: entradas estáticas", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "Defesa: entradas estáticas", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1203,6 +1224,7 @@ O **switch com DAI** confere cada resposta ARP com a tabela do DHCP snooping e d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1215,7 +1237,7 @@ sequenceDiagram
   n_g ->> n_a: HTTP 200
 ```
 
-*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "Defesa: DAI no switch", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "Defesa: DAI no switch", na ordem do tempo, entre Host A, Host M, Gateway: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 3 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1243,6 +1265,7 @@ O **monitoramento** percebe que o MAC do gateway mudou e gera um alerta. Detecta
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>vítima
   participant n_m as Host M<br/>host malicioso
   participant n_g as Gateway<br/>roteador
@@ -1257,7 +1280,7 @@ sequenceDiagram
   n_m ->> n_a: HTTP 200 (repassado)
 ```
 
-*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "Detecção: MAC do gateway mudou", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
+*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "Detecção: MAC do gateway mudou", na ordem do tempo, entre Host A, Host M, Gateway: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Envenenamento de cache", com a configuração aplicada acima.
 
 **Mensagens**
 

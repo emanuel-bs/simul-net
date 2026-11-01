@@ -355,15 +355,9 @@ Enquanto a contagem não termina, os pacotes ficam em laço e se perdem. Split h
 
 ### 6.1 Roteamento dinâmico
 
-          
-
 Com roteamento dinâmico, os roteadores trocam informações para montar a tabela de roteamento sozinhos e reagir a falhas. Há duas famílias: no **vetor de distância** (RIP), cada roteador só conhece o que os vizinhos anunciam; no **estado de enlace** (OSPF), todos recebem o mapa completo da área e calculam o melhor caminho por conta própria.
 
-          
-
 ### 6.2 OSPF ([RFC 2328](https://www.rfc-editor.org/rfc/rfc2328))
-
-          
 
 - **Hello:** descobre vizinhos (a cada 10 s em redes broadcast). Quando um roteador vê o próprio Router ID no Hello do vizinho, o estado passa a **2-Way**.
 - **Adjacência:** os vizinhos trocam DBD, LSR, LSU e LSAck até sincronizar as bases. O estado final é **Full**.
@@ -372,11 +366,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 - **Custo:** a [RFC 2328](https://www.rfc-editor.org/rfc/rfc2328) trata o custo da interface apenas como um parâmetro configurável (quanto menor, mais preferido); vence o menor custo total. A fórmula "largura de banda de referência dividida pela do enlace" é prática de fabricantes (por exemplo, Cisco IOS), não parte da RFC.
 - **Multiárea:** a Área 0 é o backbone. Os ABRs (roteadores de borda de área) resumem cada área para as demais com Summary LSAs (tipo 3), o que reduz a LSDB e o custo do SPF.
 
-          
-
 ### 6.3 RIPv2 ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453))
-
-          
 
 - **Métrica:** número de saltos. O valor 16 significa inalcançável, o que limita a rede a 15 saltos.
 - **Atualizações:** a cada 30 s, cada roteador envia sua tabela (vetor de distância) aos vizinhos, por multicast 224.0.0.9 na porta UDP 520.
@@ -384,11 +374,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 - **Split horizon com poison reverse:** a rota volta ao vizinho de quem foi aprendida com métrica 16. Isso evita o laço entre dois vizinhos; em laços de três ou mais roteadores, a contagem ao infinito ainda acontece e só termina pelo limite de 16.
 - **Triggered update:** depois de uma falha, o roteador anuncia a mudança imediatamente, sem esperar os 30 s.
 
-          
-
 ### 6.4 Comparação
-
-          
 
 | Aspecto | OSPF | RIPv2 |
 | --- | --- | --- |
@@ -400,31 +386,19 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 | Transporte | IP protocolo 89, 224.0.0.5 e 224.0.0.6 | UDP 520, 224.0.0.9 |
 | Escala | Grande, com hierarquia de áreas | Pequena |
 
-          
-
 ### 6.5 Limitações do simulador
-
-          
 
 - O DR e o BDR (eleição em redes de acesso múltiplo) não são modelados: os enlaces são ponto a ponto. O endereço 224.0.0.6 (AllDRouters) aparece só na tabela de comparação.
 - OSPFv3, RIPng e IPv6 estão fora de escopo; o modelo cobre OSPFv2 ([RFC 2328](https://www.rfc-editor.org/rfc/rfc2328)) e RIPv2 ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453)) sobre IPv4.
 - O custo OSPF é o do enlace configurado no cenário, sem cálculo por largura de banda de referência.
 
-          
-
 ### 6.6 Roteamento e segurança
-
-          
 
 - **Injeção de rotas:** um atacante na mesma rede pode anunciar rotas falsas para desviar tráfego (man-in-the-middle) ou criar um buraco negro. A defesa é a **autenticação**: no OSPF, HMAC-SHA ([RFC 5709](https://www.rfc-editor.org/rfc/rfc5709)); no RIPv2, MD5 ou HMAC-SHA ([RFC 4822](https://www.rfc-editor.org/rfc/rfc4822)).
 - **Interfaces passivas:** desativar o envio de Hello e de atualizações nas interfaces voltadas para usuários impede que um host participe do roteamento.
 - **Filtragem e resumo de rotas:** filtrar o que se aceita e resumir rotas reduz o efeito de anúncios indevidos e da instabilidade de enlaces (flapping).
 
-          
-
 ### 6.7 Roteiro de exercícios
-
-          
 
 1. **OSPF, área única:** avance até a convergência e anote o caminho de PC-A a PC-B. Existe caminho com menos saltos? Por que o OSPF não o escolheu?
 2. Aumente o custo do enlace **R2 / R3** para 50 e simule a comunicação de novo. Quais roteadores originam novos LSAs, e qual é o novo caminho?

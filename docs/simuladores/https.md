@@ -176,6 +176,7 @@ Navegador e servidor modernos. O ClientHello já leva a metade do ECDHE (key_sha
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -199,7 +200,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "TLS 1.3 completo (1 RTT)", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração padrão.
+*Figura 5.1.1 (Tipo B, sequência).* Mensagens do cenário "TLS 1.3 completo (1 RTT)", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração padrão.
 
 **Mensagens**
 
@@ -231,6 +232,7 @@ Os dois lados só falam TLS 1.2. O handshake leva 2 RTT: ClientHello e ServerHel
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -257,7 +259,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "TLS 1.2 completo (2 RTT)", na ordem do tempo, entre Navegador, Servidor HTTPS: 17 mensagens (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.2 (Tipo B, sequência).* Mensagens do cenário "TLS 1.2 completo (2 RTT)", na ordem do tempo, entre Navegador, Servidor HTTPS: 17 mensagens, numeradas de 1 a 17 na ordem da comunicação (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -289,6 +291,7 @@ O navegador já visitou o site e tem um ticket (PSK) do NewSessionTicket. O Clie
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -312,7 +315,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Retomada de sessão (ticket)", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.3 (Tipo B, sequência).* Mensagens do cenário "Retomada de sessão (ticket)", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -341,6 +344,7 @@ Com 0-RTT, a requisição sai junto com o ClientHello, antes de qualquer respost
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -364,7 +368,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "0-RTT e risco de replay", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.4 (Tipo B, sequência).* Mensagens do cenário "0-RTT e risco de replay", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -394,6 +398,7 @@ O servidor envia CertificateRequest e o cliente apresenta o próprio certificado
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -417,7 +422,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "mTLS (certificado de cliente)", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.5 (Tipo B, sequência).* Mensagens do cenário "mTLS (certificado de cliente)", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -450,6 +455,7 @@ Um navegador antigo (só TLS 1.0 e 1.1) tenta falar com um servidor moderno. Nã
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -463,7 +469,7 @@ sequenceDiagram
   n_s ->> n_c: ACK
 ```
 
-*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Sem versão em comum", na ordem do tempo, entre Navegador, Servidor HTTPS: 8 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.6 (Tipo B, sequência).* Mensagens do cenário "Sem versão em comum", na ordem do tempo, entre Navegador, Servidor HTTPS: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -492,6 +498,7 @@ Há versão em comum, mas as únicas cifras de ambos usam troca RSA, e o certifi
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -505,7 +512,7 @@ sequenceDiagram
   n_s ->> n_c: ACK
 ```
 
-*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Sem cifra em comum", na ordem do tempo, entre Navegador, Servidor HTTPS: 8 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.7 (Tipo B, sequência).* Mensagens do cenário "Sem cifra em comum", na ordem do tempo, entre Navegador, Servidor HTTPS: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -534,6 +541,7 @@ Os dois lados negociam TLS 1.1 com RSA e CBC. Funciona, mas o segredo viaja cifr
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -560,7 +568,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "TLS legado sem sigilo futuro", na ordem do tempo, entre Navegador, Servidor HTTPS: 17 mensagens (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.8 (Tipo B, sequência).* Mensagens do cenário "TLS legado sem sigilo futuro", na ordem do tempo, entre Navegador, Servidor HTTPS: 17 mensagens, numeradas de 1 a 17 na ordem da comunicação (em 5 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -588,6 +596,7 @@ Um equipamento no caminho remove o TLS 1.3 do ClientHello para forçar o TLS 1.2
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -603,7 +612,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Downgrade detectado", na ordem do tempo, entre Navegador, Servidor HTTPS: 9 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
+*Figura 5.1.9 (Tipo B, sequência).* Mensagens do cenário "Downgrade detectado", na ordem do tempo, entre Navegador, Servidor HTTPS: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Handshake TLS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -637,6 +646,7 @@ O navegador valida a cadeia (leaf, intermediário, raiz), as assinaturas, a vali
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -660,7 +670,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "Certificado válido", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração padrão.
+*Figura 5.2.1 (Tipo B, sequência).* Mensagens do cenário "Certificado válido", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração padrão.
 
 **Mensagens**
 
@@ -689,6 +699,7 @@ O certificado passou do notAfter. O navegador recusa, envia `certificate_expired
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -705,7 +716,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "Certificado expirado", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.2 (Tipo B, sequência).* Mensagens do cenário "Certificado expirado", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -734,6 +745,7 @@ O certificado é válido, mas emitido para outro nome (shop.example.net). O SNI 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -750,7 +762,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "Nome não confere", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.3 (Tipo B, sequência).* Mensagens do cenário "Nome não confere", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -779,6 +791,7 @@ O certificado é assinado por ele mesmo: nenhuma CA do repositório de confianç
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -795,7 +808,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Autoassinado (CA desconhecida)", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.4 (Tipo B, sequência).* Mensagens do cenário "Autoassinado (CA desconhecida)", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -824,6 +837,7 @@ O servidor enviou só o certificado do site, sem o intermediário. Alguns client
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -840,7 +854,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "Cadeia incompleta", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.5 (Tipo B, sequência).* Mensagens do cenário "Cadeia incompleta", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -869,6 +883,7 @@ A CA revogou o certificado (chave comprometida). O servidor anexa a resposta OCS
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   n_c ->> n_s: SYN
@@ -885,7 +900,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.6 (Tipo B, sequência).* Mensagens do cenário "Revogado (com stapling)", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.6 (Tipo B, sequência).* Mensagens do cenário "Revogado (com stapling)", na ordem do tempo, entre Navegador, Servidor HTTPS: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -918,6 +933,7 @@ Sem stapling, o navegador pergunta à CA, por conta própria, se o certificado f
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   participant n_o as CA (responder OCSP)<br/>ocsp.exampleca.org
@@ -944,7 +960,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.7 (Tipo B, sequência).* Mensagens do cenário "Sem stapling: consulta OCSP", na ordem do tempo, entre Navegador, Servidor HTTPS, CA (responder OCSP): 17 mensagens (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.7 (Tipo B, sequência).* Mensagens do cenário "Sem stapling: consulta OCSP", na ordem do tempo, entre Navegador, Servidor HTTPS, CA (responder OCSP): 17 mensagens, numeradas de 1 a 17 na ordem da comunicação (em 4 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -973,6 +989,7 @@ O navegador consulta a CA (OCSP) e recebe "revoked". A recusa acontece, mas depo
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   participant n_o as CA (responder OCSP)<br/>ocsp.exampleca.org
@@ -992,7 +1009,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.2.8 (Tipo B, sequência).* Mensagens do cenário "Revogado, sem stapling", na ordem do tempo, entre Navegador, Servidor HTTPS, CA (responder OCSP): 12 mensagens (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
+*Figura 5.2.8 (Tipo B, sequência).* Mensagens do cenário "Revogado, sem stapling", na ordem do tempo, entre Navegador, Servidor HTTPS, CA (responder OCSP): 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 2 fases; 2 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Certificados", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1025,6 +1042,7 @@ O usuário digita só o nome do site. Sem HSTS, a primeira requisição sai em H
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   Note over n_c,n_s: 1. Primeira requisição em HTTP (porta 80)
@@ -1057,7 +1075,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.3.1 (Tipo B, sequência).* Mensagens do cenário "Primeiro acesso: HTTP e 301", na ordem do tempo, entre Navegador, Servidor HTTPS: 22 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração padrão.
+*Figura 5.3.1 (Tipo B, sequência).* Mensagens do cenário "Primeiro acesso: HTTP e 301", na ordem do tempo, entre Navegador, Servidor HTTPS: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração padrão.
 
 **Mensagens**
 
@@ -1087,6 +1105,7 @@ O navegador lembra do cabeçalho Strict-Transport-Security de uma visita anterio
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   Note over n_c,n_s: 1. O navegador aplica o HSTS
@@ -1112,7 +1131,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.3.2 (Tipo B, sequência).* Mensagens do cenário "Com HSTS em cache", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
+*Figura 5.3.2 (Tipo B, sequência).* Mensagens do cenário "Com HSTS em cache", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1140,6 +1159,7 @@ O domínio consta na lista de preload embutida no navegador. O HTTPS é exigido 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   Note over n_c,n_s: 1. O navegador aplica o HSTS
@@ -1165,7 +1185,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.3.3 (Tipo B, sequência).* Mensagens do cenário "HSTS preload", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
+*Figura 5.3.3 (Tipo B, sequência).* Mensagens do cenário "HSTS preload", na ordem do tempo, entre Navegador, Servidor HTTPS: 15 mensagens, numeradas de 1 a 15 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1197,6 +1217,7 @@ O site tem HTTPS, mas o servidor atende HTTP sem redirecionar e não há HSTS. Q
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   Note over n_c,n_s: 1. Requisição HTTP (porta 80)
@@ -1207,7 +1228,7 @@ sequenceDiagram
   n_s ->> n_c: HTTP/1.1 200 OK
 ```
 
-*Figura 5.3.4 (Tipo B, sequência).* Mensagens do cenário "Sem redirecionamento", na ordem do tempo, entre Navegador, Servidor HTTPS: 5 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
+*Figura 5.3.4 (Tipo B, sequência).* Mensagens do cenário "Sem redirecionamento", na ordem do tempo, entre Navegador, Servidor HTTPS: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1236,6 +1257,7 @@ O site só existe em HTTP. Conteúdo, cookies e senhas trafegam em texto puro, s
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_s as Servidor HTTPS<br/>203.0.113.80:443
   Note over n_c,n_s: 1. Somente HTTP (porta 80)
@@ -1246,7 +1268,7 @@ sequenceDiagram
   n_s ->> n_c: HTTP/1.1 200 OK
 ```
 
-*Figura 5.3.5 (Tipo B, sequência).* Mensagens do cenário "Sem HTTPS", na ordem do tempo, entre Navegador, Servidor HTTPS: 5 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
+*Figura 5.3.5 (Tipo B, sequência).* Mensagens do cenário "Sem HTTPS", na ordem do tempo, entre Navegador, Servidor HTTPS: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP, HTTPS e HSTS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1281,6 +1303,7 @@ O usuário faz login: um POST com usuário e senha e uma resposta com o cookie d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.80
@@ -1314,7 +1337,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.1 (Tipo B, sequência).* Mensagens do cenário "Login: senha em claro x cifrada", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.1 (Tipo B, sequência).* Mensagens do cenário "Login: senha em claro x cifrada", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1344,6 +1367,7 @@ Uma busca com o termo na URL. Em HTTP, o observador sabe exatamente o que o usu�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.80
@@ -1377,7 +1401,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.2 (Tipo B, sequência).* Mensagens do cenário "Busca: o termo vai na URL", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.2 (Tipo B, sequência).* Mensagens do cenário "Busca: o termo vai na URL", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1406,6 +1430,7 @@ Uma página pessoal acessada com o cookie de sessão. Em HTTP, o cookie e a pág
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.80
@@ -1439,7 +1464,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.3 (Tipo B, sequência).* Mensagens do cenário "Página com cookie de sessão", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.3 (Tipo B, sequência).* Mensagens do cenário "Página com cookie de sessão", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1472,6 +1497,7 @@ Um equipamento no caminho (proxy ou Wi-Fi público) injeta um banner na resposta
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.80
@@ -1502,7 +1528,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.4 (Tipo B, sequência).* Mensagens do cenário "Conteúdo alterado no caminho", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 20 mensagens (em 5 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.4 (Tipo B, sequência).* Mensagens do cenário "Conteúdo alterado no caminho", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 20 mensagens, numeradas de 1 a 20 na ordem da comunicação (em 5 fases; 5 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1536,6 +1562,7 @@ Com TLS 1.2, o HTTPS precisa de 3 RTT até a requisição (TCP e dois do TLS). C
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.80
@@ -1572,7 +1599,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.5 (Tipo B, sequência).* Mensagens do cenário "Custo do HTTPS com TLS 1.2", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 24 mensagens (em 7 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.5 (Tipo B, sequência).* Mensagens do cenário "Custo do HTTPS com TLS 1.2", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 24 mensagens, numeradas de 1 a 24 na ordem da comunicação (em 7 fases; 6 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1601,6 +1628,7 @@ Com RTT de 200 ms, o TLS 1.3 acrescenta 1 RTT (200 ms) ao HTTP. É o preço da p
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_c as Navegador<br/>192.168.1.20
   participant n_o as Observador na rede<br/>Wi-Fi público ou provedor
   participant n_s as Servidor<br/>203.0.113.80
@@ -1634,7 +1662,7 @@ sequenceDiagram
   n_c ->> n_s: ACK
 ```
 
-*Figura 5.4.6 (Tipo B, sequência).* Mensagens do cenário "Custo em RTT alto (TLS 1.3)", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
+*Figura 5.4.6 (Tipo B, sequência).* Mensagens do cenário "Custo em RTT alto (TLS 1.3)", na ordem do tempo, entre Navegador, Observador na rede, Servidor: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 6 fases; 7 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Comparação HTTP x HTTPS", com a configuração aplicada acima.
 
 **Mensagens**
 

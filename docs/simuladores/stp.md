@@ -372,6 +372,7 @@ Todas as pontes têm a prioridade padrão. O **menor MAC** (SW2) vira a raiz. O 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -386,7 +387,7 @@ sequenceDiagram
   n_sw3 ->> n_sw1: Config BPDU
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Eleição pelo menor MAC", na ordem do tempo, entre SW1, SW2, SW3: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Eleição pelo menor MAC", na ordem do tempo, entre SW1, SW2, SW3: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -415,6 +416,7 @@ O administrador baixa a prioridade do SW3 para 4096 e ele vira a raiz, **sem imp
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 4096
@@ -429,7 +431,7 @@ sequenceDiagram
   n_sw2 ->> n_sw1: Config BPDU
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Raiz escolhida pela prioridade", na ordem do tempo, entre SW1, SW2, SW3: 8 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Raiz escolhida pela prioridade", na ordem do tempo, entre SW1, SW2, SW3: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -456,6 +458,7 @@ A raiz é o SW1, mas o enlace direto com o SW3 é de 100 Mb/s. O SW3 prefere o c
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 4096
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -471,7 +474,7 @@ sequenceDiagram
   n_sw3 ->> n_sw1: Config BPDU
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Custo do enlace decide a porta raiz", na ordem do tempo, entre SW1, SW2, SW3: 9 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Custo do enlace decide a porta raiz", na ordem do tempo, entre SW1, SW2, SW3: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -503,6 +506,7 @@ O enlace SW2-SW3 cai. A porta bloqueada do SW3 assume como porta raiz, mas leva 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -530,7 +534,7 @@ sequenceDiagram
   n_sw2 ->> n_sw1: Config BPDU
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Falha do enlace da porta raiz", na ordem do tempo, entre SW1, SW2, SW3: 13 mensagens (em 9 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Falha do enlace da porta raiz", na ordem do tempo, entre SW1, SW2, SW3: 13 mensagens, numeradas de 1 a 13 na ordem da comunicação (em 9 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -560,6 +564,7 @@ A raiz (SW2) é desligada. SW1 e SW3 **elegem uma raiz nova** (SW1, de menor MAC
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -586,7 +591,7 @@ sequenceDiagram
   n_sw1 ->> n_sw3: Config BPDU
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Falha da ponte raiz", na ordem do tempo, entre SW1, SW2, SW3: 12 mensagens (em 9 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Falha da ponte raiz", na ordem do tempo, entre SW1, SW2, SW3: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 9 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -613,6 +618,7 @@ Aqui o enlace SW2-SW3 é justamente o que estava **bloqueado**. Quando ele cai, 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 4096
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -627,7 +633,7 @@ sequenceDiagram
   n_sw3 ->> n_sw2: Config BPDU
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Falha de um enlace bloqueado", na ordem do tempo, entre SW1, SW2, SW3: 8 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Falha de um enlace bloqueado", na ordem do tempo, entre SW1, SW2, SW3: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "STP clássico", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -661,6 +667,7 @@ Mesma eleição do STP, mas as portas passam a encaminhar por **proposta e acord
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -682,7 +689,7 @@ sequenceDiagram
   n_sw3 ->> n_sw1: RST BPDU (acordo)
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Proposta e acordo", na ordem do tempo, entre SW1, SW2, SW3: 14 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Proposta e acordo", na ordem do tempo, entre SW1, SW2, SW3: 14 mensagens, numeradas de 1 a 14 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -714,6 +721,7 @@ O enlace SW2-SW3 cai. A porta **alternativa** do SW3 vira porta raiz e encaminha
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -739,7 +747,7 @@ sequenceDiagram
   n_sw1 ->> n_sw3: RST BPDU
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Falha de enlace: a alternativa assume", na ordem do tempo, entre SW1, SW2, SW3: 16 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Falha de enlace: a alternativa assume", na ordem do tempo, entre SW1, SW2, SW3: 16 mensagens, numeradas de 1 a 16 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -766,6 +774,7 @@ A raiz é desligada. A nova eleição e a abertura do enlace bloqueado acontecem
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -791,7 +800,7 @@ sequenceDiagram
   n_sw3 ->> n_sw1: RST BPDU
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Falha da ponte raiz", na ordem do tempo, entre SW1, SW2, SW3: 16 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Falha da ponte raiz", na ordem do tempo, entre SW1, SW2, SW3: 16 mensagens, numeradas de 1 a 16 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -823,6 +832,7 @@ O SW3 só entende o STP clássico. Os enlaces com ele não podem usar proposta e
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -840,7 +850,7 @@ sequenceDiagram
   n_sw1 ->> n_sw2: RST BPDU (acordo)
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Uma ponte só fala STP", na ordem do tempo, entre SW1, SW2, SW3: 10 mensagens (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Uma ponte só fala STP", na ordem do tempo, entre SW1, SW2, SW3: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "RSTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -875,6 +885,7 @@ Todas as VLANs seguem o CIST, como no RSTP. O enlace SW1-SW3 fica **ocioso para 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -893,7 +904,7 @@ sequenceDiagram
   n_sw1 ->> n_sw3: MST BPDU
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Todas as VLANs numa árvore", na ordem do tempo, entre SW1, SW2, SW3: 11 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "MSTP", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Todas as VLANs numa árvore", na ordem do tempo, entre SW1, SW2, SW3: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "MSTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -921,6 +932,7 @@ A VLAN 10 usa a árvore da MSTI 1 (raiz SW1) e a VLAN 20, a da MSTI 2 (raiz SW3)
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -939,7 +951,7 @@ sequenceDiagram
   n_sw1 ->> n_sw3: MST BPDU
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Duas instâncias: balanceamento por VLAN", na ordem do tempo, entre SW1, SW2, SW3: 11 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "MSTP", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Duas instâncias: balanceamento por VLAN", na ordem do tempo, entre SW1, SW2, SW3: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "MSTP", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -973,6 +985,7 @@ Um único broadcast de A entra no triângulo. Cada switch o **inunda** pelas out
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta de acesso do SW1
   participant n_sw1 as SW1<br/>switch
   participant n_sw2 as SW2<br/>switch
@@ -1001,7 +1014,7 @@ sequenceDiagram
   n_sw2 ->> n_sw1: ARP Request
 ```
 
-*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Sem STP: tempestade de broadcast", na ordem do tempo, entre Host A, SW1, SW2, SW3, Host B: 19 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Laço e tempestade", com a configuração aplicada acima.
+*Figura 6.4.1 (Tipo B, sequência).* Mensagens do cenário "Sem STP: tempestade de broadcast", na ordem do tempo, entre Host A, SW1, SW2, SW3, Host B: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Laço e tempestade", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1029,6 +1042,7 @@ O mesmo broadcast, com o spanning tree ligado. Uma porta em **Bloqueio** descart
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_a as Host A<br/>porta de acesso do SW1
   participant n_sw1 as SW1<br/>switch
   participant n_sw2 as SW2<br/>switch
@@ -1043,7 +1057,7 @@ sequenceDiagram
   n_sw3 ->> n_b: ARP Request
 ```
 
-*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Com STP: o laço é cortado", na ordem do tempo, entre Host A, SW1, SW2, SW3, Host B: 5 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Laço e tempestade", com a configuração aplicada acima.
+*Figura 6.4.2 (Tipo B, sequência).* Mensagens do cenário "Com STP: o laço é cortado", na ordem do tempo, entre Host A, SW1, SW2, SW3, Host B: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Laço e tempestade", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1077,6 +1091,7 @@ Um switch de prioridade 0 é ligado a uma porta de acesso. Sem proteção, o SW1
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -1090,7 +1105,7 @@ sequenceDiagram
   n_sw2 ->> n_sw3: Config BPDU
 ```
 
-*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "Intruso sem proteção vira a raiz", na ordem do tempo, entre SW1, SW2, SW3, Switch intruso: 4 mensagens (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Proteções", com a configuração aplicada acima.
+*Figura 6.5.1 (Tipo B, sequência).* Mensagens do cenário "Intruso sem proteção vira a raiz", na ordem do tempo, entre SW1, SW2, SW3, Switch intruso: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Proteções", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1122,6 +1137,7 @@ A porta de acesso recebe uma BPDU, que ali não deveria existir, e é **desativa
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -1131,7 +1147,7 @@ sequenceDiagram
   n_x ->> n_sw1: Config BPDU
 ```
 
-*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "BPDU Guard isola o intruso", na ordem do tempo, entre SW1, SW2, SW3, Switch intruso: 1 mensagem (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Proteções", com a configuração aplicada acima.
+*Figura 6.5.2 (Tipo B, sequência).* Mensagens do cenário "BPDU Guard isola o intruso", na ordem do tempo, entre SW1, SW2, SW3, Switch intruso: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Proteções", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1158,6 +1174,7 @@ A porta recebe uma BPDU que tentaria trocar a raiz. Ela vai a **root-inconsisten
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_sw1 as SW1<br/>prioridade 32768
   participant n_sw2 as SW2<br/>prioridade 32768
   participant n_sw3 as SW3<br/>prioridade 32768
@@ -1167,7 +1184,7 @@ sequenceDiagram
   n_x ->> n_sw1: Config BPDU
 ```
 
-*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "Root Guard ignora a BPDU superior", na ordem do tempo, entre SW1, SW2, SW3, Switch intruso: 1 mensagem (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Proteções", com a configuração aplicada acima.
+*Figura 6.5.3 (Tipo B, sequência).* Mensagens do cenário "Root Guard ignora a BPDU superior", na ordem do tempo, entre SW1, SW2, SW3, Switch intruso: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Proteções", com a configuração aplicada acima.
 
 **Mensagens**
 

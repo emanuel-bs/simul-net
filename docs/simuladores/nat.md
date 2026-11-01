@@ -300,6 +300,7 @@ Só o endereço IP muda. As portas passam sem alteração.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -316,7 +317,7 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Basic NAT estático (1:1)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Basic NAT estático (1:1)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -348,6 +349,7 @@ Ao contrário do estático, a tabela começa vazia e os vínculos expiram quando
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -364,7 +366,7 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Basic NAT dinâmico (pool de 2)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Basic NAT dinâmico (pool de 2)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -396,6 +398,7 @@ Só há um endereço público para dois hosts. O PC1 fica com ele e o PC2 não c
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -409,7 +412,7 @@ sequenceDiagram
   n_pc2 -x n_nat: SYN
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Pool esgotado (1 endereço, 2 hosts)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 5 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Pool esgotado (1 endereço, 2 hosts)", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -444,6 +447,7 @@ Observe a tabela: duas entradas com o mesmo endereço externo e portas diferente
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -460,7 +464,7 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "NAPT (PAT): dois hosts, um endereço", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "NAPT (PAT): dois hosts, um endereço", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -493,6 +497,7 @@ O host não percebe: só o NAT conhece a porta externa.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -509,7 +514,7 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Colisão de portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Colisão de portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -538,6 +543,7 @@ O ICMP não tem portas. O NAPT usa o campo **Identifier** do Echo como se fosse 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -554,7 +560,7 @@ sequenceDiagram
   n_nat ->> n_pc2: Echo Reply
 ```
 
-*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "ICMP Echo (ping) sem portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "ICMP Echo (ping) sem portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -588,6 +594,7 @@ O PC1 envia, da mesma porta de origem, para duas portas do servidor. Com EIM, as
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_srv as SRV<br/>servidor externo
@@ -603,7 +610,7 @@ sequenceDiagram
   n_nat ->> n_pc1: UDP (resp.)
 ```
 
-*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Mapeamento independente do destino (EIM)", na ordem do tempo, entre PC1, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Mapeamento independente do destino (EIM)", na ordem do tempo, entre PC1, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -633,6 +640,7 @@ O mesmo envio, agora com mapeamento dependente de endereço e porta: cada destin
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_srv as SRV<br/>servidor externo
@@ -648,7 +656,7 @@ sequenceDiagram
   n_nat ->> n_pc1: UDP (resp.)
 ```
 
-*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Mapeamento dependente do destino (APDM)", na ordem do tempo, entre PC1, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Mapeamento dependente do destino (APDM)", na ordem do tempo, entre PC1, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Saída: Basic NAT e NAPT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -685,6 +693,7 @@ A resposta é revertida sem regra extra, pela tabela de conexões.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_srv as CLI<br/>cliente externo
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_web as WEB<br/>servidor interno
@@ -695,7 +704,7 @@ sequenceDiagram
   n_nat ->> n_srv: SYN+ACK
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Publicar um serviço (443 para 8443)", na ordem do tempo, entre CLI, R-NAT, WEB: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Publicar um serviço (443 para 8443)", na ordem do tempo, entre CLI, R-NAT, WEB: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -726,6 +735,7 @@ O servidor interno tem outro gateway padrão. A resposta não passa pelo R-NAT, 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_srv as CLI<br/>cliente externo
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_web as WEB<br/>servidor interno
@@ -735,7 +745,7 @@ sequenceDiagram
   n_web -x n_srv: SYN+ACK
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Retorno assimétrico", na ordem do tempo, entre CLI, R-NAT, WEB: 3 mensagens (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Retorno assimétrico", na ordem do tempo, entre CLI, R-NAT, WEB: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -763,6 +773,7 @@ Um cliente interno tenta acessar o endereço público do serviço. O roteador n�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_web as WEB<br/>servidor interno
@@ -770,7 +781,7 @@ sequenceDiagram
   n_pc1 -x n_nat: SYN
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Hairpin sem suporte", na ordem do tempo, entre PC1, R-NAT, WEB: 1 mensagem (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Hairpin sem suporte", na ordem do tempo, entre PC1, R-NAT, WEB: 1 mensagem, numeradas de 1 a 1 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -797,6 +808,7 @@ O DNAT leva o pedido ao servidor, mas a origem continua sendo o cliente, na mesm
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_web as WEB<br/>servidor interno
@@ -806,7 +818,7 @@ sequenceDiagram
   n_web -x n_pc1: SYN+ACK
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Hairpin só com DNAT (quebra)", na ordem do tempo, entre PC1, R-NAT, WEB: 3 mensagens (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Hairpin só com DNAT (quebra)", na ordem do tempo, entre PC1, R-NAT, WEB: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -836,6 +848,7 @@ O roteador reescreve o destino (DNAT) e a origem (SNAT). O servidor responde ao 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_web as WEB<br/>servidor interno
@@ -846,7 +859,7 @@ sequenceDiagram
   n_nat ->> n_pc1: SYN+ACK
 ```
 
-*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Hairpin com DNAT e SNAT", na ordem do tempo, entre PC1, R-NAT, WEB: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Hairpin com DNAT e SNAT", na ordem do tempo, entre PC1, R-NAT, WEB: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -877,6 +890,7 @@ O roteador desvia o tráfego dos clientes internos para a porta 80 de qualquer s
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_web as WEB<br/>proxy interno
@@ -888,7 +902,7 @@ sequenceDiagram
   n_nat ->> n_pc1: SYN+ACK
 ```
 
-*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Redirecionamento transparente para proxy", na ordem do tempo, entre PC1, R-NAT, WEB, SRV: 4 mensagens (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Redirecionamento transparente para proxy", na ordem do tempo, entre PC1, R-NAT, WEB, SRV: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 1 fase). Corresponde ao diagrama de sequência e à aba Captura, no modo "Entrada: DNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -927,6 +941,7 @@ Em redes reais é o mesmo fenômeno, em escala de dezenas de milhares de portas 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -950,7 +965,7 @@ sequenceDiagram
   n_pc2 -x n_nat: SYN
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Esgotamento de portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 13 mensagens (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Esgotamento de portas", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 13 mensagens, numeradas de 1 a 13 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -979,6 +994,7 @@ O servidor responde depois do tempo de inatividade. A entrada já foi removida e
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
   participant n_srv as SRV<br/>servidor externo
@@ -988,7 +1004,7 @@ sequenceDiagram
   n_srv -x n_nat: SYN+ACK
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Expiração por inatividade", na ordem do tempo, entre PC1, R-NAT, SRV: 3 mensagens (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Expiração por inatividade", na ordem do tempo, entre PC1, R-NAT, SRV: 3 mensagens, numeradas de 1 a 3 na ordem da comunicação (em 1 fase; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1019,6 +1035,7 @@ Depois das conexões de saída, o servidor envia um pacote para uma porta que ni
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -1037,7 +1054,7 @@ sequenceDiagram
   n_srv -x n_nat: SYN
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Entrada não solicitada no NAPT", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 9 mensagens (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Entrada não solicitada no NAPT", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 3 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1065,6 +1082,7 @@ No Basic NAT estático, o mapeamento é permanente e vale nos dois sentidos. Um 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -1084,7 +1102,7 @@ sequenceDiagram
   n_nat ->> n_pc1: SYN
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Entrada não solicitada no NAT estático", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 10 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Entrada não solicitada no NAT estático", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1117,6 +1135,7 @@ O ESP não tem portas. O NAPT cria uma entrada só com endereços e não tem com
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -1130,7 +1149,7 @@ sequenceDiagram
   n_pc2 -x n_nat: ESP
 ```
 
-*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "ESP atrás de NAPT", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 5 mensagens (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "ESP atrás de NAPT", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 2 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1158,6 +1177,7 @@ Como o Basic NAT traduz só o endereço do cabeçalho IP, o ESP passa sem proble
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -1174,7 +1194,7 @@ sequenceDiagram
   n_nat ->> n_pc2: ESP
 ```
 
-*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "ESP atrás de Basic NAT estático", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.6 (Tipo B, sequência).* Mensagens do cenário "ESP atrás de Basic NAT estático", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1204,6 +1224,7 @@ Com o ESP encapsulado em UDP, o NAPT passa a ver portas. Os dois hosts usam a po
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as R-NAT<br/>roteador NAT
@@ -1220,7 +1241,7 @@ sequenceDiagram
   n_nat ->> n_pc2: ESP em UDP
 ```
 
-*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "NAT-T: ESP dentro de UDP 4500", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.7 (Tipo B, sequência).* Mensagens do cenário "NAT-T: ESP dentro de UDP 4500", na ordem do tempo, entre PC1, PC2, R-NAT, SRV: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1251,6 +1272,7 @@ Duas tabelas, duas traduções por pacote.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_pc1 as PC1<br/>cliente interno
   participant n_pc2 as PC2<br/>cliente interno
   participant n_nat as CPE<br/>roteador NAT
@@ -1272,7 +1294,7 @@ sequenceDiagram
   n_nat ->> n_pc2: SYN+ACK
 ```
 
-*Figura 6.3.8 (Tipo B, sequência).* Mensagens do cenário "CGNAT: NAT em duas camadas", na ordem do tempo, entre PC1, PC2, CPE, CGN, SRV: 12 mensagens (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
+*Figura 6.3.8 (Tipo B, sequência).* Mensagens do cenário "CGNAT: NAT em duas camadas", na ordem do tempo, entre PC1, PC2, CPE, CGN, SRV: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 2 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Limites, IPsec e CGNAT", com a configuração aplicada acima.
 
 **Mensagens**
 

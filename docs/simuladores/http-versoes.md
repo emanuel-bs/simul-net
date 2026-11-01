@@ -250,6 +250,7 @@ Depois do HTML, ele abre mais 5 conexões. Cada uma paga o próprio handshake de
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -297,7 +298,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /foto2.jpg
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Seis conexões paralelas", na ordem do tempo, entre Navegador, www.example.com: 40 mensagens (em 3 fases; 22 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração padrão.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Seis conexões paralelas", na ordem do tempo, entre Navegador, www.example.com: 40 mensagens, numeradas de 1 a 40 na ordem da comunicação (em 3 fases; 22 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração padrão.
 
 **Mensagens**
 
@@ -330,6 +331,7 @@ Veja na aba Cascata os degraus, um recurso depois do outro.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -357,7 +359,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /icones.svg
 ```
 
-*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Uma conexão, pedidos em fila", na ordem do tempo, entre Navegador, www.example.com: 20 mensagens (em 3 fases; 17 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Uma conexão, pedidos em fila", na ordem do tempo, entre Navegador, www.example.com: 20 mensagens, numeradas de 1 a 20 na ordem da comunicação (em 3 fases; 17 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -388,6 +390,7 @@ Duas conexões e uma imagem de 400 KB logo depois do HTML. A conexão que a rece
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -421,7 +424,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /icones.svg
 ```
 
-*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Imagem grande ocupa a conexão", na ordem do tempo, entre Navegador, www.example.com: 26 mensagens (em 3 fases; 20 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Imagem grande ocupa a conexão", na ordem do tempo, entre Navegador, www.example.com: 26 mensagens, numeradas de 1 a 26 na ordem da comunicação (em 3 fases; 20 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -456,6 +459,7 @@ Compare a aba Mensagem de um pedido: os cabeçalhos aparecem legíveis, o que n�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP
@@ -491,7 +495,7 @@ sequenceDiagram
   n_srv ->> n_cli: 200 /icones.svg
 ```
 
-*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "HTTP sem TLS", na ordem do tempo, entre Navegador, www.example.com: 28 mensagens (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "HTTP sem TLS", na ordem do tempo, entre Navegador, www.example.com: 28 mensagens, numeradas de 1 a 28 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -520,6 +524,7 @@ Um pacote de /app.js se perde. No HTTP/1.1 cada recurso tem a sua conexão TCP, 
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -570,7 +575,7 @@ sequenceDiagram
   n_srv ->> n_cli: retransmissão
 ```
 
-*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Perda de um pacote", na ordem do tempo, entre Navegador, www.example.com: 43 mensagens (em 3 fases; 1 perdida; 22 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Perda de um pacote", na ordem do tempo, entre Navegador, www.example.com: 43 mensagens, numeradas de 1 a 43 na ordem da comunicação (em 3 fases; 1 perdida; 22 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/1.1", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -606,6 +611,7 @@ Repare no HPACK: o primeiro pedido tem cerca de 330 bytes de cabeçalho e os seg
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -635,7 +641,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Uma conexão, vários fluxos", na ordem do tempo, entre Navegador, www.example.com: 22 mensagens (em 3 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração padrão.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Uma conexão, vários fluxos", na ordem do tempo, entre Navegador, www.example.com: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 3 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração padrão.
 
 **Mensagens**
 
@@ -665,6 +671,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -710,7 +717,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Muitos recursos", na ordem do tempo, entre Navegador, www.example.com: 38 mensagens (em 3 fases; 35 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Muitos recursos", na ordem do tempo, entre Navegador, www.example.com: 38 mensagens, numeradas de 1 a 38 na ordem da comunicação (em 3 fases; 35 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -741,6 +748,7 @@ A imagem fica pronta mais tarde porque disputa a banda, mas nada fica parado esp
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -772,7 +780,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /hero.jpg
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Imagem grande sem bloquear", na ordem do tempo, entre Navegador, www.example.com: 24 mensagens (em 3 fases; 21 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Imagem grande sem bloquear", na ordem do tempo, entre Navegador, www.example.com: 24 mensagens, numeradas de 1 a 24 na ordem da comunicação (em 3 fases; 21 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -807,6 +815,7 @@ Compare com o HTTP/3 na aba Comparação.
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -836,7 +845,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Rede de alta latência", na ordem do tempo, entre Navegador, www.example.com: 22 mensagens (em 3 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Rede de alta latência", na ordem do tempo, entre Navegador, www.example.com: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 3 fases; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -867,6 +876,7 @@ Um pacote de /app.js se perde. Como todos os fluxos compartilham uma só conexã
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Conexão TCP e TLS
@@ -899,7 +909,7 @@ sequenceDiagram
   n_srv ->> n_cli: retransmissão
 ```
 
-*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Perda: bloqueio no TCP", na ordem do tempo, entre Navegador, www.example.com: 25 mensagens (em 3 fases; 1 perdida; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Perda: bloqueio no TCP", na ordem do tempo, entre Navegador, www.example.com: 25 mensagens, numeradas de 1 a 25 na ordem da comunicação (em 3 fases; 1 perdida; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/2", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -935,6 +945,7 @@ Cada pedido usa um fluxo QUIC próprio, com ordem e recuperação de perda indep
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Handshake QUIC (1 RTT)
@@ -961,7 +972,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Handshake de 1 RTT", na ordem do tempo, entre Navegador, www.example.com: 19 mensagens (em 3 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração padrão.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Handshake de 1 RTT", na ordem do tempo, entre Navegador, www.example.com: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 3 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração padrão.
 
 **Mensagens**
 
@@ -993,6 +1004,7 @@ Os dados 0-RTT podem ser reenviados por um atacante; por isso só pedidos que n�
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. QUIC com 0-RTT
@@ -1019,7 +1031,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Retomada com 0-RTT", na ordem do tempo, entre Navegador, www.example.com: 19 mensagens (em 3 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Retomada com 0-RTT", na ordem do tempo, entre Navegador, www.example.com: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 3 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1047,6 +1059,7 @@ Mesmo cenário do HTTP/2 em rede de 200 ms. O handshake de 1 RTT poupa 200 ms an
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Handshake QUIC (1 RTT)
@@ -1073,7 +1086,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Rede de alta latência", na ordem do tempo, entre Navegador, www.example.com: 19 mensagens (em 3 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
+*Figura 6.3.3 (Tipo B, sequência).* Mensagens do cenário "Rede de alta latência", na ordem do tempo, entre Navegador, www.example.com: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 3 fases; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1108,6 +1121,7 @@ Os outros fluxos entregam seus dados normalmente. Compare com o cenário de perd
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Handshake QUIC (1 RTT)
@@ -1137,7 +1151,7 @@ sequenceDiagram
   n_srv ->> n_cli: retransmissão (novo pacote)
 ```
 
-*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Perda: só um fluxo espera", na ordem do tempo, entre Navegador, www.example.com: 22 mensagens (em 3 fases; 1 perdida; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
+*Figura 6.3.4 (Tipo B, sequência).* Mensagens do cenário "Perda: só um fluxo espera", na ordem do tempo, entre Navegador, www.example.com: 22 mensagens, numeradas de 1 a 22 na ordem da comunicação (em 3 fases; 1 perdida; 18 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1169,6 +1183,7 @@ Por isso o HTTP/3 é sempre uma melhoria opcional: a página carrega mesmo sem e
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant n_cli as Navegador<br/>cliente
   participant n_srv as www.example.com<br/>servidor
   Note over n_cli,n_srv: 1. Tentativa de QUIC (UDP 443)
@@ -1200,7 +1215,7 @@ sequenceDiagram
   n_srv ->> n_cli: [cifrado] 200 /app.js
 ```
 
-*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "UDP bloqueado: volta ao HTTP/2", na ordem do tempo, entre Navegador, www.example.com: 23 mensagens (em 4 fases; 1 perdida; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
+*Figura 6.3.5 (Tipo B, sequência).* Mensagens do cenário "UDP bloqueado: volta ao HTTP/2", na ordem do tempo, entre Navegador, www.example.com: 23 mensagens, numeradas de 1 a 23 na ordem da comunicação (em 4 fases; 1 perdida; 19 cifradas). Corresponde ao diagrama de sequência e à aba Captura, no modo "HTTP/3", com a configuração aplicada acima.
 
 **Mensagens**
 

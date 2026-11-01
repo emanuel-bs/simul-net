@@ -162,6 +162,7 @@ O BGP não descobre vizinhos sozinho: toda sessão é configurada à mão, dos d
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_Cliente as AS64510<br/>Cliente
   participant h_ISP_A as AS64500<br/>ISP A
   h_Cliente ->> h_ISP_A: TCP SYN para a porta 179
@@ -173,7 +174,7 @@ sequenceDiagram
   h_Cliente ->> h_ISP_A: KEEPALIVE confirma o OPEN
 ```
 
-*Figura 5.1 (Tipo B, sequência).* Mensagens do cenário "Estabelecimento da sessão", na ordem do tempo, entre AS64510 Cliente, AS64500 ISP A: 7 mensagens. Só as mensagens do enlace L4 (ISP A e Cliente), do tipo TCP, OPEN, KEEPALIVE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.1 (Tipo B, sequência).* Mensagens do cenário "Estabelecimento da sessão", na ordem do tempo, entre AS64510 Cliente, AS64500 ISP A: 7 mensagens, numeradas de 1 a 7 na ordem da comunicação. Só as mensagens do enlace L4 (ISP A e Cliente), do tipo TCP, OPEN, KEEPALIVE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 5.2 Hold timer
 
@@ -245,6 +246,7 @@ O AS_PATH é a memória do caminho: evita laços e serve de critério de escolha
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_Cliente as AS64510<br/>Cliente
   participant h_ISP_A as AS64500<br/>ISP A
   participant h_ISP_B as AS64501<br/>ISP B
@@ -263,7 +265,7 @@ sequenceDiagram
   h_Tr_nsito ->> h_Conte_do: UPDATE 203.0.113.0/24 AS_PATH 64496 64500 64510 NEXT_HOP 172.16.6.1
 ```
 
-*Figura 5.3 (Tipo B, sequência).* Mensagens do cenário "Propagação do anúncio", na ordem do tempo, entre AS64510 Cliente, AS64500 ISP A, AS64501 ISP B, AS64496 Trânsito, AS64511 Conteúdo, AS64666 Atacante: 10 mensagens. Só as mensagens do prefixo 203.0.113.0/24, do tipo UPDATE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.3 (Tipo B, sequência).* Mensagens do cenário "Propagação do anúncio", na ordem do tempo, entre AS64510 Cliente, AS64500 ISP A, AS64501 ISP B, AS64496 Trânsito, AS64511 Conteúdo, AS64666 Atacante: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação. Só as mensagens do prefixo 203.0.113.0/24, do tipo UPDATE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 5.4 Exportação entre provedores e peers
 
@@ -529,6 +531,7 @@ O alcance do sequestro depende de quem aceita a rota falsa, e não de quem a ori
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_Cliente as AS64510<br/>Cliente
   participant h_ISP_A as AS64500<br/>ISP A
   participant h_ISP_B as AS64501<br/>ISP B
@@ -548,7 +551,7 @@ sequenceDiagram
   h_Tr_nsito ->> h_Conte_do: UPDATE 203.0.113.0/24 AS_PATH 64496 64500 64510 NEXT_HOP 172.16.6.1
 ```
 
-*Figura 5.11 (Tipo B, sequência).* Mensagens do cenário "Sequestro de prefixo", na ordem do tempo, entre AS64510 Cliente, AS64500 ISP A, AS64501 ISP B, AS64666 Atacante, AS64496 Trânsito, AS64511 Conteúdo: 11 mensagens. Só as mensagens do prefixo 203.0.113.0/24, do tipo UPDATE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.11 (Tipo B, sequência).* Mensagens do cenário "Sequestro de prefixo", na ordem do tempo, entre AS64510 Cliente, AS64500 ISP A, AS64501 ISP B, AS64666 Atacante, AS64496 Trânsito, AS64511 Conteúdo: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação. Só as mensagens do prefixo 203.0.113.0/24, do tipo UPDATE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 5.12 Defesa: filtro de prefixos
 
@@ -647,6 +650,7 @@ O ISP B passa a carregar tráfego de que não foi contratado, e o ISP A usa um c
 
 ```mermaid
 sequenceDiagram
+  autonumber
   participant h_Conte_do as AS64511<br/>Conteúdo
   participant h_Tr_nsito as AS64496<br/>Trânsito
   participant h_ISP_B as AS64501<br/>ISP B
@@ -663,7 +667,7 @@ sequenceDiagram
   h_ISP_A ->> h_Cliente: UPDATE 198.51.100.0/24 AS_PATH 64500 64501 64511 NEXT_HOP 172.16.4.1
 ```
 
-*Figura 5.14 (Tipo B, sequência).* Mensagens do cenário "Vazamento de rota", na ordem do tempo, entre AS64511 Conteúdo, AS64496 Trânsito, AS64501 ISP B, AS64500 ISP A, AS64510 Cliente, AS64666 Atacante: 8 mensagens. Só as mensagens do prefixo 198.51.100.0/24, do tipo UPDATE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
+*Figura 5.14 (Tipo B, sequência).* Mensagens do cenário "Vazamento de rota", na ordem do tempo, entre AS64511 Conteúdo, AS64496 Trânsito, AS64501 ISP B, AS64500 ISP A, AS64510 Cliente, AS64666 Atacante: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação. Só as mensagens do prefixo 198.51.100.0/24, do tipo UPDATE, depois de avançar as quatro fases. Corresponde à aba Captura, na ordem em que os pacotes aparecem; os intervalos de tempo não estão em escala.
 
 ### 5.15 Flapping de rota
 
@@ -700,42 +704,24 @@ O damping contém a instabilidade, mas pune também o prefixo legítimo: ele fic
 
 ### 6.1 O que é o BGP
 
-          
-
 O **BGP-4** (Border Gateway Protocol, [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271)) é o protocolo que interliga os **sistemas autônomos** (AS) da Internet: redes administradas de forma independente, como provedores, empresas e serviços de conteúdo, cada uma identificada por um número de AS. Dentro de um AS, um IGP como o OSPF encontra o caminho mais curto; entre AS, o BGP troca **alcançabilidade** e deixa cada AS escolher, por política, por onde entrar e sair.
-
-          
 
 O BGP é um protocolo de **vetor de caminho**: cada rota carrega a lista dos AS que atravessou (o atributo **AS_PATH**). Isso evita laços (um AS descarta qualquer rota que já contenha o próprio número) e dá a cada roteador informação para decidir.
 
-          
-
 ### 6.2 Sessões e mensagens ([RFC 4271](https://www.rfc-editor.org/rfc/rfc4271))
 
-          
-
 Vizinhos BGP conversam por uma conexão **TCP na porta 179**, configurada manualmente dos dois lados. A sessão passa pelos estados **Idle**, **Connect**, **OpenSent**, **OpenConfirm** e **Established**. São quatro tipos de mensagem:
-
-          
 
 - **OPEN (tipo 1):** versão, número do AS, hold time proposto e BGP Identifier (router ID), mais as capacidades negociadas.
 - **UPDATE (tipo 2):** anuncia prefixos (NLRI) com seus atributos ou retira prefixos (withdrawn routes).
 - **NOTIFICATION (tipo 3):** informa um erro e encerra a sessão, por exemplo Hold Timer Expired (código 4).
 - **KEEPALIVE (tipo 4):** só o cabeçalho de 19 bytes; mostra que o vizinho continua vivo. O Cisco IOS usa por padrão um KEEPALIVE a cada 60 s e hold time de 180 s; a [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271) (seção 10) sugere hold time de 90 s e KEEPALIVE a cada 30 s (um terço do hold time).
 
-          
-
 Depois que a sessão sobe, os vizinhos trocam a tabela completa uma vez; dali em diante, só enviam **mudanças** (UPDATE incremental).
-
-          
 
 ### 6.3 Atributos e processo de decisão
 
-          
-
 Cada AS pode receber vários caminhos para o mesmo prefixo, mas instala e repassa só o **melhor**. A ordem simplificada, como no Cisco IOS, é:
-
-          
 
 1. Maior **LOCAL_PREF** (política local, válida só dentro do AS; padrão 100).
 2. Rota **originada localmente**.
@@ -745,75 +731,41 @@ Cada AS pode receber vários caminhos para o mesmo prefixo, mas instala e repass
 6. Rota eBGP antes de iBGP.
 7. Menor **router ID** do vizinho, como desempate final.
 
-          
-
 *Diferença em relação à norma:* o processo de decisão da [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271) (seção 9.1.2.2) não tem o passo "originada localmente". Ele escolhe o maior grau de preferência (LOCAL_PREF), depois o AS_PATH mais curto, o menor ORIGIN, o menor MED (entre rotas do mesmo AS vizinho), eBGP sobre iBGP, o menor custo IGP até o NEXT_HOP, o menor BGP Identifier e, por fim, o menor endereço do peer. O passo de rota local é uma preferência de implementação, e o simulador não modela o custo IGP (há um roteador por AS).
-
-          
 
 O **NEXT_HOP** indica para onde mandar o tráfego; em eBGP, cada AS troca o NEXT_HOP pelo próprio endereço no enlace. O **AS-path prepend** repete o próprio número do AS no anúncio para tornar um caminho menos atraente: é a principal ferramenta para influenciar o tráfego que **entra** no AS, enquanto o LOCAL_PREF controla o tráfego que **sai**.
 
-          
-
 ### 6.4 Relações comerciais e exportação
 
-          
-
 Entre AS há relações de **provedor e cliente** (o cliente paga pelo trânsito) e de **peering** (troca de tráfego entre as próprias redes e seus clientes, normalmente sem pagamento). A regra de exportação, conhecida como valley-free (modelo de Gao-Rexford), é:
-
-          
 
 - Rotas de **clientes** e rotas próprias são anunciadas a todos: clientes, peers e provedores.
 - Rotas aprendidas de **peers** ou de **provedores** são anunciadas só aos **clientes**.
 
-          
-
 Assim, nenhum AS oferece trânsito gratuito entre dois provedores ou dois peers. No simulador, todos os AS seguem essa regra e usam LOCAL_PREF 100, a menos que a política do Cliente seja alterada.
-
-          
 
 ### 6.5 Convergência e falhas
 
-          
-
 Quando um enlace cai, a sessão termina e cada lado descarta as rotas aprendidas por ela. Com **fast-external-fallover** (padrão no Cisco IOS), isso acontece no instante em que a interface cai; quando o vizinho trava sem derrubar o enlace, só o **hold timer** detecta a falha, depois de 180 s sem KEEPALIVE. Os AS afetados recalculam o melhor caminho e enviam UPDATEs com as novas rotas ou com **withdraws**, até a rede inteira convergir de novo.
-
-          
 
 *Simplificações do simulador: um roteador por AS (sem iBGP), um UPDATE por prefixo, ORIGIN IGP e MED 0 em todas as rotas, e tempos acelerados. Os números de AS e os prefixos são de documentação ([RFC 5398](https://www.rfc-editor.org/rfc/rfc5398) e [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737)).*
 
-          
-
 ### 6.6 BGP e segurança
-
-          
 
 O BGP clássico não comprova que um AS está autorizado a originar um prefixo, nem que o AS_PATH é verdadeiro: cada AS confia no que o vizinho anuncia. Dois problemas decorrem disso. O **sequestro de prefixo** ocorre quando um AS origina um prefixo que não é seu, e o **vazamento de rota** quando um AS repassa rotas além do que sua relação comercial permite. Oscilações repetidas (**flapping**) também sobrecarregam o plano de controle.
 
-          
-
 No cenário de sequestro, o atacante origina o **mesmo prefixo** (203.0.113.0/24), e o desempate acaba no router ID. Na prática, o sequestro mais comum e determinístico é o de **sub-prefixo** (por exemplo, dois /25 dentro do /24): o roteamento usa o prefixo mais específico (longest-prefix match) antes de qualquer critério de desempate, então a rota falsa vence em toda a Internet que a aceitar. Esse caso não é simulado. Sobre vazamentos, a [RFC 7908](https://www.rfc-editor.org/rfc/rfc7908) define o problema e a [RFC 8212](https://www.rfc-editor.org/rfc/rfc8212) trata o comportamento padrão de eBGP sem política explícita.
 
-          
-
 As defesas simuladas aqui atuam na **importação** de rotas:
-
-          
 
 - **Filtro de prefixos de clientes (boas práticas da [RFC 7454](https://www.rfc-editor.org/rfc/rfc7454)):** o provedor aceita de cada cliente só os prefixos do cone de clientes dele (listas feitas com registros IRR e contrato). Precisa estar no provedor direto de quem anuncia.
 - **RPKI / ROV ([RFC 6811](https://www.rfc-editor.org/rfc/rfc6811)):** o dono do prefixo publica um ROA ([RFC 9582](https://www.rfc-editor.org/rfc/rfc9582), que substitui a [RFC 6482](https://www.rfc-editor.org/rfc/rfc6482)) com o AS autorizado, e o comprimento máximo do prefixo deve ser definido com cuidado ([RFC 9319](https://www.rfc-editor.org/rfc/rfc9319)), e o roteador rejeita rotas cuja origem não confere. Protege quem valida, e o efeito cresce com a adoção. Valida só a origem, não o caminho.
 - **Filtro de rotas de peers:** de um peer, aceita-se só o cone de clientes dele. Barra vazamentos, mas não sequestros que partem do próprio cone.
 - **Flap damping ([RFC 2439](https://www.rfc-editor.org/rfc/rfc2439)):** suprime prefixos instáveis. Com os padrões antigos (limiar de supressão em torno de 2.000 a 3.000), também tirava do ar prefixos legítimos, e o RIPE (ripe-378, 2006) deixou de recomendá-lo. Desde o RIPE-580 (2013) e a [RFC 7196](https://www.rfc-editor.org/rfc/rfc7196) (2014), a recomendação é usá-lo com limiar de supressão de pelo menos 6.000. O simulador suprime na segunda oscilação, para fins didáticos.
 
-          
-
 *Não simulados: limite de prefixos por sessão (max-prefix), papéis BGP com atributo OTC ([RFC 9234](https://www.rfc-editor.org/rfc/rfc9234)), ASPA, BGPsec, proteção da sessão com TCP-AO e GTSM, e blackhole por community (RTBH, [RFC 7999](https://www.rfc-editor.org/rfc/rfc7999)). Nos cenários de segurança, o AS64666 (Atacante) é cliente do ISP B; os ROAs e as listas de prefixos são fixos.*
 
-          
-
 ### 6.7 Roteiro de exercícios
-
-          
 
 1. **Estabelecimento da sessão:** avance as três primeiras fases e descreva o que muda em cada estado da aba Sessões. Abra um OPEN na aba Mensagem BGP e identifique o AS, o hold time e o router ID.
 2. **Propagação do anúncio:** siga o prefixo 203.0.113.0/24 do Cliente até o Conteúdo e anote como o AS_PATH e o NEXT_HOP mudam em cada salto.
