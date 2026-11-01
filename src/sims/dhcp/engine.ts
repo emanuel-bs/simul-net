@@ -202,14 +202,14 @@ export function buildDhcp(P: DhcpParams, sub: string): Trace {
     if (round === 1) tr.mile(tr.t, 'DISCOVER', 'broadcast');
     setClient('SELECTING', 'warn');
     if (!P.l1up) {
-      const m = send('pc', 's1', mkDiscover(), { lost: true, about: 'O enlace PC-A / SW1 está caído: o quadro não sai do cliente.', tags: ['enlace caído'] });
+      const m = send('pc', 's1', mkDiscover(), { lost: true, about: 'O enlace PC-A / SW1 está caído: o frame não sai do cliente.', tags: ['enlace caído'] });
       ev(m.tArr, 'pc', 'Enlace caído: não transmite', 'warn');
       tr.lg(m.tSend, 'O enlace PC-A / SW1 está caído: o cliente não consegue transmitir.', 'fail');
       jr('linkdown');
       R.result = 'linkdown';
       return false;
     }
-    const arr = bcast(mkDiscover(), 'O cliente ainda não tem endereço: sai de 0.0.0.0:68 para 255.255.255.255:67. O switch inunda o quadro por todas as portas.');
+    const arr = bcast(mkDiscover(), 'O cliente ainda não tem endereço: sai de 0.0.0.0:68 para 255.255.255.255:67. O switch inunda o frame por todas as portas.');
     tr.lg(tr.t, 'PC-A envia <b>DHCPDISCOVER</b> em broadcast (0.0.0.0:68 para 255.255.255.255:67), xid ' + xid + '. Estado: INIT para SELECTING.', 'discover');
     ev(arr, 'pcb', 'Descarta: não sou servidor DHCP', '');
     active.forEach((s) => {

@@ -2527,13 +2527,13 @@ Quem usa UDP assume o que precisa. O **DNS** repete a consulta se a resposta nã
 11. **Jitter e buffer do player** e **Vídeo acima da capacidade:** qual o preço de aumentar o buffer? O UDP reduz a taxa quando o enlace congestiona? Que mecanismos uma aplicação real usaria?
 
 
-## 6. Siglas deste documento
+## 6. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
 | **DHCP** | Dynamic Host Configuration Protocol, protocolo de configuração dinâmica de hosts | entrega ao cliente endereço IP, máscara, gateway e DNS, por empréstimo (lease) |
 | **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |

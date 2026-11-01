@@ -1,6 +1,6 @@
-// Modelo do Wi-Fi (IEEE 802.11, camada MAC): constantes de tempo, endereços e construtores dos campos dos quadros.
-// Simplificações (detalhadas na aba Referência): um único BSS por vez, um só fluxo, um só par de antenas, taxas fixas por quadro
-// (54 Mb/s nos dados e 6 Mb/s nos quadros de controle e de gerência), sem agregação, sem QoS (EDCA) e sem camada física detalhada.
+// Modelo do Wi-Fi (IEEE 802.11, camada MAC): constantes de tempo, endereços e construtores dos campos dos frames.
+// Simplificações (detalhadas na aba Referência): um único BSS por vez, um só fluxo, um só par de antenas, taxas fixas por frame
+// (54 Mb/s nos dados e 6 Mb/s nos frames de controle e de gerência), sem agregação, sem QoS (EDCA) e sem camada física detalhada.
 import { hex, type Field } from '../../sim-core';
 
 export const GREEN = '#7BD88F';
@@ -25,7 +25,7 @@ export const BROADCAST = 'ff:ff:ff:ff:ff:ff';
 export const SLOT = 0.009;
 export const SIFS = 0.016;
 export const DIFS = SIFS + 2 * SLOT;
-/** Duração aproximada dos quadros no ar: dados de 1500 bytes a 54 Mb/s; RTS, CTS e ACK a 6 Mb/s; gerência a 6 Mb/s. */
+/** Duração aproximada dos frames no ar: dados de 1500 bytes a 54 Mb/s; RTS, CTS e ACK a 6 Mb/s; gerência a 6 Mb/s. */
 export const T_DATA = 0.25;
 export const T_RTS = 0.052;
 export const T_CTS = 0.044;
@@ -57,7 +57,7 @@ export function fmtTime(ms: number): string {
 /** Duração em µs para os campos Duration/ID, arredondada para cima. */
 export const us = (ms: number): number => Math.ceil(ms * 1000 - 1e-6);
 
-// ---- quadros IEEE 802.11 ----
+// ---- frames IEEE 802.11 ----
 
 export type FrameType = 'mgmt' | 'ctrl' | 'data';
 
@@ -87,19 +87,19 @@ export function dot11Fields(o: Dot11): Field[] {
     { sec: 'IEEE 802.11: cabeçalho MAC' },
     ['Tipo', TYPE_NAME[o.type], o.type === 'mgmt' ? 'gerencia a associação ao BSS' : o.type === 'ctrl' ? 'coordena o acesso ao meio' : 'carrega os dados do usuário'],
     ['Subtipo', o.sub + ' (' + o.subNum + ')', ''],
-    ['Flags', flags, o.pm ? 'PM=1: o cliente avisa que vai dormir (economia de energia)' : o.retry ? 'Retry=1: este quadro é uma repetição' : ''],
+    ['Flags', flags, o.pm ? 'PM=1: o cliente avisa que vai dormir (economia de energia)' : o.retry ? 'Retry=1: este frame é uma repetição' : ''],
     ['Duration/ID', o.dur, 'tempo que o meio ficará reservado (NAV), em µs; no PS-Poll, o AID'],
-    ['Address 1 (RA)', o.ra, 'receptor do quadro'],
+    ['Address 1 (RA)', o.ra, 'receptor do frame'],
   ];
-  if (o.ta) f.push(['Address 2 (TA)', o.ta, 'transmissor do quadro']);
+  if (o.ta) f.push(['Address 2 (TA)', o.ta, 'transmissor do frame']);
   if (o.bssid) f.push(['Address 3', o.bssid, o.type === 'mgmt' ? 'BSSID: o endereço do AP' : 'BSSID ou destino final, conforme To DS e From DS']);
   if (o.seq !== undefined) f.push(['Sequence Control', 'número ' + o.seq + ', fragmento 0', 'o receptor descarta repetições com o mesmo número']);
   if (o.body && o.body.length) f.push(...o.body);
-  f.push({ sec: 'Verificação' }, ['FCS', hex('fcs' + o.sub + (o.seq ?? 0) + o.ra, 4), 'CRC-32: sem FCS válido, o quadro é descartado e não é confirmado']);
+  f.push({ sec: 'Verificação' }, ['FCS', hex('fcs' + o.sub + (o.seq ?? 0) + o.ra, 4), 'CRC-32: sem FCS válido, o frame é descartado e não é confirmado']);
   return f;
 }
 
-/** Tamanho aproximado em bytes de cada tipo de quadro (cabeçalho, corpo típico e FCS). */
+/** Tamanho aproximado em bytes de cada tipo de frame (cabeçalho, corpo típico e FCS). */
 export const LEN = { beacon: 130, probeReq: 60, probeResp: 130, auth: 30, assocReq: 140, assocResp: 90, ack: 14, cts: 14, rts: 20, psPoll: 16, data: 1528, nullData: 28, action: 40, eapol: 150 };
 
 // ---- elementos de informação (IEs) usados nos corpos ----

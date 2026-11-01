@@ -64,7 +64,7 @@ export function buildGratuito(P: GraParams): Trace {
   const mac = (k: HostKey) => HOSTS[k].mac;
   const others = (k: HostKey): HostKey[] => (['a', 'b', 'g'] as const).filter((x) => x !== k);
 
-  /** Envia o quadro em broadcast: todos os outros hosts o recebem. Devolve o instante de chegada. */
+  /** Envia o frame em broadcast: todos os outros hosts o recebem. Devolve o instante de chegada. */
   const bcast = (from: HostKey, op: 1 | 2, o: Omit<FrameOpts, 'dmac'>, lostFor?: HostKey): number => {
     const to = others(from);
     let arr = 0;
@@ -237,7 +237,7 @@ export function buildGratuito(P: GraParams): Trace {
     ne('g', A.mac, 'REACHABLE', arr);
     ev(arr, 'g', 'Atualiza ' + X + ': MAC de A', 'ok');
     tr.st(arr, 'tg', X + ' → MAC de A', 'est');
-    tr.lg(arr, 'O gateway atualiza a entrada de ' + X + ' para o MAC de A. O host B está fora do ar e não recebe o quadro.', 'conn');
+    tr.lg(arr, 'O gateway atualiza a entrada de ' + X + ' para o MAC de A. O host B está fora do ar e não recebe o frame.', 'conn');
     tr.phase('3. O tráfego volta', 'back');
     echo('a', false);
     const rep = tr.add('a', 'g', {

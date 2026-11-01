@@ -4,7 +4,7 @@ import { SIMS } from '../src/sims/registry';
 // Para cada simulador disponível no registro (um simulador novo entra automaticamente):
 //  1. percorre todos os modos e todos os cenários prontos, usando os botões de ação e abrindo todas as abas;
 //  2. falha se houver erro de JavaScript;
-//  3. confere o layout da bancada de trabalho e o ciclo destacar e encaixar dos quadros.
+//  3. confere o layout da bancada de trabalho e o ciclo destacar e encaixar dos painéis.
 
 const available = SIMS.filter((s) => s.status === 'available' && s.file);
 
@@ -98,7 +98,7 @@ for (const sim of available) {
       });
     }
 
-    test('a bancada cabe na tela e os quadros destacam e encaixam', async ({ page }) => {
+    test('a bancada cabe na tela e os painéis destacam e encaixam', async ({ page }) => {
       const errors = watchErrors(page);
       for (const size of [{ width: 1366, height: 768 }, { width: 1600, height: 900 }]) {
         await page.setViewportSize(size);
@@ -110,7 +110,7 @@ for (const sim of available) {
         expect(overflow.h, `rolagem vertical da página em ${size.width}x${size.height}`).toBeLessThanOrEqual(1);
         expect(overflow.w, `rolagem horizontal da página em ${size.width}x${size.height}`).toBeLessThanOrEqual(1);
       }
-      // destacar e encaixar: cada quadro volta exatamente à posição de origem
+      // destacar e encaixar: cada painel volta exatamente à posição de origem
       const candidates = ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', 'details.cfg'];
       const panels: string[] = [];
       for (const c of candidates) if ((await page.locator(c).count()) > 0) panels.push(c);
@@ -118,14 +118,14 @@ for (const sim of available) {
         const el = page.locator(sel).first();
         if ((await el.count()) === 0) continue;
         const before = await el.boundingBox();
-        // os outros quadros não se movem quando um é destacado
+        // os outros painéis não se movem quando um é destacado
         const others = panels.filter((o) => o !== sel);
         const othersBefore = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
         const toggle = el.locator('.fbtn', { hasText: /Destacar|Encaixar/ }).first();
         await toggle.click();
         await expect(el).toHaveClass(/is-floating/);
         const othersAfter = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
-        expect(othersAfter, `os outros quadros se moveram ao destacar ${sel}`).toEqual(othersBefore);
+        expect(othersAfter, `os outros painéis se moveram ao destacar ${sel}`).toEqual(othersBefore);
         await toggle.click();
         await expect(el).not.toHaveClass(/is-floating/);
         expect(await el.boundingBox(), `posição de ${sel} depois de encaixar`).toEqual(before);

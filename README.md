@@ -66,7 +66,7 @@ Os testes unitários verificam a integridade do registro de simuladores (arquivo
 `npm run test:e2e` abre o site gerado (`dist/`) em um Chrome real, com o Playwright, e para **cada simulador disponível no registro** (um simulador novo entra sozinho):
 
 - percorre todos os modos e todos os cenários prontos, clicando nos botões de ação e abrindo todas as abas, e falha se houver qualquer erro de JavaScript;
-- confere que a bancada de trabalho cabe na tela (sem rolagem da página em 1366x768 e 1600x900) e que cada quadro destaca e encaixa de volta na posição original;
+- confere que a bancada de trabalho cabe na tela (sem rolagem da página em 1366x768 e 1600x900) e que cada painel destaca e encaixa de volta na posição original;
 - mede o contraste de cores (WCAG AA) no hub, nos dois temas, e em cada simulador nativo;
 - confere o hub: as categorias, a página de cada simulador com o iframe e o redirecionamento do endereço antigo.
 

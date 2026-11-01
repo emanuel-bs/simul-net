@@ -20,10 +20,10 @@ const porta: TabDef = {
       h += '<tr><td>' + esc(fmtTime(p.t)) + '</td><td class="meaning">' + PORT_NAME[p.state] + '</td><td class="meaning">' + PORT_TRAFFIC[p.state] + '</td><td class="meaning">' + esc(p.why) + '</td></tr>';
     });
     h += '</tbody></table>';
-    h += '<h3>Quadros de dados na porta</h3>';
-    if (!frames.length) h += '<p>Nenhum quadro de dados enviado até agora.</p>';
+    h += '<h3>Frames de dados na porta</h3>';
+    if (!frames.length) h += '<p>Nenhum frame de dados enviado até agora.</p>';
     else {
-      h += '<table class="sc-msgs"><thead><tr><th>Instante</th><th>Origem</th><th>Quadro</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>';
+      h += '<table class="sc-msgs"><thead><tr><th>Instante</th><th>Origem</th><th>Frame</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>';
       frames.forEach((f) => {
         h += '<tr><td>' + esc(fmtTime(f.t)) + '</td><td class="meaning">' + (f.who === 'dev2' ? '2º dispositivo' : 'Notebook') + '</td><td class="meaning">' + esc(f.label) + '</td><td class="meaning">' + (f.ok ? 'encaminhado' : 'descartado') + '</td><td class="meaning">' + esc(f.why) + '</td></tr>';
       });

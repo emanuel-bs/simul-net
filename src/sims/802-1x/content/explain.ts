@@ -24,16 +24,16 @@ export function explain(tr: Trace): string {
   let h = '<ul>';
   if (R.sub === 'auth') {
     const m = METHODS[R.method as MethodKey];
-    h += '<li>O primeiro quadro de dados foi <span class="chk-bad">descartado</span>: a porta controlada estava fechada, e só o EAPOL passa pela porta não controlada.</li>';
+    h += '<li>O primeiro frame de dados foi <span class="chk-bad">descartado</span>: a porta controlada estava fechada, e só o EAPOL passa pela porta não controlada.</li>';
     h += '<li>O EAP foi conduzido de ponta a ponta pelo <b>' + m.name + '</b>. O switch só repassou os pacotes, entre EAPOL (do lado do suplicante) e RADIUS (do lado do servidor).</li>';
-    h += '<li>O servidor decidiu e respondeu <b>Access-Accept</b>. <span class="chk-ok">O switch abriu a porta</span>, e o mesmo quadro de dados passou a ser encaminhado.</li>';
+    h += '<li>O servidor decidiu e respondeu <b>Access-Accept</b>. <span class="chk-ok">O switch abriu a porta</span>, e o mesmo frame de dados passou a ser encaminhado.</li>';
     if (m.key === 'md5') h += '<li>Atenção: com o EAP-MD5 o suplicante <b>não autenticou o servidor</b>. O cenário de risco mostra a consequência.</li>';
     else h += '<li>O suplicante também conferiu o servidor pelo certificado dele. Na prática, essa verificação precisa estar configurada no suplicante.</li>';
     h += '<li>Lição: o 802.1X troca a pergunta "o cabo está ligado?" por "quem é você?" antes de liberar qualquer dado.</li>';
   } else if (R.sub === 'falha') {
     if (R.res === 'cred' || R.res === 'cert') {
       h += '<li><span class="chk-bad">O servidor respondeu Access-Reject:</span> ' + (R.res === 'cred' ? 'a prova da senha dentro do túnel não conferiu com o hash guardado.' : 'o certificado do cliente está fora da validade.') + '</li>';
-      h += '<li>O switch repassou um EAP-Failure ao suplicante. O quadro de dados seguinte foi descartado: a porta continua fechada.</li>';
+      h += '<li>O switch repassou um EAP-Failure ao suplicante. O frame de dados seguinte foi descartado: a porta continua fechada.</li>';
       h += '<li>Lição: a recusa explícita é a mais fácil de diagnosticar. O motivo exato fica no log do servidor, e o suplicante só vê "falha".</li>';
     } else if (R.res === 'noserver') {
       h += '<li><span class="chk-bad">Nenhum Access-Request teve resposta:</span> o switch tentou três vezes, a cada 5 s, e desistiu.</li>';
@@ -51,19 +51,19 @@ export function explain(tr: Trace): string {
   } else if (R.sub === 'porta') {
     if (R.res === 'reauth') {
       h += '<li>O Session-Timeout de ' + SESSION_TIMEOUT + ' s expirou e o switch iniciou uma nova autenticação.</li>';
-      h += '<li><span class="chk-ok">A porta permaneceu autorizada durante o processo:</span> o quadro enviado no meio da troca passou.</li>';
+      h += '<li><span class="chk-ok">A porta permaneceu autorizada durante o processo:</span> o frame enviado no meio da troca passou.</li>';
       h += '<li>O novo Access-Accept renovou a sessão com outro Session-Timeout.</li>';
       h += '<li>Lição: a reautenticação periódica limita a validade de uma credencial sem interromper o usuário.</li>';
     } else if (R.res === 'logoff') {
       h += '<li>O <b>EAPOL-Logoff</b> chegou e o switch <span class="chk-ok">fechou a porta imediatamente</span>, sem esperar o Session-Timeout.</li>';
-      h += '<li>O quadro seguinte foi descartado.</li>';
+      h += '<li>O frame seguinte foi descartado.</li>';
       h += '<li>Lição: encerrar a sessão fecha a porta. O Logoff não é autenticado nas implementações sem MACsec.</li>';
     } else if (R.res === 'extra-leak') {
       h += '<li><span class="chk-bad">O segundo dispositivo usou a rede sem se autenticar:</span> a autorização valeu para a porta inteira.</li>';
       h += '<li>O switch não tem como distinguir os dois dispositivos no modelo básico do 802.1X.</li>';
       h += '<li>Lição: o 802.1X autoriza a porta, e não o dispositivo. Uma porta deve ligar um só equipamento, ou o switch deve autorizar por endereço MAC.</li>';
     } else {
-      h += '<li><span class="chk-ok">O quadro do segundo dispositivo foi descartado:</span> o endereço MAC dele não passou pela autenticação.</li>';
+      h += '<li><span class="chk-ok">O frame do segundo dispositivo foi descartado:</span> o endereço MAC dele não passou pela autenticação.</li>';
       h += '<li>O Notebook continua com acesso.</li>';
       h += '<li>Lição: a autorização por endereço MAC permite vários equipamentos por porta sem abrir a porta a todos.</li>';
     }

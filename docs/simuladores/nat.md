@@ -22,7 +22,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -1395,13 +1395,13 @@ O IPv6 tem endereços suficientes para dispensar o NAT como poupança de endere�
 10. No **CGNAT**, acompanhe as duas traduções e a reversão em ordem inversa. Por que o CGN precisa registrar as traduções?
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ALG** | Application Layer Gateway | componente do NAT ou do firewall que entende um protocolo, como o FTP, e reescreve endereços dentro dos dados |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
 | **CGNAT** | Carrier-Grade NAT | NAT em grande escala feito pela operadora, que compartilha um endereço público entre muitos clientes |

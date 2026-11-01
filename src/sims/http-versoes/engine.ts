@@ -334,7 +334,7 @@ export function buildHttp(P: HttpParams, sub: string): Trace {
       return [
         { sec: 'TLS 1.3' }, ['Registro', 'Application Data (cifrado)', ''],
         { sec: 'HTTP/2 (RFC 9113)' },
-        ['Quadro', 'HEADERS', 'abre o fluxo e leva os cabeçalhos'],
+        ['Frame', 'HEADERS', 'abre o fluxo e leva os cabeçalhos'],
         ['Fluxo (stream id)', String(j.stream), 'ímpar: iniciado pelo cliente'],
         ['Flags', 'END_STREAM, END_HEADERS', 'o pedido não tem corpo'],
         [':method', 'GET', first ? 'literal; entra na tabela dinâmica' : 'índice da tabela estática (1 byte)'],
@@ -347,9 +347,9 @@ export function buildHttp(P: HttpParams, sub: string): Trace {
     }
     return [
       { sec: 'UDP e QUIC (RFC 9000)' }, ['Porta de destino', '443 (UDP)', ''], ['Pacote', '1-RTT, número ' + ++pn, 'cifrado com as chaves do handshake QUIC'],
-      ['Quadro QUIC', 'STREAM (id ' + j.stream + ', FIN)', 'fluxo bidirecional iniciado pelo cliente: 0, 4, 8...'],
+      ['Frame QUIC', 'STREAM (id ' + j.stream + ', FIN)', 'fluxo bidirecional iniciado pelo cliente: 0, 4, 8...'],
       { sec: 'HTTP/3 (RFC 9114)' },
-      ['Quadro HTTP/3', 'HEADERS', 'um pedido por fluxo QUIC'],
+      ['Frame HTTP/3', 'HEADERS', 'um pedido por fluxo QUIC'],
       [':method / :scheme / :authority', 'GET / https / ' + HOST, first ? 'literais; entram na tabela dinâmica' : 'índices (QPACK, RFC 9204)'],
       [':path', j.res.path, 'valor novo: literal'],
       ['Tamanho do bloco de cabeçalhos', j.reqBytes + ' bytes', first ? 'primeiro pedido' : 'comprimido pelo QPACK'],
@@ -369,14 +369,14 @@ export function buildHttp(P: HttpParams, sub: string): Trace {
     if (eff === 'h2') {
       return [
         { sec: 'HTTP/2 (RFC 9113)' }, ['Fluxo (stream id)', String(j.stream), 'a resposta volta no mesmo fluxo do pedido'],
-        ['Quadro HEADERS', ':status 200, content-type, content-length', 'comprimidos pelo HPACK'], ['Content-Length', size, 'bytes do corpo'],
-        ['Quadros DATA', String(frames), 'até 16 KB cada (tamanho padrão); intercalados com os de outros fluxos'], ['Último quadro', 'DATA com END_STREAM', 'encerra o fluxo; a conexão continua aberta'],
+        ['Frame HEADERS', ':status 200, content-type, content-length', 'comprimidos pelo HPACK'], ['Content-Length', size, 'bytes do corpo'],
+        ['Frames DATA', String(frames), 'até 16 KB cada (tamanho padrão); intercalados com os de outros fluxos'], ['Último frame', 'DATA com END_STREAM', 'encerra o fluxo; a conexão continua aberta'],
       ];
     }
     return [
-      { sec: 'UDP e QUIC (RFC 9000)' }, ['Quadros STREAM', 'fluxo ' + j.stream, 'cada fluxo tem controle de ordem e de perda próprio'],
-      { sec: 'HTTP/3 (RFC 9114)' }, ['Quadro HEADERS', ':status 200, content-type, content-length', 'comprimidos pelo QPACK'], ['Content-Length', size, 'bytes do corpo'],
-      ['Quadros DATA', String(frames), 'um byte perdido atrasa só este fluxo'],
+      { sec: 'UDP e QUIC (RFC 9000)' }, ['Frames STREAM', 'fluxo ' + j.stream, 'cada fluxo tem controle de ordem e de perda próprio'],
+      { sec: 'HTTP/3 (RFC 9114)' }, ['Frame HEADERS', ':status 200, content-type, content-length', 'comprimidos pelo QPACK'], ['Content-Length', size, 'bytes do corpo'],
+      ['Frames DATA', String(frames), 'um byte perdido atrasa só este fluxo'],
     ];
   };
 
@@ -391,7 +391,7 @@ export function buildHttp(P: HttpParams, sub: string): Trace {
   ev(0, 'cli', 'Quer carregar a página', '');
 
   if (fallback) {
-    put('cli', 'srv', 0, ow, { label: 'QUIC Initial', proto: 'QUIC', color: C.bad, lost: true, len: 1200, tags: ['UDP 443 bloqueado'], fields: [{ sec: 'UDP e QUIC' }, ['Porta de destino', '443 (UDP)', 'o firewall descarta o datagrama'], ['Tamanho do datagrama', '1200 bytes', 'o Initial tem no mínimo 1200 bytes (RFC 9000)'], ['Quadro', 'CRYPTO (ClientHello, ALPN h3)', '']], about: 'O Initial do QUIC nunca chega: nenhuma resposta volta.', phaseName: 'QUIC' });
+    put('cli', 'srv', 0, ow, { label: 'QUIC Initial', proto: 'QUIC', color: C.bad, lost: true, len: 1200, tags: ['UDP 443 bloqueado'], fields: [{ sec: 'UDP e QUIC' }, ['Porta de destino', '443 (UDP)', 'o firewall descarta o datagrama'], ['Tamanho do datagrama', '1200 bytes', 'o Initial tem no mínimo 1200 bytes (RFC 9000)'], ['Frame', 'CRYPTO (ClientHello, ALPN h3)', '']], about: 'O Initial do QUIC nunca chega: nenhuma resposta volta.', phaseName: 'QUIC' });
     ev(ow, 'cli', 'Sem resposta em UDP 443', 'warn');
     lg(ow, 'O QUIC Initial se perde (UDP 443 bloqueado na rede). O navegador espera ' + FALLBACK_MS + ' ms e recorre ao TCP.', 'fail');
     phase(FALLBACK_MS, '2. Fallback: TCP e TLS (HTTP/2)', 'fallback');
@@ -404,17 +404,17 @@ export function buildHttp(P: HttpParams, sub: string): Trace {
     if (P.resume) {
       put('cli', 'srv', 0, ow, { label: 'Initial + 0-RTT', proto: 'QUIC', color: C.enc, len: 1200, fields: hello('h3', 'h3', true), about: 'Com um ticket de sessão anterior, o cliente envia o pedido junto do primeiro pacote (dados 0-RTT).', phaseName: 'QUIC', tags: ['0-RTT'] });
       put('srv', 'cli', ow, rtt, { label: 'Initial + Handshake', proto: 'QUIC', color: C.enc, enc: true, len: 1350, fields: [{ sec: 'QUIC: resposta do servidor' }, ['Initial', 'ServerHello', ''], ['Handshake', 'EncryptedExtensions, Certificate, Finished', 'cifrados'], ['0-RTT', 'aceito', 'o servidor processa o pedido sem esperar o fim do handshake']], about: 'O servidor completa o handshake e já atende o pedido 0-RTT.', phaseName: 'QUIC' });
-      put('cli', 'srv', rtt, rtt + ow, { label: 'Handshake (Finished)', proto: 'QUIC', color: C.enc, enc: true, len: 100, fields: [{ sec: 'QUIC' }, ['Quadro', 'CRYPTO (Finished)', 'o cliente conclui o handshake']], about: 'O cliente confirma o handshake; o pedido já estava a caminho.', phaseName: 'QUIC' });
+      put('cli', 'srv', rtt, rtt + ow, { label: 'Handshake (Finished)', proto: 'QUIC', color: C.enc, enc: true, len: 100, fields: [{ sec: 'QUIC' }, ['Frame', 'CRYPTO (Finished)', 'o cliente conclui o handshake']], about: 'O cliente confirma o handshake; o pedido já estava a caminho.', phaseName: 'QUIC' });
     } else {
       put('cli', 'srv', 0, ow, { label: 'Initial (ClientHello)', proto: 'QUIC', color: C.enc, len: 1200, fields: hello('h3', 'h3', true), about: 'O QUIC une transporte e TLS 1.3: um só voo inicial, em UDP.', phaseName: 'QUIC' });
       put('srv', 'cli', ow, rtt, { label: 'Initial + Handshake', proto: 'QUIC', color: C.enc, enc: true, len: 1350, fields: [{ sec: 'QUIC: resposta do servidor' }, ['Initial', 'ServerHello', ''], ['Handshake', 'EncryptedExtensions (ALPN h3), Certificate, Finished', 'cifrados']], about: 'O servidor responde com a parte do TLS e já pode enviar dados.', phaseName: 'QUIC' });
-      put('cli', 'srv', rtt, rtt + ow, { label: 'Handshake (Finished)', proto: 'QUIC', color: C.enc, enc: true, len: 100, fields: [{ sec: 'QUIC' }, ['Quadro', 'CRYPTO (Finished)', 'o cliente conclui o handshake']], about: 'O cliente conclui o handshake com 1 RTT e já envia o primeiro pedido.', phaseName: 'QUIC' });
+      put('cli', 'srv', rtt, rtt + ow, { label: 'Handshake (Finished)', proto: 'QUIC', color: C.enc, enc: true, len: 100, fields: [{ sec: 'QUIC' }, ['Frame', 'CRYPTO (Finished)', 'o cliente conclui o handshake']], about: 'O cliente conclui o handshake com 1 RTT e já envia o primeiro pedido.', phaseName: 'QUIC' });
     }
   } else {
     openTcp(1, t0, tlsOn);
     if (eff === 'h2') {
-      put('cli', 'srv', ready, ready + ow, { label: 'SETTINGS (preface)', proto: 'HTTP/2', color: C.tcp, enc: true, len: 60, fields: [{ sec: 'HTTP/2 (RFC 9113)' }, ['Preface', 'PRI * HTTP/2.0 ... SM', 'sequência fixa que abre a conexão'], ['Quadro', 'SETTINGS', 'parâmetros do cliente: tabela HPACK, janela de controle de fluxo'], ['Fluxo', '0', 'quadros da conexão usam o fluxo 0']], about: 'O cliente abre a conexão HTTP/2 com o preface e seus parâmetros.', phaseName: 'HTTP/2', tags: ['conexão'] });
-      put('srv', 'cli', ready + ow, ready + rtt, { label: 'SETTINGS', proto: 'HTTP/2', color: C.tcp, enc: true, len: 60, fields: [{ sec: 'HTTP/2 (RFC 9113)' }, ['Quadro', 'SETTINGS', 'MAX_CONCURRENT_STREAMS = 100 (valor típico)'], ['Fluxo', '0', '']], about: 'O servidor informa seus limites, como o máximo de fluxos simultâneos.', phaseName: 'HTTP/2', tags: ['conexão'] });
+      put('cli', 'srv', ready, ready + ow, { label: 'SETTINGS (preface)', proto: 'HTTP/2', color: C.tcp, enc: true, len: 60, fields: [{ sec: 'HTTP/2 (RFC 9113)' }, ['Preface', 'PRI * HTTP/2.0 ... SM', 'sequência fixa que abre a conexão'], ['Frame', 'SETTINGS', 'parâmetros do cliente: tabela HPACK, janela de controle de fluxo'], ['Fluxo', '0', 'frames da conexão usam o fluxo 0']], about: 'O cliente abre a conexão HTTP/2 com o preface e seus parâmetros.', phaseName: 'HTTP/2', tags: ['conexão'] });
+      put('srv', 'cli', ready + ow, ready + rtt, { label: 'SETTINGS', proto: 'HTTP/2', color: C.tcp, enc: true, len: 60, fields: [{ sec: 'HTTP/2 (RFC 9113)' }, ['Frame', 'SETTINGS', 'MAX_CONCURRENT_STREAMS = 100 (valor típico)'], ['Fluxo', '0', '']], about: 'O servidor informa seus limites, como o máximo de fluxos simultâneos.', phaseName: 'HTTP/2', tags: ['conexão'] });
     }
   }
 
@@ -481,7 +481,7 @@ export function buildHttp(P: HttpParams, sub: string): Trace {
     const quic = eff === 'h3';
     const where = eff === 'h1' ? ['conexão ' + victim.conn] : [quic ? 'fluxo QUIC ' + victim.stream : 'fluxo ' + victim.stream];
     put('srv', 'cli', tL, tL + ow, { label: quic ? 'pacote QUIC perdido' : 'segmento perdido', proto: quic ? 'QUIC' : 'TCP', color: C.bad, lost: true, len: 1400, tags: [...where, 'perda'], fields: [{ sec: quic ? 'UDP e QUIC' : 'TCP' }, ['Conteúdo', 'dados de ' + VICTIM, 'o pacote não chega ao cliente'], ['Número', quic ? 'pacote QUIC ' + ++pn : 'seq ' + (Math.round(victim.kb * 1024 * LOSS_AT)), '']], about: 'Um pacote com dados de ' + VICTIM + ' se perde na rede.', phaseName: 'perda' });
-    put('cli', 'srv', tL + ow, tL + rtt, { label: quic ? 'ACK com intervalo' : 'ACK duplicado (SACK)', proto: quic ? 'QUIC' : 'TCP', color: C.tcp, len: 60, tags: where, fields: [{ sec: quic ? 'QUIC' : 'TCP' }, [quic ? 'Quadro ACK' : 'Opção SACK', quic ? 'faixas recebidas com um buraco' : 'bloco recebido depois do buraco', 'o cliente avisa que faltou um trecho'], ['Detecção', quic ? 'limite de 3 pacotes (RFC 9002)' : 'três ACKs duplicados (fast retransmit)', 'a perda é percebida cerca de 1 RTT depois']], about: 'O cliente percebe o buraco e avisa o servidor.', phaseName: 'perda' });
+    put('cli', 'srv', tL + ow, tL + rtt, { label: quic ? 'ACK com intervalo' : 'ACK duplicado (SACK)', proto: quic ? 'QUIC' : 'TCP', color: C.tcp, len: 60, tags: where, fields: [{ sec: quic ? 'QUIC' : 'TCP' }, [quic ? 'Frame ACK' : 'Opção SACK', quic ? 'faixas recebidas com um buraco' : 'bloco recebido depois do buraco', 'o cliente avisa que faltou um trecho'], ['Detecção', quic ? 'limite de 3 pacotes (RFC 9002)' : 'três ACKs duplicados (fast retransmit)', 'a perda é percebida cerca de 1 RTT depois']], about: 'O cliente percebe o buraco e avisa o servidor.', phaseName: 'perda' });
     put('srv', 'cli', tL + rtt, S.recT, { label: quic ? 'retransmissão (novo pacote)' : 'retransmissão', proto: quic ? 'QUIC' : 'TCP', color: C.data, len: 1400, tags: where, fields: [{ sec: quic ? 'UDP e QUIC' : 'TCP' }, ['Conteúdo', 'os mesmos dados de ' + VICTIM, quic ? 'o QUIC reenvia o conteúdo num pacote novo, com número novo' : 'o TCP reenvia o mesmo segmento']], about: 'O servidor reenvia o trecho perdido.', phaseName: 'perda' });
     st(tL, 'net', 'pacote perdido em ' + VICTIM, 'bad');
     st(S.recT, 'net', 'retransmissão recebida', 'est');

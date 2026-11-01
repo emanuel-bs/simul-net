@@ -51,7 +51,7 @@ function concepts(P: HttpParams, v: Version, eff: Version, j: JournalEntry[]): s
     if (!P.tls) items.push('Sem TLS, o tráfego é ' + b('texto claro') + ': pode ser lido e alterado por quem está no caminho.');
   }
   if (eff === 'h2') {
-    items.push('O ' + b('HTTP/2') + ' usa uma conexão TCP com TLS (ALPN h2) e um ' + b('fluxo') + ' por pedido; as respostas voltam intercaladas em quadros.');
+    items.push('O ' + b('HTTP/2') + ' usa uma conexão TCP com TLS (ALPN h2) e um ' + b('fluxo') + ' por pedido; as respostas voltam intercaladas em frames.');
     items.push('O ' + b('HPACK') + ' comprime os cabeçalhos: o primeiro pedido é grande e os seguintes viram índices na tabela dinâmica.');
     items.push('Todos os fluxos compartilham a mesma sequência de bytes do TCP, e por isso uma perda atrasa todos (bloqueio de cabeça de fila do TCP).');
   }

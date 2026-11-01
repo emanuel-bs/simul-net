@@ -7,7 +7,7 @@ import { ACK_TIMEOUT, BEACON_INTERVAL, CW_MAX, CW_MIN, DIFS, fmtTime, SIFS, SLOT
 const ESTADOS: [number, string, string, string][] = [
   [1, 'Não autenticado e não associado', 'classe 1: Beacon, Probe, Authentication, Deauthentication, ACK, RTS e CTS', 'descobrir redes e iniciar a autenticação'],
   [2, 'Autenticado e não associado', 'classes 1 e 2: acrescenta Association e Reassociation, Disassociation', 'pedir a associação a um AP'],
-  [3, 'Autenticado e associado', 'classes 1, 2 e 3: acrescenta os quadros de dados e o PS-Poll', 'trocar dados pelo AP'],
+  [3, 'Autenticado e associado', 'classes 1, 2 e 3: acrescenta os frames de dados e o PS-Poll', 'trocar dados pelo AP'],
 ];
 
 const estados: TabDef = {
@@ -19,12 +19,12 @@ const estados: TabDef = {
     const log = ((tr.raw.stlog || []) as { t: number; n: number }[]).filter((p) => p.t <= now + 1e-9);
     const cur = log.length ? log[log.length - 1].n : 1;
     let h = '<h3>Os três estados do cliente em relação a um AP</h3>';
-    h += '<table class="sc-msgs"><thead><tr><th>Estado</th><th>Nome</th><th>Quadros que o AP aceita</th><th>Serve para</th></tr></thead><tbody>';
+    h += '<table class="sc-msgs"><thead><tr><th>Estado</th><th>Nome</th><th>Frames que o AP aceita</th><th>Serve para</th></tr></thead><tbody>';
     ESTADOS.forEach(([n, name, cls, use]) => {
       h += '<tr' + (n === cur ? ' class="cur"' : '') + '><td>' + n + (n === cur ? ' (agora)' : '') + '</td><td class="meaning">' + esc(name) + '</td><td class="meaning">' + esc(cls) + '</td><td class="meaning">' + esc(use) + '</td></tr>';
     });
     h += '</tbody></table>';
-    h += '<p>O cliente tem um estado <b>por AP</b>: ao trocar de AP, ele continua associado ao antigo até o novo aceitar a reassociação. Um quadro que o AP não admite no estado atual do cliente é respondido com um Deauthentication ou um Disassociation.</p>';
+    h += '<p>O cliente tem um estado <b>por AP</b>: ao trocar de AP, ele continua associado ao antigo até o novo aceitar a reassociação. Um frame que o AP não admite no estado atual do cliente é respondido com um Deauthentication ou um Disassociation.</p>';
     h += '<p>Em redes protegidas há ainda a <b>porta controlada</b>: mesmo no estado 3, os dados só passam depois do handshake de quatro vias, como a porta do 802.1X.</p>';
     if (log.length) {
       h += '<h3>Transições até agora</h3><ul>';
@@ -46,12 +46,12 @@ const tempos: TabDef = {
     h += '<table class="sc-msgs"><thead><tr><th>Intervalo</th><th>Valor</th><th>Papel</th></tr></thead><tbody>';
     const rows: [string, string, string][] = [
       ['Slot', fmtTime(SLOT), 'unidade de contagem do backoff'],
-      ['SIFS', fmtTime(SIFS), 'o menor: separa um quadro da resposta imediata (ACK, CTS) sem dar chance a quem disputa'],
+      ['SIFS', fmtTime(SIFS), 'o menor: separa um frame da resposta imediata (ACK, CTS) sem dar chance a quem disputa'],
       ['DIFS', fmtTime(DIFS), 'SIFS mais dois slots: quanto o meio precisa estar livre antes do backoff'],
       ['ACKTimeout', fmtTime(ACK_TIMEOUT), 'quanto o transmissor espera pelo ACK antes de presumir falha'],
       ['Janela de contenção (CW)', CW_MIN + ' a ' + CW_MAX, 'o backoff sai de 0 a CW; dobra a cada falha (15, 31, 63 até 1023) e volta ao mínimo no sucesso'],
-      ['Quadro de dados', fmtTime(T_DATA), '1500 bytes a 54 Mb/s'],
-      ['RTS, CTS e ACK', fmtTime(T_RTS) + ', ' + fmtTime(T_CTS) + ' e ' + fmtTime(T_ACK), 'quadros curtos a 6 Mb/s'],
+      ['Frame de dados', fmtTime(T_DATA), '1500 bytes a 54 Mb/s'],
+      ['RTS, CTS e ACK', fmtTime(T_RTS) + ', ' + fmtTime(T_CTS) + ' e ' + fmtTime(T_ACK), 'frames curtos a 6 Mb/s'],
     ];
     rows.forEach((r) => (h += '<tr><td>' + esc(r[0]) + '</td><td class="meaning">' + esc(r[1]) + '</td><td class="meaning">' + esc(r[2]) + '</td></tr>'));
     h += '</tbody></table>';
@@ -106,7 +106,7 @@ const energia: TabDef = {
     });
     h += '</tbody></table>';
     h += '<p>O pacote chega em ' + esc(fmtTime(arrival)) + ', entre dois beacons (a cada ' + esc(fmtTime(BEACON_INTERVAL)) + '). O tempo acordado supõe cerca de 2 ms por beacon ouvido, mais o PS-Poll e a entrega: é uma estimativa ilustrativa, e o consumo real depende do aparelho.</p>';
-    h += '<p>O <b>DTIM</b> (Delivery TIM) é um TIM especial, com período de vários beacons, depois do qual o AP envia os quadros multicast e broadcast guardados. Quem dorme precisa acordar para os DTIMs se quiser recebê-los. O simulador usa período 1.</p>';
+    h += '<p>O <b>DTIM</b> (Delivery TIM) é um TIM especial, com período de vários beacons, depois do qual o AP envia os frames multicast e broadcast guardados. Quem dorme precisa acordar para os DTIMs se quiser recebê-los. O simulador usa período 1.</p>';
     return h;
   },
 };

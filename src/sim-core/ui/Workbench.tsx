@@ -96,12 +96,12 @@ function Bench({ def }: Props) {
   const [selId, setSelId] = useState<number | null>(null);
   const [zi, setZi] = useState(ZOOM_FIT);
   const [view, setView] = useState<'seq' | 'topo'>('seq');
-  // Prova de conceito: o quadro de estados dentro do palco (acompanha a mensagem atual no diagrama de sequência)
+  // Prova de conceito: o painel de estados dentro do palco (acompanha a mensagem atual no diagrama de sequência)
   const [statesInStage, setStatesInStage] = useState(true);
   const [ovTop, setOvTop] = useState(8);
   const ovRef = useRef<HTMLElement>(null);
 
-  // Quadros da bancada: diagrama, estados, configurações e abas (o painel de abas começa recolhido em telas baixas).
+  // Painéis da bancada: diagrama, estados, configurações e abas (o painel de abas começa recolhido em telas baixas).
   const stageF = useFrame();
   const stateF = useFrame();
   const cfgF = useFrame();
@@ -187,7 +187,7 @@ function Bench({ def }: Props) {
     } else if (lastAction.current === 'step') wrap.scrollTop = Math.max(0, layout.y(clock) * k - wrap.clientHeight * 0.5);
   }, [clock, player.playing, layout]);
 
-  // O quadro de estados do palco desce junto com a mensagem atual (na topologia fica no topo)
+  // O painel de estados do palco desce junto com a mensagem atual (na topologia fica no topo)
   const placeOverlay = () => {
     const ov = ovRef.current;
     const wrap = ladderRef.current;

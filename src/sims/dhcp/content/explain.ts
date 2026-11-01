@@ -42,7 +42,7 @@ function step(e: JournalEntry): string {
 function concepts(j: JournalEntry[]): string {
   const has = (t: string) => j.some((e) => e.type === t);
   const items: string[] = [];
-  if (has('discover')) items.push('O cliente ainda não tem endereço, então o DISCOVER sai de <b>0.0.0.0:68</b> para <b>255.255.255.255:67</b>. O switch inunda o quadro por todas as portas e só servidores DHCP o processam.');
+  if (has('discover')) items.push('O cliente ainda não tem endereço, então o DISCOVER sai de <b>0.0.0.0:68</b> para <b>255.255.255.255:67</b>. O switch inunda o frame por todas as portas e só servidores DHCP o processam.');
   if (has('offer')) items.push('O <b>xid</b> amarra todas as mensagens de uma mesma negociação. O OFFER reserva um endereço e traz a configuração (máscara, gateway, DNS, lease, T1 e T2) nas opções.');
   if (j.some((e) => e.type === 'offer' && e.offers.length > 1)) items.push('Com dois servidores, o REQUEST vai em <b>broadcast</b> e leva a opção 54 (Server Identifier): o escolhido confirma e os outros sabem que devem devolver a oferta ao pool.');
   if (has('bound') || has('conflict')) items.push('Antes de usar o endereço, o cliente faz um <b>ARP Probe</b> (RFC 2131, seção 3.1) para descobrir se alguém já o usa.');

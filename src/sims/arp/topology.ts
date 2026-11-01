@@ -8,7 +8,7 @@ const base = (extra: TopologyDef['nodes']): TopologyDef => ({
   height: 262,
   nodes: extra,
   links: [],
-  // todo quadro entre os hosts passa pelo switch
+  // todo frame entre os hosts passa pelo switch
   route: (m) => [m.from, 'sw', m.to],
   notes: (tr: Trace, now: number) => {
     const ev = (tr.raw.neigh || []) as NeighEvent[];

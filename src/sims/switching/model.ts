@@ -14,7 +14,7 @@ export const HOSTS: Record<HostKey, { ip: string; mac: string; name: string }> =
   m: { ip: '192.168.1.66', mac: '00:00:5e:00:53:42', name: 'Host M' },
 };
 export const BCAST = 'ff:ff:ff:ff:ff:ff';
-/** Endereço sem dono, usado como destino dos quadros de inundação. */
+/** Endereço sem dono, usado como destino dos frames de inundação. */
 export const GHOST = '00:00:5e:00:53:ee';
 export const isGroup = (mac: string): boolean => (parseInt(mac.slice(0, 2), 16) & 1) === 1;
 
@@ -166,17 +166,17 @@ export interface GateResult {
 }
 
 export interface SendOpts {
-  /** Controle de entrada (segurança de porta): devolve o motivo do descarte, ou null se o quadro é aceito. */
+  /** Controle de entrada (segurança de porta): devolve o motivo do descarte, ou null se o frame é aceito. */
   gate?: (src: string) => GateResult | null;
   learnTy?: MacType;
   /** Portas com assinantes do grupo (IGMP snooping); sem o campo, o multicast é inundado. */
   group?: number[];
-  /** Hosts que assinaram o grupo (a placa dos demais descarta o quadro). */
+  /** Hosts que assinaram o grupo (a placa dos demais descarta o frame). */
   members?: HostKey[];
-  /** O quadro é endereçado à própria ponte e não é encaminhado (endereços reservados, relatórios IGMP lidos pelo snooping). */
+  /** O frame é endereçado à própria ponte e não é encaminhado (endereços reservados, relatórios IGMP lidos pelo snooping). */
   consume?: string;
   phaseName?: string;
-  /** Host que deixou a porta de destino: o quadro enviado à porta antiga se perde. */
+  /** Host que deixou a porta de destino: o frame enviado à porta antiga se perde. */
   ghost?: HostKey;
 }
 
@@ -188,19 +188,19 @@ export interface Sent {
 }
 
 /**
- * Um quadro entra no switch por A, é processado (descarte, aprendizado e decisão) e sai pelas portas escolhidas.
- * O quadro que chega à ponte e as cópias que saem são mensagens separadas no diagrama.
+ * Um frame entra no switch por A, é processado (descarte, aprendizado e decisão) e sai pelas portas escolhidas.
+ * O frame que chega à ponte e as cópias que saem são mensagens separadas no diagrama.
  */
 export function sendFrame(tr: Trace, sw: Switch, decs: Decision[], from: HostKey, f: Frame, o: SendOpts = {}): Sent {
   const src = f.src || HOSTS[from].mac;
   const inPort = sw.portOf(from);
   const fields = [...ethHeader(f.dst, src, f.etype), ...f.body];
-  const base = { label: f.label, proto: f.proto, len: f.len, info: f.info, about: f.about, fields, phaseName: o.phaseName || 'Quadro' };
+  const base = { label: f.label, proto: f.proto, len: f.len, info: f.info, about: f.about, fields, phaseName: o.phaseName || 'Frame' };
   const m = tr.add(from, 'sw', { ...base, color: f.color || C0.plain, tags: f.tags || [] });
   const tIn = m.tArr;
   sw.expire(tr, tIn);
 
-  // quem está no mesmo segmento (atrás de um hub) ouve o quadro sem passar pelo switch
+  // quem está no mesmo segmento (atrás de um hub) ouve o frame sem passar pelo switch
   (sw.ports[inPort] || [])
     .filter((h) => h !== from)
     .forEach((h) => {
@@ -260,7 +260,7 @@ export function sendFrame(tr: Trace, sw: Switch, decs: Decision[], from: HostKey
     if (o.group) {
       action = 'group';
       ports = o.group.filter((p) => p !== inPort);
-      why = ports.length ? 'grupo conhecido (snooping): só as portas com assinantes' : 'nenhuma porta assinou o grupo: o quadro não sai';
+      why = ports.length ? 'grupo conhecido (snooping): só as portas com assinantes' : 'nenhuma porta assinou o grupo: o frame não sai';
     } else {
       action = 'flood';
       ports = all;
@@ -297,7 +297,7 @@ export function sendFrame(tr: Trace, sw: Switch, decs: Decision[], from: HostKey
   });
   if (action === 'forward' && !hosts.length && o.ghost) {
     tr.add('sw', o.ghost, { ...base, par: true, lost: true, color: C0.bad, tags: ['porta sem host'] });
-    tr.ev(tr.t + tr.ow, 'sw', 'A porta ' + ports[0] + ' não tem mais ninguém: o quadro se perde', 'warn');
+    tr.ev(tr.t + tr.ow, 'sw', 'A porta ' + ports[0] + ' não tem mais ninguém: o frame se perde', 'warn');
     hosts.length = 0;
     tr.wait(tr.ow + 0.4);
   } else if (hosts.length) tr.wait(tr.ow + 0.4);
@@ -305,7 +305,7 @@ export function sendFrame(tr: Trace, sw: Switch, decs: Decision[], from: HostKey
 }
 
 function receive(h: HostKey, dst: string, members?: HostKey[]): string {
-  if (dst === HOSTS[h].mac) return 'Recebe o quadro (é o destino)';
+  if (dst === HOSTS[h].mac) return 'Recebe o frame (é o destino)';
   if (dst === BCAST) return 'Recebe o broadcast';
   if (isGroup(dst)) return members && members.includes(h) ? 'Recebe (assinante do grupo)' : 'A placa descarta: grupo não assinado';
   return 'Descarta: o destino é outro MAC';

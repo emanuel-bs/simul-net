@@ -21,7 +21,7 @@ const portas: TabDef = {
       });
       h += '</tbody></table>';
     });
-    h += '<p><b>Acesso:</b> a porta pertence a uma só VLAN e o quadro trafega sem tag. <b>Tronco:</b> a porta carrega várias VLANs, cada uma com a sua tag, exceto a nativa, que vai sem tag. <b>Permitidas:</b> as VLANs que o tronco aceita carregar.</p>';
+    h += '<p><b>Acesso:</b> a porta pertence a uma só VLAN e o frame trafega sem tag. <b>Tronco:</b> a porta carrega várias VLANs, cada uma com a sua tag, exceto a nativa, que vai sem tag. <b>Permitidas:</b> as VLANs que o tronco aceita carregar.</p>';
     return h;
   },
 };

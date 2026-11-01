@@ -33,13 +33,13 @@ describe('aprendizado e encaminhamento', () => {
     expect(table(tr).some((r) => r.mac === 'ff:ff:ff:ff:ff:ff')).toBe(false);
   });
 
-  it('origem e destino na mesma porta: o quadro é filtrado', () => {
+  it('origem e destino na mesma porta: o frame é filtrado', () => {
     const d = dec(run('a-filter'));
     expect(d[0].action).toBe('filter');
     expect(d[0].out).toEqual([]);
   });
 
-  it('o quadro enviado à porta antiga se perde, e a transmissão de B corrige a tabela', () => {
+  it('o frame enviado à porta antiga se perde, e a transmissão de B corrige a tabela', () => {
     const tr = run('a-move');
     expect(tr.msgs.filter((m) => m.lost)).toHaveLength(1);
     expect(table(tr).find((r) => r.mac.endsWith('14'))!.port).toBe(4);
@@ -63,13 +63,13 @@ describe('inundação de MAC e segurança de porta', () => {
     expect(tr.raw.result).toBe('leak');
   });
 
-  it('entradas anteriores não são apagadas: M não recebe quadros legítimos', () => {
+  it('entradas anteriores não são apagadas: M não recebe frames legítimos', () => {
     const tr = run('i-present');
     expect(tr.raw.seen).toBe(0);
     expect(tr.raw.result).toBe('safe');
   });
 
-  it('sem ataque, M recebe só o primeiro quadro', () => {
+  it('sem ataque, M recebe só o primeiro frame', () => {
     expect(run('i-normal').raw.seen).toBe(1);
   });
 

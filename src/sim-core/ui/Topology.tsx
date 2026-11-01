@@ -38,7 +38,7 @@ function along(pts: Pt[], f: number): Pt {
   return pts[pts.length - 1];
 }
 
-/** Zoom 1 ajusta o quadro à largura e à altura do painel; acima disso a área rola; abaixo, encolhe e centraliza. */
+/** Zoom 1 ajusta o painel à largura e à altura do painel; acima disso a área rola; abaixo, encolhe e centraliza. */
 function topoStyle(zoom: number): CSSProperties {
   if (zoom === 1) return { width: '100%', height: '100%', minWidth: 0 };
   const w = `${Math.round(zoom * 100)}%`;

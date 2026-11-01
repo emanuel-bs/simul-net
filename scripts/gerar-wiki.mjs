@@ -165,7 +165,7 @@ const KIND_PT = { host: 'host', switch: 'switch', router: 'roteador', cloud: 'se
 function howToRead(sec, usa, figs) {
   const L = [`## ${sec}. Como ler os diagramas\n`, 'Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com o tipo, o que mostra e a que modo ou cenário se refere.\n'];
   L.push('| Tipo | O que é | Vale para | Equivale, no simulador, a |', '| --- | --- | --- | --- |');
-  if (usa.A) L.push('| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |');
+  if (usa.A) L.push('| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |');
   if (usa.B) L.push('| B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |');
   L.push('', `### ${sec}.1 Legenda dos diagramas\n`);
   if (usa.A) {
@@ -879,7 +879,7 @@ function linkRfcs(text) {
     })
     .join('\n');
 }
-// Siglas: acrescenta a seção "Siglas deste documento" no fim das páginas dos simuladores.
+// Siglas: acrescenta a seção "Glossário" no fim das páginas dos simuladores.
 const { comSecaoDeSiglas } = await server.ssrLoadModule('/src/docs/glossario.ts');
 for (const x of avail) {
   const k = `${pageName(x.id)}.md`;

@@ -1,5 +1,5 @@
 // Modelo do spanning tree (IEEE 802.1D e 802.1Q): identificador de ponte, vetor de prioridade, eleição da raiz,
-// papéis das portas e quadros BPDU. Usado pelos cinco modos do simulador.
+// papéis das portas e frames BPDU. Usado pelos cinco modos do simulador.
 // Rede: três switches em triângulo (SW1, SW2, SW3). O custo dos enlaces segue a tabela longa do IEEE 802.1D-2004.
 import { COLORS as C0, newTrace, type Column, type Field, type Message, type StateDef, type Trace } from '../../sim-core';
 
@@ -151,7 +151,7 @@ export function newStpTrace(brs: Bridge[], rtt: number): Trace {
   return newTrace(cols(brs), STATES, rtt);
 }
 
-// ---- quadros BPDU ----
+// ---- frames BPDU ----
 
 export interface BpduOpts {
   kind: BpduKind;

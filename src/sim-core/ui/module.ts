@@ -80,7 +80,7 @@ export interface TopoNode {
   key: string;
   label: string;
   sub?: string;
-  /** Posição do centro no quadro (unidades do viewBox). */
+  /** Posição do centro no painel (unidades do viewBox). */
   x: number;
   y: number;
   kind: TopoKind;
@@ -119,7 +119,7 @@ export interface ProtocolDef {
   scenDoc: Record<string, ScenarioDoc>;
   tabs?: TabDef[];
   stageTitle?: (sub: string) => string;
-  /** Visão de topologia ao lado do diagrama de sequência (seletor no quadro principal). */
+  /** Visão de topologia ao lado do diagrama de sequência (seletor no painel principal). */
   topology?: (sub: string, tr: Trace) => TopologyDef;
   topologyTitle?: string;
   /** Legenda das cores do diagrama (padrão: em claro, cifrado, dados e falha). */

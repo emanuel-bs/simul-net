@@ -101,11 +101,11 @@ export function buildEsp(P: EspParams): Trace {
       R.reached.push(...s.hosts);
     }
   } else {
-    phase('1. Quadros para endereços de grupo reservados', 'reservado');
+    phase('1. Frames para endereços de grupo reservados', 'reservado');
     const bpdu: Frame = {
       label: 'BPDU', proto: 'STP', len: 60, color: C0.plain, dst: '01:80:c2:00:00:00', etype: '0x0026 (LLC)',
       info: 'BPDU do spanning tree, como o enviaria um switch vizinho',
-      about: 'O destino 01-80-C2-00-00-00 é reservado para o spanning tree. A ponte que recebe o quadro o processa e não o encaminha, para que o protocolo funcione salto a salto.',
+      about: 'O destino 01-80-C2-00-00-00 é reservado para o spanning tree. A ponte que recebe o frame o processa e não o encaminha, para que o protocolo funcione salto a salto.',
       body: [{ sec: 'LLC' }, ['DSAP/SSAP', '0x42/0x42', 'Spanning Tree']],
     };
     sendFrame(tr, sw, decs, 'a', bpdu, { phaseName: 'Reservado', consume: 'Endereço reservado 01-80-C2-00-00-00: a ponte processa e não encaminha' });
@@ -120,7 +120,7 @@ export function buildEsp(P: EspParams): Trace {
     const e: Frame = {
       label: 'Echo Request', proto: 'ICMP', len: 98, color: C0.tcp, dst: HOSTS.b.mac, etype: '0x0800 (IPv4)',
       info: HOSTS.a.ip + ' → ' + HOSTS.b.ip,
-      about: 'Um quadro comum para um destino desconhecido é inundado. Os reservados não: por isso A e B não receberam os dois quadros anteriores.',
+      about: 'Um frame comum para um destino desconhecido é inundado. Os reservados não: por isso A e B não receberam os dois frames anteriores.',
       body: [...ipFields(HOSTS.a.ip, HOSTS.b.ip, '1 (ICMP)'), { sec: 'ICMP (RFC 792)' }, ['Tipo', '8 (Echo Request)', '']],
     };
     const s = sendFrame(tr, sw, decs, 'a', e, { phaseName: 'Comparação' });

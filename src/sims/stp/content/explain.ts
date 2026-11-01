@@ -55,10 +55,10 @@ function explainLaco(R: Record<string, any>): string {
   if (R.stp) {
     h += '<li><span class="chk-ok">O laço foi cortado:</span> uma cópia foi descartada em porta bloqueada, e B recebeu o broadcast <b>' + R.dupB + '</b> vez(es).</li>';
   } else {
-    h += '<li><span class="chk-bad">Tempestade de broadcast:</span> em ' + R.rounds + ' rodadas, B recebeu <b>' + R.dupB + '</b> cópias, A recebeu <b>' + R.dupA + '</b> do próprio quadro, e <b>' + (R.copies[R.copies.length - 1] || 0) + '</b> cópias continuavam em circulação.</li>';
+    h += '<li><span class="chk-bad">Tempestade de broadcast:</span> em ' + R.rounds + ' rodadas, B recebeu <b>' + R.dupB + '</b> cópias, A recebeu <b>' + R.dupA + '</b> do próprio frame, e <b>' + (R.copies[R.copies.length - 1] || 0) + '</b> cópias continuavam em circulação.</li>';
     h += '<li>O MAC de A mudou de porta no SW1 <b>' + R.flaps + '</b> vez(es): a tabela MAC fica instável.</li>';
   }
-  h += '<li>Lição: sem TTL e sem spanning tree, um único quadro pode derrubar uma rede local.</li></ul>';
+  h += '<li>Lição: sem TTL e sem spanning tree, um único frame pode derrubar uma rede local.</li></ul>';
   return h;
 }
 

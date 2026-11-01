@@ -12,7 +12,7 @@ const run = (id: string, over: Params = {}) => {
 };
 const msgs = (tr: ReturnType<typeof run>) => tr.msgs.map((m) => `${m.from}>${m.to}:${m.label}`);
 
-describe('propagação do quadro (modelo)', () => {
+describe('propagação do frame (modelo)', () => {
   it('a tag nasce no tronco e some na porta de acesso', () => {
     const sp = spread(makeNet(), 'a', ping(HOSTS.a, HOSTS.c));
     const m = sp.steps.filter((s): s is MsgStep => s.t === 'msg');
@@ -60,7 +60,7 @@ describe('Segmentação', () => {
     expect(tr.raw.ignored).toEqual([]);
   });
 
-  it('um quadro para o MAC de B não sai da VLAN 10', () => {
+  it('um frame para o MAC de B não sai da VLAN 10', () => {
     const tr = run('s-cross');
     expect(tr.raw.delivered).toEqual([]);
     expect(tr.raw.ignored).toEqual(['c']);
@@ -76,7 +76,7 @@ describe('Roteamento entre VLANs', () => {
     expect(tr.raw.ttlOut).toBe(tr.raw.ttlIn - 1);
   });
 
-  it('com destino no outro switch, o quadro de volta cruza o tronco', () => {
+  it('com destino no outro switch, o frame de volta cruza o tronco', () => {
     expect(msgs(run('r-d'))).toContain('sw1>sw2:Echo Request (tag 20)');
   });
 
@@ -87,7 +87,7 @@ describe('Roteamento entre VLANs', () => {
     expect(tr.raw.delivered).not.toContain('b');
   });
 
-  it('com o tronco do R1 sem a VLAN 20, o SW1 descarta o quadro de volta', () => {
+  it('com o tronco do R1 sem a VLAN 20, o SW1 descarta o frame de volta', () => {
     const tr = run('r-poda');
     expect(tr.raw.res).toBe('poda');
     expect(tr.msgs[tr.msgs.length - 1].lost).toBe(true);
@@ -97,18 +97,18 @@ describe('Roteamento entre VLANs', () => {
 describe('VLAN nativa', () => {
   it('pontas iguais entregam', () => expect(run('n-ok').raw.res).toBe('ok-untag'));
 
-  it('pontas diferentes mandam o quadro sem tag para outra VLAN', () => {
+  it('pontas diferentes mandam o frame sem tag para outra VLAN', () => {
     const tr = run('n-mis');
     expect(tr.raw.res).toBe('leak');
     expect(tr.raw.delivered).toEqual([]);
     expect(tr.raw.leakedTo).toEqual(['d']);
   });
 
-  it('o quadro com tag não é afetado pela divergência', () => expect(run('n-b').raw.res).toBe('ok-tag'));
+  it('o frame com tag não é afetado pela divergência', () => expect(run('n-b').raw.res).toBe('ok-tag'));
 });
 
 describe('VLAN hopping', () => {
-  it('a porta dinâmica vira tronco e o quadro chega à VLAN 20', () => {
+  it('a porta dinâmica vira tronco e o frame chega à VLAN 20', () => {
     const tr = run('h-spoof');
     expect(tr.raw.res).toBe('spoof-ok');
     expect(tr.raw.delivered).toEqual(['d']);

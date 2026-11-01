@@ -108,7 +108,7 @@ describe('sem resposta', () => {
 });
 
 describe('porta e sessão', () => {
-  it('reautenticação: a porta fica autorizada o tempo todo e o quadro do meio passa', () => {
+  it('reautenticação: a porta fica autorizada o tempo todo e o frame do meio passa', () => {
     const tr = run('p-reauth');
     expect(new Set(states(tr))).toEqual(new Set(['auth']));
     expect(frames(tr).every((f) => f.ok)).toBe(true);
@@ -117,7 +117,7 @@ describe('porta e sessão', () => {
     expect(JSON.stringify(acc.fields)).toContain('Session-Timeout (27)');
   });
 
-  it('logoff: a porta fecha na hora e o quadro seguinte é descartado', () => {
+  it('logoff: a porta fecha na hora e o frame seguinte é descartado', () => {
     const tr = run('p-logoff');
     expect(states(tr)).toEqual(['auth', 'unauth']);
     expect(frames(tr).map((f) => f.ok)).toEqual([true, false]);

@@ -13,7 +13,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 1.1 Legenda dos diagramas
@@ -546,7 +546,7 @@ Dois conceitos distintos aparecem nas rotas VPNv4. O **Route Distinguisher (RD)*
 6. Derrube o enlace **P1 / P3** com os LSPs instalados: o caminho e os rótulos mudam? Por que não é preciso esperar nova sinalização LDP?
 
 
-## 7. Siglas deste documento
+## 7. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

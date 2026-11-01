@@ -1124,7 +1124,7 @@ export function buildPriv(P: DnsParams): Trace {
     const q = send('cl', 'rs', {
       label: 'A ' + qname + ' (cifrada)',
       info: (dot ? 'TLS' : 'HTTP/2 POST /dns-query') + ': dados da aplicação (cifrados)',
-      about: 'A consulta DNS vai <b>dentro do TLS</b>. O observador vê o tamanho e o ritmo dos pacotes, mas não o nome. O quadro abaixo mostra o conteúdo como o cliente e o resolvedor o enxergam.',
+      about: 'A consulta DNS vai <b>dentro do TLS</b>. O observador vê o tamanho e o ritmo dos pacotes, mas não o nome. O painel abaixo mostra o conteúdo como o cliente e o resolvedor o enxergam.',
       m: dnsQ, tcp: true, enc: true, dur: WAN, extra: [...body], tags: ['cifrado'], plain: false,
     });
     tr.ev(q.tSend + WAN / 2, 'ob', 'Vê: dados cifrados', 'ok');

@@ -1765,7 +1765,7 @@ Não há criptografia real: chaves, assinaturas e hashes são valores ilustrativ
 10. **Conteúdo alterado no caminho:** o que acontece com a página em HTTP e em HTTPS? Que mecanismo do TLS detecta a alteração?
 
 
-## 7. Siglas deste documento
+## 7. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
@@ -1785,6 +1785,7 @@ Significado e finalidade das siglas usadas neste documento.
 | **HTTP/3** | HTTP versão 3 | versão do HTTP sobre QUIC e UDP, que evita o bloqueio de um fluxo por perda em outro |
 | **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **PSK** | Pre-Shared Key, chave pré-compartilhada | senha única conhecida por todos os participantes, da qual se derivam as chaves da sessão; é o modo pessoal do WPA2 |
 | **QUIC** | nome do protocolo, que não é uma sigla oficial | transporte sobre UDP com criptografia embutida e múltiplos fluxos independentes; base do HTTP/3 |
 | **RSA** | Rivest, Shamir e Adleman | algoritmo de chave pública usado para assinaturas e troca de chaves |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |

@@ -1,6 +1,6 @@
 // Motor do 802.1X (IEEE 802.1X, EAP na RFC 3748 e RADIUS nas RFC 2865 e 3579). Quatro modos: autenticação, falhas,
 // estado da porta e sessão, e riscos com defesas. Cada um monta o trace de um suplicante, de um autenticador (switch)
-// e de um servidor RADIUS, e registra em tr.raw o estado da porta, os quadros de dados e os pacotes RADIUS.
+// e de um servidor RADIUS, e registra em tr.raw o estado da porta, os frames de dados e os pacotes RADIUS.
 import { COLORS as C0, hex, newTrace, type Column, type Field, type StateDef, type Trace } from '../../sim-core';
 import {
   eapolFields,
@@ -155,17 +155,17 @@ function radius(c: Ctx, o: RadSend) {
   return m;
 }
 
-/** Quadro de dados do suplicante: passa só se a porta (ou o endereço) está autorizada. */
+/** Frame de dados do suplicante: passa só se a porta (ou o endereço) está autorizada. */
 function frame(c: Ctx, who: 'sup' | 'dev2', ok: boolean, label: string, why: string) {
   const { tr, R } = c;
   const src = NODE[who].mac;
   const fields: Field[] = [{ sec: 'Ethernet II' }, ['Destino', 'ff:ff:ff:ff:ff:ff', 'broadcast'], ['Origem', src, ''], ['EtherType', '0x0800', 'IPv4 (dados)'], { sec: 'Decisão do switch' }, ['Porta controlada', ok ? 'autorizada' : 'não autorizada', why]];
-  const m = tr.add(who, c.nas, { label, proto: 'dados', color: ok ? C0.data : C0.bad, len: 342, fields, info: ok ? 'a porta está autorizada' : 'a porta não está autorizada', about: 'Um quadro de dados comum. O switch decide pelo estado da porta, e não pelo protocolo que o quadro carrega.', dur: LEG });
+  const m = tr.add(who, c.nas, { label, proto: 'dados', color: ok ? C0.data : C0.bad, len: 342, fields, info: ok ? 'a porta está autorizada' : 'a porta não está autorizada', about: 'Um frame de dados comum. O switch decide pelo estado da porta, e não pelo protocolo que o frame carrega.', dur: LEG });
   if (ok) {
-    tr.ev(m.tArr, c.nas, 'Encaminha o quadro: ' + why, 'ok');
-    tr.add(c.nas, 'lan', { label: label + ' (encaminhado)', proto: 'dados', color: C0.data, len: 342, fields, info: 'tráfego liberado', about: 'O quadro segue para a rede corporativa.', dur: LEG });
+    tr.ev(m.tArr, c.nas, 'Encaminha o frame: ' + why, 'ok');
+    tr.add(c.nas, 'lan', { label: label + ' (encaminhado)', proto: 'dados', color: C0.data, len: 342, fields, info: 'tráfego liberado', about: 'O frame segue para a rede corporativa.', dur: LEG });
   } else {
-    tr.ev(m.tArr, c.nas, 'Descarta o quadro: ' + why, 'bad');
+    tr.ev(m.tArr, c.nas, 'Descarta o frame: ' + why, 'bad');
   }
   R.frames.push({ t: m.tSend, who, ok, label, why });
 }
@@ -179,7 +179,7 @@ interface AuthOpts {
   start: boolean;
   /** Reautenticação: a porta continua autorizada durante o processo. */
   reauth: boolean;
-  /** Executado depois do primeiro Access-Request (por exemplo, um quadro para provar que a porta segue aberta). */
+  /** Executado depois do primeiro Access-Request (por exemplo, um frame para provar que a porta segue aberta). */
   during?: () => void;
   /** Texto do motivo da recusa, mostrado no servidor. */
   reason?: string;
@@ -402,7 +402,7 @@ export function buildPorta(P: PortaParams): Trace {
   // extra: um segundo dispositivo atrás da mesma porta
   tr.phase('Segundo dispositivo', 'extra');
   tr.st(tr.t, 'phase', 'segundo dispositivo', 'warn');
-  tr.ev(tr.t, 'dev2', 'Um segundo dispositivo, ligado à mesma porta por um hub ou um mini-switch, nunca se autenticou e envia um quadro', 'warn');
+  tr.ev(tr.t, 'dev2', 'Um segundo dispositivo, ligado à mesma porta por um hub ou um mini-switch, nunca se autenticou e envia um frame', 'warn');
   if (P.pdef === 'permac') {
     frame(c, 'dev2', false, 'DHCPDISCOVER', 'a autorização é por endereço MAC, e este MAC não se autenticou');
     R.leak = false;

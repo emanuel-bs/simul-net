@@ -1,4 +1,4 @@
-// Topologia do DHCP: o cliente, o switch SW1, o PC-B (IP estático) e um ou dois servidores. Todo quadro passa pelo switch.
+// Topologia do DHCP: o cliente, o switch SW1, o PC-B (IP estático) e um ou dois servidores. Todo frame passa pelo switch.
 import type { Trace } from '../../sim-core';
 import type { TopologyDef } from '../../sim-core/ui';
 import { SERVERS, type DhcpParams, type LeaseEv } from './engine';

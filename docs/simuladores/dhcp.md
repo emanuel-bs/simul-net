@@ -21,7 +21,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -179,7 +179,7 @@ Como um cliente sem endereço obtém a configuração IP: a troca DORA (Discover
 
 Um servidor, lease de 8 horas e nenhuma falha: DISCOVER, OFFER, REQUEST e ACK, seguidos do ARP Probe.
 
-Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no quadro de estados.
+Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no painel de estados.
 
 **Conceito.** O **DHCP** ([RFC 2131](https://www.rfc-editor.org/rfc/rfc2131)) entrega a um host o endereço IP, a máscara, o gateway e o DNS. Como o cliente ainda não tem endereço, a negociação começa em **broadcast**: **Discover** (procura servidores), **Offer** (o servidor reserva e oferece um endereço), **Request** (o cliente pede formalmente) e **Ack** (o servidor confirma e o empréstimo começa).
 
@@ -668,13 +668,13 @@ Broadcast não atravessa roteadores. Quando o servidor fica em outra rede, o rot
 - Os tempos de lease são curtos e didáticos; os temporizadores T1 (50%) e T2 (87,5%) seguem os valores padrão da [RFC 2131](https://www.rfc-editor.org/rfc/rfc2131).
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
 | **DHCP** | Dynamic Host Configuration Protocol, protocolo de configuração dinâmica de hosts | entrega ao cliente endereço IP, máscara, gateway e DNS, por empréstimo (lease) |

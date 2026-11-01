@@ -1,6 +1,6 @@
 // Motor do modo Aprendizado e encaminhamento do switch Ethernet (IEEE 802.1D).
 // Rede: A na porta 1, B na porta 2 e, na porta 3, um hub com C e D (um segmento compartilhado). A porta 4 está livre.
-// A tabela de endereços aprende a origem de cada quadro, envelhece (300 s por padrão) e é consultada pelo destino.
+// A tabela de endereços aprende a origem de cada frame, envelhece (300 s por padrão) e é consultada pelo destino.
 import { COLORS as C0, newTrace, type Column, type StateDef, type Trace } from '../../sim-core';
 import { BCAST, HOSTS, Switch, ipFields, sendFrame, type Decision, type Frame, type HostKey } from './model';
 
@@ -70,17 +70,17 @@ export function buildApr(P: AprParams): Trace {
 
   if (P.akind === 'first') {
     phase('1. Tabela vazia: destino desconhecido', 'inundação');
-    tr.mile(tr.t, 'Tabela vazia', 'primeiro quadro');
-    send('a', echo('a', 'b', false), 'Primeiro quadro');
+    tr.mile(tr.t, 'Tabela vazia', 'primeiro frame');
+    send('a', echo('a', 'b', false), 'Primeiro frame');
     if (P.areply) {
       phase('2. A resposta de B revela a porta de B', 'aprendizado');
       send('b', echo('b', 'a', true), 'Resposta');
-      phase('3. Os quadros seguintes vão só a B', 'encaminhamento');
+      phase('3. Os frames seguintes vão só a B', 'encaminhamento');
     } else {
       tr.ev(tr.t, 'b', 'Sem resposta: o switch não aprende B', 'warn');
       phase('2. B não responde: continua desconhecido', 'inundação');
     }
-    send('a', echo('a', 'b', false), 'Quadro seguinte');
+    send('a', echo('a', 'b', false), 'Frame seguinte');
   } else if (P.akind === 'known') {
     phase('1. Destino conhecido em outra porta', 'encaminhamento');
     send('a', echo('a', 'b', false), 'Encaminhamento');

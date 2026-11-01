@@ -18,7 +18,7 @@ const field = (m: T['msgs'][number], name: string) => (m.fields.find((f) => Arra
 const states = (tr: T) => (tr.raw.stlog as { n: number }[]).map((p) => p.n);
 
 describe('descoberta e associação', () => {
-  it('varredura passiva: o cliente passa pelos estados 1, 2 e 3, e o beacon é o primeiro quadro', () => {
+  it('varredura passiva: o cliente passa pelos estados 1, 2 e 3, e o beacon é o primeiro frame', () => {
     const tr = run('d-passivo');
     expect(states(tr)).toEqual([1, 2, 3]);
     expect(tr.msgs[0].label).toBe('Beacon');
@@ -27,7 +27,7 @@ describe('descoberta e associação', () => {
     expect(labels(tr)).toContain('DHCPDISCOVER (Ethernet)');
   });
 
-  it('cada quadro unicast de gerência e de dados é seguido de um ACK; o beacon e o Probe Request não', () => {
+  it('cada frame unicast de gerência e de dados é seguido de um ACK; o beacon e o Probe Request não', () => {
     const tr = run('d-ativo');
     const l = labels(tr);
     expect(l[0]).toBe('Probe Request');
@@ -58,7 +58,7 @@ describe('descoberta e associação', () => {
     expect(t11.msgs[0].tSend).toBeGreaterThan(t1.msgs[0].tSend + 200);
   });
 
-  it('rede protegida: o RSN é anunciado e o primeiro quadro de dados é descartado', () => {
+  it('rede protegida: o RSN é anunciado e o primeiro frame de dados é descartado', () => {
     const tr = run('d-rsn');
     expect(field(tr.msgs[0], 'RSN (IE 48)')).toBeDefined();
     expect(tr.raw.res).toBe('ok-rsn');
@@ -100,7 +100,7 @@ describe('acesso ao meio (CSMA/CA)', () => {
     expect(att.map((a) => a.cw)).toEqual([15, 31]);
   });
 
-  it('mesmo slot: os dois quadros colidem, a janela dobra e na rodada seguinte um passa na frente do outro', () => {
+  it('mesmo slot: os dois frames colidem, a janela dobra e na rodada seguinte um passa na frente do outro', () => {
     const tr = run('m-colisao');
     const lost = tr.msgs.filter((m) => m.lost);
     expect(lost.length).toBe(2);
@@ -128,7 +128,7 @@ describe('acesso ao meio (CSMA/CA)', () => {
     expect(l.indexOf('Dados')).toBeGreaterThan(l.indexOf('CTS'));
   });
 
-  it('nó oculto sem RTS/CTS: colisões repetidas de quadros inteiros, e só depois um passa', () => {
+  it('nó oculto sem RTS/CTS: colisões repetidas de frames inteiros, e só depois um passa', () => {
     const tr = run('m-oculto');
     expect(tr.raw.collisions).toBe(2);
     expect(tr.raw.hidden).toBe(true);
@@ -175,7 +175,7 @@ describe('roaming e economia de energia', () => {
     expect(ft.raw.interrupt).toBeLessThan(std.raw.interrupt);
   });
 
-  it('cliente preso: a taxa cai e o quadro ocupa o meio mais de oito vezes mais tempo', () => {
+  it('cliente preso: a taxa cai e o frame ocupa o meio mais de oito vezes mais tempo', () => {
     const tr = run('r-sticky');
     const d = tr.msgs.filter((m) => String(m.label).startsWith('Dados (') && m.proto === 'IEEE 802.11').map((m) => m.tArr - m.tSend);
     expect(d.length).toBe(3);

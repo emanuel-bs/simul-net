@@ -80,7 +80,7 @@ for (const sim of natives) {
       expect(errors).toEqual([]);
     });
 
-    test('a topologia (quando existe) cabe no quadro, anima e não gera erro', async ({ page }) => {
+    test('a topologia (quando existe) cabe no painel, anima e não gera erro', async ({ page }) => {
       const errors = watchErrors(page);
       for (const size of [{ width: 1366, height: 768 }, { width: 1600, height: 900 }]) {
         await page.setViewportSize(size);
@@ -91,7 +91,7 @@ for (const sim of natives) {
         const svg = page.locator('.simnet svg.topo');
         await expect(svg).toBeVisible();
         for (let i = 0; i < 6; i++) await page.getByRole('button', { name: 'Passo' }).click();
-        // a topologia inteira cabe no quadro: nada de rolagem e o desenho dentro da área visível
+        // a topologia inteira cabe no painel: nada de rolagem e o desenho dentro da área visível
         const fit = await page.evaluate(() => {
           const wrap = document.querySelector('.simnet .topo-wrap') as HTMLElement;
           const s = document.querySelector('.simnet svg.topo') as SVGElement;
@@ -108,29 +108,29 @@ for (const sim of natives) {
       expect(errors).toEqual([]);
     });
 
-    test('os quadros destacam e encaixam na posição de origem, e Esc encaixa', async ({ page }) => {
+    test('os painéis destacam e encaixam na posição de origem, e Esc encaixa', async ({ page }) => {
       const errors = watchErrors(page);
       await page.setViewportSize({ width: 1600, height: 900 });
       await open(page, sim.id);
-      // o quadro de estados começa dentro do palco: o botão o devolve ao painel lateral
+      // o painel de estados começa dentro do palco: o botão o devolve ao painel lateral
       await page.getByRole('button', { name: 'Estados no diagrama' }).click();
       await expect(page.locator('.side-col > .fpanel')).toBeVisible();
       for (const sel of ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', '.simnet .cfg']) {
         const el = page.locator(sel).first();
         const before = await el.boundingBox();
-        // os outros quadros não se movem quando um é destacado
+        // os outros painéis não se movem quando um é destacado
         const others = ['.stage-panel', '.tabs-panel', '.side-col > .fpanel', '.simnet .cfg'].filter((o) => o !== sel);
         const othersBefore = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
         const toggle = el.getByRole('button', { name: /Destacar|Encaixar/ }).first();
         await toggle.click();
         await expect(el).toHaveClass(/is-floating/);
         const othersAfter = await Promise.all(others.map((o) => page.locator(o).first().boundingBox()));
-        expect(othersAfter, `os outros quadros se moveram ao destacar ${sel}`).toEqual(othersBefore);
+        expect(othersAfter, `os outros painéis se moveram ao destacar ${sel}`).toEqual(othersBefore);
         await toggle.click();
         await expect(el).not.toHaveClass(/is-floating/);
         expect(await el.boundingBox(), `posição de ${sel} depois de encaixar`).toEqual(before);
       }
-      // Esc encaixa o quadro flutuante
+      // Esc encaixa o painel flutuante
       const stage = page.locator('.stage-panel');
       await stage.getByRole('button', { name: 'Destacar' }).click();
       await expect(stage).toHaveClass(/is-floating/);

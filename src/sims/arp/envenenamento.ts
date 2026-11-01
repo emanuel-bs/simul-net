@@ -83,7 +83,7 @@ export function buildEnvenenamento(P: EnvParams): Trace {
     if (def === 'dai') {
       ev(f1.tArr, 'm', 'Descartada pelo switch (DAI)', 'ok');
       tr.st(f1.tArr, 'phase', 'bloqueado (DAI)', 'est');
-      tr.lg(f1.tArr, 'O switch com DAI compara o par IP e MAC de cada resposta ARP com a tabela de DHCP snooping, vê que ' + G.ip + ' não pertence a ' + M.mac + ' e descarta o quadro. Nenhuma tabela é alterada.', 'conn');
+      tr.lg(f1.tArr, 'O switch com DAI compara o par IP e MAC de cada resposta ARP com a tabela de DHCP snooping, vê que ' + G.ip + ' não pertence a ' + M.mac + ' e descarta o frame. Nenhuma tabela é alterada.', 'conn');
       R.result = 'blocked-dai';
     } else if (stat) {
       ev(f1.tArr, 'a', 'Entrada estática: ignora a resposta', 'ok');
@@ -135,10 +135,10 @@ export function buildEnvenenamento(P: EnvParams): Trace {
       phaseName: 'Tráfego',
       fields: [...ethHeader(dmac, smac, '0x0800 (IPv4)'), ...fl({ sec: 'IPv4 (RFC 791)' }, ['Origem', req ? A.ip : SERVER, ''], ['Destino', req ? SERVER : A.ip, ''], ['Protocolo', '6 (TCP)', '']), ...kind(req)],
       about: forwarded
-        ? 'M repassa o quadro ao destino verdadeiro, trocando só os endereços físicos. Por isso a vítima não percebe o desvio: a comunicação continua funcionando.'
+        ? 'M repassa o frame ao destino verdadeiro, trocando só os endereços físicos. Por isso a vítima não percebe o desvio: a comunicação continua funcionando.'
         : to === 'm'
-          ? 'O quadro sai com o MAC de destino que a tabela de ' + (from === 'a' ? 'A' : 'do gateway') + ' tem para o IP do ' + (from === 'a' ? 'gateway' : 'host A') + ': o de M.'
-          : 'Quadro normal, com o MAC de destino correto.',
+          ? 'O frame sai com o MAC de destino que a tabela de ' + (from === 'a' ? 'A' : 'do gateway') + ' tem para o IP do ' + (from === 'a' ? 'gateway' : 'host A') + ': o de M.'
+          : 'Frame normal, com o MAC de destino correto.',
     });
   };
   // o texto fica numa linha própria, entre a chegada e o repasse, para não cobrir as setas
@@ -172,7 +172,7 @@ export function buildEnvenenamento(P: EnvParams): Trace {
   R.readResp = readResp;
   if (poisonedA) {
     tr.st(tr.t, 'seen', seen, https ? 'est' : 'bad');
-    tr.lg(tr.t, https ? 'M recebeu os quadros, mas o conteúdo está cifrado de ponta a ponta (TLS): ele vê apenas tamanhos e momentos, e poderia atrasar ou descartar o tráfego, mas não ler nem alterar o conteúdo sem ser detectado.' : 'M leu ' + (readResp ? 'a requisição e a resposta' : 'a requisição') + ' em texto puro, inclusive o cookie de sessão.', https ? 'conn' : 'loss');
+    tr.lg(tr.t, https ? 'M recebeu os frames, mas o conteúdo está cifrado de ponta a ponta (TLS): ele vê apenas tamanhos e momentos, e poderia atrasar ou descartar o tráfego, mas não ler nem alterar o conteúdo sem ser detectado.' : 'M leu ' + (readResp ? 'a requisição e a resposta' : 'a requisição') + ' em texto puro, inclusive o cookie de sessão.', https ? 'conn' : 'loss');
   } else {
     tr.st(tr.t, 'seen', def === 'monitor' ? 'ALERTA: o MAC do gateway mudou' : '-', def === 'monitor' ? 'warn' : 'closed');
   }

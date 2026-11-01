@@ -12,7 +12,7 @@ import { topology } from './topology';
 export const vlanProtocol: ProtocolDef = {
   id: 'vlan',
   label: 'VLAN e trunking (802.1Q)',
-  stateTitle: 'Estado do quadro',
+  stateTitle: 'Estado do frame',
   rfcs: [],
   subs: [
     { key: 'marc', label: 'Marcação 802.1Q', default: 'v-tag' },
@@ -30,8 +30,8 @@ export const vlanProtocol: ProtocolDef = {
   topology,
   topologyTitle: 'Topologia: dois switches em tronco, hosts nas VLANs 10 e 20 e o roteador',
   legend: [
-    { color: COLORS.plain, label: 'Quadro sem tag' },
-    { color: COLORS.data, label: 'Quadro com tag 802.1Q' },
+    { color: COLORS.plain, label: 'Frame sem tag' },
+    { color: COLORS.data, label: 'Frame com tag 802.1Q' },
     { color: COLORS.bad, label: 'Descartado ou ação indevida' },
   ],
   build: (P, sub) => {

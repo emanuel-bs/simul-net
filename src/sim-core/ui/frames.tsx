@@ -1,5 +1,5 @@
-// Quadros da bancada: destacar, mover, redimensionar, maximizar e recolher (porta de public/sims/bench/bench.js).
-// A posição e o tamanho de um quadro flutuante são aplicados direto no elemento durante o arrasto, para não
+// Painéis da bancada: destacar, mover, redimensionar, maximizar e recolher (porta de public/sims/bench/bench.js).
+// A posição e o tamanho de um painel flutuante são aplicados direto no elemento durante o arrasto, para não
 // redesenhar a bancada inteira a cada movimento do mouse; o React só controla o estado e as classes.
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 
@@ -16,7 +16,7 @@ interface Entry {
 }
 
 interface Manager {
-  /** Maior z-index entregue: clicar em um quadro o traz para a frente. */
+  /** Maior z-index entregue: clicar em um painel o traz para a frente. */
   z: number;
   floating: Map<symbol, Entry>;
 }
@@ -26,7 +26,7 @@ const FloatContext = createContext<Manager | null>(null);
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const INTERACTIVE = 'button,select,input,a';
 
-/** Reúne os quadros flutuantes: a tecla Esc encaixa o mais recente e, em tela estreita, todos voltam ao lugar. */
+/** Reúne os painéis flutuantes: a tecla Esc encaixa o mais recente e, em tela estreita, todos voltam ao lugar. */
 export function FloatProvider({ children }: { children: ReactNode }) {
   const mgr = useRef<Manager>({ z: 60, floating: new Map() });
   useEffect(() => {
@@ -60,14 +60,14 @@ const POS_KEYS = ['left', 'top', 'width', 'height', 'right', 'bottom', 'zIndex']
 const DIRS = ['n', 's', 'e', 'w', 'ne', 'nw', 'sw', 'se'] as const;
 
 /**
- * Comportamento de um quadro destacável. O chamador liga `rootProps` ao elemento do quadro, `barProps` à barra de
- * título (arrastar com o mouse, duplo clique para encaixar), e coloca `buttons` na barra e `handles` no fim do quadro.
+ * Comportamento de um painel destacável. O chamador liga `rootProps` ao elemento do painel, `barProps` à barra de
+ * título (arrastar com o mouse, duplo clique para encaixar), e coloca `buttons` na barra e `handles` no fim do painel.
  */
 export function useFrame(opts: FrameOptions = {}) {
   const mgr = useContext(FloatContext);
   const el = useRef<HTMLElement | null>(null);
   const [floating, setFloating] = useState(false);
-  // tamanho que o quadro ocupava no fluxo antes de destacar: um marcador guarda o lugar para os outros quadros não se moverem
+  // tamanho que o painel ocupava no fluxo antes de destacar: um marcador guarda o lugar para os outros painéis não se moverem
   const [flow, setFlow] = useState<{ height: number } | null>(null);
   const [maxed, setMaxed] = useState(false);
   const [collapsed, setCollapsed] = useState(!!opts.collapsedInitial);
@@ -149,7 +149,7 @@ export function useFrame(opts: FrameOptions = {}) {
 
   const startDrag = (e: ReactPointerEvent) => {
     const hit = (e.target as HTMLElement).closest(INTERACTIVE);
-    // o título do quadro é um botão, mas também serve de alça para arrastar
+    // o título do painel é um botão, mas também serve de alça para arrastar
     if (!floating || maxed || e.button > 0 || (hit && !hit.hasAttribute('data-drag'))) return;
     const node = el.current!;
     const sx = e.clientX;
@@ -165,7 +165,7 @@ export function useFrame(opts: FrameOptions = {}) {
       window.removeEventListener('pointermove', mv);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
-      // o clique que encerra um arrasto não deve recolher o quadro (o título é um botão)
+      // o clique que encerra um arrasto não deve recolher o painel (o título é um botão)
       setTimeout(() => (dragged.current = false), 0);
     };
     window.addEventListener('pointermove', mv);
@@ -217,13 +217,13 @@ export function useFrame(opts: FrameOptions = {}) {
     floating,
     collapsed,
     setCollapsed,
-    /** Marcador que ocupa o lugar do quadro enquanto ele está destacado; vai logo antes do elemento do quadro. */
+    /** Marcador que ocupa o lugar do painel enquanto ele está destacado; vai logo antes do elemento do painel. */
     placeholder: floating && flow ? (
       <div className="frame-ph" aria-hidden="true" style={{ '--ph-h': flow.height + 'px' } as React.CSSProperties}>
-        <span>Quadro destacado</span>
+        <span>Painel destacado</span>
       </div>
     ) : null,
-    /** Classes do elemento do quadro, somadas às de `base`. */
+    /** Classes do elemento do painel, somadas às de `base`. */
     className: (base: string) => base + (floating ? ' is-floating' : '') + (collapsed ? ' body-collapsed' : ''),
     rootProps: {
       ref: (node: HTMLElement | null) => {

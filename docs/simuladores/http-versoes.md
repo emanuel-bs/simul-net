@@ -22,7 +22,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -601,7 +601,7 @@ Uma única conexão TCP com TLS. Depois do HTML, todos os pedidos saem de uma ve
 
 Repare no HPACK: o primeiro pedido tem cerca de 330 bytes de cabeçalho e os seguintes, cerca de 50.
 
-**Conceito.** O **HTTP/2** ([RFC 9113](https://www.rfc-editor.org/rfc/rfc9113)) usa uma só conexão TCP com TLS (ALPN `h2`) e a divide em **fluxos** (streams) identificados por número. O navegador envia todos os pedidos de uma vez, e o servidor devolve as respostas **intercaladas** em quadros (frames). Os cabeçalhos são comprimidos pelo **HPACK** ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)): o que se repete vira um índice.
+**Conceito.** O **HTTP/2** ([RFC 9113](https://www.rfc-editor.org/rfc/rfc9113)) usa uma só conexão TCP com TLS (ALPN `h2`) e a divide em **fluxos** (streams) identificados por número. O navegador envia todos os pedidos de uma vez, e o servidor devolve as respostas **intercaladas** em frames (frames). Os cabeçalhos são comprimidos pelo **HPACK** ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)): o que se repete vira um índice.
 
 **O que observar**
 
@@ -649,7 +649,7 @@ sequenceDiagram
 | --- | --- | --- |
 | SETTINGS | parâmetros da conexão | cliente e servidor |
 | HEADERS (GET) | abre o fluxo com o pedido | cliente |
-| HEADERS + DATA | resposta em quadros | servidor |
+| HEADERS + DATA | resposta em frames | servidor |
 
 **Por que importa.** Uma conexão só paga um handshake e deixa o controle de congestionamento do TCP trabalhar com mais dados em trânsito. Em compensação, depende de uma única sequência de bytes do TCP.
 
@@ -738,13 +738,13 @@ A imagem de 400 KB divide a banda com os demais fluxos. Os recursos pequenos ter
 
 A imagem fica pronta mais tarde porque disputa a banda, mas nada fica parado esperando por ela.
 
-**Conceito.** No HTTP/2 as respostas são fatiadas em quadros DATA (até 16 KB, por padrão) e os quadros de fluxos diferentes se alternam. Uma resposta grande **não impede** as pequenas de terminar. Em implementações reais, o servidor pode priorizar fluxos ([RFC 9218](https://www.rfc-editor.org/rfc/rfc9218)); o simulador divide a banda em partes iguais.
+**Conceito.** No HTTP/2 as respostas são fatiadas em frames DATA (até 16 KB, por padrão) e os frames de fluxos diferentes se alternam. Uma resposta grande **não impede** as pequenas de terminar. Em implementações reais, o servidor pode priorizar fluxos ([RFC 9218](https://www.rfc-editor.org/rfc/rfc9218)); o simulador divide a banda em partes iguais.
 
 **O que observar**
 
 - Na aba Cascata: os recursos pequenos terminam cedo, a imagem grande, por último.
 - Compare com o cenário Imagem grande ocupa a conexão, do HTTP/1.1.
-- Na aba Mensagem da resposta: o número de quadros DATA do recurso.
+- Na aba Mensagem da resposta: o número de frames DATA do recurso.
 
 ```mermaid
 sequenceDiagram
@@ -787,7 +787,7 @@ sequenceDiagram
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
 | HEADERS (GET /hero.jpg) | pedido da imagem grande | cliente |
-| DATA (vários) | quadros da imagem, intercalados com os dos outros fluxos | servidor |
+| DATA (vários) | frames da imagem, intercalados com os dos outros fluxos | servidor |
 
 **Por que importa.** É o ganho central da multiplexação: o bloqueio de cabeça de fila da aplicação deixa de existir.
 
@@ -1161,7 +1161,7 @@ sequenceDiagram
 | ACK com intervalo | aponta o buraco | cliente |
 | retransmissão (novo pacote) | mesmo conteúdo, número novo | servidor |
 
-**Por que importa.** Na prática um pacote QUIC pode carregar quadros de mais de um fluxo e afetar todos eles. O simulador supõe que os dados perdidos pertencem a um só fluxo.
+**Por que importa.** Na prática um pacote QUIC pode carregar frames de mais de um fluxo e afetar todos eles. O simulador supõe que os dados perdidos pertencem a um só fluxo.
 
 #### 6.3.5 UDP bloqueado: volta ao HTTP/2
 
@@ -1241,8 +1241,8 @@ A **semântica** do HTTP ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110)) é
 
 ### 7.3 HTTP/2 ([RFC 9113](https://www.rfc-editor.org/rfc/rfc9113))
 
-- **Formato binário em quadros** (HEADERS, DATA, SETTINGS...). A semântica não muda, mas a mensagem passa a ser fatiada.
-- **Fluxos (streams):** uma só conexão TCP leva muitos pedidos e respostas ao mesmo tempo, cada um com seu identificador (ímpar quando iniciado pelo cliente). Os quadros de fluxos diferentes se intercalam.
+- **Formato binário em frames** (HEADERS, DATA, SETTINGS...). A semântica não muda, mas a mensagem passa a ser fatiada.
+- **Fluxos (streams):** uma só conexão TCP leva muitos pedidos e respostas ao mesmo tempo, cada um com seu identificador (ímpar quando iniciado pelo cliente). Os frames de fluxos diferentes se intercalam.
 - **HPACK ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)):** compressão de cabeçalhos com tabela estática e tabela dinâmica. O primeiro pedido paga o preço inteiro; os seguintes viram índices.
 - **Controle de fluxo** por fluxo e por conexão, e limite de fluxos simultâneos (`SETTINGS_MAX_CONCURRENT_STREAMS`).
 - **Negociação:** a versão é escolhida no TLS pela extensão ALPN (`h2`). Os navegadores só usam HTTP/2 sobre TLS.
@@ -1274,7 +1274,7 @@ A **semântica** do HTTP ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110)) é
 
 - **HTTP sem TLS** não protege confidencialidade nem integridade: o conteúdo pode ser lido ou alterado no caminho. Use HTTPS e HSTS ([RFC 6797](https://www.rfc-editor.org/rfc/rfc6797)). A [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112) foi atualizada pela [RFC 9931](https://www.rfc-editor.org/rfc/rfc9931), que trata das considerações de segurança de transições otimistas de protocolo no HTTP/1.1 (Upgrade); o simulador não modela essa transição.
 - **0-RTT e replay:** aceite 0-RTT apenas em pedidos idempotentes e sem efeito colateral, ou desative-o quando isso não puder ser garantido.
-- **Abuso de fluxos no HTTP/2:** servidores devem limitar fluxos simultâneos, quadros e a taxa de abertura e cancelamento de fluxos (o ataque conhecido como Rapid Reset, de 2023, explorou a falta desse limite) e manter o software atualizado.
+- **Abuso de fluxos no HTTP/2:** servidores devem limitar fluxos simultâneos, frames e a taxa de abertura e cancelamento de fluxos (o ataque conhecido como Rapid Reset, de 2023, explorou a falta desse limite) e manter o software atualizado.
 - **Visibilidade:** o QUIC cifra quase todo o cabeçalho de transporte, o que reduz o que firewalls e sensores no caminho conseguem ver. A inspeção passa a depender de pontos de terminação do TLS e de telemetria nos extremos.
 
 ### 7.7 Limitações do simulador
@@ -1287,13 +1287,13 @@ A **semântica** do HTTP ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110)) é
 - Nenhuma criptografia real é feita: valores como chaves e identificadores são ilustrativos.
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ALPN** | Application-Layer Protocol Negotiation | extensão do TLS que negocia o protocolo de aplicação, como HTTP/2 ou HTTP/3, no próprio handshake |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
 | **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |

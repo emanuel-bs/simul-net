@@ -22,7 +22,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -202,7 +202,7 @@ Cenário, Captura, Mensagem, Tabela ARP, Experimento, Referência e Log.
 - **Para onde o host A envia**. Valores: Host B (mesma sub-rede); Destino remoto, via gateway; Destino remoto, sem gateway (máscara errada). Padrão: Host B (mesma sub-rede). Modos: Resolução.
   - Define por qual IP o ARP vai perguntar.
   - **Mesma sub-rede:** o ARP pergunta pelo IP do próprio destino.
-  - **Destino remoto via gateway:** o ARP pergunta pelo IP do **gateway**, nunca pelo IP remoto. O quadro vai ao MAC do gateway, e o IP de destino continua o remoto.
+  - **Destino remoto via gateway:** o ARP pergunta pelo IP do **gateway**, nunca pelo IP remoto. O frame vai ao MAC do gateway, e o IP de destino continua o remoto.
   - **Sem gateway:** a máscara errada faz o host achar que o destino remoto é local e perguntar por ele. Só um roteador com proxy ARP responde.
 
 ### 5.3 Tabela ARP do host A
@@ -347,7 +347,7 @@ A tabela ARP de A já tem o endereço de B. **Nenhuma mensagem ARP** é enviada:
 **O que observar**
 
 - Não há mensagem ARP no diagrama.
-- O primeiro quadro é o próprio Echo Request.
+- O primeiro frame é o próprio Echo Request.
 
 ```mermaid
 sequenceDiagram
@@ -422,9 +422,9 @@ O ARP só vale dentro da rede local. Para chegar a outra rede, o host resolve o 
 
 **Configuração aplicada:** Para onde o host A envia = gateway; Estado inicial da entrada = empty; O próximo salto está ligado = sim; Proxy ARP ligado no gateway = não; A primeira requisição se perde = não
 
-O destino está em outra rede. O host A **não pergunta pelo IP remoto**: pergunta pelo IP do gateway e envia o quadro ao MAC dele.
+O destino está em outra rede. O host A **não pergunta pelo IP remoto**: pergunta pelo IP do gateway e envia o frame ao MAC dele.
 
-**Conceito.** O broadcast não atravessa roteadores. Para uma rede diferente, o host envia o quadro ao gateway: o MAC de destino é o do gateway, e o IP de destino continua sendo o remoto.
+**Conceito.** O broadcast não atravessa roteadores. Para uma rede diferente, o host envia o frame ao gateway: o MAC de destino é o do gateway, e o IP de destino continua sendo o remoto.
 
 **O que observar**
 
@@ -1004,7 +1004,7 @@ A situação normal: as tabelas de A e do gateway estão corretas e o tráfego v
 
 **O que observar**
 
-- O MAC de destino dos quadros é sempre o do gateway ou o de A.
+- O MAC de destino dos frames é sempre o do gateway ou o de A.
 - O host M não aparece no caminho.
 
 ```mermaid
@@ -1047,7 +1047,7 @@ O host M envia respostas ARP que ninguém pediu. A e o gateway as aceitam, e o t
 
 - A resposta forjada traz o MAC de M como remetente e o IP do gateway como endereço declarado.
 - A tabela de A passa a associar o IP do gateway ao MAC de M.
-- M repassa os quadros, e por isso a comunicação continua funcionando.
+- M repassa os frames, e por isso a comunicação continua funcionando.
 
 ```mermaid
 sequenceDiagram
@@ -1085,7 +1085,7 @@ sequenceDiagram
 
 Só A recebe a resposta forjada. M vê **só a requisição**; a resposta do servidor volta direto para A.
 
-**Conceito.** Se só A é enganado, os quadros de A passam por M, mas a resposta do gateway volta direto para A, que continua com o MAC correto na tabela do gateway.
+**Conceito.** Se só A é enganado, os frames de A passam por M, mas a resposta do gateway volta direto para A, que continua com o MAC correto na tabela do gateway.
 
 **O que observar**
 
@@ -1125,9 +1125,9 @@ sequenceDiagram
 
 **Configuração aplicada:** Há um host malicioso na rede local = sim; Os dois lados são enganados (vítima e gateway) = sim; Tráfego da vítima = https; Defesa na rede local = none
 
-O desvio acontece do mesmo jeito, mas o tráfego é **HTTPS**: M recebe os quadros e não consegue ler o conteúdo.
+O desvio acontece do mesmo jeito, mas o tráfego é **HTTPS**: M recebe os frames e não consegue ler o conteúdo.
 
-**Conceito.** O envenenamento atua na camada 2 e não depende do protocolo de cima. Com HTTPS, o conteúdo é cifrado entre A e o servidor: M recebe os quadros, mas só enxerga tamanhos e momentos dos registros. Ele ainda poderia atrasar ou descartar o tráfego.
+**Conceito.** O envenenamento atua na camada 2 e não depende do protocolo de cima. Com HTTPS, o conteúdo é cifrado entre A e o servidor: M recebe os frames, mas só enxerga tamanhos e momentos dos registros. Ele ainda poderia atrasar ou descartar o tráfego.
 
 **O que observar**
 
@@ -1295,7 +1295,7 @@ sequenceDiagram
 
 ### 7.1 O que o ARP resolve
 
-O **ARP** (*Address Resolution Protocol*, [RFC 826](https://www.rfc-editor.org/rfc/rfc826)) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, **dentro da mesma rede local**. A Ethernet entrega quadros por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.
+O **ARP** (*Address Resolution Protocol*, [RFC 826](https://www.rfc-editor.org/rfc/rfc826)) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, **dentro da mesma rede local**. A Ethernet entrega frames por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.
 
 ### 7.2 Formato do pacote ([RFC 826](https://www.rfc-editor.org/rfc/rfc826), para IPv4 sobre Ethernet)
 
@@ -1311,7 +1311,7 @@ O **ARP** (*Address Resolution Protocol*, [RFC 826](https://www.rfc-editor.org/r
 | Endereço físico do alvo (THA) | 6 bytes | zerado na requisição |
 | IP do alvo (TPA) | 4 bytes | o IP perguntado |
 
-O quadro Ethernet que carrega o pacote usa o tipo 0x0806. São 28 bytes de ARP e 14 do cabeçalho Ethernet: 42 bytes, que a placa completa até o mínimo de 60 bytes no meio físico.
+O frame Ethernet que carrega o pacote usa o tipo 0x0806. São 28 bytes de ARP e 14 do cabeçalho Ethernet: 42 bytes, que a placa completa até o mínimo de 60 bytes no meio físico.
 
 ### 7.3 Requisição, resposta e aprendizado
 
@@ -1334,7 +1334,7 @@ Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s co
 
 ### 7.5 Fora da sub-rede e proxy ARP
 
-- O broadcast **não atravessa roteadores**. Para um destino em outra rede, o host faz o ARP do **gateway**, e o quadro leva o MAC do gateway com o IP de destino remoto.
+- O broadcast **não atravessa roteadores**. Para um destino em outra rede, o host faz o ARP do **gateway**, e o frame leva o MAC do gateway com o IP de destino remoto.
 - No **proxy ARP** ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027), sem classificação de status no índice do RFC Editor), o roteador responde a requisições por endereços de outras redes usando o próprio MAC. Serve para hosts sem gateway, mas esconde erros de máscara e de rota.
 
 ### 7.6 ARP gratuito, Probe e Announce ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227))
@@ -1373,7 +1373,7 @@ O ARP **não tem autenticação**: o host aceita qualquer resposta que pareça v
 O simulador mostra um único segmento Ethernet com três hosts (o switch não aparece, mas é ele que entrega o broadcast a todos). Os endereços são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)), os tempos são didáticos e, no destino remoto, a resposta do ping é gerada pelo gateway, sem simular a rede além dele. No modo de conflito, os tempos da [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) são valores fixos (a RFC sorteia intervalos). O estado STALE revalida por unicast antes do ping (o Linux usa o estado DELAY, de 5 s, e envia o pacote antes de revalidar). O failover usa Gratuitous ARP Reply; a [RFC 5227](https://www.rfc-editor.org/rfc/rfc5227) (seção 3) descreve o Request. Fora do escopo: o NDP do IPv6.
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

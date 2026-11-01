@@ -102,7 +102,7 @@ const components: Components = {
 export const withoutCredit = (markdown: string) => markdown.replace(/\n+---\n+\*[^*\n]+ é um projeto mantido pelo [^*\n]+\*\s*$/, '\n');
 
 export function DocView({ markdown }: { markdown: string }) {
-  const siglas = /^## ((?:\d+\. )?Siglas deste documento)$/m.exec(markdown);
+  const siglas = /^## ((?:\d+\. )?Glossário)$/m.exec(markdown);
   return (
     <div className="min-w-0 max-w-4xl">
       {siglas && (

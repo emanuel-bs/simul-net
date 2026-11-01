@@ -48,7 +48,7 @@ export const topology = (sub: string, tr: Trace): TopologyDef => {
         links: [['sta', 'ap1', { label: 'rádio', dashed: true }], ['ap1', 'lan', { label: 'cabo' }]],
         notes: (t: Trace, now: number) => {
           const ps = t.raw.ps as { arrival: number } | undefined;
-          return { ap1: ps && now >= ps.arrival ? ['guarda 1 quadro do AID 1'] : ['beacon a cada 102,4 ms'] };
+          return { ap1: ps && now >= ps.arrival ? ['guarda 1 frame do AID 1'] : ['beacon a cada 102,4 ms'] };
         },
       };
     }

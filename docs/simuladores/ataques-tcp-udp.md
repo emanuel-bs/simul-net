@@ -13,7 +13,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 
 ### 1.1 Legenda dos diagramas
 
@@ -600,13 +600,13 @@ O painel lateral acompanha as fases do NIST SP 800-61r2 (substituída pela Rev. 
 9. Para cada cenário, encontre o menor conjunto de controles que obtém "Postura adequada".
 
 
-## 7. Siglas deste documento
+## 7. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
 | **CDN** | Content Delivery Network, rede de distribuição de conteúdo | serviço com servidores espalhados que entregam o conteúdo perto do usuário e absorvem volume de tráfego |

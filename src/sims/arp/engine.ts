@@ -70,7 +70,7 @@ export interface FrameOpts {
   tags?: string[];
 }
 
-/** Quadro ARP (requisição ou resposta) entre dois hosts do trace. */
+/** Frame ARP (requisição ou resposta) entre dois hosts do trace. */
 export function arpFrame(tr: Trace, from: HostKey, to: HostKey, op: 1 | 2, o: FrameOpts): Message {
   return tr.add(from, to, {
     label: o.label, proto: 'ARP', color: o.bad ? C0.bad : op === 1 ? C0.plain : C0.data, len: 42, info: o.info, phaseName: op === 1 ? 'Requisição' : 'Resposta',
@@ -226,7 +226,7 @@ export function buildArp(P: ArpParams, _sub: string): Trace {
       tr.lg(q2.tArr, HOSTS[rb].name + ' guarda ' + A.ip + ' → ' + A.mac + ' (aprendido da requisição).', 'conn');
       const ac = arpMsg(rb, 'a', 2, {
         sha: mac, spa: askIp, tha: A.mac, tpa: A.ip, dmac: A.mac, label: 'ARP Reply', info: askIp + ' is at ' + mac,
-        about: proxyMode ? 'O roteador responde no lugar do destino remoto, entregando o próprio MAC: A enviará os quadros para ele (proxy ARP, RFC 1027).' : 'Resposta em unicast, só para A: "' + askIp + ' está em ' + mac + '".',
+        about: proxyMode ? 'O roteador responde no lugar do destino remoto, entregando o próprio MAC: A enviará os frames para ele (proxy ARP, RFC 1027).' : 'Resposta em unicast, só para A: "' + askIp + ' está em ' + mac + '".',
         tags: proxyMode ? ['proxy ARP'] : [],
       });
       ne('a', askIp, mac, 'REACHABLE', ac.tArr);
@@ -261,13 +261,13 @@ export function buildArp(P: ArpParams, _sub: string): Trace {
   const dead = P.cache === 'fresh' && !P.online; // entrada recente, mas o host já não responde
   const echoField = (type: string, code: string, dmac: string, smac: string, src: string, dst: string): Field[] => [
     ...ethHeader(dmac, smac, '0x0800 (IPv4)'),
-    ...fl({ sec: 'IPv4 (RFC 791)' }, ['Origem', src, ''], ['Destino', dst, P.dest === 'local' ? '' : 'o destino final; o quadro vai ao MAC do próximo salto'], ['Protocolo', '1 (ICMP)', '']),
+    ...fl({ sec: 'IPv4 (RFC 791)' }, ['Origem', src, ''], ['Destino', dst, P.dest === 'local' ? '' : 'o destino final; o frame vai ao MAC do próximo salto'], ['Protocolo', '1 (ICMP)', '']),
     ...fl({ sec: 'ICMP (RFC 792)' }, ['Tipo', type, ''], ['Código', code, '']),
   ];
   const e1 = tr.add('a', nhKey, {
     label: 'Echo Request', proto: 'ICMP', color: dead ? C0.bad : C0.tcp, len: 98, info: 'Echo (ping) request ' + A.ip + ' → ' + dstIp, phaseName: 'Pacote IP', lost: dead,
     fields: echoField('8 (Echo Request)', '0', nh.mac, A.mac, A.ip, dstIp),
-    about: 'Agora A sabe o endereço físico do próximo salto e monta o quadro: MAC de destino = ' + nh.mac + ', IP de destino = ' + dstIp + '.' + (dead ? ' O host está desligado, mas a entrada ainda estava na tabela: o ping não tem resposta.' : ''), tags: dead ? ['sem resposta'] : [],
+    about: 'Agora A sabe o endereço físico do próximo salto e monta o frame: MAC de destino = ' + nh.mac + ', IP de destino = ' + dstIp + '.' + (dead ? ' O host está desligado, mas a entrada ainda estava na tabela: o ping não tem resposta.' : ''), tags: dead ? ['sem resposta'] : [],
   });
   if (dead) {
     R.result = 'noreply';

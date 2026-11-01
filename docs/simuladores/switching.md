@@ -1,6 +1,6 @@
 # Switching e aprendizado de MAC
 
-Encaminhamento de quadros em switches Ethernet: aprendizado do MAC de origem, tabela de endereços e envelhecimento, inundação, filtragem, mudança de porta, broadcast, multicast com IGMP snooping, endereços reservados e a inundação de MAC com a segurança de porta.
+Encaminhamento de frames em switches Ethernet: aprendizado do MAC de origem, tabela de endereços e envelhecimento, inundação, filtragem, mudança de porta, broadcast, multicast com IGMP snooping, endereços reservados e a inundação de MAC com a segurança de porta.
 
 - **Categoria:** Camada de enlace e redes locais
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
@@ -12,7 +12,7 @@ Encaminhamento de quadros em switches Ethernet: aprendizado do MAC de origem, ta
 
 | Modo | Cenário inicial | Cenários |
 | --- | --- | --- |
-| Aprendizado e encaminhamento | Primeiro quadro: inundação e aprendizado | 6.1.1 a 6.1.7 |
+| Aprendizado e encaminhamento | Primeiro frame: inundação e aprendizado | 6.1.1 a 6.1.7 |
 | Inundação de MAC e segurança de porta | Sem ataque | 6.2.1 a 6.2.6 |
 | Broadcast, multicast e reservados | Broadcast é inundado | 6.3.1 a 6.3.5 |
 
@@ -22,7 +22,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -56,7 +56,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 **Tipo B (sequência)**
 
-- [Figura 6.1.1](#611-primeiro-quadro-inundação-e-aprendizado): sequência de "Primeiro quadro: inundação e aprendizado"
+- [Figura 6.1.1](#611-primeiro-frame-inundação-e-aprendizado): sequência de "Primeiro frame: inundação e aprendizado"
 - [Figura 6.1.2](#612-destino-que-não-responde): sequência de "Destino que não responde"
 - [Figura 6.1.3](#613-broadcast-arp-request): sequência de "Broadcast (ARP Request)"
 - [Figura 6.1.4](#614-destinos-já-conhecidos): sequência de "Destinos já conhecidos"
@@ -166,12 +166,12 @@ Cenário, Captura, Mensagem, Tabela de endereços, Decisões, Experimento, Refer
 
 ### 5.2 Situação
 
-- **O que acontece**. Valores: Primeiro quadro: tabela vazia; Destinos já conhecidos; Broadcast (ARP Request); Origem e destino na mesma porta; Host que muda de porta; Envelhecimento da entrada. Padrão: Primeiro quadro: tabela vazia. Modos: Aprendizado e encaminhamento.
+- **O que acontece**. Valores: Primeiro frame: tabela vazia; Destinos já conhecidos; Broadcast (ARP Request); Origem e destino na mesma porta; Host que muda de porta; Envelhecimento da entrada. Padrão: Primeiro frame: tabela vazia. Modos: Aprendizado e encaminhamento.
   - Qual das seis histórias do aprendizado será simulada.
   - **Tabela vazia:** o destino é desconhecido, o switch inunda e aprende a origem. A resposta revela a porta de B.
-  - **Destinos conhecidos:** a tabela já tem os hosts, e o quadro sai só pela porta certa.
+  - **Destinos conhecidos:** a tabela já tem os hosts, e o frame sai só pela porta certa.
   - **Broadcast:** nunca consta da tabela, é sempre inundado.
-  - **Mesma porta:** C e D estão atrás de um hub; o quadro de C para D não precisa sair pelo switch.
+  - **Mesma porta:** C e D estão atrás de um hub; o frame de C para D não precisa sair pelo switch.
   - **Mudança de porta:** o cabo de B vai para outra porta e a tabela fica desatualizada até B transmitir.
   - **Envelhecimento:** sem tráfego, a entrada expira e o destino volta a ser desconhecido.
 - **O que acontece**. Valores: Broadcast (ARP Request); Multicast IP (grupo 239.1.1.1); Endereços de grupo reservados. Padrão: Broadcast (ARP Request). Modos: Broadcast, multicast e reservados.
@@ -184,7 +184,7 @@ Cenário, Captura, Mensagem, Tabela de endereços, Decisões, Experimento, Refer
 
 - **Tempo de envelhecimento (s)** (ajuste avançado). Valores: 60; 300 (padrão do IEEE 802.1D); 600. Padrão: 300 (padrão do IEEE 802.1D). Modos: Aprendizado e encaminhamento.
   - Quanto tempo uma entrada dinâmica sobrevive sem receber tráfego.
-  - Cada quadro recebido de uma origem renova o relógio da entrada dela. Passado o tempo sem tráfego, a entrada é removida.
+  - Cada frame recebido de uma origem renova o relógio da entrada dela. Passado o tempo sem tráfego, a entrada é removida.
   - O padrão recomendado pelo IEEE 802.1D é de 300 s. Tempos curtos liberam espaço na tabela, mas aumentam a inundação.
 - **A e B antes do ataque**. Valores: Fora da tabela (nunca falaram ou expiraram); Já na tabela. Padrão: Fora da tabela (nunca falaram ou expiraram). Modos: Inundação de MAC e segurança de porta.
   - Se o switch já conhecia A e B quando o ataque começou.
@@ -194,26 +194,26 @@ Cenário, Captura, Mensagem, Tabela de endereços, Decisões, Experimento, Refer
 - **Capacidade da tabela (entradas)** (ajuste avançado). Valores: 4; 6. Padrão: 4. Modos: Inundação de MAC e segurança de porta.
   - Quantos endereços a tabela comporta.
   - Um switch real guarda de milhares a centenas de milhares de endereços. O simulador usa valores pequenos para que a tabela encha dentro do diagrama.
-  - Não muda a lógica, só o número de quadros forjados necessários.
+  - Não muda a lógica, só o número de frames forjados necessários.
 
 ### 5.4 Falhas
 
 - **B responde**. Valores: caixa de seleção. Padrão: sim. Modos: Aprendizado e encaminhamento.
   - Vale para os cenários em que B recebe uma pergunta.
-  - Desmarcado, B não responde. O switch só aprende um host quando recebe um quadro **vindo dele**, então B continua desconhecido e os quadros para B continuam inundados.
+  - Desmarcado, B não responde. O switch só aprende um host quando recebe um frame **vindo dele**, então B continua desconhecido e os frames para B continuam inundados.
 
 ### 5.5 Ataque
 
 - **M inunda a tabela com MACs forjados**. Valores: caixa de seleção. Padrão: sim. Modos: Inundação de MAC e segurança de porta.
   - Liga ou desliga a inundação de MAC, para comparar.
-  - M envia quadros com um endereço de origem diferente a cada vez. O switch tenta aprender todos e gasta uma entrada da tabela por quadro.
+  - M envia frames com um endereço de origem diferente a cada vez. O switch tenta aprender todos e gasta uma entrada da tabela por frame.
   - O ataque só funciona na porta em que M está ligado, mas afeta o switch inteiro.
 
 ### 5.6 Defesa
 
 - **Segurança de porta na porta 3**. Valores: Nenhuma; Máximo de 1 MAC: protect (descarta em silêncio); Máximo de 1 MAC: restrict (descarta e alerta); Máximo de 1 MAC: shutdown (desativa a porta). Padrão: Nenhuma. Modos: Inundação de MAC e segurança de porta.
   - Recurso de fabricantes que limita os MACs aceitos em cada porta.
-  - **protect:** descarta os quadros de MACs em excesso, sem registrar.
+  - **protect:** descarta os frames de MACs em excesso, sem registrar.
   - **restrict:** descarta, conta as violações e gera alerta.
   - **shutdown:** desativa a porta na primeira violação (err-disable); é preciso reativá-la.
   - Os nomes dos modos seguem os de um fabricante muito comum; outros usam termos diferentes. Não é um recurso do IEEE.
@@ -235,23 +235,23 @@ Cenário, Captura, Mensagem, Tabela de endereços, Decisões, Experimento, Refer
 
 > **Grupo:** Aprendizado
 
-Um switch começa sem saber onde estão os hosts. Ele aprende olhando a origem de cada quadro que chega e associa o endereço MAC à porta de entrada.
+Um switch começa sem saber onde estão os hosts. Ele aprende olhando a origem de cada frame que chega e associa o endereço MAC à porta de entrada.
 
-#### 6.1.1 Primeiro quadro: inundação e aprendizado
+#### 6.1.1 Primeiro frame: inundação e aprendizado
 
 *Inunda, aprende a origem e, na resposta, aprende o destino.*
 
 **Configuração aplicada:** O que acontece = first; Tempo de envelhecimento (s) = 300; B responde = sim
 
-A tabela está vazia. O switch **não sabe onde B está** e inunda o quadro por todas as portas, mas já aprende A. A resposta de B revela a porta 2, e o quadro seguinte sai só por ela.
+A tabela está vazia. O switch **não sabe onde B está** e inunda o frame por todas as portas, mas já aprende A. A resposta de B revela a porta 2, e o frame seguinte sai só por ela.
 
-**Conceito.** O switch aprende pela origem: cada quadro que chega associa o MAC de origem à porta de entrada. Como o MAC de B ainda é desconhecido, o primeiro quadro é inundado por todas as portas, menos a de entrada. Quando B responde, o switch aprende B, e os quadros seguintes vão só à porta 2.
+**Conceito.** O switch aprende pela origem: cada frame que chega associa o MAC de origem à porta de entrada. Como o MAC de B ainda é desconhecido, o primeiro frame é inundado por todas as portas, menos a de entrada. Quando B responde, o switch aprende B, e os frames seguintes vão só à porta 2.
 
 **O que observar**
 
-- O primeiro quadro chega a B, ao hub (C e D) e é descartado por quem não é o destino.
+- O primeiro frame chega a B, ao hub (C e D) e é descartado por quem não é o destino.
 - Depois da resposta, a tabela tem A (porta 1) e B (porta 2).
-- O terceiro quadro sai só pela porta 2.
+- O terceiro frame sai só pela porta 2.
 
 ```mermaid
 sequenceDiagram
@@ -269,12 +269,12 @@ sequenceDiagram
   Note over n_a,n_d: 2. A resposta de B revela a porta de B
   n_b ->> n_sw: Echo Reply
   n_sw ->> n_a: Echo Reply
-  Note over n_a,n_d: 3. Os quadros seguintes vão só a B
+  Note over n_a,n_d: 3. Os frames seguintes vão só a B
   n_a ->> n_sw: Echo Request
   n_sw ->> n_b: Echo Request
 ```
 
-*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeiro quadro: inundação e aprendizado", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Primeiro frame: inundação e aprendizado", na ordem do tempo, entre Host A, Host B, Switch, Host C, Host D: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Aprendizado e encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -284,22 +284,22 @@ sequenceDiagram
 | Echo Reply | B para A, destino conhecido | só porta 1 |
 | Echo Request | A para B, destino conhecido | só porta 2 |
 
-**Por que importa.** É o mecanismo que torna o switch melhor que o hub: depois de aprender, cada quadro ocupa apenas o enlace do destino.
+**Por que importa.** É o mecanismo que torna o switch melhor que o hub: depois de aprender, cada frame ocupa apenas o enlace do destino.
 
 #### 6.1.2 Destino que não responde
 
-*Sem quadro vindo de B, ele continua desconhecido.*
+*Sem frame vindo de B, ele continua desconhecido.*
 
 **Configuração aplicada:** O que acontece = first; Tempo de envelhecimento (s) = 300; B responde = não
 
-B não responde. O switch só aprende quem **transmite**, então B continua desconhecido e todo quadro para B é inundado.
+B não responde. O switch só aprende quem **transmite**, então B continua desconhecido e todo frame para B é inundado.
 
-**Conceito.** O switch só aprende o endereço de quem transmite. Se B nunca envia nada, o switch não sabe onde ele está, e todo quadro para B é inundado.
+**Conceito.** O switch só aprende o endereço de quem transmite. Se B nunca envia nada, o switch não sabe onde ele está, e todo frame para B é inundado.
 
 **O que observar**
 
 - A tabela tem só A.
-- Os dois quadros para B são inundados.
+- Os dois frames para B são inundados.
 
 ```mermaid
 sequenceDiagram
@@ -375,26 +375,26 @@ sequenceDiagram
 | ARP Request | quem tem 192.168.1.20? | broadcast |
 | ARP Reply | 192.168.1.20 está em 00:00:5e:00:53:14 | só porta 1 |
 
-**Por que importa.** O domínio de broadcast é o conjunto de portas que recebe esses quadros. Redes locais grandes demais têm broadcast demais.
+**Por que importa.** O domínio de broadcast é o conjunto de portas que recebe esses frames. Redes locais grandes demais têm broadcast demais.
 
 > **Grupo:** Encaminhamento
 
-Com a tabela preenchida, o switch decide pelo MAC de destino: encaminha para uma porta, ou filtra quando o destino está do mesmo lado de onde o quadro veio.
+Com a tabela preenchida, o switch decide pelo MAC de destino: encaminha para uma porta, ou filtra quando o destino está do mesmo lado de onde o frame veio.
 
 #### 6.1.4 Destinos já conhecidos
 
-*Cada quadro sai só pela porta do destino.*
+*Cada frame sai só pela porta do destino.*
 
 **Configuração aplicada:** O que acontece = known; Tempo de envelhecimento (s) = 300; B responde = sim
 
-A tabela já tem os quatro hosts. O quadro para B sai **só pela porta 2**. O quadro para C sai pela porta 3, onde o hub o repete também a D.
+A tabela já tem os quatro hosts. O frame para B sai **só pela porta 2**. O frame para C sai pela porta 3, onde o hub o repete também a D.
 
-**Conceito.** Com a tabela preenchida, o switch encaminha por unicast. Atrás de um hub, porém, todos os hosts do segmento ouvem o quadro, porque o hub repete para todas as suas portas.
+**Conceito.** Com a tabela preenchida, o switch encaminha por unicast. Atrás de um hub, porém, todos os hosts do segmento ouvem o frame, porque o hub repete para todas as suas portas.
 
 **O que observar**
 
-- O quadro para B sai só pela porta 2.
-- O quadro para C sai pela porta 3 e o hub o repete a D, que o descarta.
+- O frame para B sai só pela porta 2.
+- O frame para C sai pela porta 3 e o hub o repete a D, que o descarta.
 
 ```mermaid
 sequenceDiagram
@@ -426,19 +426,19 @@ sequenceDiagram
 
 #### 6.1.5 Origem e destino na mesma porta
 
-*O switch não devolve o quadro pela porta de onde veio.*
+*O switch não devolve o frame pela porta de onde veio.*
 
 **Configuração aplicada:** O que acontece = filter; Tempo de envelhecimento (s) = 300; B responde = sim
 
-C e D estão atrás do mesmo hub. O quadro de C para D **é filtrado**: o destino está na porta de entrada, e A e B não são incomodados.
+C e D estão atrás do mesmo hub. O frame de C para D **é filtrado**: o destino está na porta de entrada, e A e B não são incomodados.
 
-**Conceito.** Se o destino está na mesma porta por onde o quadro entrou, o switch o filtra: o destino já o recebeu direto pelo segmento. Encaminhar seria desperdício e duplicaria o quadro.
+**Conceito.** Se o destino está na mesma porta por onde o frame entrou, o switch o filtra: o destino já o recebeu direto pelo segmento. Encaminhar seria desperdício e duplicaria o frame.
 
 **O que observar**
 
-- O quadro de C para D foi ouvido por D através do hub.
+- O frame de C para D foi ouvido por D através do hub.
 - A e B não receberam nada.
-- O quadro de C para A sai só pela porta 1.
+- O frame de C para A sai só pela porta 1.
 
 ```mermaid
 sequenceDiagram
@@ -478,15 +478,15 @@ A tabela não é permanente. Muda quando um host troca de porta e expira quando 
 
 **Configuração aplicada:** O que acontece = move; Tempo de envelhecimento (s) = 300; B responde = sim
 
-O cabo de B vai da porta 2 para a 4. A tabela **continua apontando para a porta 2** e os quadros para B se perdem, até B transmitir e o switch atualizar a entrada.
+O cabo de B vai da porta 2 para a 4. A tabela **continua apontando para a porta 2** e os frames para B se perdem, até B transmitir e o switch atualizar a entrada.
 
 **Conceito.** A tabela associa o MAC de B à porta 2. Quando o cabo vai para a porta 4, o switch continua enviando à porta 2, onde não há mais ninguém. Assim que B transmite, o switch vê o MAC dele na porta 4 e corrige a entrada.
 
 **O que observar**
 
-- O quadro enviado depois da mudança se perde.
+- O frame enviado depois da mudança se perde.
 - A entrada de B muda da porta 2 para a 4 quando B transmite.
-- O quadro seguinte chega.
+- O frame seguinte chega.
 
 ```mermaid
 sequenceDiagram
@@ -528,14 +528,14 @@ sequenceDiagram
 
 **Configuração aplicada:** O que acontece = aging; Tempo de envelhecimento (s) = 300; B responde = sim
 
-Passam-se 300 s sem tráfego. As entradas **expiram**, o destino volta a ser desconhecido e o quadro seguinte é inundado outra vez.
+Passam-se 300 s sem tráfego. As entradas **expiram**, o destino volta a ser desconhecido e o frame seguinte é inundado outra vez.
 
-**Conceito.** Cada entrada dinâmica tem um relógio, renovado quando o host transmite. Passado o tempo de envelhecimento (padrão de 300 s no IEEE 802.1D), a entrada é removida. O próximo quadro para esse destino é inundado outra vez.
+**Conceito.** Cada entrada dinâmica tem um relógio, renovado quando o host transmite. Passado o tempo de envelhecimento (padrão de 300 s no IEEE 802.1D), a entrada é removida. O próximo frame para esse destino é inundado outra vez.
 
 **O que observar**
 
 - As duas entradas expiram durante o silêncio.
-- O quadro depois do silêncio é inundado.
+- O frame depois do silêncio é inundado.
 - A resposta recria a entrada de B.
 
 ```mermaid
@@ -580,17 +580,17 @@ Antes de olhar o ataque, convém ver o comportamento normal da tabela de endere�
 
 #### 6.2.1 Sem ataque
 
-*Sem ataque, só o primeiro quadro é inundado.*
+*Sem ataque, só o primeiro frame é inundado.*
 
 **Configuração aplicada:** M inunda a tabela com MACs forjados = não; A e B antes do ataque = absent; Capacidade da tabela (entradas) = 4; Segurança de porta na porta 3 = none
 
-Sem ataque, a tabela vazia faz o **primeiro** quadro ser inundado (e M o recebe), mas depois o switch aprende A e B e M não vê mais nada.
+Sem ataque, a tabela vazia faz o **primeiro** frame ser inundado (e M o recebe), mas depois o switch aprende A e B e M não vê mais nada.
 
-**Conceito.** Com a tabela vazia, o primeiro quadro de A para B é inundado, e M também o recebe. A resposta de B ensina a porta de B ao switch, e dali em diante o tráfego é unicast.
+**Conceito.** Com a tabela vazia, o primeiro frame de A para B é inundado, e M também o recebe. A resposta de B ensina a porta de B ao switch, e dali em diante o tráfego é unicast.
 
 **O que observar**
 
-- M recebe um único quadro de A e B.
+- M recebe um único frame de A e B.
 - A tabela termina com A e B.
 
 ```mermaid
@@ -634,13 +634,13 @@ A tabela de endereços tem tamanho limitado. Quando ela enche, o switch deixa de
 
 M enche a tabela com origens forjadas. A e B **não podem mais ser aprendidos**, e todo o tráfego entre eles é inundado, inclusive para M.
 
-**Conceito.** Cada quadro forjado consome uma entrada. Quando a tabela enche, o switch não aprende mais ninguém. Como A e B não podem ser aprendidos, todo quadro entre eles tem destino desconhecido e é inundado, e M o recebe.
+**Conceito.** Cada frame forjado consome uma entrada. Quando a tabela enche, o switch não aprende mais ninguém. Como A e B não podem ser aprendidos, todo frame entre eles tem destino desconhecido e é inundado, e M o recebe.
 
 **O que observar**
 
 - A tabela termina cheia de endereços forjados.
 - A tabela marca "não é aprendido" para A e B.
-- M recebe os três quadros legítimos.
+- M recebe os três frames legítimos.
 
 ```mermaid
 sequenceDiagram
@@ -650,18 +650,18 @@ sequenceDiagram
   participant n_sw as Switch<br/>camada 2
   participant n_m as Host M<br/>porta 3 (atacante)
   Note over n_a,n_m: 1. M inunda a tabela com origens forjadas
-  n_m ->> n_sw: Quadro forjado nº 1
-  n_sw ->> n_a: Quadro forjado nº 1
-  n_sw ->> n_b: Quadro forjado nº 1
-  n_m ->> n_sw: Quadro forjado nº 2
-  n_sw ->> n_a: Quadro forjado nº 2
-  n_sw ->> n_b: Quadro forjado nº 2
-  n_m ->> n_sw: Quadro forjado nº 3
-  n_sw ->> n_a: Quadro forjado nº 3
-  n_sw ->> n_b: Quadro forjado nº 3
-  n_m ->> n_sw: Quadro forjado nº 4
-  n_sw ->> n_a: Quadro forjado nº 4
-  n_sw ->> n_b: Quadro forjado nº 4
+  n_m ->> n_sw: Frame forjado nº 1
+  n_sw ->> n_a: Frame forjado nº 1
+  n_sw ->> n_b: Frame forjado nº 1
+  n_m ->> n_sw: Frame forjado nº 2
+  n_sw ->> n_a: Frame forjado nº 2
+  n_sw ->> n_b: Frame forjado nº 2
+  n_m ->> n_sw: Frame forjado nº 3
+  n_sw ->> n_a: Frame forjado nº 3
+  n_sw ->> n_b: Frame forjado nº 3
+  n_m ->> n_sw: Frame forjado nº 4
+  n_sw ->> n_a: Frame forjado nº 4
+  n_sw ->> n_b: Frame forjado nº 4
   Note over n_a,n_m: 2. Tráfego legítimo entre A e B
   n_a ->> n_sw: Echo Request
   n_sw ->> n_b: Echo Request
@@ -680,7 +680,7 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Quadros forjados | um por entrada da tabela | M para todos |
+| Frames forjados | um por entrada da tabela | M para todos |
 | Echo Request e Reply | A e B | inundados, M recebe cópia |
 
 **Por que importa.** Quem está na mesma rede local passa a ver tráfego que não era dele, e o switch passa a se comportar como um hub. Redes de acesso são o alvo típico.
@@ -698,7 +698,7 @@ A tabela enche, mas as entradas de A e B **já existiam** e continuam valendo. O
 **O que observar**
 
 - A tabela enche com as entradas de A e B mais as forjadas.
-- M não recebe nenhum quadro legítimo.
+- M não recebe nenhum frame legítimo.
 
 ```mermaid
 sequenceDiagram
@@ -708,18 +708,18 @@ sequenceDiagram
   participant n_sw as Switch<br/>camada 2
   participant n_m as Host M<br/>porta 3 (atacante)
   Note over n_a,n_m: 1. M inunda a tabela com origens forjadas
-  n_m ->> n_sw: Quadro forjado nº 1
-  n_sw ->> n_a: Quadro forjado nº 1
-  n_sw ->> n_b: Quadro forjado nº 1
-  n_m ->> n_sw: Quadro forjado nº 2
-  n_sw ->> n_a: Quadro forjado nº 2
-  n_sw ->> n_b: Quadro forjado nº 2
-  n_m ->> n_sw: Quadro forjado nº 3
-  n_sw ->> n_a: Quadro forjado nº 3
-  n_sw ->> n_b: Quadro forjado nº 3
-  n_m ->> n_sw: Quadro forjado nº 4
-  n_sw ->> n_a: Quadro forjado nº 4
-  n_sw ->> n_b: Quadro forjado nº 4
+  n_m ->> n_sw: Frame forjado nº 1
+  n_sw ->> n_a: Frame forjado nº 1
+  n_sw ->> n_b: Frame forjado nº 1
+  n_m ->> n_sw: Frame forjado nº 2
+  n_sw ->> n_a: Frame forjado nº 2
+  n_sw ->> n_b: Frame forjado nº 2
+  n_m ->> n_sw: Frame forjado nº 3
+  n_sw ->> n_a: Frame forjado nº 3
+  n_sw ->> n_b: Frame forjado nº 3
+  n_m ->> n_sw: Frame forjado nº 4
+  n_sw ->> n_a: Frame forjado nº 4
+  n_sw ->> n_b: Frame forjado nº 4
   Note over n_a,n_m: 2. Tráfego legítimo entre A e B
   n_a ->> n_sw: Echo Request
   n_sw ->> n_b: Echo Request
@@ -735,10 +735,10 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Quadros forjados | ocupam as vagas livres | M para todos |
+| Frames forjados | ocupam as vagas livres | M para todos |
 | Echo Request e Reply | A e B | só nas portas deles |
 
-**Por que importa.** Um ataque contínuo vence o envelhecimento: quem fica em silêncio por 300 s perde a entrada, e o primeiro quadro seguinte já é inundado.
+**Por que importa.** Um ataque contínuo vence o envelhecimento: quem fica em silêncio por 300 s perde a entrada, e o primeiro frame seguinte já é inundado.
 
 > **Grupo:** Defesas
 
@@ -750,15 +750,15 @@ A defesa limita o que cada porta pode ensinar ao switch. Nenhuma substitui a cif
 
 **Configuração aplicada:** M inunda a tabela com MACs forjados = sim; A e B antes do ataque = absent; Capacidade da tabela (entradas) = 4; Segurança de porta na porta 3 = protect
 
-A porta 3 aceita **um só MAC**. Os demais quadros são descartados em silêncio, a tabela não enche e M não vê o tráfego de A e B.
+A porta 3 aceita **um só MAC**. Os demais frames são descartados em silêncio, a tabela não enche e M não vê o tráfego de A e B.
 
-**Conceito.** Na segurança de porta, a porta guarda no máximo um MAC. Quadros de outros endereços são descartados antes de chegar à tabela. No modo protect isso é silencioso: ninguém é avisado.
+**Conceito.** Na segurança de porta, a porta guarda no máximo um MAC. Frames de outros endereços são descartados antes de chegar à tabela. No modo protect isso é silencioso: ninguém é avisado.
 
 **O que observar**
 
-- O primeiro quadro forjado é aceito e os outros são descartados.
+- O primeiro frame forjado é aceito e os outros são descartados.
 - A tabela não enche.
-- M só recebe o primeiro quadro de A para B, como em qualquer rede.
+- M só recebe o primeiro frame de A para B, como em qualquer rede.
 
 ```mermaid
 sequenceDiagram
@@ -768,12 +768,12 @@ sequenceDiagram
   participant n_sw as Switch<br/>camada 2
   participant n_m as Host M<br/>porta 3 (atacante)
   Note over n_a,n_m: 1. M inunda a tabela com origens forjadas
-  n_m ->> n_sw: Quadro forjado nº 1
-  n_sw ->> n_a: Quadro forjado nº 1
-  n_sw ->> n_b: Quadro forjado nº 1
-  n_m -x n_sw: Quadro forjado nº 2
-  n_m -x n_sw: Quadro forjado nº 3
-  n_m -x n_sw: Quadro forjado nº 4
+  n_m ->> n_sw: Frame forjado nº 1
+  n_sw ->> n_a: Frame forjado nº 1
+  n_sw ->> n_b: Frame forjado nº 1
+  n_m -x n_sw: Frame forjado nº 2
+  n_m -x n_sw: Frame forjado nº 3
+  n_m -x n_sw: Frame forjado nº 4
   Note over n_a,n_m: 2. Tráfego legítimo entre A e B
   n_a ->> n_sw: Echo Request
   n_sw ->> n_b: Echo Request
@@ -790,7 +790,7 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Quadros forjados | descartados a partir do segundo | M |
+| Frames forjados | descartados a partir do segundo | M |
 
 **Por que importa.** A defesa impede a inundação, mas sem alerta o ataque passa despercebido.
 
@@ -802,7 +802,7 @@ sequenceDiagram
 
 Igual ao protect, mas cada violação é **contada e gera alerta**: a equipe fica sabendo do ataque.
 
-**Conceito.** O modo restrict descarta os quadros em excesso, como o protect, e incrementa um contador de violações e emite alerta (por exemplo, uma mensagem de log ou um trap SNMP).
+**Conceito.** O modo restrict descarta os frames em excesso, como o protect, e incrementa um contador de violações e emite alerta (por exemplo, uma mensagem de log ou um trap SNMP).
 
 **O que observar**
 
@@ -817,12 +817,12 @@ sequenceDiagram
   participant n_sw as Switch<br/>camada 2
   participant n_m as Host M<br/>porta 3 (atacante)
   Note over n_a,n_m: 1. M inunda a tabela com origens forjadas
-  n_m ->> n_sw: Quadro forjado nº 1
-  n_sw ->> n_a: Quadro forjado nº 1
-  n_sw ->> n_b: Quadro forjado nº 1
-  n_m -x n_sw: Quadro forjado nº 2
-  n_m -x n_sw: Quadro forjado nº 3
-  n_m -x n_sw: Quadro forjado nº 4
+  n_m ->> n_sw: Frame forjado nº 1
+  n_sw ->> n_a: Frame forjado nº 1
+  n_sw ->> n_b: Frame forjado nº 1
+  n_m -x n_sw: Frame forjado nº 2
+  n_m -x n_sw: Frame forjado nº 3
+  n_m -x n_sw: Frame forjado nº 4
   Note over n_a,n_m: 2. Tráfego legítimo entre A e B
   n_a ->> n_sw: Echo Request
   n_sw ->> n_b: Echo Request
@@ -839,7 +839,7 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Quadros forjados | descartados com alerta | M |
+| Frames forjados | descartados com alerta | M |
 
 **Por que importa.** A equipe de rede é avisada e pode investigar o host da porta.
 
@@ -851,12 +851,12 @@ sequenceDiagram
 
 Na primeira violação, a porta 3 é **desativada** (err-disable) e as entradas dela são removidas. É preciso reativá-la.
 
-**Conceito.** O modo shutdown coloca a porta em err-disable ao primeiro quadro em excesso: o enlace cai, as entradas da porta saem da tabela e M deixa de enviar e de receber. É a reação mais forte e exige reativação manual (ou um temporizador de recuperação).
+**Conceito.** O modo shutdown coloca a porta em err-disable ao primeiro frame em excesso: o enlace cai, as entradas da porta saem da tabela e M deixa de enviar e de receber. É a reação mais forte e exige reativação manual (ou um temporizador de recuperação).
 
 **O que observar**
 
 - A porta 3 vai a "desativada".
-- M não recebe mais nenhum quadro.
+- M não recebe mais nenhum frame.
 - A tabela volta a ter vagas.
 
 ```mermaid
@@ -867,10 +867,10 @@ sequenceDiagram
   participant n_sw as Switch<br/>camada 2
   participant n_m as Host M<br/>porta 3 (atacante)
   Note over n_a,n_m: 1. M inunda a tabela com origens forjadas
-  n_m ->> n_sw: Quadro forjado nº 1
-  n_sw ->> n_a: Quadro forjado nº 1
-  n_sw ->> n_b: Quadro forjado nº 1
-  n_m -x n_sw: Quadro forjado nº 2
+  n_m ->> n_sw: Frame forjado nº 1
+  n_sw ->> n_a: Frame forjado nº 1
+  n_sw ->> n_b: Frame forjado nº 1
+  n_m -x n_sw: Frame forjado nº 2
   Note over n_a,n_m: 2. Tráfego legítimo entre A e B
   n_a ->> n_sw: Echo Request
   n_sw ->> n_b: Echo Request
@@ -886,7 +886,7 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Quadros forjados | o segundo causa a violação | M |
+| Frames forjados | o segundo causa a violação | M |
 
 **Por que importa.** Interrompe o ataque, mas um erro de configuração ou um segundo equipamento legítimo na porta derruba o serviço do usuário.
 
@@ -894,7 +894,7 @@ sequenceDiagram
 
 > **Grupo:** Broadcast
 
-O endereço de broadcast nunca consta da tabela. Todo quadro enviado a ele vai a todos os hosts do mesmo domínio de broadcast.
+O endereço de broadcast nunca consta da tabela. Todo frame enviado a ele vai a todos os hosts do mesmo domínio de broadcast.
 
 #### 6.3.1 Broadcast é inundado
 
@@ -1084,18 +1084,18 @@ Alguns endereços de grupo servem aos protocolos da própria ponte e nunca atrav
 
 #### 6.3.5 BPDU e LLDP não são encaminhados
 
-*BPDU e LLDP são consumidos; um quadro comum é inundado.*
+*BPDU e LLDP são consumidos; um frame comum é inundado.*
 
 **Configuração aplicada:** O que acontece = reserved; IGMP snooping ligado = não; O host B assinou o grupo = sim
 
-Quadros para **01-80-C2-00-00-00** e **01-80-C2-00-00-0E** são consumidos pela ponte. Um quadro comum, em seguida, é inundado normalmente.
+Frames para **01-80-C2-00-00-00** e **01-80-C2-00-00-0E** são consumidos pela ponte. Um frame comum, em seguida, é inundado normalmente.
 
-**Conceito.** O IEEE reserva os endereços de grupo de 01-80-C2-00-00-00 a 0F para protocolos que valem só entre vizinhos diretos, como o spanning tree e o LLDP. Uma ponte não encaminha quadros para esses endereços. O quadro comum do fim mostra o contraste.
+**Conceito.** O IEEE reserva os endereços de grupo de 01-80-C2-00-00-00 a 0F para protocolos que valem só entre vizinhos diretos, como o spanning tree e o LLDP. Uma ponte não encaminha frames para esses endereços. O frame comum do fim mostra o contraste.
 
 **O que observar**
 
 - O BPDU e o LLDP não saem do switch.
-- A origem desses quadros não entra na tabela.
+- A origem desses frames não entra na tabela.
 - O Echo Request é inundado.
 
 ```mermaid
@@ -1106,7 +1106,7 @@ sequenceDiagram
   participant n_sw as Switch<br/>camada 2
   participant n_c as Host C<br/>porta 3 (hub)
   participant n_d as Host D<br/>porta 3 (hub)
-  Note over n_a,n_d: 1. Quadros para endereços de grupo reservados
+  Note over n_a,n_d: 1. Frames para endereços de grupo reservados
   n_a ->> n_sw: BPDU
   n_a ->> n_sw: LLDP
   Note over n_a,n_d: 2. Para comparar: unicast desconhecido
@@ -1132,15 +1132,15 @@ sequenceDiagram
 
 ### 7.1 O que um switch faz
 
-Um **switch** Ethernet é uma ponte multiporta (*MAC bridge*, IEEE 802.1D): recebe quadros em cada porta e decide, **só pelo endereço MAC**, por onde enviá-los. Ele não olha o endereço IP. A especificação de pontes do 802.1D foi incorporada ao IEEE 802.1Q, que hoje é a referência vigente; o simulador usa os dois nomes como os livros-texto. A Ethernet em si é definida pelo IEEE 802.3.
+Um **switch** Ethernet é uma ponte multiporta (*MAC bridge*, IEEE 802.1D): recebe frames em cada porta e decide, **só pelo endereço MAC**, por onde enviá-los. Ele não olha o endereço IP. A especificação de pontes do 802.1D foi incorporada ao IEEE 802.1Q, que hoje é a referência vigente; o simulador usa os dois nomes como os livros-texto. A Ethernet em si é definida pelo IEEE 802.3.
 
-### 7.2 Os três passos para cada quadro
+### 7.2 Os três passos para cada frame
 
 1. **Aprendizado:** o MAC de **origem** é associado à porta de entrada, ou o relógio da entrada é renovado. Endereços de grupo e de broadcast nunca são aprendidos como origem.
 2. **Decisão:** o switch procura o MAC de **destino** na tabela. Destino conhecido em outra porta: **encaminha**. Destino conhecido na própria porta de entrada: **filtra**. Destino desconhecido, broadcast ou multicast: **inunda** (todas as portas, menos a de entrada).
 3. **Envelhecimento:** sem tráfego da origem, a entrada expira. O valor recomendado é de 300 s e é configurável.
 
-### 7.3 Quadro Ethernet II
+### 7.3 Frame Ethernet II
 
 | Campo | Tamanho | Observação |
 | --- | --- | --- |
@@ -1148,9 +1148,9 @@ Um **switch** Ethernet é uma ponte multiporta (*MAC bridge*, IEEE 802.1D): rece
 | Origem | 6 bytes | sempre unicast |
 | Tipo | 2 bytes | 0x0800 IPv4, 0x0806 ARP, 0x88cc LLDP |
 | Dados | 46 a 1500 bytes | preenchidos até o mínimo |
-| FCS | 4 bytes | verificação do quadro; o simulador não a mostra |
+| FCS | 4 bytes | verificação do frame; o simulador não a mostra |
 
-O menor quadro tem 64 bytes (do destino ao FCS). Os tamanhos mostrados no simulador (42 para o ARP, 98 para o ping) são os do cabeçalho e dos dados, sem o preenchimento e sem o FCS.
+O menor frame tem 64 bytes (do destino ao FCS). Os tamanhos mostrados no simulador (42 para o ARP, 98 para o ping) são os do cabeçalho e dos dados, sem o preenchimento e sem o FCS.
 
 ### 7.4 Hub, switch e domínios
 
@@ -1166,11 +1166,11 @@ O menor quadro tem 64 bytes (do destino ao FCS). Os tamanhos mostrados no simula
 
 ### 7.6 Endereços de grupo reservados
 
-Os endereços de `01-80-C2-00-00-00` a `01-80-C2-00-00-0F` são reservados pelo IEEE a protocolos que valem só entre vizinhos diretos, como o spanning tree (00) e o LLDP (0E). Uma ponte processa esses quadros e **não os encaminha**. Alguns equipamentos simples não respeitam isso e os inundam.
+Os endereços de `01-80-C2-00-00-00` a `01-80-C2-00-00-0F` são reservados pelo IEEE a protocolos que valem só entre vizinhos diretos, como o spanning tree (00) e o LLDP (0E). Uma ponte processa esses frames e **não os encaminha**. Alguns equipamentos simples não respeitam isso e os inundam.
 
 ### 7.7 Inundação de MAC e segurança de porta (nível defensivo)
 
-- **Por que é possível:** a tabela de endereços é finita e o switch aprende qualquer origem, sem autenticá-la. Um host que envia quadros com origens inventadas ocupa as vagas.
+- **Por que é possível:** a tabela de endereços é finita e o switch aprende qualquer origem, sem autenticá-la. Um host que envia frames com origens inventadas ocupa as vagas.
 - **Efeito:** com a tabela cheia, hosts novos (e os que expiraram) não são aprendidos. O tráfego para eles é inundado e chega a todas as portas, inclusive à do atacante. O switch passa a se comportar como um hub.
 - **Alcance:** só dentro da rede local (e da VLAN) do atacante. A inundação não atravessa roteadores.
 - **Impacto:** em tráfego sem cifra, o conteúdo é lido. Com TLS ou SSH, o conteúdo segue protegido, mas há perda de desempenho, pelo tráfego a mais.
@@ -1188,14 +1188,14 @@ Os endereços de `01-80-C2-00-00-00` a `01-80-C2-00-00-0F` são reservados pelo 
 
 ### 7.9 Segurança
 
-O aprendizado de endereços **não tem autenticação**: o switch confia no MAC de origem de qualquer quadro. É a base de ataques de camada 2 como a inundação de MAC e o envenenamento de ARP (outro simulador do projeto). A proteção vem de limites por porta, de autenticação de acesso (802.1X) e da cifra de ponta a ponta.
+O aprendizado de endereços **não tem autenticação**: o switch confia no MAC de origem de qualquer frame. É a base de ataques de camada 2 como a inundação de MAC e o envenenamento de ARP (outro simulador do projeto). A proteção vem de limites por porta, de autenticação de acesso (802.1X) e da cifra de ponta a ponta.
 
 ### 7.10 Limitações do simulador
 
-O simulador mostra um único switch com quatro portas, sem VLANs, sem spanning tree e sem agregação de enlaces. Os endereços são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) para IPv4; [RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542) para MAC). A tabela do modo de inundação tem 4 ou 6 entradas, enquanto a de um switch real guarda de milhares a centenas de milhares. Quando a tabela enche, o simulador não aprende o endereço novo e inunda o destino desconhecido, mas o comportamento de um equipamento real varia (alguns removem entradas antigas, outros descartam o quadro). Os tempos de trânsito são didáticos e o simulador não representa colisões, modos de encaminhamento (*store-and-forward* e *cut-through*), velocidade das portas nem a negociação automática. Os modos da segurança de porta seguem a terminologia de um fabricante comum. Não foram citadas subcláusulas do IEEE 802.1D e do 802.1Q por falta de um texto aberto para conferência; as RFCs citadas foram conferidas no rfc-editor.org. Fora do escopo: IPv6 (MLD snooping), VLANs, STP, QoS e as funções de camada 3 do switch.
+O simulador mostra um único switch com quatro portas, sem VLANs, sem spanning tree e sem agregação de enlaces. Os endereços são de documentação ([RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) para IPv4; [RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542) para MAC). A tabela do modo de inundação tem 4 ou 6 entradas, enquanto a de um switch real guarda de milhares a centenas de milhares. Quando a tabela enche, o simulador não aprende o endereço novo e inunda o destino desconhecido, mas o comportamento de um equipamento real varia (alguns removem entradas antigas, outros descartam o frame). Os tempos de trânsito são didáticos e o simulador não representa colisões, modos de encaminhamento (*store-and-forward* e *cut-through*), velocidade das portas nem a negociação automática. Os modos da segurança de porta seguem a terminologia de um fabricante comum. Não foram citadas subcláusulas do IEEE 802.1D e do 802.1Q por falta de um texto aberto para conferência; as RFCs citadas foram conferidas no rfc-editor.org. Fora do escopo: IPv6 (MLD snooping), VLANs, STP, QoS e as funções de camada 3 do switch.
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

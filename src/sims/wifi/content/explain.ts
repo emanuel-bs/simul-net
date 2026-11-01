@@ -36,11 +36,11 @@ export function explain(tr: Trace): string {
       h += '<li>Lição: um AP pode estar visível e, ainda assim, não aceitar o cliente. É preciso procurar outro AP.</li>';
     } else if (R.res === 'ok-rsn') {
       h += '<li>O cliente passou pelos três estados e <span class="chk-ok">chegou ao estado 3</span> (autenticado e associado, com AID ' + R.aid + ').</li>';
-      h += '<li><span class="chk-bad">O primeiro quadro de dados foi descartado:</span> numa rede protegida a porta de dados só abre depois do handshake de quatro vias.</li>';
+      h += '<li><span class="chk-bad">O primeiro frame de dados foi descartado:</span> numa rede protegida a porta de dados só abre depois do handshake de quatro vias.</li>';
       h += '<li>Lição: associar não é o mesmo que ser autorizado. A autenticação 802.11 de sistema aberto é um ritual, e a proteção real está nas chaves.</li>';
     } else {
       h += '<li>O cliente passou pelos três estados e <span class="chk-ok">chegou ao estado 3</span> (autenticado e associado, com AID ' + R.aid + ').</li>';
-      h += '<li>O quadro de dados foi aceito e o AP o <span class="chk-ok">encaminhou à rede cabeada</span> como Ethernet.</li>';
+      h += '<li>O frame de dados foi aceito e o AP o <span class="chk-ok">encaminhou à rede cabeada</span> como Ethernet.</li>';
       h += '<li>Lição: numa rede aberta, associar é tudo o que se precisa. O tráfego também passa em claro, visível a quem escuta o ar.</li>';
     }
   } else if (R.sub === 'meio') {
@@ -50,30 +50,30 @@ export function explain(tr: Trace): string {
       h += '<li>A troca inteira, a partir do instante em que o meio ficou livre, durou ' + fmtTime(R.total - 0.2) + ', dos quais só ' + fmtTime(0.25) + ' foram de dados.</li>';
       h += '<li>Lição: boa parte do tempo de ar é espera e confirmação. Por isso a vazão do Wi-Fi fica bem abaixo da taxa anunciada.</li>';
     } else if (R.res === 'ok-ack') {
-      h += '<li><span class="chk-bad">O ACK se perdeu</span>, embora o quadro tivesse chegado. O cliente esperou o ACKTimeout e <b>dobrou a janela de contenção</b> (15 para 31).</li>';
-      h += '<li>A repetição levou o bit Retry e o mesmo número de sequência: o AP <span class="chk-ok">reconheceu a duplicata</span>, confirmou de novo e não entregou o quadro duas vezes.</li>';
-      h += '<li>Lição: a confiabilidade do Wi-Fi vem da camada de enlace. Cada quadro unicast é confirmado e repetido se preciso.</li>';
+      h += '<li><span class="chk-bad">O ACK se perdeu</span>, embora o frame tivesse chegado. O cliente esperou o ACKTimeout e <b>dobrou a janela de contenção</b> (15 para 31).</li>';
+      h += '<li>A repetição levou o bit Retry e o mesmo número de sequência: o AP <span class="chk-ok">reconheceu a duplicata</span>, confirmou de novo e não entregou o frame duas vezes.</li>';
+      h += '<li>Lição: a confiabilidade do Wi-Fi vem da camada de enlace. Cada frame unicast é confirmado e repetido se preciso.</li>';
     } else if (R.res === 'colisao' || R.res === 'colisao-rts') {
-      h += '<li><span class="chk-bad">Os dois clientes sortearam o mesmo slot</span> e transmitiram juntos: ' + (R.rts ? 'os dois RTS' : 'os dois quadros de dados') + ' se sobrepuseram, e nada foi decodificado.</li>';
-      h += '<li>O tempo perdido na colisão foi de <b>' + w + ' µs</b>' + (R.rts ? ' (colidiram dois RTS curtos)' : ' (colidiram dois quadros inteiros)') + '.</li>';
+      h += '<li><span class="chk-bad">Os dois clientes sortearam o mesmo slot</span> e transmitiram juntos: ' + (R.rts ? 'os dois RTS' : 'os dois frames de dados') + ' se sobrepuseram, e nada foi decodificado.</li>';
+      h += '<li>O tempo perdido na colisão foi de <b>' + w + ' µs</b>' + (R.rts ? ' (colidiram dois RTS curtos)' : ' (colidiram dois frames inteiros)') + '.</li>';
       h += '<li>Na segunda rodada, com a janela dobrada, os sorteios diferiram: quem tirou menos transmitiu e o outro <span class="chk-ok">congelou o contador</span> e esperou.</li>';
-      h += '<li>Lição: ' + (R.rts ? 'com o RTS/CTS a colisão é barata, ao custo de dois quadros a mais em cada transmissão.' : 'o backoff exponencial resolve a disputa, mas cada colisão custa um quadro inteiro de ar.') + '</li>';
+      h += '<li>Lição: ' + (R.rts ? 'com o RTS/CTS a colisão é barata, ao custo de dois frames a mais em cada transmissão.' : 'o backoff exponencial resolve a disputa, mas cada colisão custa um frame inteiro de ar.') + '</li>';
     } else {
-      h += '<li>Os clientes <b>não se ouvem</b>: cada um viu o meio livre e transmitiu. Houve <span class="chk-bad">' + R.collisions + ' colisões</span>, com <b>' + w + ' µs</b> perdidos ' + (R.rts ? '(sempre entre RTS curtos)' : '(sempre entre quadros inteiros de dados)') + '.</li>';
+      h += '<li>Os clientes <b>não se ouvem</b>: cada um viu o meio livre e transmitiu. Houve <span class="chk-bad">' + R.collisions + ' colisões</span>, com <b>' + w + ' µs</b> perdidos ' + (R.rts ? '(sempre entre RTS curtos)' : '(sempre entre frames inteiros de dados)') + '.</li>';
       if (R.rts) h += '<li>Depois que um RTS passou, o outro cliente <span class="chk-ok">ouviu o CTS do AP</span> e esperou pelo NAV: a reserva virtual resolveu o que a escuta de portadora não alcança.</li>';
-      else h += '<li>Só na terceira rodada, com a janela de 63 slots, a diferença entre os sorteios foi maior que o quadro, e a colisão deixou de se repetir.</li>';
-      h += '<li>Lição: ' + (R.rts ? 'o RTS/CTS não elimina o nó oculto, mas reduz muito o custo.' : 'o nó oculto desperdiça tempo de ar em quadros inteiros. O RTS/CTS, o posicionamento dos APs ou mais APs reduzem o problema.') + '</li>';
+      else h += '<li>Só na terceira rodada, com a janela de 63 slots, a diferença entre os sorteios foi maior que o frame, e a colisão deixou de se repetir.</li>';
+      h += '<li>Lição: ' + (R.rts ? 'o RTS/CTS não elimina o nó oculto, mas reduz muito o custo.' : 'o nó oculto desperdiça tempo de ar em frames inteiros. O RTS/CTS, o posicionamento dos APs ou mais APs reduzem o problema.') + '</li>';
     }
   } else if (R.sub === 'mov') {
     const dt = (v: number) => fmtTime(v);
     if (R.res === 'sticky') {
       h += '<li><span class="chk-bad">O cliente não trocou de AP:</span> o AP-02 estava a -58 dBm, e ele seguiu no AP-01 a -80 dBm.</li>';
-      h += '<li>A taxa caiu de 54 para 6 Mb/s, e o mesmo quadro passou a ocupar o meio <b>' + R.ratio.toFixed(1).replace('.', ',') + ' vezes mais tempo</b>.</li>';
+      h += '<li>A taxa caiu de 54 para 6 Mb/s, e o mesmo frame passou a ocupar o meio <b>' + R.ratio.toFixed(1).replace('.', ',') + ' vezes mais tempo</b>.</li>';
       h += '<li>Lição: o acesso ao meio dá a cada cliente a mesma chance de transmitir, não o mesmo tempo. Um cliente lento reduz a vazão de todos os que compartilham o AP.</li>';
     } else if (R.res === 'ps') {
       const p = R.ps;
       h += '<li>O pacote chegou em ' + dt(p.arrival) + ', com o cliente dormindo. O AP o <b>guardou</b> e marcou o AID 1 no TIM do beacon ' + p.kWake + '.</li>';
-      h += '<li>O cliente, que acorda a cada ' + p.L + (p.L === 1 ? ' beacon' : ' beacons') + ', ouviu o beacon ' + p.kWake + ', pediu o quadro com um <b>PS-Poll</b> e o recebeu. Latência: <b>' + dt(p.latency) + '</b>.</li>';
+      h += '<li>O cliente, que acorda a cada ' + p.L + (p.L === 1 ? ' beacon' : ' beacons') + ', ouviu o beacon ' + p.kWake + ', pediu o frame com um <b>PS-Poll</b> e o recebeu. Latência: <b>' + dt(p.latency) + '</b>.</li>';
       h += '<li>Acordou ' + p.wakes + (p.wakes === 1 ? ' vez' : ' vezes') + ' até a entrega. A aba Energia compara os intervalos de escuta.</li>';
       h += '<li>Lição: dormir mais economiza bateria e aumenta a latência. A escolha depende do que o dispositivo faz.</li>';
     } else {
@@ -90,10 +90,10 @@ export function explain(tr: Trace): string {
       h += '<li>O tempo total foi de ' + fmtTime(R.total) + ', o de uma só transmissão.</li>';
       h += '<li>Lição: canais independentes dobram a capacidade da região. Em 2,4 GHz, use 1, 6 e 11.</li>';
     } else if (R.res === 'co') {
-      h += '<li>Mesmo canal: o Cliente 2 <b>ouviu</b> a outra rede e esperou a vez. Os quadros foram em sequência, em ' + fmtTime(R.total) + '.</li>';
+      h += '<li>Mesmo canal: o Cliente 2 <b>ouviu</b> a outra rede e esperou a vez. Os frames foram em sequência, em ' + fmtTime(R.total) + '.</li>';
       h += '<li>Lição: duas redes no mesmo canal dividem a capacidade, mas continuam funcionando sem corromper uns aos outros.</li>';
     } else {
-      h += '<li>Os canais 1 e ' + R.ch2 + ' (' + R.larg + ' MHz) <span class="chk-bad">se sobrepõem</span>: houve ' + R.collisions + ' rodadas de quadros corrompidos antes de os sorteios separarem as transmissões.</li>';
+      h += '<li>Os canais 1 e ' + R.ch2 + ' (' + R.larg + ' MHz) <span class="chk-bad">se sobrepõem</span>: houve ' + R.collisions + ' rodadas de frames corrompidos antes de os sorteios separarem as transmissões.</li>';
       h += '<li>O tempo total foi de ' + fmtTime(R.total) + ', maior que o do mesmo canal.</li>';
       h += '<li>Lição: a sobreposição parcial interfere sem dividir o tempo. Escolha canais iguais ou independentes, nunca intermediários.</li>';
     }

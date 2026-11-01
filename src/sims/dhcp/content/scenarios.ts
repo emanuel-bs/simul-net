@@ -2,7 +2,7 @@
 import type { ScenarioDef, ScenarioDoc } from '../../../sim-core/ui';
 
 export const scenarios: ScenarioDef[] = [
-  { id: "d-dora", g: "Concessão", sub: "dora", label: "DORA básico", set: {}, what: "<p>Um servidor, lease de 8 horas e nenhuma falha: DISCOVER, OFFER, REQUEST e ACK, seguidos do ARP Probe.</p><p>Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no quadro de estados.</p>" },
+  { id: "d-dora", g: "Concessão", sub: "dora", label: "DORA básico", set: {}, what: "<p>Um servidor, lease de 8 horas e nenhuma falha: DISCOVER, OFFER, REQUEST e ACK, seguidos do ARP Probe.</p><p>Acompanhe o estado do cliente (INIT, SELECTING, REQUESTING, BOUND) no painel de estados.</p>" },
   { id: "d-two", g: "Concessão", sub: "dora", label: "Dois servidores", set: {"servers":2}, what: "<p>DHCP-1 e DHCP-2 respondem ao mesmo DISCOVER. O cliente escolhe a primeira oferta e anuncia a escolha no REQUEST em broadcast.</p><p>Repare que o servidor não escolhido devolve o endereço ao pool.</p>" },
   { id: "d-short", g: "Concessão", sub: "dora", label: "Lease curto", set: {"lease":1}, what: "<p>Lease de 1 hora: T1 em 1800 s (50%) e T2 em 3150 s (87,5%). Compare as opções 51, 58 e 59 na aba Mensagem do ACK.</p><p>Leases curtos devolvem endereços ao pool mais rápido, ao custo de mais renovações.</p>" },
   { id: "d-conflict", g: "Falhas", sub: "dora", label: "Conflito de IP", set: {"conflict":true}, what: "<p>O PC-B, com IP estático, já usa o primeiro endereço do pool. O ARP Probe recebe resposta, o cliente envia DHCPDECLINE e recomeça.</p><p>Na segunda negociação, o servidor oferece o endereço seguinte.</p>" },

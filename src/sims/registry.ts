@@ -33,7 +33,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'camada-de-enlace',
     title: 'Camada de enlace e redes locais',
-    description: 'Switching, VLANs, spanning tree e Wi-Fi: como os quadros são encaminhados, como a rede local evita laços e como as redes sem fio operam.',
+    description: 'Switching, VLANs, spanning tree e Wi-Fi: como os frames são encaminhados, como a rede local evita laços e como as redes sem fio operam.',
   },
   {
     id: 'camada-de-rede',
@@ -229,7 +229,7 @@ export const SIMS: SimMeta[] = [
     id: 'switching',
     category: 'camada-de-enlace',
     title: 'Switching e aprendizado de MAC',
-    summary: 'Encaminhamento de quadros em switches Ethernet: aprendizado do MAC de origem, tabela de endereços e envelhecimento, inundação, filtragem, mudança de porta, broadcast, multicast com IGMP snooping, endereços reservados e a inundação de MAC com a segurança de porta.',
+    summary: 'Encaminhamento de frames em switches Ethernet: aprendizado do MAC de origem, tabela de endereços e envelhecimento, inundação, filtragem, mudança de porta, broadcast, multicast com IGMP snooping, endereços reservados e a inundação de MAC com a segurança de porta.',
     topics: ['Aprendizado e tabela de endereços', 'Inundação, filtragem e envelhecimento', 'Broadcast, multicast e IGMP snooping', 'Inundação de MAC e segurança de porta'],
     rfcs: ['IEEE 802.1Q-2022 (inclui 802.1D)', 'IEEE 802.3', 'RFC 1112', 'RFC 4541', 'RFC 9776'],
     status: 'available',
@@ -271,7 +271,7 @@ export const SIMS: SimMeta[] = [
     id: 'wifi-seguranca',
     category: 'protocolos-seguros',
     title: 'Wi-Fi: segurança (WPA2 e WPA3)',
-    summary: 'Autenticação e proteção em redes sem fio: o handshake de quatro vias, PSK e SAE (WPA3), o modo empresarial com 802.1X e EAP, a proteção de quadros de gerência (PMF) e as defesas contra desautenticação e evil twin.',
+    summary: 'Autenticação e proteção em redes sem fio: o handshake de quatro vias, PSK e SAE (WPA3), o modo empresarial com 802.1X e EAP, a proteção de frames de gerência (PMF) e as defesas contra desautenticação e evil twin.',
     topics: [],
     rfcs: ['IEEE 802.11-2020 (inclui 802.11i e 802.11w)', 'IEEE 802.1X', 'RFC 3748'],
     status: 'planned',

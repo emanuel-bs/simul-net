@@ -1,6 +1,6 @@
 // Aba Referência do ARP.
 export const reference: string = [
-  '<h3>O que o ARP resolve</h3><p>O <b>ARP</b> (<i>Address Resolution Protocol</i>, RFC 826) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, <b>dentro da mesma rede local</b>. A Ethernet entrega quadros por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.</p>',
+  '<h3>O que o ARP resolve</h3><p>O <b>ARP</b> (<i>Address Resolution Protocol</i>, RFC 826) descobre o endereço físico (MAC) de um host a partir do endereço IPv4 dele, <b>dentro da mesma rede local</b>. A Ethernet entrega frames por MAC, e o IP só sabe de endereços IP: o ARP liga as duas coisas. No IPv6 essa função é do NDP, tratado em outro protocolo.</p>',
   '<h3>Formato do pacote (RFC 826, para IPv4 sobre Ethernet)</h3><table class="sc-msgs"><thead><tr><th>Campo</th><th>Tamanho</th><th>Valor</th></tr></thead><tbody>' +
     '<tr><td>Tipo de hardware</td><td>2 bytes</td><td class="meaning">1 (Ethernet)</td></tr>' +
     '<tr><td>Tipo de protocolo</td><td>2 bytes</td><td class="meaning">0x0800 (IPv4)</td></tr>' +
@@ -11,7 +11,7 @@ export const reference: string = [
     '<tr><td>IP do remetente (SPA)</td><td>4 bytes</td><td class="meaning">IP de quem envia</td></tr>' +
     '<tr><td>Endereço físico do alvo (THA)</td><td>6 bytes</td><td class="meaning">zerado na requisição</td></tr>' +
     '<tr><td>IP do alvo (TPA)</td><td>4 bytes</td><td class="meaning">o IP perguntado</td></tr></tbody></table>' +
-    '<p>O quadro Ethernet que carrega o pacote usa o tipo 0x0806. São 28 bytes de ARP e 14 do cabeçalho Ethernet: 42 bytes, que a placa completa até o mínimo de 60 bytes no meio físico.</p>',
+    '<p>O frame Ethernet que carrega o pacote usa o tipo 0x0806. São 28 bytes de ARP e 14 do cabeçalho Ethernet: 42 bytes, que a placa completa até o mínimo de 60 bytes no meio físico.</p>',
   '<h3>Requisição, resposta e aprendizado</h3><ul>' +
     '<li>A <b>requisição</b> vai para o broadcast (ff:ff:ff:ff:ff:ff): todos os hosts da rede a recebem e só o dono do IP perguntado responde.</li>' +
     '<li>A <b>resposta</b> vai em unicast para quem perguntou.</li>' +
@@ -23,7 +23,7 @@ export const reference: string = [
     '<tr><td>FAILED</td><td class="meaning">sem resposta depois das tentativas</td></tr></tbody></table>' +
     '<p>Os tempos variam entre sistemas: no Linux, a retransmissão padrão é de 1 s com 3 tentativas, e a validade (REACHABLE) é de algumas dezenas de segundos, sorteada. Em roteadores, o padrão costuma ser de horas. O simulador usa os valores do Linux.</p>',
   '<h3>Fora da sub-rede e proxy ARP</h3><ul>' +
-    '<li>O broadcast <b>não atravessa roteadores</b>. Para um destino em outra rede, o host faz o ARP do <b>gateway</b>, e o quadro leva o MAC do gateway com o IP de destino remoto.</li>' +
+    '<li>O broadcast <b>não atravessa roteadores</b>. Para um destino em outra rede, o host faz o ARP do <b>gateway</b>, e o frame leva o MAC do gateway com o IP de destino remoto.</li>' +
     '<li>No <b>proxy ARP</b> (RFC 1027, sem classificação de status no índice do RFC Editor), o roteador responde a requisições por endereços de outras redes usando o próprio MAC. Serve para hosts sem gateway, mas esconde erros de máscara e de rota.</li></ul>',
   '<h3>ARP gratuito, Probe e Announce (RFC 5227)</h3><ul>' +
     '<li>O <b>ARP Probe</b> é uma requisição com o IP do remetente <b>zerado</b> (0.0.0.0): pergunta se alguém usa o endereço sem contaminar as tabelas dos vizinhos. A RFC prevê 3 Probes, com 1 a 2 s entre eles, depois de uma espera inicial de até 1 s.</li>' +

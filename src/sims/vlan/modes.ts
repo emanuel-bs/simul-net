@@ -1,11 +1,11 @@
-// Motores dos cinco modos do simulador de VLAN. Cada um monta a rede, propaga um ou mais quadros (model.spread)
+// Motores dos cinco modos do simulador de VLAN. Cada um monta a rede, propaga um ou mais frames (model.spread)
 // e registra o resultado em tr.raw para a explicação, as abas e a topologia.
 import { COLORS as C0, newTrace, type Column, type StateDef, type Trace } from '../../sim-core';
 import { arpReq, emit, HOSTS, LABEL, makeNet, ping, R1, spread, SW_MAC, type Net, type Spread, type Wire } from './model';
 
 const STATES: StateDef[] = [
   { key: 'phase', label: 'Fase' },
-  { key: 'via', label: 'Quadro no último enlace' },
+  { key: 'via', label: 'Frame no último enlace' },
   { key: 'res', label: 'Resultado' },
 ];
 
@@ -53,7 +53,7 @@ export function buildMarc(P: MarcParams): Trace {
   tr.st(0, 'phase', 'o Host A envia', 'warn');
   tr.st(0, 'via', '-', '');
   tr.st(0, 'res', 'em andamento', 'warn');
-  tr.ev(0, 'a', 'Envia um ping para o Host C (mesma VLAN 10, outro switch). O host não sabe que existem VLANs: o quadro sai sem tag', '');
+  tr.ev(0, 'a', 'Envia um ping para o Host C (mesma VLAN 10, outro switch). O host não sabe que existem VLANs: o frame sai sem tag', '');
   const sp = spread(net, 'a', ping(HOSTS.a, HOSTS.c));
   run(tr, R, sp, cols);
   const arrived = sp.delivered.indexOf('c') >= 0;
@@ -85,7 +85,7 @@ export function buildSeg(P: SegParams): Trace {
     tr.ev(0, 'a', 'Pergunta por ARP quem tem 192.168.10.12: um broadcast, que vale para toda a VLAN 10', '');
     w = arpReq(HOSTS.a, HOSTS.c.ip);
   } else {
-    tr.ev(0, 'a', 'Envia um quadro com o MAC do Host B (VLAN 20) como destino, como se soubesse o endereço dele', 'warn');
+    tr.ev(0, 'a', 'Envia um frame com o MAC do Host B (VLAN 20) como destino, como se soubesse o endereço dele', 'warn');
     w = ping(HOSTS.a, HOSTS.b);
   }
   const sp = spread(net, 'a', w);
@@ -113,12 +113,12 @@ export function buildRota(P: RotaParams): Trace {
   tr.st(0, 'phase', 'o Host A envia', 'warn');
   tr.st(0, 'via', '-', '');
   tr.st(0, 'res', 'em andamento', 'warn');
-  tr.ev(0, 'a', 'Quer falar com ' + dst.name + ' (' + dst.ip + '), que está em outra sub-rede. Envia o quadro ao gateway 192.168.10.1, cujo MAC é o do R1', '');
+  tr.ev(0, 'a', 'Quer falar com ' + dst.name + ' (' + dst.ip + '), que está em outra sub-rede. Envia o frame ao gateway 192.168.10.1, cujo MAC é o do R1', '');
   const w1 = ping(HOSTS.a, dst, R1.mac);
   const sp1 = spread(net, 'a', w1);
   run(tr, R, sp1, cols);
   if (sp1.delivered.indexOf('r1') < 0) {
-    finish(tr, R, 'nogw', 'o quadro não chegou ao R1', 'bad');
+    finish(tr, R, 'nogw', 'o frame não chegou ao R1', 'bad');
     return tr;
   }
   tr.wait(0.4);
@@ -166,7 +166,7 @@ export function buildNativa(P: NativaParams): Trace {
   R.leakedTo = sp.ignored.filter((k) => HOSTS[k].vlan !== from.vlan);
   R.crossedUntagged = from.vlan === P.nat1;
   if (ok) finish(tr, R, from.vlan === P.nat1 ? 'ok-untag' : 'ok-tag', 'entregue a ' + to.name, 'est');
-  else finish(tr, R, 'leak', 'o quadro foi para a VLAN ' + (R.leakedTo.length ? HOSTS[R.leakedTo[0]].vlan : P.nat2), 'bad');
+  else finish(tr, R, 'leak', 'o frame foi para a VLAN ' + (R.leakedTo.length ? HOSTS[R.leakedTo[0]].vlan : P.nat2), 'bad');
   return tr;
 }
 
@@ -198,26 +198,26 @@ export function buildHop(P: HopParams): Trace {
       tr.ev(m1.tArr, 'sw1', 'Ignora o pedido: a porta é fixa em acesso e não negocia', 'ok');
       tr.st(m1.tArr, 'via', 'sem tronco: porta continua de acesso', 'est');
     } else {
-      tr.add('sw1', 'm', { label: 'Aceita o tronco', proto: 'negociação (proprietária)', color: C0.bad, len: 0, fields: [{ sec: 'Negociação de tronco' }, ['Resultado', 'a porta 5 passa a ser tronco', 'todas as VLANs permitidas']], info: 'O SW1 aceita', about: 'A porta de acesso virou um tronco: o invasor agora pode marcar quadros com qualquer VLAN.', phaseName: 'Negociação' });
+      tr.add('sw1', 'm', { label: 'Aceita o tronco', proto: 'negociação (proprietária)', color: C0.bad, len: 0, fields: [{ sec: 'Negociação de tronco' }, ['Resultado', 'a porta 5 passa a ser tronco', 'todas as VLANs permitidas']], info: 'O SW1 aceita', about: 'A porta de acesso virou um tronco: o invasor agora pode marcar frames com qualquer VLAN.', phaseName: 'Negociação' });
       net.ports['sw1:5'] = { mode: 'trunk', vid: 0, native: 1, allowed: null };
-      tr.ev(tr.t, 'sw1', 'A porta 5 virou tronco: aceita quadros de qualquer VLAN', 'bad');
+      tr.ev(tr.t, 'sw1', 'A porta 5 virou tronco: aceita frames de qualquer VLAN', 'bad');
     }
     tr.wait(0.4);
     const w = ping(HOSTS.m, victim);
     w.tags = [20];
-    tr.ev(tr.t, 'm', 'Envia um quadro marcado com a VLAN 20 ao ' + victim.name, 'warn');
+    tr.ev(tr.t, 'm', 'Envia um frame marcado com a VLAN 20 ao ' + victim.name, 'warn');
     run(tr, R, spread(net, 'm', w), cols);
     R.escaped = R.delivered.indexOf('d') >= 0;
-    if (R.escaped) finish(tr, R, 'spoof-ok', 'o quadro chegou à VLAN 20', 'bad');
+    if (R.escaped) finish(tr, R, 'spoof-ok', 'o frame chegou à VLAN 20', 'bad');
     else finish(tr, R, 'spoof-def', 'ataque barrado na porta', 'est');
   } else {
     tr.ev(0, 'sw1', 'Tronco com a VLAN nativa ' + (def ? '999 (sem hosts)' : '10 (a mesma VLAN do invasor)'), def ? 'ok' : 'warn');
-    tr.ev(0, 'm', 'Envia um quadro com duas tags: a externa é a VLAN 10 e a interna é a VLAN 20', 'warn');
+    tr.ev(0, 'm', 'Envia um frame com duas tags: a externa é a VLAN 10 e a interna é a VLAN 20', 'warn');
     const w = ping(HOSTS.m, victim);
     w.tags = [10, 20];
     run(tr, R, spread(net, 'm', w), cols);
     R.escaped = R.delivered.indexOf('d') >= 0;
-    if (R.escaped) finish(tr, R, 'dbl-ok', 'o quadro chegou à VLAN 20', 'bad');
+    if (R.escaped) finish(tr, R, 'dbl-ok', 'o frame chegou à VLAN 20', 'bad');
     else finish(tr, R, 'dbl-def', 'nenhuma entrega na VLAN 20', 'est');
   }
   return tr;

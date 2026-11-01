@@ -14,7 +14,7 @@ describe('seção de siglas do documento', () => {
     const base = '# Doc\n\n## 1. Visão\n\nO ACK confirma o recebimento. Usa `SYN` em código.' + RODAPE;
     const out = comSecaoDeSiglas(base, 'tcp-udp');
     expect(out.startsWith('# Doc\n\n## 1. Visão\n\nO ACK confirma o recebimento. Usa `SYN` em código.')).toBe(true);
-    expect(out).toContain('## 2. Siglas deste documento');
+    expect(out).toContain('## 2. Glossário');
     expect(out).toMatch(/\| \*\*ACK\*\* \| Acknowledgment, confirmação \|/);
     expect(out.endsWith(RODAPE)).toBe(true);
   });
@@ -22,7 +22,7 @@ describe('seção de siglas do documento', () => {
   it('usa o sentido do simulador e não cria seção sem siglas', () => {
     expect(comSecaoDeSiglas('## 1. A\n\nO DS aponta.' + RODAPE, 'dns')).toContain('Delegation Signer');
     expect(comSecaoDeSiglas('## 1. A\n\nO DS aponta.' + RODAPE, 'wifi')).toContain('Distribution System');
-    expect(comSecaoDeSiglas('## 1. A\n\nSó texto comum.' + RODAPE, 'dns')).not.toContain('Siglas deste documento');
+    expect(comSecaoDeSiglas('## 1. A\n\nSó texto comum.' + RODAPE, 'dns')).not.toContain('Glossário');
   });
 
   it('a página avisa que existe a seção quando o documento a tem', () => {
@@ -33,7 +33,7 @@ describe('seção de siglas do documento', () => {
       </MemoryRouter>,
     );
     expect(screen.getByRole('note').textContent).toContain('Dúvida sobre uma sigla?');
-    expect(screen.getByRole('button', { name: '2. Siglas deste documento' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '2. Glossário' })).toBeTruthy();
   });
 
   it('a página não mostra o aviso quando não há seção', () => {

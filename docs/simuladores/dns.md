@@ -24,7 +24,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -1434,7 +1434,7 @@ Consultas pequenas com a origem trocada pela da vítima: o resolvedor aberto res
 
 - As consultas com origem forjada (192.0.2.200).
 - As respostas grandes dirigidas à vítima.
-- O fator de amplificação no quadro de estados.
+- O fator de amplificação no painel de estados.
 
 ```mermaid
 sequenceDiagram
@@ -1773,7 +1773,7 @@ A rede bloqueia a 853. O cliente estrito prefere ficar sem resposta a consultar 
 
 - A tentativa de conexão bloqueada.
 - Nenhuma consulta em UDP 53.
-- O quadro de estados: sem resposta (falha fechada).
+- O painel de estados: sem resposta (falha fechada).
 
 ```mermaid
 sequenceDiagram
@@ -1911,13 +1911,13 @@ O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [
 9. No modo **DoT e DoH**, compare o que o observador lê nos três transportes e discuta a política estrita contra a oportunista.
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ACL** | Access Control List, lista de controle de acesso | conjunto ordenado de regras que permite ou nega tráfego conforme endereços, portas e protocolos |
 | **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |

@@ -24,7 +24,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -334,8 +334,8 @@ Cenário, Captura, Mensagem, Portas, Instâncias (modos: MSTP), Experimento, Ref
 
 - **Spanning tree**. Valores: Desligado (laço físico ativo); Ligado (uma porta bloqueada). Padrão: Desligado (laço físico ativo). Modos: Laço e tempestade.
   - Compara a rede com e sem o protocolo.
-  - **Desligado:** cada switch inunda o broadcast por todas as portas, e o quadro dá voltas no triângulo sem parar.
-  - **Ligado:** uma porta bloqueada quebra o laço, e o quadro chega uma só vez a cada host.
+  - **Desligado:** cada switch inunda o broadcast por todas as portas, e o frame dá voltas no triângulo sem parar.
+  - **Ligado:** uma porta bloqueada quebra o laço, e o frame chega uma só vez a cada host.
 
 ### 5.8 Defesa
 
@@ -965,7 +965,7 @@ sequenceDiagram
 
 > **Grupo:** Laço físico
 
-Um quadro Ethernet não tem TTL. Em um laço de pontes, um broadcast circula para sempre, e o spanning tree existe para impedir isso.
+Um frame Ethernet não tem TTL. Em um laço de pontes, um broadcast circula para sempre, e o spanning tree existe para impedir isso.
 
 #### 6.4.1 Sem STP: tempestade de broadcast
 
@@ -975,12 +975,12 @@ Um quadro Ethernet não tem TTL. Em um laço de pontes, um broadcast circula par
 
 Um único broadcast de A entra no triângulo. Cada switch o **inunda** pelas outras portas, e duas cópias circulam para sempre, em sentidos opostos.
 
-**Conceito.** Sem spanning tree, cada ponte inunda o broadcast por todas as portas menos a de entrada. No triângulo, duas cópias saem do SW1 em sentidos opostos e dão voltas sem parar; o quadro Ethernet não tem TTL. Cada volta entrega mais cópias aos hosts e faz a tabela MAC dos switches mudar de porta.
+**Conceito.** Sem spanning tree, cada ponte inunda o broadcast por todas as portas menos a de entrada. No triângulo, duas cópias saem do SW1 em sentidos opostos e dão voltas sem parar; o frame Ethernet não tem TTL. Cada volta entrega mais cópias aos hosts e faz a tabela MAC dos switches mudar de porta.
 
 **O que observar**
 
 - Duas cópias circulam em sentidos opostos.
-- B recebe cópias repetidas, e A recebe cópias do próprio quadro.
+- B recebe cópias repetidas, e A recebe cópias do próprio frame.
 - O MAC de A passa a chegar ao SW1 por portas diferentes.
 
 ```mermaid
@@ -995,7 +995,7 @@ sequenceDiagram
   n_a ->> n_sw1: ARP Request
   n_sw1 ->> n_sw2: ARP Request
   n_sw1 ->> n_sw3: ARP Request
-  Note over n_a,n_b: 2. O quadro dá voltas no laço
+  Note over n_a,n_b: 2. O frame dá voltas no laço
   n_sw2 ->> n_sw3: ARP Request
   n_sw3 ->> n_sw2: ARP Request
   n_sw3 ->> n_b: ARP Request
@@ -1031,7 +1031,7 @@ sequenceDiagram
 
 **Configuração aplicada:** Spanning tree = stp; Quem tem a menor prioridade = mac
 
-O mesmo broadcast, com o spanning tree ligado. Uma porta em **Bloqueio** descarta o quadro, e cada host o recebe uma só vez.
+O mesmo broadcast, com o spanning tree ligado. Uma porta em **Bloqueio** descarta o frame, e cada host o recebe uma só vez.
 
 **Conceito.** Com o spanning tree, um dos enlaces do triângulo fica bloqueado. O broadcast se espalha só pela árvore, e a cópia que chega à porta em Bloqueio é descartada.
 
@@ -1052,7 +1052,7 @@ sequenceDiagram
   n_a ->> n_sw1: ARP Request
   n_sw1 ->> n_sw2: ARP Request
   n_sw1 -x n_sw3: ARP Request
-  Note over n_a,n_b: 2. O quadro segue pela árvore
+  Note over n_a,n_b: 2. O frame segue pela árvore
   n_sw2 ->> n_sw3: ARP Request
   n_sw3 ->> n_b: ARP Request
 ```
@@ -1198,7 +1198,7 @@ sequenceDiagram
 
 ### 7.1 Para que serve
 
-Uma rede local com enlaces redundantes forma **laços**. Como o quadro Ethernet não tem TTL, um broadcast preso num laço circula para sempre, e as tabelas MAC dos switches perdem a estabilidade. O **spanning tree** escolhe, entre as pontes, uma árvore sem laços e deixa em **Bloqueio** as portas que a formariam. Se um enlace da árvore falha, uma porta bloqueada é reaberta.
+Uma rede local com enlaces redundantes forma **laços**. Como o frame Ethernet não tem TTL, um broadcast preso num laço circula para sempre, e as tabelas MAC dos switches perdem a estabilidade. O **spanning tree** escolhe, entre as pontes, uma árvore sem laços e deixa em **Bloqueio** as portas que a formariam. Se um enlace da árvore falha, uma porta bloqueada é reaberta.
 
 As versões são três: o **STP** (IEEE 802.1D), o **RSTP** (IEEE 802.1w, hoje parte do 802.1D-2004) e o **MSTP** (IEEE 802.1s). Os três foram incorporados ao IEEE 802.1Q, que é a referência vigente. Fabricantes oferecem ainda versões por VLAN (como o PVST+ e o Rapid PVST+), que não são tratadas aqui.
 
@@ -1280,7 +1280,7 @@ O funcionamento do spanning tree é definido pelo IEEE, e não por uma RFC. A **
 O simulador mostra um triângulo de três switches (quatro pontes, no modo de proteções). Os endereços são de documentação ([RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)), os tempos de trânsito são didáticos, e os temporizadores do protocolo (Hello 2 s, Max Age 20 s e Forward Delay 15 s) são os padrões. A eleição é simulada por rodadas de BPDUs, sem os temporizadores de Hello nem o envelhecimento da informação (Max Age). Na falha da raiz, o simulador refaz a eleição entre as pontes que sobraram. Uma porta que já encaminha e muda de papel continua encaminhando. A topologia usa a tabela longa de custos e uma só instância de STP. No RSTP, os papéis de backup e as portas de borda não aparecem, e o MSTP mostra a sincronização só do CIST (as instâncias seguem a mesma lógica). Não foram citadas cláusulas do IEEE 802.1Q-2022 (que incorpora o 802.1D, o 802.1w e o 802.1s) por falta de um texto aberto para conferência. Fora do escopo: PVST+, Rapid PVST+, agregação de enlaces e o spanning tree de camada 3.
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

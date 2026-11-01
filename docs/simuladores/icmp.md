@@ -22,7 +22,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -482,7 +482,7 @@ A rede 10.0.4.0/24 existe e está conectada a R3, mas ninguém usa 10.0.4.99. R3
 
 Repare no tempo: o erro só chega cerca de 3 s depois, a espera do ARP.
 
-**Conceito.** **Host Unreachable** (tipo 3, código 1): a rede de destino existe e está ligada ao último roteador, mas nenhum equipamento responde ao **ARP** pelo endereço pedido. Sem o endereço MAC, o roteador não consegue montar o quadro de entrega.
+**Conceito.** **Host Unreachable** (tipo 3, código 1): a rede de destino existe e está ligada ao último roteador, mas nenhum equipamento responde ao **ARP** pelo endereço pedido. Sem o endereço MAC, o roteador não consegue montar o frame de entrega.
 
 **O que observar**
 
@@ -1133,7 +1133,7 @@ O modelo cobre o ICMP do IPv4 ([RFC 792](https://www.rfc-editor.org/rfc/rfc792))
 6. **Porta inalcançável** com `-p 9999` e com `-p 53`: como um scan UDP distingue porta aberta, fechada e filtrada?
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

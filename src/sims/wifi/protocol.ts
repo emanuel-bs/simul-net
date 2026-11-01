@@ -35,7 +35,7 @@ export const wifiProtocol: ProtocolDef = {
     { color: COLORS.tcp, label: 'Controle (ACK, RTS, CTS, PS-Poll)' },
     { color: COLORS.data, label: 'Dados e Ethernet' },
     { color: COLORS.enc, label: 'Handshake de chaves (EAPOL-Key)' },
-    { color: COLORS.bad, label: 'Colisão, quadro perdido ou descartado' },
+    { color: COLORS.bad, label: 'Colisão, frame perdido ou descartado' },
   ],
   build: (P, sub) => {
     if (sub === 'meio') return buildMeio(P as unknown as MeioParams);

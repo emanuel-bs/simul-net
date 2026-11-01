@@ -1,6 +1,6 @@
 // Motor do modo Laço e tempestade de broadcast. Um broadcast de A entra no triângulo de switches.
-//  - sem STP, as pontes inundam o quadro por todas as portas e ele dá voltas para sempre (o quadro Ethernet não tem TTL);
-//  - com STP, uma porta bloqueada corta o laço e o quadro chega uma só vez a cada destino.
+//  - sem STP, as pontes inundam o frame por todas as portas e ele dá voltas para sempre (o frame Ethernet não tem TTL);
+//  - com STP, uma porta bloqueada corta o laço e o frame chega uma só vez a cada destino.
 // O triângulo só tem duas cópias circulando; em malhas com mais enlaces o número de cópias cresce de forma exponencial.
 import { COLORS as C0, newTrace, type Column, type Field, type StateDef, type Trace } from '../../sim-core';
 import { compute, makeBridges, makeLinks, other, portsOf, type Link, type PortEv } from './model';
@@ -39,7 +39,7 @@ const arp: Field[] = [
   ['Tipo', '0x0806 (ARP)', ''],
   { sec: 'ARP (RFC 826)' },
   ['Operação', '1 (requisição)', ''],
-  ['IP do alvo', '192.168.1.99', 'ninguém responde: o quadro só circula'],
+  ['IP do alvo', '192.168.1.99', 'ninguém responde: o frame só circula'],
 ];
 
 export function buildLaco(P: LacoParams): Trace {
@@ -61,9 +61,9 @@ export function buildLaco(P: LacoParams): Trace {
   tr.ev(0, 'sw1', stp ? 'Spanning tree convergido: uma porta está bloqueada' : 'Spanning tree desligado: as três pontes formam um laço', stp ? 'ok' : 'warn');
   const first = tr.add('a', 'sw1', {
     label: 'ARP Request', proto: 'ARP', len: 42, color: C0.plain, info: 'Who has 192.168.1.99? Tell 192.168.1.10', phaseName: 'Broadcast', fields: arp,
-    about: 'Um broadcast comum, como o de qualquer ARP. O quadro Ethernet não tem campo de TTL: nada o faz expirar.',
+    about: 'Um broadcast comum, como o de qualquer ARP. O frame Ethernet não tem campo de TTL: nada o faz expirar.',
   });
-  tr.ev(first.tArr + 0.4, 'sw1', 'Aprende A na porta de acesso e inunda o quadro', '');
+  tr.ev(first.tArr + 0.4, 'sw1', 'Aprende A na porta de acesso e inunda o frame', '');
 
   const by = (n: number) => brs.find((b) => b.n === n)!;
   type Arr = { at: number; via: string };
@@ -76,7 +76,7 @@ export function buildLaco(P: LacoParams): Trace {
   };
 
   for (let round = 1; round <= ROUNDS && cur.length; round++) {
-    if (round === 2) tr.phase(stp ? '2. O quadro segue pela árvore' : '2. O quadro dá voltas no laço', stp ? 'árvore' : 'laço');
+    if (round === 2) tr.phase(stp ? '2. O frame segue pela árvore' : '2. O frame dá voltas no laço', stp ? 'árvore' : 'laço');
     const t0 = tr.t;
     const next: Arr[] = [];
     let sent = 0;
@@ -86,11 +86,11 @@ export function buildLaco(P: LacoParams): Trace {
         const nb = other(l, arr.at);
         if (stp && tree.role(arr.at, l.id) === 'alternate') return;
         const blockedFar = stp && tree.role(nb, l.id) === 'alternate';
-        msg(arr.at, nb, t0, blockedFar, blockedFar ? ['descartado: porta bloqueada'] : [], blockedFar ? 'O quadro chega a uma porta em Bloqueio e é descartado: o laço fica cortado aqui.' : 'A ponte repassa o broadcast por todas as portas, menos a de entrada.');
+        msg(arr.at, nb, t0, blockedFar, blockedFar ? ['descartado: porta bloqueada'] : [], blockedFar ? 'O frame chega a uma porta em Bloqueio e é descartado: o laço fica cortado aqui.' : 'A ponte repassa o broadcast por todas as portas, menos a de entrada.');
         sent++;
         if (blockedFar) {
           R.lost++;
-          tr.ev(t0 + tr.ow + 0.4, by(nb).key, 'Porta em Bloqueio: descarta o quadro', 'ok');
+          tr.ev(t0 + tr.ow + 0.4, by(nb).key, 'Porta em Bloqueio: descarta o frame', 'ok');
         } else next.push({ at: nb, via: l.id });
       });
       const h = hostOf[arr.at];
@@ -101,7 +101,7 @@ export function buildLaco(P: LacoParams): Trace {
         else R.dupA++;
       }
     });
-    // o switch que recebe o quadro de volta pelas portas entre pontes vê o MAC de A mudar de porta
+    // o switch que recebe o frame de volta pelas portas entre pontes vê o MAC de A mudar de porta
     cur.forEach((arr) => {
       if (arr.at === 1 && arr.via !== 'host') {
         R.flaps++;
@@ -122,9 +122,9 @@ export function buildLaco(P: LacoParams): Trace {
     tr.phase('3. E continua indefinidamente', 'tempestade');
     tr.st(tr.t, 'phase', 'tempestade', 'bad');
     tr.ev(tr.t, 'sw2', 'As cópias seguem circulando sem parar: só desligar um enlace interrompe', 'warn');
-    tr.lg(tr.t, 'Tempestade de broadcast: o quadro não expira. Cada volta entrega mais cópias a A e a B e faz o MAC de A mudar de porta.', 'loss');
+    tr.lg(tr.t, 'Tempestade de broadcast: o frame não expira. Cada volta entrega mais cópias a A e a B e faz o MAC de A mudar de porta.', 'loss');
   } else {
-    tr.phase('3. O quadro acabou', 'fim');
+    tr.phase('3. O frame acabou', 'fim');
     tr.st(tr.t, 'phase', 'sem laço', 'est');
     tr.ev(tr.t, 'b', 'Recebeu o broadcast uma única vez', 'ok');
     tr.lg(tr.t, 'Com a porta bloqueada, o broadcast chegou uma vez a cada host e não voltou.', 'conn');

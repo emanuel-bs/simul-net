@@ -4,7 +4,7 @@ Lista dos simuladores do Simul-Net por categoria. A fonte única é `src/sims/re
 
 ## Camada de enlace e redes locais
 
-Switching, VLANs, spanning tree e Wi-Fi: como os quadros são encaminhados, como a rede local evita laços e como as redes sem fio operam.
+Switching, VLANs, spanning tree e Wi-Fi: como os frames são encaminhados, como a rede local evita laços e como as redes sem fio operam.
 
 | Simulador | Motor | Situação | RFCs e padrões |
 | --- | --- | --- | --- |

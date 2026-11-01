@@ -1489,7 +1489,7 @@ Não há criptografia real: chaves, fingerprints e hashes são valores determin�
 8. **ProxyJump:** por que é melhor que o ForwardAgent? Quem verifica a chave de host do alvo?
 
 
-## 7. Siglas deste documento
+## 7. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

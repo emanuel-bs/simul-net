@@ -23,7 +23,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 | B, sequência | As mensagens na ordem do tempo, entre os participantes. É dinâmico. | Um único cenário, com a configuração indicada | Ao diagrama de sequência e à aba Captura |
 
 ### 2.1 Legenda dos diagramas
@@ -69,7 +69,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 - [Figura 6.1.4](#614-rede-protegida-a-associação-não-basta): sequência de "Rede protegida: a associação não basta"
 - [Figura 6.1.5](#615-ap-lotado-recusa-a-associação): sequência de "AP lotado recusa a associação"
 - [Figura 6.2.1](#621-esperar-sortear-o-backoff-transmitir-e-receber-o-ack): sequência de "Esperar, sortear o backoff, transmitir e receber o ACK"
-- [Figura 6.2.2](#622-o-ack-se-perde-e-o-quadro-é-repetido): sequência de "O ACK se perde e o quadro é repetido"
+- [Figura 6.2.2](#622-o-ack-se-perde-e-o-frame-é-repetido): sequência de "O ACK se perde e o frame é repetido"
 - [Figura 6.2.3](#623-dois-clientes-escolhem-o-mesmo-slot): sequência de "Dois clientes escolhem o mesmo slot"
 - [Figura 6.2.4](#624-a-mesma-colisão-agora-com-rtscts): sequência de "A mesma colisão, agora com RTS/CTS"
 - [Figura 6.2.5](#625-nó-oculto-sem-rtscts): sequência de "Nó oculto sem RTS/CTS"
@@ -259,19 +259,19 @@ Cenário, Captura, Mensagem, Estados (modos: Descoberta e associação; Roaming 
 - **O que acontece**. Valores: Um cliente, transmissão normal; O ACK se perde; Dois clientes escolhem o mesmo slot; Nó oculto: os clientes não se ouvem. Padrão: Um cliente, transmissão normal. Modos: Acesso ao meio.
   - Quatro casos do acesso ao meio.
   - **Normal:** o cliente espera o meio livre, faz o backoff, transmite e recebe o ACK.
-  - **ACK perdido:** o quadro chega, mas o ACK não volta. O cliente repete e o AP descarta a duplicata.
+  - **ACK perdido:** o frame chega, mas o ACK não volta. O cliente repete e o AP descarta a duplicata.
   - **Mesmo slot:** dois clientes sorteiam o mesmo valor de backoff e transmitem juntos.
   - **Nó oculto:** dois clientes ouvem o AP, mas não ouvem um ao outro (obstáculo ou distância). Não detectam a transmissão do outro e colidem no AP.
 - **Usar RTS/CTS**. Valores: caixa de seleção. Padrão: não. Modos: Acesso ao meio.
-  - Reserva o meio antes de enviar o quadro de dados.
-  - Com o RTS/CTS, o cliente envia um quadro curto (RTS), o AP responde com outro (CTS) e só então vêm os dados. Quem ouve o CTS adia a transmissão (NAV), mesmo que não ouça o cliente.
-  - Custa dois quadros a mais em cada transmissão. Compensa quando os quadros são longos e há colisões, como no nó oculto, porque uma colisão de RTS desperdiça muito menos tempo que uma de dados.
+  - Reserva o meio antes de enviar o frame de dados.
+  - Com o RTS/CTS, o cliente envia um frame curto (RTS), o AP responde com outro (CTS) e só então vêm os dados. Quem ouve o CTS adia a transmissão (NAV), mesmo que não ouça o cliente.
+  - Custa dois frames a mais em cada transmissão. Compensa quando os frames são longos e há colisões, como no nó oculto, porque uma colisão de RTS desperdiça muito menos tempo que uma de dados.
 - **O que acontece**. Valores: Roaming: o cliente troca de AP; Cliente preso ao AP distante; O AP sugere a troca (802.11v); Economia de energia. Padrão: Roaming: o cliente troca de AP. Modos: Roaming e energia.
   - Mobilidade e economia de energia.
   - **Roaming:** o cliente se afasta do AP-01, procura o AP-02 e se reassocia.
   - **Preso ao AP distante:** o cliente não troca de AP enquanto ainda tem conexão, e a taxa cai.
   - **O AP sugere a troca:** o AP-01 pede, com o 802.11v, que o cliente vá para o AP-02.
-  - **Economia de energia:** o cliente dorme e o AP guarda os quadros até ele acordar.
+  - **Economia de energia:** o cliente dorme e o AP guarda os frames até ele acordar.
 
 ### 5.5 Roaming
 
@@ -284,7 +284,7 @@ Cenário, Captura, Mensagem, Estados (modos: Descoberta e associação; Roaming 
 
 - **Intervalo de escuta (beacons)**. Valores: 1 (acorda a cada beacon); 3; 5. Padrão: 1 (acorda a cada beacon). Modos: Roaming e energia.
   - De quantos em quantos beacons o cliente dormindo acorda.
-  - O cliente informa esse valor na associação, e o AP precisa guardar os quadros por pelo menos esse tempo.
+  - O cliente informa esse valor na associação, e o AP precisa guardar os frames por pelo menos esse tempo.
   - Um valor maior economiza energia, porque o rádio fica desligado mais tempo, mas o cliente demora mais a receber o que chegou durante o sono.
 
 ### 5.7 Canais
@@ -311,16 +311,16 @@ Um cliente Wi-Fi passa por três passos antes de usar a rede: descobrir os APs (
 
 **Configuração aplicada:** Tipo de varredura = passivo; Nome da rede (SSID) = visivel; Canal do AP (2,4 GHz) = 6; Segurança da rede = aberta; Resposta do AP à associação = ok
 
-O Notebook liga o rádio e **só escuta**, canal por canal, até ouvir o **beacon** do AP. Depois passa pelos três passos do padrão: **autenticação** (sistema aberto), **associação** e o primeiro quadro de dados, que a rede aberta deixa passar.
+O Notebook liga o rádio e **só escuta**, canal por canal, até ouvir o **beacon** do AP. Depois passa pelos três passos do padrão: **autenticação** (sistema aberto), **associação** e o primeiro frame de dados, que a rede aberta deixa passar.
 
-**Conceito.** Na varredura passiva, o cliente não transmite: sintoniza cada canal por cerca de 110 ms, o bastante para ouvir pelo menos um beacon (enviado a cada 102,4 ms), e aprende o nome da rede, o canal, as taxas e a segurança. Depois vêm dois passos de gerência: a autenticação, que na prática é um ritual de sistema aberto, e a associação, em que o AP atribui um AID ao cliente. Só no estado 3 (autenticado e associado) os quadros de dados são aceitos. Todo quadro unicast é confirmado com ACK.
+**Conceito.** Na varredura passiva, o cliente não transmite: sintoniza cada canal por cerca de 110 ms, o bastante para ouvir pelo menos um beacon (enviado a cada 102,4 ms), e aprende o nome da rede, o canal, as taxas e a segurança. Depois vêm dois passos de gerência: a autenticação, que na prática é um ritual de sistema aberto, e a associação, em que o AP atribui um AID ao cliente. Só no estado 3 (autenticado e associado) os frames de dados são aceitos. Todo frame unicast é confirmado com ACK.
 
 **O que observar**
 
 - O canal 1 sem beacon, pois o AP está no canal 6.
 - O Beacon em broadcast, sem ACK.
 - O estado do cliente passando de 1 para 2 e para 3.
-- Um ACK depois de cada quadro unicast.
+- Um ACK depois de cada frame unicast.
 - O DHCPDISCOVER sendo encaminhado ao fio como Ethernet.
 
 ```mermaid
@@ -476,15 +476,15 @@ sequenceDiagram
 
 **Configuração aplicada:** Tipo de varredura = passivo; Nome da rede (SSID) = visivel; Canal do AP (2,4 GHz) = 6; Segurança da rede = rsn; Resposta do AP à associação = ok
 
-O AP anuncia o elemento **RSN**. A autenticação 802.11 continua "aberta", e o cliente se associa, mas o primeiro quadro de dados é **descartado**: a porta só abre depois do handshake de quatro vias (WPA2 ou WPA3).
+O AP anuncia o elemento **RSN**. A autenticação 802.11 continua "aberta", e o cliente se associa, mas o primeiro frame de dados é **descartado**: a porta só abre depois do handshake de quatro vias (WPA2 ou WPA3).
 
-**Conceito.** Em redes WPA2 e WPA3, o beacon e o Probe Response trazem o elemento RSN, e o bit Privacy fica ligado. A autenticação 802.11 continua de sistema aberto (nas redes WPA3 com SAE ela é substituída pelo próprio SAE), e o cliente se associa normalmente, chegando ao estado 3. Mas a porta de dados (controlada, como no 802.1X) só abre depois do handshake de quatro vias, que deriva as chaves. Por isso o primeiro quadro de dados é descartado.
+**Conceito.** Em redes WPA2 e WPA3, o beacon e o Probe Response trazem o elemento RSN, e o bit Privacy fica ligado. A autenticação 802.11 continua de sistema aberto (nas redes WPA3 com SAE ela é substituída pelo próprio SAE), e o cliente se associa normalmente, chegando ao estado 3. Mas a porta de dados (controlada, como no 802.1X) só abre depois do handshake de quatro vias, que deriva as chaves. Por isso o primeiro frame de dados é descartado.
 
 **O que observar**
 
 - O elemento RSN no Beacon (aba Mensagem).
 - A Association Request também leva o RSN.
-- O AP confirma o quadro de dados com ACK, no nível do MAC, mas o descarta logo depois.
+- O AP confirma o frame de dados com ACK, no nível do MAC, mas o descarta logo depois.
 
 ```mermaid
 sequenceDiagram
@@ -533,7 +533,7 @@ O AP pode recusar a associação e diz o motivo no Status Code. O cliente contin
 
 O AP responde à Association Request com o **Status Code 17**: não consegue tratar mais estações. O cliente continua no **estado 2** (autenticado, mas não associado) e precisa procurar outro AP.
 
-**Conceito.** O AP responde à Association Request com um Status Code. O código 0 é sucesso; o 17 informa que o AP não consegue tratar mais estações associadas. O cliente permanece no estado 2 (autenticado, não associado), no qual só quadros de gerência são aceitos, e deve procurar outro AP ou esperar. Em redes com muitos APs, é assim que se distribui a carga.
+**Conceito.** O AP responde à Association Request com um Status Code. O código 0 é sucesso; o 17 informa que o AP não consegue tratar mais estações associadas. O cliente permanece no estado 2 (autenticado, não associado), no qual só frames de gerência são aceitos, e deve procurar outro AP ou esperar. Em redes com muitos APs, é assim que se distribui a carga.
 
 **O que observar**
 
@@ -576,7 +576,7 @@ sequenceDiagram
 
 > **Grupo:** CSMA/CA: o acesso normal
 
-O meio de rádio é compartilhado e o cliente não consegue ouvir enquanto fala. Por isso o Wi-Fi evita colisões (CSMA/CA) em vez de detectá-las: espera, sorteia um atraso aleatório e exige a confirmação de cada quadro.
+O meio de rádio é compartilhado e o cliente não consegue ouvir enquanto fala. Por isso o Wi-Fi evita colisões (CSMA/CA) em vez de detectá-las: espera, sorteia um atraso aleatório e exige a confirmação de cada frame.
 
 #### 6.2.1 Esperar, sortear o backoff, transmitir e receber o ACK
 
@@ -592,7 +592,7 @@ O cliente **escuta antes de falar**: espera o meio ficar livre por um DIFS (34 �
 
 - O meio ocupado até 200 µs e a espera do DIFS.
 - O backoff de 5 slots (45 µs).
-- O ACK chegando um SIFS depois do quadro.
+- O ACK chegando um SIFS depois do frame.
 - O estado do meio mudando de ocupado para livre.
 
 ```mermaid
@@ -613,27 +613,27 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Dados | quadro de 1500 bytes | cliente para o AP |
+| Dados | frame de 1500 bytes | cliente para o AP |
 | ACK | confirmação, um SIFS depois | AP para o cliente |
 
 **Por que importa.** Todo o desempenho do Wi-Fi decorre dessas esperas: elas são a "taxa" que se paga para dividir o ar. Por isso a vazão real fica bem abaixo da taxa anunciada.
 
-#### 6.2.2 O ACK se perde e o quadro é repetido
+#### 6.2.2 O ACK se perde e o frame é repetido
 
-*Sem ACK, o quadro é repetido e a duplicata é descartada.*
+*Sem ACK, o frame é repetido e a duplicata é descartada.*
 
 **Configuração aplicada:** O que acontece = ack; Usar RTS/CTS = não
 
-O quadro chega, mas o **ACK não volta**. Sem ele, o cliente presume falha, **dobra a janela de contenção** (15 para 31), sorteia outro backoff e repete. O AP reconhece a duplicata pelo número de sequência e não a entrega duas vezes.
+O frame chega, mas o **ACK não volta**. Sem ele, o cliente presume falha, **dobra a janela de contenção** (15 para 31), sorteia outro backoff e repete. O AP reconhece a duplicata pelo número de sequência e não a entrega duas vezes.
 
-**Conceito.** Um quadro unicast só é considerado entregue se o ACK voltar. Se o ACK se perde, o transmissor não sabe se o quadro chegou: ele espera o ACKTimeout, dobra a janela de contenção (backoff exponencial, até 1023) e retransmite com o bit Retry ligado e o mesmo número de sequência. O receptor usa esse número para reconhecer a duplicata: confirma de novo, mas não entrega o quadro duas vezes à rede. Há um limite de tentativas (7 para quadros curtos, por padrão), depois do qual o quadro é descartado.
+**Conceito.** Um frame unicast só é considerado entregue se o ACK voltar. Se o ACK se perde, o transmissor não sabe se o frame chegou: ele espera o ACKTimeout, dobra a janela de contenção (backoff exponencial, até 1023) e retransmite com o bit Retry ligado e o mesmo número de sequência. O receptor usa esse número para reconhecer a duplicata: confirma de novo, mas não entrega o frame duas vezes à rede. Há um limite de tentativas (7 para frames curtos, por padrão), depois do qual o frame é descartado.
 
 **O que observar**
 
 - O ACK perdido (vermelho).
-- A mensagem no AP: quadro recebido, ACK enviado.
+- A mensagem no AP: frame recebido, ACK enviado.
 - O ACKTimeout no cliente e a janela passando de 15 para 31.
-- O quadro repetido com Retry=1 e o mesmo número de sequência (aba Mensagem).
+- O frame repetido com Retry=1 e o mesmo número de sequência (aba Mensagem).
 
 ```mermaid
 sequenceDiagram
@@ -650,7 +650,7 @@ sequenceDiagram
   n_ap ->> n_a: ACK
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "O ACK se perde e o quadro é repetido", na ordem do tempo, entre Cliente A, AP-01, Cliente C: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Acesso ao meio", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "O ACK se perde e o frame é repetido", na ordem do tempo, entre Cliente A, AP-01, Cliente C: 4 mensagens, numeradas de 1 a 4 na ordem da comunicação (em 4 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Acesso ao meio", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -665,7 +665,7 @@ sequenceDiagram
 
 > **Grupo:** Colisões entre clientes
 
-Quando dois clientes sorteiam o mesmo slot, os quadros colidem. A resposta é o backoff exponencial: a janela dobra a cada falha, e a chance de repetir o mesmo sorteio cai.
+Quando dois clientes sorteiam o mesmo slot, os frames colidem. A resposta é o backoff exponencial: a janela dobra a cada falha, e a chance de repetir o mesmo sorteio cai.
 
 #### 6.2.3 Dois clientes escolhem o mesmo slot
 
@@ -673,14 +673,14 @@ Quando dois clientes sorteiam o mesmo slot, os quadros colidem. A resposta é o 
 
 **Configuração aplicada:** O que acontece = colisao; Usar RTS/CTS = não
 
-Os dois sorteiam **3 slots** e transmitem juntos: o AP não decodifica nenhum quadro. Cada um espera o ACK, desiste, dobra a janela e sorteia de novo. Na segunda rodada os valores diferem e **um passa à frente do outro**, que congela a contagem.
+Os dois sorteiam **3 slots** e transmitem juntos: o AP não decodifica nenhum frame. Cada um espera o ACK, desiste, dobra a janela e sorteia de novo. Na segunda rodada os valores diferem e **um passa à frente do outro**, que congela a contagem.
 
-**Conceito.** Se dois clientes sorteiam o mesmo backoff, eles transmitem no mesmo instante e os quadros colidem no AP. Nenhum dos dois ouve o ACK. Cada um espera o timeout, dobra a janela (15 para 31) e sorteia de novo, agora entre 0 e 31. Na rodada seguinte os valores são diferentes: quem sorteou o menor transmite primeiro, e o outro, que ouve a transmissão, congela o contador e só o retoma quando o meio ficar livre de novo (por um DIFS).
+**Conceito.** Se dois clientes sorteiam o mesmo backoff, eles transmitem no mesmo instante e os frames colidem no AP. Nenhum dos dois ouve o ACK. Cada um espera o timeout, dobra a janela (15 para 31) e sorteia de novo, agora entre 0 e 31. Na rodada seguinte os valores são diferentes: quem sorteou o menor transmite primeiro, e o outro, que ouve a transmissão, congela o contador e só o retoma quando o meio ficar livre de novo (por um DIFS).
 
 **O que observar**
 
-- Os dois quadros de dados em vermelho, sobrepostos.
-- O tempo perdido (quadro inteiro mais o timeout).
+- Os dois frames de dados em vermelho, sobrepostos.
+- O tempo perdido (frame inteiro mais o timeout).
 - O Cliente C congelando o contador depois que o Cliente A transmite.
 - A aba Temporização com as rodadas e as janelas.
 
@@ -707,27 +707,27 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Dados (colisão) | os dois quadros sobrepostos | Cliente A e Cliente C |
-| Dados | quadro do primeiro, na segunda rodada | Cliente A para o AP |
+| Dados (colisão) | os dois frames sobrepostos | Cliente A e Cliente C |
+| Dados | frame do primeiro, na segunda rodada | Cliente A para o AP |
 | ACK | confirmação | AP para o Cliente A |
-| Dados | quadro do segundo | Cliente C para o AP |
+| Dados | frame do segundo | Cliente C para o AP |
 
 **Por que importa.** O backoff exponencial é o que mantém a rede estável sob carga. Quanto mais clientes, mais colisões e mais tempo desperdiçado.
 
 #### 6.2.4 A mesma colisão, agora com RTS/CTS
 
-*Colidir com um quadro curto custa pouco.*
+*Colidir com um frame curto custa pouco.*
 
 **Configuração aplicada:** O que acontece = colisao; Usar RTS/CTS = sim
 
-A colisão agora acontece entre dois **RTS** de 52 µs, e não entre dois quadros de dados de 250 µs. O tempo desperdiçado é bem menor. Depois, quem ouve o RTS ou o CTS ajusta o **NAV** e espera.
+A colisão agora acontece entre dois **RTS** de 52 µs, e não entre dois frames de dados de 250 µs. O tempo desperdiçado é bem menor. Depois, quem ouve o RTS ou o CTS ajusta o **NAV** e espera.
 
-**Conceito.** Com o RTS/CTS, a colisão acontece entre dois RTS de 20 bytes, que duram 52 µs, e não entre dois quadros de 1500 bytes, que duram 250 µs. Quem recebe o RTS ou o CTS preenche o NAV (Network Allocation Vector) com o valor do campo Duration/ID e considera o meio ocupado pelo tempo da troca inteira, mesmo sem ouvir a transmissão: é a escuta virtual de portadora. O custo é o tráfego extra de RTS e CTS em toda transmissão.
+**Conceito.** Com o RTS/CTS, a colisão acontece entre dois RTS de 20 bytes, que duram 52 µs, e não entre dois frames de 1500 bytes, que duram 250 µs. Quem recebe o RTS ou o CTS preenche o NAV (Network Allocation Vector) com o valor do campo Duration/ID e considera o meio ocupado pelo tempo da troca inteira, mesmo sem ouvir a transmissão: é a escuta virtual de portadora. O custo é o tráfego extra de RTS e CTS em toda transmissão.
 
 **O que observar**
 
 - A colisão de RTS (52 µs) e o tempo perdido, menor que o do cenário sem RTS.
-- O NAV ativo no cliente que ouviu o RTS (quadro Topologia).
+- O NAV ativo no cliente que ouviu o RTS (frame Topologia).
 - O campo Duration/ID do RTS, de 386 µs.
 
 ```mermaid
@@ -760,14 +760,14 @@ sequenceDiagram
 | RTS (colisão) | os dois pedidos se sobrepõem | Cliente A e Cliente C |
 | RTS | pedido do primeiro | cliente para o AP |
 | CTS | autorização e reserva | AP para o cliente |
-| Dados | o quadro | cliente para o AP |
+| Dados | o frame | cliente para o AP |
 | ACK | confirmação | AP para o cliente |
 
-**Por que importa.** Mostra a troca entre custo fixo e custo de colisão. Em redes com quadros curtos o RTS/CTS não compensa; com quadros longos e muita disputa, sim.
+**Por que importa.** Mostra a troca entre custo fixo e custo de colisão. Em redes com frames curtos o RTS/CTS não compensa; com frames longos e muita disputa, sim.
 
 > **Grupo:** O problema do nó oculto
 
-Dois clientes podem ouvir o AP sem ouvir um ao outro. Cada um acha que o meio está livre, e os quadros colidem no AP. O RTS/CTS reduz o custo dessas colisões.
+Dois clientes podem ouvir o AP sem ouvir um ao outro. Cada um acha que o meio está livre, e os frames colidem no AP. O RTS/CTS reduz o custo dessas colisões.
 
 #### 6.2.5 Nó oculto sem RTS/CTS
 
@@ -775,9 +775,9 @@ Dois clientes podem ouvir o AP sem ouvir um ao outro. Cada um acha que o meio es
 
 **Configuração aplicada:** O que acontece = oculto; Usar RTS/CTS = não
 
-O Cliente A e o Cliente C **não se ouvem**. Cada um acha o meio livre e transmite; os quadros chegam juntos ao AP e **colidem repetidamente**, a cada tentativa com um quadro inteiro de dados perdido, até a sorte do backoff separá-los.
+O Cliente A e o Cliente C **não se ouvem**. Cada um acha o meio livre e transmite; os frames chegam juntos ao AP e **colidem repetidamente**, a cada tentativa com um frame inteiro de dados perdido, até a sorte do backoff separá-los.
 
-**Conceito.** No problema do nó oculto, o Cliente A e o Cliente C alcançam o AP, mas um não alcança o outro. A escuta de portadora de cada um não percebe a transmissão do outro, e os dois transmitem sem saber. No AP, os sinais se sobrepõem, e um quadro inteiro de dados se perde a cada colisão. Como o backoff sorteia só até CW, vários slots depois do início do outro quadro ainda caem dentro dos 250 µs que ele dura, e a colisão se repete até que a diferença entre os sorteios seja maior que o quadro.
+**Conceito.** No problema do nó oculto, o Cliente A e o Cliente C alcançam o AP, mas um não alcança o outro. A escuta de portadora de cada um não percebe a transmissão do outro, e os dois transmitem sem saber. No AP, os sinais se sobrepõem, e um frame inteiro de dados se perde a cada colisão. Como o backoff sorteia só até CW, vários slots depois do início do outro frame ainda caem dentro dos 250 µs que ele dura, e a colisão se repete até que a diferença entre os sorteios seja maior que o frame.
 
 **O que observar**
 
@@ -812,10 +812,10 @@ sequenceDiagram
 
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
-| Dados (colisão) | os quadros se sobrepõem no AP | Cliente A e Cliente C |
-| Dados | quadro do primeiro, na terceira rodada | Cliente A para o AP |
+| Dados (colisão) | os frames se sobrepõem no AP | Cliente A e Cliente C |
+| Dados | frame do primeiro, na terceira rodada | Cliente A para o AP |
 | ACK | confirmação | AP para o Cliente A |
-| Dados | quadro do segundo | Cliente C para o AP |
+| Dados | frame do segundo | Cliente C para o AP |
 
 **Por que importa.** É o problema clássico das redes sem fio. Aparece em salas grandes, depósitos e escritórios com divisórias, e se resolve com RTS/CTS, posicionamento dos APs ou mais APs.
 
@@ -869,7 +869,7 @@ sequenceDiagram
 | RTS (colisão) | os pedidos se sobrepõem | Cliente A e Cliente C |
 | RTS | pedido do primeiro | cliente para o AP |
 | CTS | o AP reserva o meio, ouvido pelos dois clientes | AP para o cliente |
-| Dados | o quadro, protegido pela reserva | cliente para o AP |
+| Dados | o frame, protegido pela reserva | cliente para o AP |
 | ACK | confirmação | AP para o cliente |
 
 **Por que importa.** Mostra que o AP é o ponto em comum que enxerga todos os clientes, e por isso é quem pode coordenar quem não se ouve.
@@ -894,8 +894,8 @@ O sinal do AP-01 enfraquece. O cliente procura o AP-02 (Probe), **autentica**, e
 
 - O sinal do AP-01 caindo para -78 dBm (Topologia).
 - A Reassociation Request com o Current AP Address.
-- Os quatro quadros EAPOL-Key do handshake, resumidos.
-- O quadro de anúncio ao switch.
+- Os quatro frames EAPOL-Key do handshake, resumidos.
+- O frame de anúncio ao switch.
 - A interrupção medida no Experimento.
 
 ```mermaid
@@ -953,7 +953,7 @@ sequenceDiagram
 
 **Configuração aplicada:** O que acontece = roam; Fast BSS Transition (802.11r) = sim; Intervalo de escuta (beacons) = 1
 
-Com o **Fast BSS Transition**, o material das chaves já viaja nos quadros de Authentication e Reassociation, e o handshake de quatro vias **desaparece**. A interrupção encurta.
+Com o **Fast BSS Transition**, o material das chaves já viaja nos frames de Authentication e Reassociation, e o handshake de quatro vias **desaparece**. A interrupção encurta.
 
 **Conceito.** O Fast BSS Transition (IEEE 802.11r) usa um algoritmo de autenticação próprio (FT). Na associação inicial, o cliente e a rede derivam uma chave de topo do domínio de mobilidade, e os APs do domínio recebem dela chaves próprias (PMK-R1). Na troca de AP, o cliente envia ao novo AP, dentro da Authentication e da Reassociation, os nonces e os identificadores necessários, e as chaves ficam prontas sem o handshake de quatro vias separado. A interrupção cai, o que importa para voz e vídeo.
 
@@ -1007,7 +1007,7 @@ sequenceDiagram
 
 > **Grupo:** Cliente preso ao AP distante
 
-Um cliente que não troca de AP, mesmo com sinal ruim, pesa na rede toda: o quadro lento ocupa o meio por mais tempo. Os recursos 802.11k e 802.11v ajudam o AP a empurrar o cliente.
+Um cliente que não troca de AP, mesmo com sinal ruim, pesa na rede toda: o frame lento ocupa o meio por mais tempo. Os recursos 802.11k e 802.11v ajudam o AP a empurrar o cliente.
 
 #### 6.3.3 O cliente não troca de AP
 
@@ -1015,13 +1015,13 @@ Um cliente que não troca de AP, mesmo com sinal ruim, pesa na rede toda: o quad
 
 **Configuração aplicada:** O que acontece = sticky; Fast BSS Transition (802.11r) = não; Intervalo de escuta (beacons) = 1
 
-O cliente fica no AP-01 mesmo com o AP-02 mais perto. A taxa cai de 54 para 6 Mb/s e o mesmo quadro passa a **ocupar o meio mais de oito vezes mais tempo**, atrasando todos os outros clientes do AP.
+O cliente fica no AP-01 mesmo com o AP-02 mais perto. A taxa cai de 54 para 6 Mb/s e o mesmo frame passa a **ocupar o meio mais de oito vezes mais tempo**, atrasando todos os outros clientes do AP.
 
-**Conceito.** Muitos clientes só procuram outro AP quando perdem a conexão. Enquanto isso, o sinal fraco obriga a taxa a cair (de 54 para 24 e depois 6 Mb/s no exemplo). O mesmo quadro de 1500 bytes passa a ocupar o meio por muito mais tempo, e como o acesso ao meio dá a mesma chance de transmitir a cada cliente, o cliente lento consome uma parte desproporcional do tempo de ar. É a chamada anomalia de desempenho do Wi-Fi: todos os clientes do AP passam a ter a vazão do mais lento.
+**Conceito.** Muitos clientes só procuram outro AP quando perdem a conexão. Enquanto isso, o sinal fraco obriga a taxa a cair (de 54 para 24 e depois 6 Mb/s no exemplo). O mesmo frame de 1500 bytes passa a ocupar o meio por muito mais tempo, e como o acesso ao meio dá a mesma chance de transmitir a cada cliente, o cliente lento consome uma parte desproporcional do tempo de ar. É a chamada anomalia de desempenho do Wi-Fi: todos os clientes do AP passam a ter a vazão do mais lento.
 
 **O que observar**
 
-- A duração do quadro de dados subindo de 250 µs para cerca de 2 ms.
+- A duração do frame de dados subindo de 250 µs para cerca de 2 ms.
 - O AP-02 a -58 dBm, mais perto, mas ignorado.
 - O evento no AP-01 sobre o tempo de ar consumido.
 
@@ -1125,7 +1125,7 @@ sequenceDiagram
 
 > **Grupo:** Economia de energia
 
-O rádio é um dos maiores consumidores de energia de um celular ou notebook. O cliente dorme e o AP guarda os quadros até ele acordar para ouvir o beacon.
+O rádio é um dos maiores consumidores de energia de um celular ou notebook. O cliente dorme e o AP guarda os frames até ele acordar para ouvir o beacon.
 
 #### 6.3.5 Cliente que acorda a cada beacon
 
@@ -1133,16 +1133,16 @@ O rádio é um dos maiores consumidores de energia de um celular ou notebook. O 
 
 **Configuração aplicada:** O que acontece = ps; Fast BSS Transition (802.11r) = não; Intervalo de escuta (beacons) = 1
 
-O cliente avisa o AP que vai dormir (**PM=1**). Um pacote chega durante o sono e o AP o **guarda**. No próximo beacon, o **TIM** marca o cliente, que acorda, pede o quadro com um **PS-Poll** e o recebe.
+O cliente avisa o AP que vai dormir (**PM=1**). Um pacote chega durante o sono e o AP o **guarda**. No próximo beacon, o **TIM** marca o cliente, que acorda, pede o frame com um **PS-Poll** e o recebe.
 
-**Conceito.** O cliente avisa o AP, com o bit Power Management ligado num quadro Null, que vai dormir. O AP passa a guardar os quadros dele e, em cada beacon, indica no TIM (Traffic Indication Map) quais clientes dormindo têm quadros guardados. O cliente acorda para os beacons (aqui, todos), confere o bit do seu AID e, se estiver marcado, envia um PS-Poll. O AP responde com o quadro, e o bit More Data diz se há mais. Depois o cliente volta a dormir, ainda em modo de economia.
+**Conceito.** O cliente avisa o AP, com o bit Power Management ligado num frame Null, que vai dormir. O AP passa a guardar os frames dele e, em cada beacon, indica no TIM (Traffic Indication Map) quais clientes dormindo têm frames guardados. O cliente acorda para os beacons (aqui, todos), confere o bit do seu AID e, se estiver marcado, envia um PS-Poll. O AP responde com o frame, e o bit More Data diz se há mais. Depois o cliente volta a dormir, ainda em modo de economia.
 
 **O que observar**
 
 - O Null Data com PM=1.
 - O pacote da rede cabeada chegando entre dois beacons.
 - O TIM do beacon seguinte, com o AID 1 marcado.
-- O PS-Poll e o quadro entregue, com More Data=0.
+- O PS-Poll e o frame entregue, com More Data=0.
 - A aba Energia, comparando intervalos de escuta.
 
 ```mermaid
@@ -1158,7 +1158,7 @@ sequenceDiagram
   n_ap1 ->> n_sta: Beacon 1
   n_lan ->> n_ap1: Pacote IP para o cliente
   n_ap1 ->> n_sta: Beacon 2
-  Note over n_sta,n_lan: 3. Buscar o quadro guardado
+  Note over n_sta,n_lan: 3. Buscar o frame guardado
   n_sta ->> n_ap1: PS-Poll
   n_ap1 ->> n_sta: Dados guardados
   n_sta ->> n_ap1: ACK
@@ -1171,8 +1171,8 @@ sequenceDiagram
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
 | Null Data (PM=1) | avisa que vai dormir | cliente para o AP |
-| Beacon (TIM) | indica quem tem quadros guardados | AP para o cliente |
-| PS-Poll | pede o quadro guardado | cliente para o AP |
+| Beacon (TIM) | indica quem tem frames guardados | AP para o cliente |
+| PS-Poll | pede o frame guardado | cliente para o AP |
 | Dados guardados | a entrega | AP para o cliente |
 
 **Por que importa.** É o que permite a um celular ficar horas conectado sem esgotar a bateria. O preço é a latência: o pacote espera o próximo beacon.
@@ -1185,7 +1185,7 @@ sequenceDiagram
 
 Com o intervalo de escuta de 5 beacons, o rádio fica desligado por mais tempo e **gasta menos energia**, mas o pacote que chegou durante o sono espera **cerca de 360 ms** até a entrega.
 
-**Conceito.** O Listen Interval é o número de beacons que o cliente aceita deixar passar dormindo. Com 5, o rádio liga só a cada 512 ms. O AP precisa guardar os quadros por pelo menos esse tempo. O pacote que chegou logo depois de um beacon espera boa parte do intervalo até a entrega, o que não serve para voz ou jogos, mas funciona para sensores e dispositivos que enviam dados de vez em quando.
+**Conceito.** O Listen Interval é o número de beacons que o cliente aceita deixar passar dormindo. Com 5, o rádio liga só a cada 512 ms. O AP precisa guardar os frames por pelo menos esse tempo. O pacote que chegou logo depois de um beacon espera boa parte do intervalo até a entrega, o que não serve para voz ou jogos, mas funciona para sensores e dispositivos que enviam dados de vez em quando.
 
 **O que observar**
 
@@ -1205,7 +1205,7 @@ sequenceDiagram
   Note over n_sta,n_lan: 2. Os beacons passam e chega um pacote
   n_lan ->> n_ap1: Pacote IP para o cliente
   n_ap1 ->> n_sta: Beacon 5
-  Note over n_sta,n_lan: 3. Buscar o quadro guardado
+  Note over n_sta,n_lan: 3. Buscar o frame guardado
   n_sta ->> n_ap1: PS-Poll
   n_ap1 ->> n_sta: Dados guardados
   n_sta ->> n_ap1: ACK
@@ -1219,7 +1219,7 @@ sequenceDiagram
 | --- | --- | --- |
 | Null Data (PM=1) | avisa que vai dormir | cliente para o AP |
 | Beacon 5 (TIM) | o primeiro que o cliente ouve | AP para o cliente |
-| PS-Poll | pede o quadro | cliente para o AP |
+| PS-Poll | pede o frame | cliente para o AP |
 | Dados guardados | a entrega, bem depois da chegada | AP para o cliente |
 
 **Por que importa.** Mostra a troca direta entre energia e latência, que o projetista de um dispositivo alimentado por bateria precisa escolher.
@@ -1242,7 +1242,7 @@ Com 20 MHz, os canais 1 e 6 **não se sobrepõem**. As duas redes transmitem ao 
 
 **O que observar**
 
-- Os dois quadros de dados em paralelo.
+- Os dois frames de dados em paralelo.
 - Os dois ACKs sem interferência.
 - O tempo total, igual ao de uma só rede.
 - A aba Canais mostrando as frequências.
@@ -1285,7 +1285,7 @@ As duas redes no canal 1 **se ouvem** e usam o CSMA/CA entre si: uma espera a ou
 **O que observar**
 
 - O Cliente 2 ouvindo a transmissão do Cliente 1 e congelando o contador.
-- Os quadros em sequência, e não em paralelo.
+- Os frames em sequência, e não em paralelo.
 - O tempo total, quase o dobro do cenário independente.
 
 ```mermaid
@@ -1319,13 +1319,13 @@ sequenceDiagram
 
 **Configuração aplicada:** Canal da segunda rede = 3; Largura do canal (MHz) = 20
 
-Os canais 1 e 3 se sobrepõem em frequência. Os clientes **não reconhecem** a outra rede para esperar a vez, e os sinais se misturam: os quadros chegam corrompidos até o backoff separá-los. Costuma ser pior que o mesmo canal.
+Os canais 1 e 3 se sobrepõem em frequência. Os clientes **não reconhecem** a outra rede para esperar a vez, e os sinais se misturam: os frames chegam corrompidos até o backoff separá-los. Costuma ser pior que o mesmo canal.
 
-**Conceito.** Os canais 1 e 3 se sobrepõem em boa parte da faixa. Os clientes de cada rede não conseguem decodificar o preâmbulo da outra, então o CSMA/CA não os faz esperar, e os sinais chegam misturados aos receptores, que recebem os quadros com erros (FCS inválido). Sem ACK, os dois repetem, e só depois de algumas rodadas os sorteios os separam no tempo. Na prática o efeito depende da potência e da distância; o simulador mostra o caso desfavorável.
+**Conceito.** Os canais 1 e 3 se sobrepõem em boa parte da faixa. Os clientes de cada rede não conseguem decodificar o preâmbulo da outra, então o CSMA/CA não os faz esperar, e os sinais chegam misturados aos receptores, que recebem os frames com erros (FCS inválido). Sem ACK, os dois repetem, e só depois de algumas rodadas os sorteios os separam no tempo. Na prática o efeito depende da potência e da distância; o simulador mostra o caso desfavorável.
 
 **O que observar**
 
-- Os dois quadros corrompidos, em vermelho.
+- Os dois frames corrompidos, em vermelho.
 - A janela de contenção dobrando a cada rodada.
 - O tempo total, maior que no mesmo canal.
 
@@ -1374,7 +1374,7 @@ Com 40 MHz, os canais 1 e 6 deixam de ser independentes: cada rede ocupa o dobro
 
 - Os canais 1 e 6 com 40 MHz, agora marcados como sobrepostos.
 - A aba Canais, com a largura de cada rede.
-- A repetição dos quadros corrompidos.
+- A repetição dos frames corrompidos.
 
 ```mermaid
 sequenceDiagram
@@ -1423,33 +1423,33 @@ O **IEEE 802.11** define a camada de enlace (MAC) e a camada física das redes l
 | SSID | o nome da rede, até 32 bytes. Vários APs com o mesmo SSID formam um ESS, em que o cliente pode circular |
 | DS | sistema de distribuição: a rede (em geral cabeada) que liga os APs entre si |
 
-### 7.3 Os três tipos de quadro
+### 7.3 Os três tipos de frame
 
 | Tipo | Exemplos no simulador | Função |
 | --- | --- | --- |
 | Gerência (0) | Beacon, Probe, Authentication, Association, Reassociation, Action | descobrir, entrar, sair e negociar recursos |
-| Controle (1) | RTS, CTS, ACK, PS-Poll | coordenar o acesso ao meio; são quadros curtos e sem corpo |
+| Controle (1) | RTS, CTS, ACK, PS-Poll | coordenar o acesso ao meio; são frames curtos e sem corpo |
 | Dados (2) | Data, Null | carregar os dados do usuário (cabeçalho com até 4 endereços) |
 
-O cabeçalho MAC traz o Frame Control (tipo, subtipo e flags como To DS, From DS, Retry, Power Management e More Data), o Duration/ID, os endereços (RA, TA e o terceiro, que é o BSSID ou o destino) e o Sequence Control. O quadro termina com o FCS (CRC-32). A aba Mensagem mostra esses campos.
+O cabeçalho MAC traz o Frame Control (tipo, subtipo e flags como To DS, From DS, Retry, Power Management e More Data), o Duration/ID, os endereços (RA, TA e o terceiro, que é o BSSID ou o destino) e o Sequence Control. O frame termina com o FCS (CRC-32). A aba Mensagem mostra esses campos.
 
 ### 7.4 Descoberta e os três estados do cliente
 
 - **Beacon:** o AP anuncia a rede a cada 100 TU (1 TU = 1024 µs, ou 102,4 ms), em broadcast, sem ACK. Traz SSID, taxas, canal, capacidades, TIM e, em redes protegidas, o elemento RSN.
 - **Varredura passiva e ativa:** o cliente escuta os beacons ou envia Probe Request e recebe Probe Response. Os tempos por canal do simulador (20 ms e 110 ms) são valores típicos de implementação, não exigências do padrão.
-- **Os três estados** (cláusula do MLME, gerenciamento da camada MAC): 1, não autenticado e não associado; 2, autenticado e não associado; 3, autenticado e associado. Cada estado admite classes de quadros (aba Estados).
-- **Autenticação de sistema aberto:** dois quadros (algoritmo 0). Não verifica identidade nenhuma. A autenticação de verdade vem do WPA2 e WPA3, após a associação (RSN) ou no lugar da autenticação aberta (SAE, algoritmo 3 do WPA3).
+- **Os três estados** (cláusula do MLME, gerenciamento da camada MAC): 1, não autenticado e não associado; 2, autenticado e não associado; 3, autenticado e associado. Cada estado admite classes de frames (aba Estados).
+- **Autenticação de sistema aberto:** dois frames (algoritmo 0). Não verifica identidade nenhuma. A autenticação de verdade vem do WPA2 e WPA3, após a associação (RSN) ou no lugar da autenticação aberta (SAE, algoritmo 3 do WPA3).
 - **Associação:** o AP atribui um AID (Association ID). O Status Code da resposta informa o resultado: 0 é sucesso e 17 é "AP incapaz de tratar mais estações". Outros códigos existem.
 
 ### 7.5 Acesso ao meio: DCF (CSMA/CA)
 
-- **Por que evitar, e não detectar:** o rádio não ouve enquanto transmite, então a colisão não é detectável. O Wi-Fi a evita (CSMA/CA) e confirma cada quadro unicast com um ACK.
-- **Escuta de portadora:** física (o receptor detecta sinal no canal) e virtual (o NAV, preenchido pelo campo Duration/ID dos quadros ouvidos).
-- **Intervalos:** SIFS (entre um quadro e a resposta imediata), DIFS (antes de disputar o meio) e o slot (unidade do backoff). O simulador usa SIFS de 16 µs, slot de 9 µs e DIFS de 34 µs, valores do OFDM em 5 GHz, em todos os cenários.
+- **Por que evitar, e não detectar:** o rádio não ouve enquanto transmite, então a colisão não é detectável. O Wi-Fi a evita (CSMA/CA) e confirma cada frame unicast com um ACK.
+- **Escuta de portadora:** física (o receptor detecta sinal no canal) e virtual (o NAV, preenchido pelo campo Duration/ID dos frames ouvidos).
+- **Intervalos:** SIFS (entre um frame e a resposta imediata), DIFS (antes de disputar o meio) e o slot (unidade do backoff). O simulador usa SIFS de 16 µs, slot de 9 µs e DIFS de 34 µs, valores do OFDM em 5 GHz, em todos os cenários.
 - **Backoff exponencial:** o sorteio vai de 0 a CW; a janela começa em 15, dobra a cada falha (31, 63, ...) até 1023 e volta ao mínimo após um sucesso. O contador só desce enquanto o meio está livre e congela quando outro transmite.
-- **Limite de repetições:** há um número máximo de tentativas por quadro (por padrão, 7 para quadros curtos e 4 para quadros longos, com RTS), depois do qual ele é descartado.
-- **RTS/CTS:** reserva o meio antes dos dados, por meio do Duration/ID. Resolve em parte o nó oculto, ao custo de dois quadros a mais. Costuma ser usado só acima de um limiar de tamanho (o simulador o liga ou desliga por cenário).
-- **Duplicatas:** o receptor descarta um quadro com o mesmo número de sequência e o bit Retry ligado, mas o confirma de novo.
+- **Limite de repetições:** há um número máximo de tentativas por frame (por padrão, 7 para frames curtos e 4 para frames longos, com RTS), depois do qual ele é descartado.
+- **RTS/CTS:** reserva o meio antes dos dados, por meio do Duration/ID. Resolve em parte o nó oculto, ao custo de dois frames a mais. Costuma ser usado só acima de um limiar de tamanho (o simulador o liga ou desliga por cenário).
+- **Duplicatas:** o receptor descarta um frame com o mesmo número de sequência e o bit Retry ligado, mas o confirma de novo.
 
 ### 7.6 Roaming e mobilidade
 
@@ -1461,9 +1461,9 @@ O cabeçalho MAC traz o Frame Control (tipo, subtipo e flags como To DS, From DS
 
 ### 7.7 Economia de energia
 
-- O cliente avisa com o bit **Power Management** (PM=1) num quadro Null e passa a dormir. O AP guarda os quadros dele.
-- O **TIM** (Traffic Indication Map) do beacon indica por AID quem tem quadros guardados. O **DTIM** é um TIM especial, a cada vários beacons, depois do qual o AP envia os quadros multicast e broadcast guardados.
-- O cliente pede o quadro com um **PS-Poll**, e o bit **More Data** indica se há mais. O **Listen Interval**, informado na associação, é de quantos em quantos beacons o cliente acorda.
+- O cliente avisa com o bit **Power Management** (PM=1) num frame Null e passa a dormir. O AP guarda os frames dele.
+- O **TIM** (Traffic Indication Map) do beacon indica por AID quem tem frames guardados. O **DTIM** é um TIM especial, a cada vários beacons, depois do qual o AP envia os frames multicast e broadcast guardados.
+- O cliente pede o frame com um **PS-Poll**, e o bit **More Data** indica se há mais. O **Listen Interval**, informado na associação, é de quantos em quantos beacons o cliente acorda.
 - Existem mecanismos mais modernos (U-APSD, e o Target Wake Time do 802.11ax) que o simulador não representa.
 
 ### 7.8 Canais em 2,4 GHz
@@ -1476,38 +1476,76 @@ Os canais 1 a 13 têm centros espaçados de 5 MHz a partir de 2412 MHz (centro =
 | --- | --- | --- |
 | SSID oculto tomado como segurança | o nome aparece em claro nos pedidos dos clientes e a rede dá falsa sensação de proteção | usar WPA3 ou WPA2 com 802.1X, e tratar o SSID oculto como mera preferência de exibição |
 | Rede aberta | qualquer um se associa e vê o tráfego em claro | preferir redes protegidas; o Enhanced Open (OWE, [RFC 8110](https://www.rfc-editor.org/rfc/rfc8110)) cifra mesmo sem senha |
-| Quadros de gerência sem proteção | Deauthentication e Disassociation podem ser forjados e derrubar clientes | ativar a proteção dos quadros de gerência (IEEE 802.11w, PMF), obrigatória no WPA3 |
+| Frames de gerência sem proteção | Deauthentication e Disassociation podem ser forjados e derrubar clientes | ativar a proteção dos frames de gerência (IEEE 802.11w, PMF), obrigatória no WPA3 |
 | AP falso com o mesmo SSID | o cliente pode se associar ao AP errado | autenticação mútua (802.1X com validação do servidor, WPA3) e monitoramento de APs não autorizados |
 | Probe Requests com os nomes das redes salvas | revelam onde o aparelho já esteve | sistemas modernos limitam isso e usam endereços MAC aleatórios; mantenha o recurso ativo |
 
 ### 7.10 O que o simulador simplifica
 
-- Um BSS por vez (ou duas redes vizinhas, no modo Canais), um fluxo por cliente e taxas fixas: 54 Mb/s nos dados e 6 Mb/s nos quadros de controle e de gerência. Sem agregação de quadros, sem fragmentação, sem QoS (EDCA) e sem camada física detalhada.
+- Um BSS por vez (ou duas redes vizinhas, no modo Canais), um fluxo por cliente e taxas fixas: 54 Mb/s nos dados e 6 Mb/s nos frames de controle e de gerência. Sem agregação de frames, sem fragmentação, sem QoS (EDCA) e sem camada física detalhada.
 - Os tempos usam os valores do OFDM em 5 GHz (SIFS de 16 µs, slot de 9 µs) em todos os cenários, inclusive nos de 2,4 GHz, onde o SIFS é de 10 µs. O foco são as proporções.
 - Os sorteios do backoff são fixos por cenário, para o resultado ser reproduzível. No mundo real eles são aleatórios.
 - A interferência entre canais sobrepostos é representada no caso desfavorável. A potência, a distância e os obstáculos mudam o efeito real.
 - As durações de varredura, roaming e handshake são ilustrativas e menores que as de equipamentos reais, em que a varredura e o handshake somam dezenas de milissegundos ou mais.
-- O handshake de quatro vias aparece resumido em quatro quadros EAPOL-Key, com valores ilustrativos. Sem criptografia real, sem PMF, sem SAE e sem OWE.
+- O handshake de quatro vias aparece resumido em quatro frames EAPOL-Key, com valores ilustrativos. Sem criptografia real, sem PMF, sem SAE e sem OWE.
 - Sem Wi-Fi 6, 6E e 7 (OFDMA, MU-MIMO, TWT, múltiplos links), sem mesh, sem modo ad hoc (IBSS) e sem Wi-Fi Direct.
 - Os endereços MAC seguem a faixa de documentação ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)).
 
 
-## 8. Siglas deste documento
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
+| **AID** | Association ID, identificador de associação | número que o AP atribui ao cliente na associação e que o TIM usa para indicar quem tem frames guardados |
 | **AP** | Access Point, ponto de acesso | liga os clientes sem fio à rede cabeada e faz a ponte entre o 802.11 e o Ethernet |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **BSS** | Basic Service Set, conjunto básico de serviço | um AP e os clientes associados a ele; é a célula básica de uma rede Wi-Fi |
+| **BSSID** | Basic Service Set Identifier, identificador do conjunto básico de serviço | endereço MAC do AP, que identifica o BSS nos frames e distingue APs com o mesmo SSID |
+| **BTM** | BSS Transition Management, gerenciamento de transição de BSS | recurso do 802.11v em que o AP sugere ao cliente trocar de AP, por exemplo por carga ou sinal fraco |
+| **CRC-32** | Cyclic Redundancy Check de 32 bits | código de 32 bits usado como FCS no fim dos frames 802.11 e Ethernet |
+| **CSMA/CA** | Carrier Sense Multiple Access with Collision Avoidance, acesso múltiplo com escuta de portadora e prevenção de colisão | método do Wi-Fi para disputar o meio: escuta o canal, espera um tempo aleatório e confirma cada frame com ACK, porque o rádio não detecta colisões |
+| **CTS** | Clear to Send, liberado para enviar | frame de controle com que o AP autoriza o envio e faz os demais clientes esperarem |
+| **CW** | Contention Window, janela de contenção | limite superior do sorteio do backoff; começa pequena e dobra a cada falha, o que espalha as tentativas |
+| **DCF** | Distributed Coordination Function, função de coordenação distribuída | modo básico de acesso ao meio do 802.11, que aplica o CSMA/CA com backoff exponencial |
+| **DIFS** | DCF Interframe Space, intervalo entre frames do DCF | espera com o meio livre antes de a estação iniciar a disputa pelo canal |
 | **DS** | Distribution System, sistema de distribuição | rede, em geral cabeada, que liga os APs entre si e ao restante da infraestrutura |
+| **DTIM** | Delivery Traffic Indication Message, mensagem de indicação de entrega de tráfego | TIM especial, a cada alguns beacons, depois do qual o AP envia os frames multicast e broadcast guardados |
 | **EAPOL** | Extensible Authentication Protocol over LAN | leva o EAP entre o cliente e o switch ou AP no 802.1X, antes de a porta liberar tráfego |
+| **EDCA** | Enhanced Distributed Channel Access, acesso ao canal distribuído aprimorado | extensão do DCF que dá prioridade a categorias de tráfego, como voz e vídeo (QoS); o simulador não a representa |
+| **ESS** | Extended Service Set, conjunto estendido de serviço | vários BSSs com o mesmo SSID ligados por um sistema de distribuição, o que permite o roaming |
 | **FCS** | Frame Check Sequence, sequência de verificação do frame | código (CRC) no fim do frame que permite ao receptor descartar frames corrompidos |
+| **FT** | Fast BSS Transition, transição rápida de BSS | roaming rápido do 802.11r, que embute a derivação das chaves na autenticação e na reassociação |
+| **IBSS** | Independent Basic Service Set | rede ad hoc, sem AP, em que as estações se comunicam diretamente; o simulador não a representa |
 | **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
 | **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
 | **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **MLME** | MAC Sublayer Management Entity, entidade de gerenciamento da subcamada MAC | parte do 802.11 que controla a varredura, a autenticação, a associação e os três estados do cliente |
+| **MU-MIMO** | Multi-User Multiple Input Multiple Output | o AP usa várias antenas para atender vários clientes ao mesmo tempo; o simulador não a representa |
+| **NAV** | Network Allocation Vector, vetor de alocação de rede | temporizador de escuta virtual: o cliente que ouve o campo Duration de outro frame espera esse tempo antes de transmitir |
+| **OFDM** | Orthogonal Frequency-Division Multiplexing, multiplexação por divisão de frequência ortogonal | técnica de modulação do Wi-Fi que divide o canal em muitas subportadoras; define os tempos usados no simulador |
+| **OFDMA** | Orthogonal Frequency-Division Multiple Access | divide o canal entre vários clientes ao mesmo tempo no Wi-Fi 6; o simulador não a representa |
+| **OWE** | Opportunistic Wireless Encryption, cifra sem fio oportunista | cifra o tráfego de redes abertas sem exigir senha (Enhanced Open, [RFC 8110](https://www.rfc-editor.org/rfc/rfc8110)) |
+| **PM** | Power Management, gerenciamento de energia | flag do Frame Control com que o cliente avisa ao AP que vai dormir (1) ou que está acordado (0) |
+| **PMF** | Protected Management Frames, frames de gerência protegidos | proteção do 802.11w contra Deauthentication e Disassociation forjados; obrigatória no WPA3 |
+| **PMK-R1** | Pairwise Master Key, nível R1 | chave de nível 1 da hierarquia do 802.11r, que o AP novo recebe para o cliente trocar de AP sem refazer a autenticação completa |
+| **PS** | Power Save, economia de energia | modo em que o cliente dorme entre beacons e o AP guarda os frames dele; o PS-Poll pede o frame guardado |
 | **RA** | Receiver Address, endereço do receptor | primeiro endereço do cabeçalho 802.11: quem deve receber o frame |
+| **RSN** | Robust Security Network, rede de segurança robusta | conjunto de regras de segurança do 802.11i (cifras, autenticação e handshake de quatro vias), anunciado no elemento RSN do beacon |
+| **RTS** | Request to Send, pedido para enviar | frame de controle com que a estação reserva o meio, informando por quanto tempo vai transmitir |
+| **RTS/CTS** | Request to Send / Clear to Send, pedido para enviar e liberado para enviar | troca de dois frames curtos que reserva o meio antes dos dados e ajuda contra o nó oculto |
+| **SAE** | Simultaneous Authentication of Equals, autenticação simultânea de iguais | troca de chaves do WPA3 a partir de uma senha, que resiste a tentativas de adivinhar a senha offline |
+| **SIFS** | Short Interframe Space, intervalo curto entre frames | menor espera do 802.11, usada entre um frame e a resposta imediata, como CTS e ACK |
+| **SSID** | Service Set Identifier, identificador do conjunto de serviço | nome da rede sem fio, de até 32 bytes; vários APs com o mesmo SSID formam uma só rede onde o cliente pode circular |
+| **STA** | Station, estação | qualquer dispositivo com rádio 802.11 que se associa a uma rede, como notebook ou celular |
+| **TA** | Transmitter Address, endereço do transmissor | endereço MAC de quem transmitiu o frame, no cabeçalho 802.11; o RA é o de quem deve receber |
+| **TIM** | Traffic Indication Map, mapa de indicação de tráfego | campo do beacon que indica, por AID, quais clientes em economia de energia têm frames guardados no AP |
+| **TU** | Time Unit, unidade de tempo | unidade de 1024 microssegundos usada nos temporizadores do 802.11, como o intervalo do beacon (100 TU) |
+| **TWT** | Target Wake Time, hora de acordar combinada | mecanismo do Wi-Fi 6 em que o AP e o cliente combinam quando o cliente acorda, para economizar energia; o simulador não o representa |
+| **WPA2** | Wi-Fi Protected Access 2 | segurança de redes Wi-Fi com PSK ou 802.1X e cifra AES; é a geração anterior ao WPA3 |
+| **WPA3** | Wi-Fi Protected Access 3 | segurança atual do Wi-Fi: usa SAE no lugar da senha compartilhada simples e exige a proteção dos frames de gerência (PMF) |
 
 
 ---

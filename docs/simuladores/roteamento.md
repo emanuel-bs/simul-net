@@ -13,7 +13,7 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 | Tipo | O que é | Vale para | Equivale, no simulador, a |
 | --- | --- | --- | --- |
-| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do quadro principal |
+| A, topologia | Os elementos da rede e os enlaces que os ligam. É estático. | Um modo inteiro | A visão "Topologia" do painel principal |
 
 ### 1.1 Legenda dos diagramas
 
@@ -408,7 +408,7 @@ Com roteamento dinâmico, os roteadores trocam informações para montar a tabel
 6. **Segurança:** um host na rede do PC-A passa a enviar anúncios OSPF falsos. Que configurações impediriam a injeção de rotas?
 
 
-## 7. Siglas deste documento
+## 7. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

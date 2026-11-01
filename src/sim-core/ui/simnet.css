@@ -325,7 +325,7 @@
 .simnet .zoom-bar{display:none;}
 }
 
-/* Quadro "Configurações do simulador" nativo: cabeçalho com botão de título (sem <details>, para não aninhar botões em summary) */
+/* Painel "Configurações do simulador" nativo: cabeçalho com botão de título (sem <details>, para não aninhar botões em summary) */
 .simnet .cfg{padding:0;}
 .simnet .cfg>.cfg-head{display:flex;align-items:center;gap:6px;padding:11px 16px;}
 .simnet .cfg:not(.body-collapsed)>.cfg-head{border-bottom:1px solid var(--border-soft);}
@@ -365,7 +365,7 @@
 .simnet .view-seg{border:2px solid var(--teal);}
 .simnet .view-seg button{padding:7px 16px;font-size:14px;font-weight:700;}
 
-/* Marcador no lugar de um quadro destacado: o resto da bancada não se move até o quadro ser encaixado. */
+/* Marcador no lugar de um painel destacado: o resto da bancada não se move até o painel ser encaixado. */
 .simnet .frame-ph{flex:0 0 auto;height:var(--ph-h);border:2px dashed var(--border);border-radius:14px;display:grid;place-items:center;color:var(--muted);font-size:13px;}
 .simnet .workspace>.frame-ph{height:auto;grid-column:1;grid-row:1;}
 .simnet .workspace>.side-col{grid-column:2;grid-row:1;}
@@ -395,7 +395,7 @@
 .simnet .tag-request{color:var(--purple);}
 .simnet .tag-ack{color:var(--teal);}
 
-/* Prova de conceito: quadro de estados dentro do palco */
+/* Prova de conceito: painel de estados dentro do palco */
 .simnet .stage-body{position:relative;flex:1;min-height:0;display:flex;}
 .simnet .stage-body>.ladder-wrap,.simnet .stage-body>.topo-wrap{flex:1 1 auto;min-width:0;}
 .simnet .stage-body.with-states>.ladder-wrap,.simnet .stage-body.with-states>.topo-wrap{margin-right:296px;}

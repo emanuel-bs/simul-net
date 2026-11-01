@@ -68,9 +68,9 @@ export const scenDoc: Record<string, ScenarioDoc> = {
   },
   'h2-mux': {
     short: 'Uma conexão, muitos fluxos, cabeçalhos comprimidos.',
-    concept: 'O <b>HTTP/2</b> (RFC 9113) usa uma só conexão TCP com TLS (ALPN <code>h2</code>) e a divide em <b>fluxos</b> (streams) identificados por número. O navegador envia todos os pedidos de uma vez, e o servidor devolve as respostas <b>intercaladas</b> em quadros (frames). Os cabeçalhos são comprimidos pelo <b>HPACK</b> (RFC 7541): o que se repete vira um índice.',
+    concept: 'O <b>HTTP/2</b> (RFC 9113) usa uma só conexão TCP com TLS (ALPN <code>h2</code>) e a divide em <b>fluxos</b> (streams) identificados por número. O navegador envia todos os pedidos de uma vez, e o servidor devolve as respostas <b>intercaladas</b> em frames (frames). Os cabeçalhos são comprimidos pelo <b>HPACK</b> (RFC 7541): o que se repete vira um índice.',
     observe: ['Na Captura: depois do HTML, todos os HEADERS saem no mesmo instante, cada um em um fluxo ímpar.', 'Na aba Mensagem: o primeiro pedido tem cerca de 330 bytes de cabeçalho; os seguintes, cerca de 50.', 'Na aba Cascata: as barras começam juntas e terminam em tempos diferentes, conforme o tamanho.'],
-    msgs: [['SETTINGS', 'parâmetros da conexão', 'cliente e servidor'], ['HEADERS (GET)', 'abre o fluxo com o pedido', 'cliente'], ['HEADERS + DATA', 'resposta em quadros', 'servidor']],
+    msgs: [['SETTINGS', 'parâmetros da conexão', 'cliente e servidor'], ['HEADERS (GET)', 'abre o fluxo com o pedido', 'cliente'], ['HEADERS + DATA', 'resposta em frames', 'servidor']],
     why: 'Uma conexão só paga um handshake e deixa o controle de congestionamento do TCP trabalhar com mais dados em trânsito. Em compensação, depende de uma única sequência de bytes do TCP.',
   },
   'h2-many': {
@@ -82,9 +82,9 @@ export const scenDoc: Record<string, ScenarioDoc> = {
   },
   'h2-big': {
     short: 'A imagem grande divide a banda e não bloqueia os outros.',
-    concept: 'No HTTP/2 as respostas são fatiadas em quadros DATA (até 16 KB, por padrão) e os quadros de fluxos diferentes se alternam. Uma resposta grande <b>não impede</b> as pequenas de terminar. Em implementações reais, o servidor pode priorizar fluxos (RFC 9218); o simulador divide a banda em partes iguais.',
-    observe: ['Na aba Cascata: os recursos pequenos terminam cedo, a imagem grande, por último.', 'Compare com o cenário Imagem grande ocupa a conexão, do HTTP/1.1.', 'Na aba Mensagem da resposta: o número de quadros DATA do recurso.'],
-    msgs: [['HEADERS (GET /hero.jpg)', 'pedido da imagem grande', 'cliente'], ['DATA (vários)', 'quadros da imagem, intercalados com os dos outros fluxos', 'servidor']],
+    concept: 'No HTTP/2 as respostas são fatiadas em frames DATA (até 16 KB, por padrão) e os frames de fluxos diferentes se alternam. Uma resposta grande <b>não impede</b> as pequenas de terminar. Em implementações reais, o servidor pode priorizar fluxos (RFC 9218); o simulador divide a banda em partes iguais.',
+    observe: ['Na aba Cascata: os recursos pequenos terminam cedo, a imagem grande, por último.', 'Compare com o cenário Imagem grande ocupa a conexão, do HTTP/1.1.', 'Na aba Mensagem da resposta: o número de frames DATA do recurso.'],
+    msgs: [['HEADERS (GET /hero.jpg)', 'pedido da imagem grande', 'cliente'], ['DATA (vários)', 'frames da imagem, intercalados com os dos outros fluxos', 'servidor']],
     why: 'É o ganho central da multiplexação: o bloqueio de cabeça de fila da aplicação deixa de existir.',
   },
   'h2-far': {
@@ -127,7 +127,7 @@ export const scenDoc: Record<string, ScenarioDoc> = {
     concept: 'No QUIC cada fluxo tem a sua <b>própria ordem de entrega</b>. Quando um pacote se perde, apenas o fluxo cujos dados estavam nele espera. Os demais entregam à aplicação o que já chegou. O pacote perdido é reenviado em um <b>pacote novo</b>, com número novo (RFC 9002).',
     observe: ['Na Captura: o pacote perdido, o ACK com intervalo e a retransmissão.', 'Na aba Cascata: só a barra de /app.js fica vermelha.', 'Na aba Comparação: um fluxo atrasado no HTTP/3, contra mais de um no HTTP/2.'],
     msgs: [['pacote QUIC perdido', 'dados de /app.js', 'servidor'], ['ACK com intervalo', 'aponta o buraco', 'cliente'], ['retransmissão (novo pacote)', 'mesmo conteúdo, número novo', 'servidor']],
-    why: 'Na prática um pacote QUIC pode carregar quadros de mais de um fluxo e afetar todos eles. O simulador supõe que os dados perdidos pertencem a um só fluxo.',
+    why: 'Na prática um pacote QUIC pode carregar frames de mais de um fluxo e afetar todos eles. O simulador supõe que os dados perdidos pertencem a um só fluxo.',
   },
   'h3-blocked': {
     short: 'O QUIC não passa pelo firewall; o navegador recorre ao TCP.',

@@ -1,4 +1,4 @@
-// Modelo de VLAN (IEEE 802.1Q): hosts, portas de acesso e de tronco, VLAN nativa e propagação de um quadro pelos switches.
+// Modelo de VLAN (IEEE 802.1Q): hosts, portas de acesso e de tronco, VLAN nativa e propagação de um frame pelos switches.
 // Rede: dois switches ligados por um tronco, um roteador em uma porta de tronco do SW1 (router-on-a-stick) e quatro hosts.
 //   SW1: p1 Host A (VLAN 10), p2 Host B (VLAN 20), p3 tronco para o SW2, p4 tronco para o R1, p5 invasor (só no modo VLAN hopping).
 //   SW2: p1 Host C (VLAN 10), p2 Host D (VLAN 20), p3 tronco para o SW1.
@@ -41,7 +41,7 @@ export interface PortCfg {
   mode: 'access' | 'trunk';
   /** VLAN de acesso (porta de acesso). */
   vid: number;
-  /** VLAN nativa (porta de tronco): os quadros dela trafegam sem tag. */
+  /** VLAN nativa (porta de tronco): os frames dela trafegam sem tag. */
   native: number;
   /** VLANs permitidas no tronco; null significa todas. */
   allowed: number[] | null;
@@ -99,7 +99,7 @@ export const portsOfSwitch = (net: Net, sw: number): number[] =>
 
 export const peerName = (sw: number, port: number): string => PEER['sw' + sw + ':' + port] || '-';
 
-// ---- quadros ----
+// ---- frames ----
 
 export interface Wire {
   smac: string;
@@ -121,9 +121,9 @@ export interface MsgStep {
   to: string;
   wire: Wire;
   verdict: 'ok' | 'drop' | 'recv' | 'ignore';
-  /** VLAN em que o switch classificou o quadro. */
+  /** VLAN em que o switch classificou o frame. */
   vlan?: number;
-  /** Como o switch classificou o quadro (vira evento). */
+  /** Como o switch classificou o frame (vira evento). */
   cls?: string;
   why?: string;
 }
@@ -137,11 +137,11 @@ export type Step = MsgStep | EvStep;
 
 export interface Spread {
   steps: Step[];
-  /** Quem recebeu o quadro endereçado a ele (ou broadcast). */
+  /** Quem recebeu o frame endereçado a ele (ou broadcast). */
   delivered: string[];
   /** Quem recebeu mas ignorou (MAC de destino de outro). */
   ignored: string[];
-  /** Switches que descartaram o quadro. */
+  /** Switches que descartaram o frame. */
   dropped: string[];
 }
 
@@ -152,9 +152,9 @@ const hostOfMac = (mac: string): string | undefined => {
 const vlanOfHost = (k: string): number | null => (HOSTS[k] ? HOSTS[k].vlan : null);
 
 /**
- * Propaga um quadro a partir de um nó terminal. Em cada switch: classifica o quadro numa VLAN pela porta de entrada,
+ * Propaga um frame a partir de um nó terminal. Em cada switch: classifica o frame numa VLAN pela porta de entrada,
  * escolhe as portas de saída (só a do destino, se o MAC dele é conhecido na VLAN; senão, todas as da VLAN) e remarca
- * o quadro conforme o tipo da porta de saída.
+ * o frame conforme o tipo da porta de saída.
  */
 export function spread(net: Net, src: string, wire: Wire): Spread {
   const out: Spread = { steps: [], delivered: [], ignored: [], dropped: [] };
@@ -172,21 +172,21 @@ export function spread(net: Net, src: string, wire: Wire): Spread {
     if (cfg.mode === 'access') {
       if (!w.tags.length) {
         vlan = cfg.vid;
-        step.cls = 'Porta ' + port + ' (acesso, VLAN ' + cfg.vid + '): o quadro sem tag entra na VLAN ' + vlan;
+        step.cls = 'Porta ' + port + ' (acesso, VLAN ' + cfg.vid + '): o frame sem tag entra na VLAN ' + vlan;
       } else if (w.tags[0] === cfg.vid) {
         vlan = cfg.vid;
         rest = w.tags.slice(1);
-        step.cls = 'Porta ' + port + ' (acesso, VLAN ' + cfg.vid + '): a tag externa coincide com a VLAN da porta, é aceita e removida; o quadro entra na VLAN ' + vlan;
+        step.cls = 'Porta ' + port + ' (acesso, VLAN ' + cfg.vid + '): a tag externa coincide com a VLAN da porta, é aceita e removida; o frame entra na VLAN ' + vlan;
       } else {
         step.verdict = 'drop';
-        step.why = 'a porta ' + port + ' é de acesso na VLAN ' + cfg.vid + ' e não aceita um quadro com a tag ' + w.tags[0];
+        step.why = 'a porta ' + port + ' é de acesso na VLAN ' + cfg.vid + ' e não aceita um frame com a tag ' + w.tags[0];
         out.dropped.push(me);
         return;
       }
     } else {
       if (!w.tags.length) {
         vlan = cfg.native;
-        step.cls = 'Porta ' + port + ' (tronco): o quadro sem tag pertence à VLAN nativa (' + vlan + ')';
+        step.cls = 'Porta ' + port + ' (tronco): o frame sem tag pertence à VLAN nativa (' + vlan + ')';
       } else {
         vlan = w.tags[0];
         rest = w.tags.slice(1);
@@ -213,7 +213,7 @@ export function spread(net: Net, src: string, wire: Wire): Spread {
       const member = c.mode === 'access' ? c.vid === vlan : !c.allowed || c.allowed.indexOf(vlan) >= 0;
       if (!member) {
         if (unicast) {
-          out.steps.push({ t: 'ev', who: me, text: 'Não encaminha pela porta ' + p + ': a VLAN ' + vlan + (c.mode === 'trunk' ? ' não é permitida no tronco' : ' não pertence à porta') + '. O quadro é descartado', kind: 'bad' });
+          out.steps.push({ t: 'ev', who: me, text: 'Não encaminha pela porta ' + p + ': a VLAN ' + vlan + (c.mode === 'trunk' ? ' não é permitida no tronco' : ' não pertence à porta') + '. O frame é descartado', kind: 'bad' });
           out.dropped.push(me);
         }
         return;
@@ -242,7 +242,7 @@ export function frameFields(w: Wire): Field[] {
   const f: Field[] = [{ sec: 'Ethernet II' }, ['Destino', w.dmac, w.dmac === BC ? 'broadcast: todas as portas da VLAN' : ''], ['Origem', w.smac, '']];
   w.tags.forEach((v, i) => {
     f.push({ sec: w.tags.length > 1 ? (i === 0 ? 'Tag 802.1Q externa' : 'Tag 802.1Q interna') : 'Tag 802.1Q (IEEE 802.1Q)' });
-    f.push(['TPID', '0x8100', 'identifica o quadro como marcado']);
+    f.push(['TPID', '0x8100', 'identifica o frame como marcado']);
     f.push(['PCP', '0', 'prioridade (3 bits)']);
     f.push(['DEI', '0', 'elegibilidade para descarte (1 bit)']);
     f.push(['VID', String(v), 'identificador da VLAN (12 bits)']);
@@ -269,7 +269,7 @@ export function emit(tr: Trace, steps: Step[], cols: string[]): number {
   let cat = '';
   let n = (tr.raw.phaseN as number) || 0;
   const kindOf = (s: MsgStep) => (isSwitch(s.from) ? (isSwitch(s.to) ? 'tronco' : 'saída') : 'entrada');
-  const TITLE: Record<string, string> = { entrada: 'O quadro entra no switch', tronco: 'O quadro cruza o tronco', saída: 'O switch entrega o quadro' };
+  const TITLE: Record<string, string> = { entrada: 'O frame entra no switch', tronco: 'O frame cruza o tronco', saída: 'O switch entrega o frame' };
   steps.forEach((s) => {
     if (s.t === 'ev') {
       if (cols.indexOf(s.who) < 0) return void hidden++;
@@ -293,17 +293,17 @@ export function emit(tr: Trace, steps: Step[], cols: string[]): number {
       len: frameLen(s.wire),
       fields: frameFields(s.wire),
       lost,
-      info: (s.wire.tags.length ? 'Quadro com ' + tagText(s.wire.tags) : 'Quadro sem tag') + ' de ' + NAME[s.from] + ' para ' + NAME[s.to],
-      about: s.vlan ? 'O switch classificou o quadro na VLAN ' + s.vlan + '.' : 'Quadro na VLAN indicada pela tag, ou pela configuração da porta quando não há tag.',
-      phaseName: 'Quadro Ethernet',
+      info: (s.wire.tags.length ? 'Frame com ' + tagText(s.wire.tags) : 'Frame sem tag') + ' de ' + NAME[s.from] + ' para ' + NAME[s.to],
+      about: s.vlan ? 'O switch classificou o frame na VLAN ' + s.vlan + '.' : 'Frame na VLAN indicada pela tag, ou pela configuração da porta quando não há tag.',
+      phaseName: 'Frame Ethernet',
     });
     tr.st(m.tArr, 'via', tagText(s.wire.tags) + (isSwitch(s.from) && isSwitch(s.to) ? ' no tronco' : ''), s.wire.tags.length ? 'est' : 'warn');
     if (isSwitch(s.to) && s.cls) tr.ev(m.tArr, s.to, s.cls, '');
     if (s.verdict === 'drop') {
       tr.ev(m.tArr, s.to, 'Descarta: ' + s.why, 'bad');
-      tr.lg(m.tArr, s.to.toUpperCase() + ' descartou o quadro: ' + s.why + '.', 'loss');
+      tr.lg(m.tArr, s.to.toUpperCase() + ' descartou o frame: ' + s.why + '.', 'loss');
     } else if (s.verdict === 'recv') {
-      tr.ev(m.tArr, s.to, 'Recebe o quadro' + (s.wire.tags.length ? ' (com tag residual ' + s.wire.tags.join(' e ') + ')' : ''), 'ok');
+      tr.ev(m.tArr, s.to, 'Recebe o frame' + (s.wire.tags.length ? ' (com tag residual ' + s.wire.tags.join(' e ') + ')' : ''), 'ok');
     } else if (s.verdict === 'ignore') {
       tr.ev(m.tArr, s.to, 'Ignora: o MAC de destino não é o dele', '');
     }

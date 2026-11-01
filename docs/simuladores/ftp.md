@@ -1864,13 +1864,13 @@ As chaves, os hashes e os conteúdos são ilustrativos. Os tempos são didático
 A [RFC 2577](https://www.rfc-editor.org/rfc/rfc2577) reúne as considerações de segurança do FTP (ataque de bounce com `PORT`, adivinhação de senha, vazamento de nomes de usuário). Em FTPS, muitos servidores exigem que o canal de dados reuse a sessão TLS do canal de controle; é uma escolha de implementação, não um requisito geral, e o simulador não modela o reuso.
 
 
-## 7. Siglas deste documento
+## 7. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
-| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ALG** | Application Layer Gateway | componente do NAT ou do firewall que entende um protocolo, como o FTP, e reescreve endereços dentro dos dados |
 | **FTP** | File Transfer Protocol, protocolo de transferência de arquivos | transfere arquivos entre cliente e servidor, com canal de controle e canal de dados separados |
 | **IETF** | Internet Engineering Task Force | organização aberta que desenvolve e publica os padrões da Internet, as RFCs |

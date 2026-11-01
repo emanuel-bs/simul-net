@@ -76,7 +76,7 @@ describe('Workbench', () => {
     expect(screen.queryByRole('tab', { name: 'Aba do modo B' })).toBeNull();
     expect(screen.getByText('Conceito A.')).toBeTruthy();
     expect(screen.getByText(/Simulador desenvolvido pelo/)).toBeTruthy();
-    // o quadro de estados fica dentro do palco, e a lateral começa com as configurações
+    // o painel de estados fica dentro do palco, e a lateral começa com as configurações
     expect(screen.getAllByText('Estado da demonstração').length).toBe(1);
     expect(document.querySelector('.stage-body .state-overlay')).toBeTruthy();
     expect(document.querySelector('.side-col .fpanel')).toBeNull();
@@ -190,7 +190,7 @@ describe('Workbench', () => {
     expect(svg.style.width).toBe('200%');
   });
 
-  it('quadros: destacar, maximizar, encaixar com o botão e com Esc; recolher e expandir', () => {
+  it('painéis: destacar, maximizar, encaixar com o botão e com Esc; recolher e expandir', () => {
     const { container } = render(<Workbench def={def} />);
     const stage = container.querySelector('.stage-panel') as HTMLElement;
     const stageBtn = (name: RegExp | string) => within(stage).getByRole('button', { name });
@@ -207,9 +207,9 @@ describe('Workbench', () => {
     expect(stage.querySelectorAll('.frz, .fresize')).toHaveLength(0);
     expect(stage.style.position).toBe('');
 
-    // Esc encaixa o quadro mais recente
+    // Esc encaixa o painel mais recente
     fireEvent.click(stageBtn('Destacar'));
-    // o painel lateral de estados volta quando o quadro do palco é desligado
+    // o painel lateral de estados volta quando o painel do palco é desligado
     fireEvent.click(screen.getByRole('button', { name: 'Estados no diagrama' }));
     const state = container.querySelector('.fpanel') as HTMLElement;
     fireEvent.click(within(state).getByRole('button', { name: 'Destacar' }));

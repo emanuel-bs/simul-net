@@ -1,5 +1,5 @@
 // Motor do modo Inundação de MAC e segurança de porta (nível defensivo).
-// O host M envia quadros com endereços de origem forjados até encher a tabela de endereços do switch. Com a tabela cheia,
+// O host M envia frames com endereços de origem forjados até encher a tabela de endereços do switch. Com a tabela cheia,
 // o switch não aprende hosts novos e inunda o tráfego de destino desconhecido, que passa a chegar também a M.
 // A segurança de porta (recurso de fabricantes, não do IEEE) limita quantos MACs a porta aceita.
 // A capacidade real de um switch é de milhares de endereços; o simulador usa valores pequenos para caber no diagrama.
@@ -26,7 +26,7 @@ export const STATES_INU: StateDef[] = [
   { key: 'tab', label: 'Tabela de endereços do switch' },
   { key: 'dec', label: 'Última decisão do switch' },
   { key: 'p3', label: 'Porta 3 (de M)' },
-  { key: 'seen', label: 'Quadros de A e B que M recebeu' },
+  { key: 'seen', label: 'Frames de A e B que M recebeu' },
 ];
 
 const legit = (from: HostKey, to: HostKey, reply: boolean): Frame => ({
@@ -35,7 +35,7 @@ const legit = (from: HostKey, to: HostKey, reply: boolean): Frame => ({
   color: C0.tcp,
   len: 98,
   info: HOSTS[from].ip + ' → ' + HOSTS[to].ip,
-  about: 'Tráfego legítimo entre A e B. Se o switch não souber a porta do destino, o quadro é inundado e M também o recebe.',
+  about: 'Tráfego legítimo entre A e B. Se o switch não souber a porta do destino, o frame é inundado e M também o recebe.',
   dst: HOSTS[to].mac,
   etype: '0x0800 (IPv4)',
   body: [...ipFields(HOSTS[from].ip, HOSTS[to].ip, '1 (ICMP)'), { sec: 'ICMP (RFC 792)' }, ['Tipo', reply ? '0 (Echo Reply)' : '8 (Echo Request)', '']],
@@ -74,17 +74,17 @@ export function buildInu(P: InuParams): Trace {
                 return null;
               }
               R.violations++;
-              if (P.idefense === 'protect') return { note: 'Violação (protect): excede 1 MAC na porta; descarta em silêncio', log: 'Segurança de porta (protect): ' + s + ' excede o limite de 1 MAC na porta 3; quadro descartado sem registro.' };
-              if (P.idefense === 'restrict') return { note: 'Violação (restrict): descarta e gera alerta (' + R.violations + ')', log: 'Segurança de porta (restrict): violação ' + R.violations + ' por ' + s + '; quadro descartado e alerta registrado.' };
+              if (P.idefense === 'protect') return { note: 'Violação (protect): excede 1 MAC na porta; descarta em silêncio', log: 'Segurança de porta (protect): ' + s + ' excede o limite de 1 MAC na porta 3; frame descartado sem registro.' };
+              if (P.idefense === 'restrict') return { note: 'Violação (restrict): descarta e gera alerta (' + R.violations + ')', log: 'Segurança de porta (restrict): violação ' + R.violations + ' por ' + s + '; frame descartado e alerta registrado.' };
               R.down = true;
               return { note: 'Violação (shutdown): a porta 3 é desativada', log: 'Segurança de porta (shutdown): violação por ' + s + '; a porta 3 foi colocada em err-disable.' };
             };
       const f: Frame = {
-        label: 'Quadro forjado #' + i,
+        label: 'Frame forjado #' + i,
         proto: 'Ethernet',
         len: 64,
         info: 'origem ' + src + ' (inventada por M)',
-        about: 'M inventa um endereço de origem novo a cada quadro. O switch tenta aprender cada um e gasta uma entrada da tabela.',
+        about: 'M inventa um endereço de origem novo a cada frame. O switch tenta aprender cada um e gasta uma entrada da tabela.',
         dst: GHOST,
         src,
         etype: '0x0800 (IPv4)',

@@ -1,5 +1,5 @@
 // Glossário de siglas: fonte única do significado e da finalidade de cada sigla usada nos documentos e nos simuladores.
-// Uso: seção "Siglas deste documento" no fim de cada documento gerado. A cobertura é verificada por tests/glossario.test.ts.
+// Uso: seção "Glossário" no fim de cada documento gerado. A cobertura é verificada por tests/glossario.test.ts.
 // Redação: português do Brasil, sem travessão longo nem meia-risca. As expansões seguem os nomes oficiais em inglês.
 
 export interface Sigla {
@@ -33,7 +33,7 @@ export const GLOSSARIO: Sigla[] = [
   { sigla: 'TCP-AO', expansao: 'TCP Authentication Option', pt: 'opção de autenticação do TCP', serve: 'autentica cada segmento TCP por chave compartilhada; sucede a opção TCP MD5 e protege sessões como as do BGP' },
   { sigla: 'SYN', expansao: 'Synchronize', serve: 'flag do TCP que inicia uma conexão e sincroniza os números de sequência' },
   { sigla: 'SYN-ACK', expansao: 'Synchronize-Acknowledge', serve: 'resposta do servidor ao SYN no handshake de três vias: aceita a conexão e envia o próprio número de sequência' },
-  { sigla: 'ACK', expansao: 'Acknowledgment', pt: 'confirmação', serve: 'flag ou frame que confirma o recebimento de dados anteriores' },
+  { sigla: 'ACK', expansao: 'Acknowledgment', pt: 'confirmação', serve: 'flag que confirma o recebimento de dados anteriores' },
   { sigla: 'FIN', expansao: 'Finish', serve: 'flag do TCP que encerra a conexão de forma ordenada' },
   { sigla: 'RST', expansao: 'Reset', serve: 'flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe' },
   { sigla: 'RTT', expansao: 'Round-Trip Time', pt: 'tempo de ida e volta', serve: 'mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência' },
@@ -126,12 +126,52 @@ export const GLOSSARIO: Sigla[] = [
   { sigla: 'TC', expansao: 'Traffic Class', pt: 'classe de tráfego', serve: 'campo de 3 bits do rótulo MPLS usado para qualidade de serviço (antigo EXP)', escopo: ['mpls'] },
   { sigla: 'IOS', expansao: 'Internetwork Operating System', serve: 'sistema operacional dos equipamentos Cisco; os valores padrão citados nos exemplos vêm dele' },
   { sigla: 'CPU', expansao: 'Central Processing Unit', pt: 'unidade central de processamento', serve: 'processador do equipamento; nos exemplos, o recurso que um ataque ou uma consulta pesada esgota' },
+  // ---- Wi-Fi (IEEE 802.11) ----
+  { sigla: 'SSID', expansao: 'Service Set Identifier', pt: 'identificador do conjunto de serviço', serve: 'nome da rede sem fio, de até 32 bytes; vários APs com o mesmo SSID formam uma só rede onde o cliente pode circular' },
+  { sigla: 'STA', expansao: 'Station', pt: 'estação', serve: 'qualquer dispositivo com rádio 802.11 que se associa a uma rede, como notebook ou celular', escopo: ['wifi'] },
+  { sigla: 'BSS', expansao: 'Basic Service Set', pt: 'conjunto básico de serviço', serve: 'um AP e os clientes associados a ele; é a célula básica de uma rede Wi-Fi', escopo: ['wifi'] },
+  { sigla: 'BSSID', expansao: 'Basic Service Set Identifier', pt: 'identificador do conjunto básico de serviço', serve: 'endereço MAC do AP, que identifica o BSS nos frames e distingue APs com o mesmo SSID', escopo: ['wifi'] },
+  { sigla: 'ESS', expansao: 'Extended Service Set', pt: 'conjunto estendido de serviço', serve: 'vários BSSs com o mesmo SSID ligados por um sistema de distribuição, o que permite o roaming', escopo: ['wifi'] },
+  { sigla: 'IBSS', expansao: 'Independent Basic Service Set', serve: 'rede ad hoc, sem AP, em que as estações se comunicam diretamente; o simulador não a representa', escopo: ['wifi'] },
+  { sigla: 'AID', expansao: 'Association ID', pt: 'identificador de associação', serve: 'número que o AP atribui ao cliente na associação e que o TIM usa para indicar quem tem frames guardados', escopo: ['wifi'] },
+  { sigla: 'CSMA/CA', expansao: 'Carrier Sense Multiple Access with Collision Avoidance', pt: 'acesso múltiplo com escuta de portadora e prevenção de colisão', serve: 'método do Wi-Fi para disputar o meio: escuta o canal, espera um tempo aleatório e confirma cada frame com ACK, porque o rádio não detecta colisões' },
+  { sigla: 'DCF', expansao: 'Distributed Coordination Function', pt: 'função de coordenação distribuída', serve: 'modo básico de acesso ao meio do 802.11, que aplica o CSMA/CA com backoff exponencial', escopo: ['wifi'] },
+  { sigla: 'EDCA', expansao: 'Enhanced Distributed Channel Access', pt: 'acesso ao canal distribuído aprimorado', serve: 'extensão do DCF que dá prioridade a categorias de tráfego, como voz e vídeo (QoS); o simulador não a representa', escopo: ['wifi'] },
+  { sigla: 'NAV', expansao: 'Network Allocation Vector', pt: 'vetor de alocação de rede', serve: 'temporizador de escuta virtual: o cliente que ouve o campo Duration de outro frame espera esse tempo antes de transmitir', escopo: ['wifi'] },
+  { sigla: 'SIFS', expansao: 'Short Interframe Space', pt: 'intervalo curto entre frames', serve: 'menor espera do 802.11, usada entre um frame e a resposta imediata, como CTS e ACK', escopo: ['wifi'] },
+  { sigla: 'DIFS', expansao: 'DCF Interframe Space', pt: 'intervalo entre frames do DCF', serve: 'espera com o meio livre antes de a estação iniciar a disputa pelo canal', escopo: ['wifi'] },
+  { sigla: 'CW', expansao: 'Contention Window', pt: 'janela de contenção', serve: 'limite superior do sorteio do backoff; começa pequena e dobra a cada falha, o que espalha as tentativas', escopo: ['wifi'] },
+  { sigla: 'RTS/CTS', expansao: 'Request to Send / Clear to Send', pt: 'pedido para enviar e liberado para enviar', serve: 'troca de dois frames curtos que reserva o meio antes dos dados e ajuda contra o nó oculto', escopo: ['wifi'], partes: ['RTS', 'CTS'] },
+  { sigla: 'RTS', expansao: 'Request to Send', pt: 'pedido para enviar', serve: 'frame de controle com que a estação reserva o meio, informando por quanto tempo vai transmitir', escopo: ['wifi'] },
+  { sigla: 'CTS', expansao: 'Clear to Send', pt: 'liberado para enviar', serve: 'frame de controle com que o AP autoriza o envio e faz os demais clientes esperarem', escopo: ['wifi'] },
+  { sigla: 'TU', expansao: 'Time Unit', pt: 'unidade de tempo', serve: 'unidade de 1024 microssegundos usada nos temporizadores do 802.11, como o intervalo do beacon (100 TU)', escopo: ['wifi'] },
+  { sigla: 'TA', expansao: 'Transmitter Address', pt: 'endereço do transmissor', serve: 'endereço MAC de quem transmitiu o frame, no cabeçalho 802.11; o RA é o de quem deve receber', escopo: ['wifi'] },
+  { sigla: 'TIM', expansao: 'Traffic Indication Map', pt: 'mapa de indicação de tráfego', serve: 'campo do beacon que indica, por AID, quais clientes em economia de energia têm frames guardados no AP', escopo: ['wifi'] },
+  { sigla: 'DTIM', expansao: 'Delivery Traffic Indication Message', pt: 'mensagem de indicação de entrega de tráfego', serve: 'TIM especial, a cada alguns beacons, depois do qual o AP envia os frames multicast e broadcast guardados', escopo: ['wifi'] },
+  { sigla: 'PS', expansao: 'Power Save', pt: 'economia de energia', serve: 'modo em que o cliente dorme entre beacons e o AP guarda os frames dele; o PS-Poll pede o frame guardado', escopo: ['wifi'] },
+  { sigla: 'PM', expansao: 'Power Management', pt: 'gerenciamento de energia', serve: 'flag do Frame Control com que o cliente avisa ao AP que vai dormir (1) ou que está acordado (0)', escopo: ['wifi'] },
+  { sigla: 'OFDM', expansao: 'Orthogonal Frequency-Division Multiplexing', pt: 'multiplexação por divisão de frequência ortogonal', serve: 'técnica de modulação do Wi-Fi que divide o canal em muitas subportadoras; define os tempos usados no simulador' },
+  { sigla: 'OFDMA', expansao: 'Orthogonal Frequency-Division Multiple Access', serve: 'divide o canal entre vários clientes ao mesmo tempo no Wi-Fi 6; o simulador não a representa', escopo: ['wifi'], partes: ['OFDM'] },
+  { sigla: 'MU-MIMO', expansao: 'Multi-User Multiple Input Multiple Output', serve: 'o AP usa várias antenas para atender vários clientes ao mesmo tempo; o simulador não a representa', escopo: ['wifi'] },
+  { sigla: 'TWT', expansao: 'Target Wake Time', pt: 'hora de acordar combinada', serve: 'mecanismo do Wi-Fi 6 em que o AP e o cliente combinam quando o cliente acorda, para economizar energia; o simulador não o representa', escopo: ['wifi'] },
+  { sigla: 'MLME', expansao: 'MAC Sublayer Management Entity', pt: 'entidade de gerenciamento da subcamada MAC', serve: 'parte do 802.11 que controla a varredura, a autenticação, a associação e os três estados do cliente', escopo: ['wifi'] },
+  { sigla: 'CRC-32', expansao: 'Cyclic Redundancy Check de 32 bits', serve: 'código de 32 bits usado como FCS no fim dos frames 802.11 e Ethernet', partes: ['CRC', 'FCS'] },
+  { sigla: 'PSK', expansao: 'Pre-Shared Key', pt: 'chave pré-compartilhada', serve: 'senha única conhecida por todos os participantes, da qual se derivam as chaves da sessão; é o modo pessoal do WPA2' },
+  { sigla: 'WPA2', expansao: 'Wi-Fi Protected Access 2', serve: 'segurança de redes Wi-Fi com PSK ou 802.1X e cifra AES; é a geração anterior ao WPA3' },
+  { sigla: 'WPA3', expansao: 'Wi-Fi Protected Access 3', serve: 'segurança atual do Wi-Fi: usa SAE no lugar da senha compartilhada simples e exige a proteção dos frames de gerência (PMF)', partes: ['SAE', 'PMF'] },
+  { sigla: 'RSN', expansao: 'Robust Security Network', pt: 'rede de segurança robusta', serve: 'conjunto de regras de segurança do 802.11i (cifras, autenticação e handshake de quatro vias), anunciado no elemento RSN do beacon' },
+  { sigla: 'SAE', expansao: 'Simultaneous Authentication of Equals', pt: 'autenticação simultânea de iguais', serve: 'troca de chaves do WPA3 a partir de uma senha, que resiste a tentativas de adivinhar a senha offline' },
+  { sigla: 'OWE', expansao: 'Opportunistic Wireless Encryption', pt: 'cifra sem fio oportunista', serve: 'cifra o tráfego de redes abertas sem exigir senha (Enhanced Open, RFC 8110)' },
+  { sigla: 'PMF', expansao: 'Protected Management Frames', pt: 'frames de gerência protegidos', serve: 'proteção do 802.11w contra Deauthentication e Disassociation forjados; obrigatória no WPA3' },
+  { sigla: 'PMK-R1', expansao: 'Pairwise Master Key, nível R1', serve: 'chave de nível 1 da hierarquia do 802.11r, que o AP novo recebe para o cliente trocar de AP sem refazer a autenticação completa', escopo: ['wifi'] },
+  { sigla: 'FT', expansao: 'Fast BSS Transition', pt: 'transição rápida de BSS', serve: 'roaming rápido do 802.11r, que embute a derivação das chaves na autenticação e na reassociação', escopo: ['wifi'] },
+  { sigla: 'BTM', expansao: 'BSS Transition Management', pt: 'gerenciamento de transição de BSS', serve: 'recurso do 802.11v em que o AP sugere ao cliente trocar de AP, por exemplo por carga ou sinal fraco', escopo: ['wifi'] },
 ];
 
 /** Siglas que aparecem nos documentos mas não são siglas de glossário: métodos, estados, nomes de equipamentos de exemplo. */
 export const NAO_SIGLAS = new Set([
   'GET', 'POST', 'OK', 'DATA', 'ESTABLISHED',
-  'SW1', 'SW2', 'PC-A', 'PC-B', 'R1', 'R2', 'R3', 'SW1-SW2', 'SRV',
+  'SW1', 'SW2', 'PC-A', 'PC-B', 'R1', 'R2', 'R3', 'SW1-SW2', 'SRV', 'AP-01', 'AP-02',
   // nomes de mensagens e de estados dos protocolos: ficam para um glossário de mensagens
   'INIT', 'OPEN', 'READ', 'KEXINIT', 'NEWKEYS', 'REFUSED', 'DHCPDECLINE',
 ]);
@@ -165,7 +205,7 @@ const significado = (e: Sigla): string => e.expansao + (e.pt ? ', ' + e.pt : '')
 const FIM_DOC = '\n\n---\n\n*';
 
 /**
- * Acrescenta ao documento gerado a seção "Siglas deste documento", com o significado e a finalidade de cada sigla do
+ * Acrescenta ao documento gerado a seção "Glossário", com o significado e a finalidade de cada sigla do
  * glossário que aparece no texto (no sentido do simulador). O texto corrido não é alterado e o rodapé de crédito fica no fim.
  */
 export function comSecaoDeSiglas(texto: string, simId: string): string {
@@ -178,7 +218,7 @@ export function comSecaoDeSiglas(texto: string, simId: string): string {
     .sort((a, b) => a.sigla.localeCompare(b.sigla, 'en'));
   if (!presentes.length) return corpo + rodape;
   const numerada = [...corpo.matchAll(/^## (\d+)\. /gm)].pop();
-  const titulo = numerada ? `## ${Number(numerada[1]) + 1}. Siglas deste documento` : '## Siglas deste documento';
+  const titulo = numerada ? `## ${Number(numerada[1]) + 1}. Glossário` : '## Glossário';
   const cel = (s: string) => s.replace(/\|/g, '\|');
   const tabela = presentes.map((e) => `| **${cel(e.sigla)}** | ${cel(significado(e))} | ${cel(e.serve)} |`);
   const secao = [titulo, '', 'Significado e finalidade das siglas usadas neste documento.', '', '| Sigla | Significado | Para que serve |', '| --- | --- | --- |', ...tabela].join('\n');
