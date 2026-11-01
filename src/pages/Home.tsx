@@ -32,7 +32,7 @@ export function Home() {
         </div>
         <aside aria-labelledby="rfcs-vigentes" className="mt-4 rounded-xl border-l-4 border-accent bg-surface p-5">
           <h2 id="rfcs-vigentes" className="text-xl font-bold">
-            Baseados nas RFCs vigentes
+            Baseados nas RFCs vigentes e com documentação própria
           </h2>
           <p className="mt-1 text-lg">
             Todos os simuladores são desenvolvidos a partir das RFCs e dos padrões mais recentes, conferidos no texto oficial do{' '}
@@ -40,6 +40,12 @@ export function Home() {
               RFC Editor
             </a>
             , com atenção às versões substituídas ou atualizadas. No total, o projeto referencia <strong>mais de {totalRfcs} RFCs</strong>.
+          </p>
+          <p className="mt-3 text-lg">
+            Cada simulador tem ainda uma documentação própria, parte essencial do estudo. Ela apresenta os <strong>cenários</strong> (o funcionamento normal, as falhas e as defesas), as{' '}
+            <strong>topologias</strong> de rede usadas em cada um e os <strong>diagramas de sequência</strong>, que mostram a ordem exata das mensagens trocadas. Com esse material, o estudante
+            relaciona o que vê na simulação com o que a especificação determina e chega a um entendimento aprofundado dos protocolos estudados. Ao fim de cada documento há um glossário com o
+            significado e a finalidade de cada sigla. Use o link &quot;Documentação&quot; no cartão de cada simulador.
           </p>
         </aside>
       </section>

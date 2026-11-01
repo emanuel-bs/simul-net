@@ -600,6 +600,48 @@ O painel lateral acompanha as fases do NIST SP 800-61r2 (substituída pela Rev. 
 9. Para cada cenário, encontre o menor conjunto de controles que obtém "Postura adequada".
 
 
+## 7. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
+| **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **CDN** | Content Delivery Network, rede de distribuição de conteúdo | serviço com servidores espalhados que entregam o conteúdo perto do usuário e absorvem volume de tráfego |
+| **CGNAT** | Carrier-Grade NAT | NAT em grande escala feito pela operadora, que compartilha um endereço público entre muitos clientes |
+| **CPU** | Central Processing Unit, unidade central de processamento | processador do equipamento; nos exemplos, o recurso que um ataque ou uma consulta pesada esgota |
+| **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |
+| **ICMP** | Internet Control Message Protocol | leva mensagens de controle e de erro da camada IP, como o eco do ping e o aviso de destino inalcançável |
+| **IDS** | Intrusion Detection System, sistema de detecção de intrusão | inspeciona o tráfego e gera alertas sobre padrões de ataque, sem bloquear |
+| **IOS** | Internetwork Operating System | sistema operacional dos equipamentos Cisco; os valores padrão citados nos exemplos vêm dele |
+| **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **IPS** | Intrusion Prevention System, sistema de prevenção de intrusão | inspeciona o tráfego e bloqueia o que casa com ataques conhecidos; o IDS apenas alerta |
+| **ISP** | Internet Service Provider, provedor de acesso à Internet | operadora que liga o cliente à Internet e anuncia os prefixos dele a outras redes |
+| **MITM** | Man-in-the-Middle, homem no meio | ataque em que alguém se interpõe entre duas partes para ler ou alterar a comunicação; a autenticação e a cifra o defendem |
+| **NAT** | Network Address Translation, tradução de endereços de rede | troca endereços e portas dos pacotes, para que uma rede privada compartilhe poucos endereços públicos |
+| **NIST** | National Institute of Standards and Technology | instituto dos Estados Unidos que publica padrões e guias de segurança, como a série SP 800 |
+| **NSEC** | Next Secure | registro DNSSEC que prova que um nome não existe, apontando o próximo nome da zona |
+| **NTP** | Network Time Protocol | sincroniza o relógio dos equipamentos com uma fonte de tempo confiável |
+| **NXDOMAIN** | Non-Existent Domain, domínio inexistente | código de resposta do DNS que informa que o nome consultado não existe |
+| **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
+| **RRL** | Response Rate Limiting, limitação da taxa de respostas | limita respostas DNS idênticas para o servidor não servir de amplificador de ataques |
+| **RST** | Reset | flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe |
+| **RTBH** | Remotely Triggered Black Hole, buraco negro acionado remotamente | descarta, perto da origem, todo o tráfego para um alvo atacado, pelo anúncio de uma rota ([RFC 7999](https://www.rfc-editor.org/rfc/rfc7999)) |
+| **SP** | Special Publication, publicação especial | série de guias técnicos do NIST, como a SP 800-41, sobre firewalls |
+| **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |
+| **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
+| **SYN-ACK** | Synchronize-Acknowledge | resposta do servidor ao SYN no handshake de três vias: aceita a conexão e envia o próprio número de sequência |
+| **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
+| **TCP-AO** | TCP Authentication Option, opção de autenticação do TCP | autentica cada segmento TCP por chave compartilhada; sucede a opção TCP MD5 e protege sessões como as do BGP |
+| **TCP/UDP** | Transmission Control Protocol e User Datagram Protocol | refere-se aos dois protocolos de transporte da pilha da Internet |
+| **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+| **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
+| **VPN** | Virtual Private Network, rede privada virtual | cria um canal protegido, em geral cifrado, sobre uma rede pública |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

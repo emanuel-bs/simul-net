@@ -1280,6 +1280,29 @@ O funcionamento do spanning tree é definido pelo IEEE, e não por uma RFC. A **
 O simulador mostra um triângulo de três switches (quatro pontes, no modo de proteções). Os endereços são de documentação ([RFC 7042](https://www.rfc-editor.org/rfc/rfc7042) e [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)), os tempos de trânsito são didáticos, e os temporizadores do protocolo (Hello 2 s, Max Age 20 s e Forward Delay 15 s) são os padrões. A eleição é simulada por rodadas de BPDUs, sem os temporizadores de Hello nem o envelhecimento da informação (Max Age). Na falha da raiz, o simulador refaz a eleição entre as pontes que sobraram. Uma porta que já encaminha e muda de papel continua encaminhando. A topologia usa a tabela longa de custos e uma só instância de STP. No RSTP, os papéis de backup e as portas de borda não aparecem, e o MSTP mostra a sincronização só do CIST (as instâncias seguem a mesma lógica). Não foram citadas cláusulas do IEEE 802.1Q-2022 (que incorpora o 802.1D, o 802.1w e o 802.1s) por falta de um texto aberto para conferência. Fora do escopo: PVST+, Rapid PVST+, agregação de enlaces e o spanning tree de camada 3.
 
 
+## 8. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
+| **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **BPDU** | Bridge Protocol Data Unit | frame que as pontes trocam no STP para eleger a raiz e calcular as portas |
+| **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
+| **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
+| **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **MSTP** | Multiple Spanning Tree Protocol | versão do STP com várias árvores, cada uma para um grupo de VLANs |
+| **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
+| **RST** | Reset | flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe |
+| **RSTP** | Rapid Spanning Tree Protocol | versão do STP que converge em segundos, pela negociação direta entre as pontes |
+| **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **SNMP** | Simple Network Management Protocol, protocolo simples de gerência de rede | consulta e configura equipamentos de rede, e recebe alertas deles |
+| **STP** | Spanning Tree Protocol, protocolo de árvore de abrangência | evita laços em redes comutadas, bloqueando enlaces redundantes até que sejam necessários |
+| **TTL** | Time To Live, tempo de vida | limita quantos saltos um pacote pode dar; cada roteador o reduz de 1, e ao chegar a zero o pacote é descartado |
+| **VLAN** | Virtual Local Area Network, rede local virtual | separa logicamente uma rede em domínios de broadcast isolados no mesmo equipamento físico |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

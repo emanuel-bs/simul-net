@@ -1745,6 +1745,36 @@ Uma regra pode aceitar um número máximo de novas conexões por segundo por ori
 - [RFC 6298](https://www.rfc-editor.org/rfc/rfc6298): temporizador de retransmissão do TCP.
 
 
+## 8. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACL** | Access Control List, lista de controle de acesso | conjunto ordenado de regras que permite ou nega tráfego conforme endereços, portas e protocolos |
+| **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
+| **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **FIN** | Finish | flag do TCP que encerra a conexão de forma ordenada |
+| **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
+| **ICMP** | Internet Control Message Protocol | leva mensagens de controle e de erro da camada IP, como o eco do ping e o aviso de destino inalcançável |
+| **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **IPS** | Intrusion Prevention System, sistema de prevenção de intrusão | inspeciona o tráfego e bloqueia o que casa com ataques conhecidos; o IDS apenas alerta |
+| **NAT** | Network Address Translation, tradução de endereços de rede | troca endereços e portas dos pacotes, para que uma rede privada compartilhe poucos endereços públicos |
+| **NIST** | National Institute of Standards and Technology | instituto dos Estados Unidos que publica padrões e guias de segurança, como a série SP 800 |
+| **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
+| **RST** | Reset | flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe |
+| **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **SP** | Special Publication, publicação especial | série de guias técnicos do NIST, como a SP 800-41, sobre firewalls |
+| **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |
+| **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
+| **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
+| **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+| **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
+| **URL** | Uniform Resource Locator, localizador uniforme de recursos | endereço completo de um recurso, com protocolo, nome do servidor e caminho |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

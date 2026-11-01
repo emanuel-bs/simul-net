@@ -1765,6 +1765,39 @@ Não há criptografia real: chaves, assinaturas e hashes são valores ilustrativ
 10. **Conteúdo alterado no caminho:** o que acontece com a página em HTTP e em HTTPS? Que mecanismo do TLS detecta a alteração?
 
 
+## 7. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **AEAD** | Authenticated Encryption with Associated Data, cifra autenticada com dados associados | cifra os dados e garante a integridade num só passo, como o AES-GCM |
+| **AES-GCM** | Advanced Encryption Standard, Galois/Counter Mode | cifra autenticada (AEAD) muito usada no TLS e no SSH |
+| **ALPN** | Application-Layer Protocol Negotiation | extensão do TLS que negocia o protocolo de aplicação, como HTTP/2 ou HTTP/3, no próprio handshake |
+| **CA** | Certification Authority, autoridade certificadora | entidade que assina certificados digitais e é a âncora de confiança de quem os valida |
+| **CBC** | Cipher Block Chaining, encadeamento de blocos | modo de cifra de blocos mais antigo, sem autenticação própria, hoje desaconselhado |
+| **CDN** | Content Delivery Network, rede de distribuição de conteúdo | serviço com servidores espalhados que entregam o conteúdo perto do usuário e absorvem volume de tráfego |
+| **CPU** | Central Processing Unit, unidade central de processamento | processador do equipamento; nos exemplos, o recurso que um ataque ou uma consulta pesada esgota |
+| **HSTS** | HTTP Strict Transport Security | cabeçalho com que o servidor manda o navegador usar sempre HTTPS, dificultando o rebaixamento para HTTP |
+| **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |
+| **HTTP/1** | HTTP versão 1.1 | versão textual do HTTP, com uma requisição por vez em cada conexão |
+| **HTTP/2** | HTTP versão 2 | versão binária do HTTP que multiplexa vários fluxos em uma só conexão TCP |
+| **HTTP/3** | HTTP versão 3 | versão do HTTP sobre QUIC e UDP, que evita o bloqueio de um fluxo por perda em outro |
+| **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
+| **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **QUIC** | nome do protocolo, que não é uma sigla oficial | transporte sobre UDP com criptografia embutida e múltiplos fluxos independentes; base do HTTP/3 |
+| **RSA** | Rivest, Shamir e Adleman | algoritmo de chave pública usado para assinaturas e troca de chaves |
+| **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **SNI** | Server Name Indication, indicação do nome do servidor | extensão do TLS em que o cliente informa o nome do site, para o servidor escolher o certificado; costuma ir em claro |
+| **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |
+| **SSL** | Secure Sockets Layer | antecessor do TLS, com versões obsoletas e inseguras; o nome ainda é usado, de forma imprecisa, para o TLS |
+| **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
+| **TCP/UDP** | Transmission Control Protocol e User Datagram Protocol | refere-se aos dois protocolos de transporte da pilha da Internet |
+| **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+| **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
+| **URL** | Uniform Resource Locator, localizador uniforme de recursos | endereço completo de um recurso, com protocolo, nome do servidor e caminho |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

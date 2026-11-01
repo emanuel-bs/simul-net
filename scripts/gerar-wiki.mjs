@@ -879,6 +879,13 @@ function linkRfcs(text) {
     })
     .join('\n');
 }
+// Siglas: acrescenta a seção "Siglas deste documento" no fim das páginas dos simuladores.
+const { comSecaoDeSiglas } = await server.ssrLoadModule('/src/docs/glossario.ts');
+for (const x of avail) {
+  const k = `${pageName(x.id)}.md`;
+  if (files[k]) files[k] = comSecaoDeSiglas(files[k], x.id);
+}
+
 for (const k of Object.keys(files)) files[k] = linkRfcs(files[k]);
 
 for (const [name, text] of Object.entries(files)) fs.writeFileSync(path.join(out, name), text, 'utf8');

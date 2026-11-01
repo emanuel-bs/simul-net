@@ -1911,6 +1911,39 @@ O **Domain Name System** ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034) e [
 9. No modo **DoT e DoH**, compare o que o observador lê nos três transportes e discuta a política estrita contra a oportunista.
 
 
+## 8. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **ACL** | Access Control List, lista de controle de acesso | conjunto ordenado de regras que permite ou nega tráfego conforme endereços, portas e protocolos |
+| **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
+| **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **CDN** | Content Delivery Network, rede de distribuição de conteúdo | serviço com servidores espalhados que entregam o conteúdo perto do usuário e absorvem volume de tráfego |
+| **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **DNSSEC** | DNS Security Extensions, extensões de segurança do DNS | assina as respostas DNS para que o resolvedor confira a autenticidade e a integridade |
+| **DS** | Delegation Signer, assinante da delegação | registro na zona pai que guarda o hash da chave da zona filha e liga a cadeia de confiança do DNSSEC |
+| **HTTP/2** | HTTP versão 2 | versão binária do HTTP que multiplexa vários fluxos em uma só conexão TCP |
+| **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
+| **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
+| **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **NSEC** | Next Secure | registro DNSSEC que prova que um nome não existe, apontando o próximo nome da zona |
+| **NXDOMAIN** | Non-Existent Domain, domínio inexistente | código de resposta do DNS que informa que o nome consultado não existe |
+| **RA** | Recursion Available, recursão disponível | flag da resposta DNS que informa que o servidor faz consultas recursivas |
+| **RD** | Recursion Desired, recursão desejada | flag da consulta DNS em que o cliente pede ao servidor que resolva o nome por inteiro |
+| **RRL** | Response Rate Limiting, limitação da taxa de respostas | limita respostas DNS idênticas para o servidor não servir de amplificador de ataques |
+| **SNI** | Server Name Indication, indicação do nome do servidor | extensão do TLS em que o cliente informa o nome do site, para o servidor escolher o certificado; costuma ir em claro |
+| **SPF** | Sender Policy Framework | registro DNS que lista os servidores autorizados a enviar e-mail por um domínio |
+| **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
+| **TC** | Truncated, truncada | flag da resposta DNS que avisa não ter cabido no limite do UDP; o resolvedor repete por TCP |
+| **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
+| **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+| **TTL** | Time To Live, tempo de vida | limita quantos saltos um pacote pode dar; cada roteador o reduz de 1, e ao chegar a zero o pacote é descartado |
+| **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

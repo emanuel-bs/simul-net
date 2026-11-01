@@ -1224,6 +1224,27 @@ Nenhuma das duas técnicas funciona dentro do mesmo switch ou contra uma porta c
 - Os endereços MAC seguem a faixa de documentação ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542), que substitui a [RFC 7042](https://www.rfc-editor.org/rfc/rfc7042)) e as sub-redes são as privadas 192.168.10.0/24 e 192.168.20.0/24 ([RFC 1918](https://www.rfc-editor.org/rfc/rfc1918)).
 
 
+## 8. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
+| **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **FCS** | Frame Check Sequence, sequência de verificação do frame | código (CRC) no fim do frame que permite ao receptor descartar frames corrompidos |
+| **ICMP** | Internet Control Message Protocol | leva mensagens de controle e de erro da camada IP, como o eco do ping e o aviso de destino inalcançável |
+| **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
+| **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **MSTP** | Multiple Spanning Tree Protocol | versão do STP com várias árvores, cada uma para um grupo de VLANs |
+| **RSTP** | Rapid Spanning Tree Protocol | versão do STP que converge em segundos, pela negociação direta entre as pontes |
+| **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **STP** | Spanning Tree Protocol, protocolo de árvore de abrangência | evita laços em redes comutadas, bloqueando enlaces redundantes até que sejam necessários |
+| **TTL** | Time To Live, tempo de vida | limita quantos saltos um pacote pode dar; cada roteador o reduz de 1, e ao chegar a zero o pacote é descartado |
+| **VLAN** | Virtual Local Area Network, rede local virtual | separa logicamente uma rede em domínios de broadcast isolados no mesmo equipamento físico |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

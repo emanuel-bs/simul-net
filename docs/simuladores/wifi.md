@@ -1492,6 +1492,24 @@ Os canais 1 a 13 têm centros espaçados de 5 MHz a partir de 2412 MHz (centro =
 - Os endereços MAC seguem a faixa de documentação ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542)).
 
 
+## 8. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **ACK** | Acknowledgment, confirmação | flag ou frame que confirma o recebimento de dados anteriores |
+| **AP** | Access Point, ponto de acesso | liga os clientes sem fio à rede cabeada e faz a ponte entre o 802.11 e o Ethernet |
+| **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **DS** | Distribution System, sistema de distribuição | rede, em geral cabeada, que liga os APs entre si e ao restante da infraestrutura |
+| **EAPOL** | Extensible Authentication Protocol over LAN | leva o EAP entre o cliente e o switch ou AP no 802.1X, antes de a porta liberar tráfego |
+| **FCS** | Frame Check Sequence, sequência de verificação do frame | código (CRC) no fim do frame que permite ao receptor descartar frames corrompidos |
+| **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
+| **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
+| **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **RA** | Receiver Address, endereço do receptor | primeiro endereço do cabeçalho 802.11: quem deve receber o frame |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*

@@ -1489,6 +1489,37 @@ Não há criptografia real: chaves, fingerprints e hashes são valores determin�
 8. **ProxyJump:** por que é melhor que o ForwardAgent? Quem verifica a chave de host do alvo?
 
 
+## 7. Siglas deste documento
+
+Significado e finalidade das siglas usadas neste documento.
+
+| Sigla | Significado | Para que serve |
+| --- | --- | --- |
+| **AEAD** | Authenticated Encryption with Associated Data, cifra autenticada com dados associados | cifra os dados e garante a integridade num só passo, como o AES-GCM |
+| **AES-GCM** | Advanced Encryption Standard, Galois/Counter Mode | cifra autenticada (AEAD) muito usada no TLS e no SSH |
+| **CBC** | Cipher Block Chaining, encadeamento de blocos | modo de cifra de blocos mais antigo, sem autenticação própria, hoje desaconselhado |
+| **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **DNSSEC** | DNS Security Extensions, extensões de segurança do DNS | assina as respostas DNS para que o resolvedor confira a autenticidade e a integridade |
+| **FIN** | Finish | flag do TCP que encerra a conexão de forma ordenada |
+| **FTP** | File Transfer Protocol, protocolo de transferência de arquivos | transfere arquivos entre cliente e servidor, com canal de controle e canal de dados separados |
+| **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
+| **IETF** | Internet Engineering Task Force | organização aberta que desenvolve e publica os padrões da Internet, as RFCs |
+| **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **MITM** | Man-in-the-Middle, homem no meio | ataque em que alguém se interpõe entre duas partes para ler ou alterar a comunicação; a autenticação e a cifra o defendem |
+| **NAT** | Network Address Translation, tradução de endereços de rede | troca endereços e portas dos pacotes, para que uma rede privada compartilhe poucos endereços públicos |
+| **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
+| **RSA** | Rivest, Shamir e Adleman | algoritmo de chave pública usado para assinaturas e troca de chaves |
+| **RST** | Reset | flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe |
+| **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **SFTP** | SSH File Transfer Protocol | transfere arquivos dentro de um canal SSH, não relacionado ao FTP |
+| **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |
+| **SSL** | Secure Sockets Layer | antecessor do TLS, com versões obsoletas e inseguras; o nome ainda é usado, de forma imprecisa, para o TLS |
+| **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
+| **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
+| **TCP/UDP** | Transmission Control Protocol e User Datagram Protocol | refere-se aos dois protocolos de transporte da pilha da Internet |
+| **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+
+
 ---
 
 *Simul-Net é um projeto mantido pelo Prof. Dr. Laerte Peotta de Melo, com apoio de IA generativa no processo de desenvolvimento, com sua estrita supervisão, revisão técnica e responsabilidade. Uso exclusivo para fins de ensino e pesquisa. Universidade de Brasília (UnB) - Departamento de Engenharia Elétrica. Código aberto (licença MIT).*
