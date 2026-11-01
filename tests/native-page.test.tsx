@@ -75,6 +75,7 @@ describe('páginas dos simuladores nativos', () => {
   it('STP: carrega, percorre os cinco modos e não tem violações de acessibilidade', () => checkSim('stp', /^STP, RSTP e MSTP$/), 180000);
   it('VLAN: carrega, percorre os cinco modos e não tem violações de acessibilidade', () => checkSim('vlan', /^VLAN e trunking \(802\.1Q\)$/), 180000);
   it('802.1X: carrega, percorre os quatro modos e não tem violações de acessibilidade', () => checkSim('802-1x', /^802\.1X e RADIUS \(EAP\)$/), 180000);
+  it('Wi-Fi: carrega, percorre os quatro modos e não tem violações de acessibilidade', () => checkSim('wifi', /^Wi-Fi: operação \(802\.11\)$/), 180000);
 
   it('ICMP: carrega, percorre os três modos e não tem violações de acessibilidade', () => checkSim('icmp', /^ICMP \(ping e traceroute\)$/), 120000);
 

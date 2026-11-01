@@ -15,16 +15,21 @@ export function Home() {
   const planned = SIMS.filter((s) => s.status === 'planned');
   return (
     <div className="space-y-12">
-      <section aria-labelledby="titulo" className="max-w-4xl space-y-3">
-        <h1 id="titulo" className="text-4xl font-bold">
-          Simul-Net
-        </h1>
-        <p className="text-2xl text-muted">Simuladores visuais de redes e protocolos seguros</p>
-        <p className="text-lg">
-          Projeto acadêmico do curso de Engenharia de Redes de Comunicação da Universidade de Brasília (UnB), sob responsabilidade do Prof. Dr. Laerte Peotta de Melo. Cada simulador mostra, passo a
-          passo, como um protocolo funciona, como falha e como se defende, com diagramas de sequência, captura de pacotes, campos das mensagens e explicação do experimento. Tudo roda no navegador,
-          sem servidor.
-        </p>
+      <section aria-labelledby="titulo" className="max-w-5xl space-y-3">
+        <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="Logotipo do Simul-Net: três nós de rede ligados por enlaces" width={160} height={160} className="h-28 w-28 shrink-0 md:h-40 md:w-40" />
+          <div className="max-w-4xl space-y-3">
+            <h1 id="titulo" className="text-4xl font-bold">
+              Simul-Net
+            </h1>
+            <p className="text-2xl text-muted">Simuladores visuais de redes e protocolos seguros</p>
+            <p className="text-lg">
+              Projeto acadêmico do curso de Engenharia de Redes de Comunicação da Universidade de Brasília (UnB), sob responsabilidade do Prof. Dr. Laerte Peotta de Melo. Cada simulador mostra,
+              passo a passo, como um protocolo funciona, como falha e como se defende, com diagramas de sequência, captura de pacotes, campos das mensagens e explicação do experimento. Tudo roda no
+              navegador, sem servidor.
+            </p>
+          </div>
+        </div>
         <aside aria-labelledby="rfcs-vigentes" className="mt-4 rounded-xl border-l-4 border-accent bg-surface p-5">
           <h2 id="rfcs-vigentes" className="text-xl font-bold">
             Baseados nas RFCs vigentes

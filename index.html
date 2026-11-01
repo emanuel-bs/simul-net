@@ -17,13 +17,12 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <title>Simul-Net: simuladores de redes e protocolos seguros</title>
     <script>
-      // Aplica o tema salvo antes da renderização para evitar piscar. O padrão é o tema escuro.
+      // Aplica o tema salvo antes da renderização para evitar piscar. O padrão é o tema claro; a escolha do usuário sempre prevalece.
       try {
         var t = localStorage.getItem('simulnet-theme');
-        var dark = t ? t === 'dark' : true;
-        if (dark) document.documentElement.classList.add('dark');
+        if (t === 'dark') document.documentElement.classList.add('dark');
       } catch (e) {
-        document.documentElement.classList.add('dark');
+        /* sem armazenamento: tema claro */
       }
     </script>
   </head>

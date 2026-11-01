@@ -10,7 +10,7 @@ function initial(): Theme {
   } catch {
     /* armazenamento indisponível */
   }
-  return 'dark';
+  return 'light';
 }
 
 export function useTheme() {
@@ -18,13 +18,17 @@ export function useTheme() {
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  // Só a escolha do usuário é gravada: sem escolha, vale o padrão (claro).
+  const toggle = useCallback(() => {
+    const next: Theme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
     try {
-      localStorage.setItem(KEY, theme);
+      localStorage.setItem(KEY, next);
     } catch {
       /* ignorado */
     }
   }, [theme]);
-
-  const toggle = useCallback(() => setTheme((t) => (t === 'dark' ? 'light' : 'dark')), []);
   return { theme, toggle };
 }

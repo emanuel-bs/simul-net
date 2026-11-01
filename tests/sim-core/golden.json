@@ -370,5 +370,33 @@
     "amostra:porta": "b24eb3e83af79a4f",
     "amostra:seg": "2e94ceeaa06f843b",
     "textos": "1b71e2dcf3e9ad82"
+  },
+  "wifi": {
+    "d-passivo": "c2e56540260da699",
+    "d-ativo": "905b9695b4d25b03",
+    "d-oculta": "10662e27f6a450c0",
+    "d-rsn": "783a69d02f190bac",
+    "d-cheio": "deebb11be3a194f7",
+    "m-basico": "5bbe577eb57cee55",
+    "m-ack": "7a873b6d56115de9",
+    "m-colisao": "a1d9c79197b0f34b",
+    "m-colisao-rts": "3cd3ccfb861872c6",
+    "m-oculto": "f3b048ce7a7fbbf2",
+    "m-oculto-rts": "c97bbcd32913fcbd",
+    "r-roam": "1621729c5cc4fc30",
+    "r-ft": "d11c303df23c143f",
+    "r-sticky": "ba756c75651c0dba",
+    "r-btm": "173b10eef7a25e7c",
+    "r-ps": "381c13d9b031c532",
+    "r-ps-long": "79a4beaf73ffeea7",
+    "c-ok": "7193beb55f6316f7",
+    "c-co": "a1f8fa62726888d5",
+    "c-adj": "1a4df7518108c16a",
+    "c-40": "441e6bfdfe98d4aa",
+    "amostra:desc": "ea3022858099648e",
+    "amostra:meio": "9833185e73f3f6b5",
+    "amostra:mov": "e134bac0494552da",
+    "amostra:canal": "8b4803a010b6cef5",
+    "textos": "29d4e7f2df592c88"
   }
 }

@@ -74,7 +74,7 @@ export const SIMS: SimMeta[] = [
     topics: ['DORA', 'Leases e renovação', 'Conflitos de endereço (ARP)'],
     rfcs: ['RFC 2131', 'RFC 2132', 'RFC 5227', 'RFC 3046', 'RFC 1542'],
     status: 'available',
-        engine: 'nativo',
+    engine: 'nativo',
   },
   {
     id: 'icmp',
@@ -233,7 +233,7 @@ export const SIMS: SimMeta[] = [
     topics: ['Aprendizado e tabela de endereços', 'Inundação, filtragem e envelhecimento', 'Broadcast, multicast e IGMP snooping', 'Inundação de MAC e segurança de porta'],
     rfcs: ['IEEE 802.1Q-2022 (inclui 802.1D)', 'IEEE 802.3', 'RFC 1112', 'RFC 4541', 'RFC 9776'],
     status: 'available',
-        engine: 'nativo',
+    engine: 'nativo',
   },
   {
     id: 'stp',
@@ -243,7 +243,6 @@ export const SIMS: SimMeta[] = [
     topics: ['Eleição da raiz e papéis das portas', 'Estados, falhas e reconvergência', 'RSTP: proposta e acordo', 'MSTP: instâncias por VLAN', 'Laço e tempestade de broadcast', 'BPDU Guard e Root Guard'],
     rfcs: ['IEEE 802.1Q-2022 (inclui 802.1D, 802.1w e 802.1s)', 'RFC 4188', 'RFC 4318'],
     status: 'available',
-    novo: true,
     engine: 'nativo',
   },
   {
@@ -261,10 +260,12 @@ export const SIMS: SimMeta[] = [
     id: 'wifi',
     category: 'camada-de-enlace',
     title: 'Wi-Fi: operação (802.11)',
-    summary: 'Como uma rede local sem fio funciona: canais, beacon e probe, autenticação aberta e associação, acesso ao meio com CSMA/CA, RTS/CTS e nó oculto, roaming e economia de energia.',
-    topics: [],
-    rfcs: ['IEEE 802.11'],
-    status: 'planned',
+    summary: 'Como uma rede local sem fio funciona: varredura passiva e ativa, autenticação e associação, acesso ao meio com CSMA/CA, ACK, RTS/CTS e nó oculto, roaming, economia de energia e planejamento de canais.',
+    topics: ['Beacon, Probe e os três estados do cliente', 'Autenticação aberta, associação e recusa', 'CSMA/CA: DIFS, backoff, ACK e retransmissão', 'Colisões, nó oculto e RTS/CTS', 'Roaming, 802.11r e 802.11v', 'Economia de energia: TIM e PS-Poll', 'Canais em 2,4 GHz e interferência'],
+    rfcs: ['IEEE 802.11-2020 (e emendas)', 'RFC 9542'],
+    status: 'available',
+    novo: true,
+    engine: 'nativo',
   },
   {
     id: 'wifi-seguranca',

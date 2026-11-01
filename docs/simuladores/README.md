@@ -11,7 +11,7 @@ Switching, VLANs, spanning tree e Wi-Fi: como os quadros são encaminhados, como
 | [Switching e aprendizado de MAC](switching.md) | nativo | disponível | IEEE 802.1Q-2022 (inclui 802.1D), IEEE 802.3, [RFC 1112](https://www.rfc-editor.org/rfc/rfc1112), [RFC 4541](https://www.rfc-editor.org/rfc/rfc4541), [RFC 9776](https://www.rfc-editor.org/rfc/rfc9776) |
 | [STP, RSTP e MSTP](stp.md) | nativo | disponível | IEEE 802.1Q-2022 (inclui 802.1D, 802.1w e 802.1s), [RFC 4188](https://www.rfc-editor.org/rfc/rfc4188), [RFC 4318](https://www.rfc-editor.org/rfc/rfc4318) |
 | [VLAN e trunking (802.1Q)](vlan.md) | nativo | disponível | IEEE 802.1Q-2022, [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542) |
-| Wi-Fi: operação (802.11) | - | planejado | IEEE 802.11 |
+| [Wi-Fi: operação (802.11)](wifi.md) | nativo | disponível | IEEE 802.11-2020 (e emendas), [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542) |
 
 ## Roteamento e serviços de rede
 
