@@ -2,8 +2,16 @@ import { Link } from 'react-router-dom';
 import { SimCard } from '../components/SimCard';
 import { CATEGORIES, SIMS, simsByCategory } from '../sims/registry';
 
+// RFCs distintas citadas pelos simuladores disponíveis, arredondadas para baixo na dezena ("mais de 90").
+function rfcsCitadas(): number {
+  const nums = new Set<string>();
+  for (const s of SIMS) if (s.status === 'available') for (const r of s.rfcs) if (/^RFC \d+$/.test(r)) nums.add(r);
+  return Math.floor(nums.size / 10) * 10;
+}
+
 export function Home() {
   const available = SIMS.filter((s) => s.status === 'available');
+  const totalRfcs = rfcsCitadas();
   const planned = SIMS.filter((s) => s.status === 'planned');
   return (
     <div className="space-y-12">
@@ -17,6 +25,18 @@ export function Home() {
           passo, como um protocolo funciona, como falha e como se defende, com diagramas de sequência, captura de pacotes, campos das mensagens e explicação do experimento. Tudo roda no navegador,
           sem servidor.
         </p>
+        <aside aria-labelledby="rfcs-vigentes" className="mt-4 rounded-xl border-l-4 border-accent bg-surface p-5">
+          <h2 id="rfcs-vigentes" className="text-xl font-bold">
+            Baseados nas RFCs vigentes
+          </h2>
+          <p className="mt-1 text-lg">
+            Todos os simuladores são desenvolvidos a partir das RFCs e dos padrões mais recentes, conferidos no texto oficial do{' '}
+            <a href="https://www.rfc-editor.org" target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline">
+              RFC Editor
+            </a>
+            , com atenção às versões substituídas ou atualizadas. No total, o projeto referencia <strong>mais de {totalRfcs} RFCs</strong>.
+          </p>
+        </aside>
       </section>
 
       <section aria-labelledby="categorias" className="space-y-4">
