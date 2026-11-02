@@ -1232,17 +1232,26 @@ Significado e finalidade das siglas usadas neste documento.
 | --- | --- | --- |
 | **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **DEI** | Drop Eligible Indicator, indicador de descarte permitido | bit da etiqueta 802.1Q que marca o frame como descartável em caso de congestionamento |
+| **DTP** | Dynamic Trunking Protocol, protocolo de tronco dinâmico | protocolo proprietário da Cisco que negocia automaticamente o modo de tronco de uma porta |
 | **FCS** | Frame Check Sequence, sequência de verificação do frame | código (CRC) no fim do frame que permite ao receptor descartar frames corrompidos |
+| **GVRP/MVRP** | GARP VLAN Registration Protocol / Multiple VLAN Registration Protocol | protocolos que anunciam e registram as VLANs entre switches; o MVRP substitui o GVRP |
 | **ICMP** | Internet Control Message Protocol | leva mensagens de controle e de erro da camada IP, como o eco do ping e o aviso de destino inalcançável |
 | **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
 | **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
 | **MSTP** | Multiple Spanning Tree Protocol | versão do STP com várias árvores, cada uma para um grupo de VLANs |
+| **PCP** | Priority Code Point, ponto de código de prioridade | três bits da etiqueta 802.1Q que dão a prioridade do frame (classe de serviço) |
+| **PVID** | Port VLAN ID, VLAN padrão da porta | VLAN que a porta atribui aos frames sem etiqueta que recebe; na porta de tronco é a VLAN nativa |
 | **RSTP** | Rapid Spanning Tree Protocol | versão do STP que converge em segundos, pela negociação direta entre as pontes |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
 | **STP** | Spanning Tree Protocol, protocolo de árvore de abrangência | evita laços em redes comutadas, bloqueando enlaces redundantes até que sejam necessários |
+| **SVI** | Switch Virtual Interface, interface virtual do switch | interface de camada 3 de um switch para uma VLAN, que faz o roteamento entre VLANs |
+| **TPID** | Tag Protocol Identifier, identificador de protocolo da etiqueta | campo de 16 bits da etiqueta 802.1Q; vale 0x8100 e indica que o frame tem etiqueta |
 | **TTL** | Time To Live, tempo de vida | limita quantos saltos um pacote pode dar; cada roteador o reduz de 1, e ao chegar a zero o pacote é descartado |
+| **VID** | VLAN Identifier, identificador de VLAN | número de 12 bits da etiqueta 802.1Q que diz a qual VLAN o frame pertence |
 | **VLAN** | Virtual Local Area Network, rede local virtual | separa logicamente uma rede em domínios de broadcast isolados no mesmo equipamento físico |
+| **VTP** | VLAN Trunking Protocol, protocolo de tronco de VLAN | protocolo proprietário da Cisco que replica o cadastro de VLANs entre switches |
 
 
 ---

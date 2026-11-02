@@ -786,14 +786,26 @@ Significado e finalidade das siglas usadas neste documento.
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
 | **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
+| **AS** | Autonomous System, sistema autônomo | conjunto de redes sob uma política de roteamento única, identificado por um número (ASN) |
+| **ASPA** | Autonomous System Provider Authorization, autorização de provedor de sistema autônomo | objeto da RPKI com que um AS lista seus provedores autorizados, para detectar vazamentos de rota |
 | **BFD** | Bidirectional Forwarding Detection | detecta em milissegundos a falha de um enlace ou vizinho, para o roteamento reagir depressa |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **EGP** | Exterior Gateway Protocol, protocolo de roteamento externo | roteamento entre sistemas autônomos, como o BGP; contrasta com o IGP |
+| **GTSM** | Generalized TTL Security Mechanism, mecanismo generalizado de segurança por TTL | faz o roteador aceitar pacotes BGP só com TTL 255, o que protege sessões entre vizinhos diretamente ligados ([RFC 5082](https://www.rfc-editor.org/rfc/rfc5082)) |
 | **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
 | **IGP** | Interior Gateway Protocol, protocolo de roteamento interno | roteamento dentro de um sistema autônomo, como o OSPF; contrasta com o BGP, que liga sistemas autônomos |
 | **IOS** | Internetwork Operating System | sistema operacional dos equipamentos Cisco; os valores padrão citados nos exemplos vêm dele |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **IRR** | Internet Routing Registry, registro de roteamento da Internet | base pública, sem garantia criptográfica, em que as redes declaram suas rotas e políticas; serve para gerar filtros |
 | **ISP** | Internet Service Provider, provedor de acesso à Internet | operadora que liga o cliente à Internet e anuncia os prefixos dele a outras redes |
+| **MED** | Multi-Exit Discriminator, discriminador de saídas múltiplas | atributo com que um AS sugere a um vizinho qual das várias ligações usar para chegar até ele; o menor valor é preferido |
+| **NLRI** | Network Layer Reachability Information, informação de alcançabilidade da camada de rede | lista de prefixos que uma mensagem UPDATE anuncia |
 | **OSPF** | Open Shortest Path First | protocolo de roteamento interno que calcula o menor caminho a partir do mapa completo da rede |
+| **OTC** | Only to Customer | atributo BGP ([RFC 9234](https://www.rfc-editor.org/rfc/rfc9234)) que marca rotas recebidas de um provedor ou par para não serem repassadas a outros, evitando vazamentos |
+| **RIPE** | Réseaux IP Européens Network Coordination Centre | registro regional de endereços da Europa, do Oriente Médio e de parte da Ásia Central, que publica boas práticas de roteamento |
+| **ROA** | Route Origin Authorization, autorização de origem de rota | objeto assinado na RPKI que autoriza um AS a originar um prefixo, com o tamanho máximo permitido |
+| **ROV** | Route Origin Validation, validação da origem da rota | confere se o AS que originou um prefixo está autorizado por um ROA e descarta os anúncios inválidos |
+| **RPKI** | Resource Public Key Infrastructure, infraestrutura de chaves públicas de recursos | infraestrutura de certificados que prova quem é o dono de um bloco de endereços e de um número de AS |
 | **RTBH** | Remotely Triggered Black Hole, buraco negro acionado remotamente | descarta, perto da origem, todo o tráfego para um alvo atacado, pelo anúncio de uma rota ([RFC 7999](https://www.rfc-editor.org/rfc/rfc7999)) |
 | **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
 | **SYN-ACK** | Synchronize-Acknowledge | resposta do servidor ao SYN no handshake de três vias: aceita a conexão e envia o próprio número de sequência |

@@ -414,15 +414,24 @@ Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
+| **ABR** | Area Border Router, roteador de borda de área | roteador OSPF ligado a mais de uma área, que resume as rotas entre elas |
+| **BDR** | Backup Designated Router, roteador designado de reserva | assume no lugar do DR se ele falhar |
 | **BFD** | Bidirectional Forwarding Detection | detecta em milissegundos a falha de um enlace ou vizinho, para o roteamento reagir depressa |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **DBD** | Database Description, descrição de base de dados | mensagem OSPF que resume a LSDB na sincronização entre vizinhos |
+| **DR** | Designated Router, roteador designado | roteador eleito num segmento multiacesso para trocar LSAs com todos os demais |
+| **HMAC-SHA** | keyed-Hash Message Authentication Code com SHA | autentica as mensagens de roteamento com uma chave compartilhada, como no OSPF ([RFC 5709](https://www.rfc-editor.org/rfc/rfc5709)) |
 | **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
 | **IOS** | Internetwork Operating System | sistema operacional dos equipamentos Cisco; os valores padrão citados nos exemplos vêm dele |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **LSA** | Link State Advertisement, anúncio de estado de enlace | anúncio do estado dos enlaces trocado no OSPF |
+| **LSDB** | Link-State Database, base de estado de enlaces | base com o mapa da topologia que cada roteador OSPF mantém |
 | **LSR** | Label Switching Router, roteador de comutação por rótulos | roteador MPLS que encaminha pacotes pelo rótulo, sem consultar o endereço IP de destino |
+| **LSU** | Link State Update, atualização de estado de enlace | mensagem OSPF que leva os LSAs |
 | **MD5** | Message Digest 5 | função de hash antiga, considerada insegura para assinaturas; ainda aparece em protocolos legados |
 | **OSPF** | Open Shortest Path First | protocolo de roteamento interno que calcula o menor caminho a partir do mapa completo da rede |
 | **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
+| **RIP** | Routing Information Protocol, protocolo de informação de roteamento | protocolo de vetor de distância que usa a contagem de saltos (máximo de 15) |
 | **SPF** | Sender Policy Framework | registro DNS que lista os servidores autorizados a enviar e-mail por um domínio |
 | **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
 

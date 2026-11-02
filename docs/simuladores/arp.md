@@ -1381,18 +1381,25 @@ Significado e finalidade das siglas usadas neste documento.
 | --- | --- | --- |
 | **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **DAI** | Dynamic ARP Inspection, inspeção dinâmica de ARP | recurso do switch que confere as respostas ARP com a tabela do DHCP snooping e descarta as forjadas |
 | **DHCP** | Dynamic Host Configuration Protocol, protocolo de configuração dinâmica de hosts | entrega ao cliente endereço IP, máscara, gateway e DNS, por empréstimo (lease) |
 | **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |
 | **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
 | **ICMP** | Internet Control Message Protocol | leva mensagens de controle e de erro da camada IP, como o eco do ping e o aviso de destino inalcançável |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
 | **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **NDP** | Neighbor Discovery Protocol, protocolo de descoberta de vizinhos | equivalente do ARP no IPv6 ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861)), feito por mensagens ICMPv6 |
 | **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **SHA** | Sender Hardware Address, endereço de hardware do remetente | campo do pacote ARP com o MAC de quem o enviou |
+| **SPA** | Sender Protocol Address, endereço de protocolo do remetente | campo do pacote ARP com o IP de quem o enviou |
 | **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |
+| **THA** | Target Hardware Address, endereço de hardware do alvo | campo do pacote ARP com o MAC procurado; na requisição vai zerado |
 | **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+| **TPA** | Target Protocol Address, endereço de protocolo do alvo | campo do pacote ARP com o IP cujo MAC se procura |
 | **VLAN** | Virtual Local Area Network, rede local virtual | separa logicamente uma rede em domínios de broadcast isolados no mesmo equipamento físico |
 | **VPN** | Virtual Private Network, rede privada virtual | cria um canal protegido, em geral cifrado, sobre uma rede pública |
+| **VRRP** | Virtual Router Redundancy Protocol | permite que dois roteadores compartilhem um endereço IP virtual de gateway, para haver reserva |
 
 
 ---

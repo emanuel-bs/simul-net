@@ -1289,16 +1289,25 @@ Significado e finalidade das siglas usadas neste documento.
 | **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
 | **BPDU** | Bridge Protocol Data Unit | frame que as pontes trocam no STP para eleger a raiz e calcular as portas |
+| **CIST** | Common and Internal Spanning Tree, árvore geradora comum e interna | árvore do MSTP que liga todas as regiões e serve de instância zero |
+| **DSAP** | Destination Service Access Point, ponto de acesso ao serviço de destino | campo do cabeçalho LLC que identifica o protocolo de destino |
 | **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
 | **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
+| **LLC** | Logical Link Control, controle de enlace lógico | subcamada IEEE 802.2 que identifica o protocolo transportado no frame, usada pelas BPDUs |
 | **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **MST** | Multiple Spanning Tree, árvore geradora múltipla | o mesmo que o MSTP: várias árvores, cada uma para um grupo de VLANs |
+| **MSTI** | Multiple Spanning Tree Instance, instância de árvore geradora múltipla | cada árvore independente do MSTP, que cuida de um grupo de VLANs |
 | **MSTP** | Multiple Spanning Tree Protocol | versão do STP com várias árvores, cada uma para um grupo de VLANs |
+| **PVST** | Per-VLAN Spanning Tree, árvore geradora por VLAN | variante proprietária da Cisco, com uma árvore por VLAN |
 | **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
 | **RST** | Reset | flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe |
 | **RSTP** | Rapid Spanning Tree Protocol | versão do STP que converge em segundos, pela negociação direta entre as pontes |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
 | **SNMP** | Simple Network Management Protocol, protocolo simples de gerência de rede | consulta e configura equipamentos de rede, e recebe alertas deles |
+| **SSAP** | Source Service Access Point, ponto de acesso ao serviço de origem | campo do cabeçalho LLC que identifica o protocolo de origem |
 | **STP** | Spanning Tree Protocol, protocolo de árvore de abrangência | evita laços em redes comutadas, bloqueando enlaces redundantes até que sejam necessários |
+| **TCA** | Topology Change Acknowledgment, confirmação de mudança de topologia | flag da BPDU que confirma o recebimento de um TCN |
+| **TCN** | Topology Change Notification, notificação de mudança de topologia | BPDU que avisa a raiz de que a topologia mudou, para as tabelas de endereços envelhecerem logo |
 | **TTL** | Time To Live, tempo de vida | limita quantos saltos um pacote pode dar; cada roteador o reduz de 1, e ao chegar a zero o pacote é descartado |
 | **VLAN** | Virtual Local Area Network, rede local virtual | separa logicamente uma rede em domínios de broadcast isolados no mesmo equipamento físico |
 

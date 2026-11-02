@@ -1296,19 +1296,24 @@ Significado e finalidade das siglas usadas neste documento.
 | **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ALPN** | Application-Layer Protocol Negotiation | extensão do TLS que negocia o protocolo de aplicação, como HTTP/2 ou HTTP/3, no próprio handshake |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **CSS** | Cascading Style Sheets, folhas de estilo em cascata | define a aparência de uma página, em arquivo separado do HTML |
 | **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **HPACK** | nome do formato, que não é uma sigla oficial | compressão de cabeçalhos do HTTP/2 ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)), com uma tabela dinâmica compartilhada |
 | **HSTS** | HTTP Strict Transport Security | cabeçalho com que o servidor manda o navegador usar sempre HTTPS, dificultando o rebaixamento para HTTP |
+| **HTML** | HyperText Markup Language, linguagem de marcação de hipertexto | linguagem em que as páginas da web são escritas |
 | **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |
 | **HTTP/1** | HTTP versão 1.1 | versão textual do HTTP, com uma requisição por vez em cada conexão |
 | **HTTP/2** | HTTP versão 2 | versão binária do HTTP que multiplexa vários fluxos em uma só conexão TCP |
 | **HTTP/3** | HTTP versão 3 | versão do HTTP sobre QUIC e UDP, que evita o bloqueio de um fluxo por perda em outro |
 | **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
+| **QPACK** | nome do formato, que não é uma sigla oficial | compressão de cabeçalhos do HTTP/3 ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), que evita o bloqueio entre fluxos |
 | **QUIC** | nome do protocolo, que não é uma sigla oficial | transporte sobre UDP com criptografia embutida e múltiplos fluxos independentes; base do HTTP/3 |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
 | **SACK** | Selective Acknowledgment, confirmação seletiva | o receptor informa quais blocos chegaram fora de ordem, e o emissor reenvia só o que faltou |
 | **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
 | **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
 | **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
+| **TTFB** | Time To First Byte, tempo até o primeiro byte | tempo entre o pedido e a chegada do primeiro byte da resposta |
 | **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
 
 

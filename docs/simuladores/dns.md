@@ -1917,31 +1917,56 @@ Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
+| **AA** | Authoritative Answer, resposta autoritativa | flag da resposta que indica que ela veio do servidor autoritativo da zona |
+| **AAAA** | IPv6 Address, registro de endereço IPv6 (quatro vezes o A) | registro que associa um nome a um endereço IPv6 |
 | **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ACL** | Access Control List, lista de controle de acesso | conjunto ordenado de regras que permite ou nega tráfego conforme endereços, portas e protocolos |
+| **AD** | Authenticated Data, dados autenticados | flag da resposta que informa que o resolvedor validou as assinaturas DNSSEC |
 | **BCP** | Best Current Practice, melhor prática atual | série de RFCs com práticas recomendadas de operação, como a [BCP 38](https://www.rfc-editor.org/info/bcp38) (filtragem de endereços de origem forjados) |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **CD** | Checking Disabled, verificação desligada | flag com que o cliente pede ao resolvedor que não valide o DNSSEC |
 | **CDN** | Content Delivery Network, rede de distribuição de conteúdo | serviço com servidores espalhados que entregam o conteúdo perto do usuário e absorvem volume de tráfego |
+| **CNAME** | Canonical Name, nome canônico | registro que faz um nome ser apelido de outro |
+| **DGA** | Domain Generation Algorithm, algoritmo de geração de domínios | algoritmo de malware que gera nomes de domínio em série para achar o seu controle; a defesa observa muitos NXDOMAIN |
+| **DKIM** | DomainKeys Identified Mail | assina as mensagens de e-mail e publica a chave pública no DNS, para o destinatário conferir a origem |
+| **DMARC** | Domain-based Message Authentication, Reporting and Conformance | política publicada no DNS que diz o que fazer com e-mail que falha no SPF e no DKIM |
 | **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **DNSKEY** | DNS Public Key, chave pública do DNS | chave pública da zona, usada para conferir as assinaturas RRSIG |
 | **DNSSEC** | DNS Security Extensions, extensões de segurança do DNS | assina as respostas DNS para que o resolvedor confira a autenticidade e a integridade |
+| **DO** | DNSSEC OK | flag do EDNS com que o cliente pede os registros DNSSEC na resposta |
 | **DS** | Delegation Signer, assinante da delegação | registro na zona pai que guarda o hash da chave da zona filha e liga a cadeia de confiança do DNSSEC |
+| **EDE** | Extended DNS Errors, erros estendidos do DNS | opção do EDNS que explica por que uma resposta falhou ([RFC 8914](https://www.rfc-editor.org/rfc/rfc8914)) |
+| **EDNS** | Extension Mechanisms for DNS, mecanismos de extensão do DNS | permite mensagens UDP maiores e novas opções, como o bit DO do DNSSEC |
 | **HTTP/2** | HTTP versão 2 | versão binária do HTTP que multiplexa vários fluxos em uma só conexão TCP |
 | **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
 | **ID** | Identifier, identificador | valor que distingue uma entidade ou uma consulta, como o router ID do BGP e o ID da consulta DNS |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **KSK** | Key Signing Key, chave de assinatura de chaves | chave que assina o conjunto DNSKEY e cujo hash fica no registro DS da zona pai |
+| **MX** | Mail Exchange, troca de correio | registro que indica os servidores de e-mail do domínio |
+| **NOERROR** | No Error, sem erro | código de resposta de sucesso; com resposta vazia, indica que o nome existe mas não tem o tipo de registro pedido |
+| **NS** | Name Server, servidor de nomes | registro que indica os servidores de nomes autoritativos da zona |
 | **NSEC** | Next Secure | registro DNSSEC que prova que um nome não existe, apontando o próximo nome da zona |
+| **NSEC3** | Next Secure, versão 3 | como o NSEC, mas usa hashes dos nomes para dificultar a enumeração da zona |
 | **NXDOMAIN** | Non-Existent Domain, domínio inexistente | código de resposta do DNS que informa que o nome consultado não existe |
+| **QR** | Query/Response, consulta ou resposta | flag que distingue a consulta (0) da resposta (1) |
 | **RA** | Recursion Available, recursão disponível | flag da resposta DNS que informa que o servidor faz consultas recursivas |
+| **RCODE** | Response Code, código de resposta | campo da resposta DNS que informa o resultado, como NOERROR, NXDOMAIN ou SERVFAIL |
 | **RD** | Recursion Desired, recursão desejada | flag da consulta DNS em que o cliente pede ao servidor que resolva o nome por inteiro |
 | **RRL** | Response Rate Limiting, limitação da taxa de respostas | limita respostas DNS idênticas para o servidor não servir de amplificador de ataques |
+| **RRSIG** | Resource Record Signature, assinatura de registro de recurso | assinatura digital de um conjunto de registros no DNSSEC |
+| **SERVFAIL** | Server Failure, falha do servidor | código de resposta que indica falha do servidor, comum quando a validação DNSSEC não é bem-sucedida |
 | **SNI** | Server Name Indication, indicação do nome do servidor | extensão do TLS em que o cliente informa o nome do site, para o servidor escolher o certificado; costuma ir em claro |
+| **SOA** | Start of Authority, início de autoridade | registro no topo da zona com o servidor primário, o número de série e os temporizadores |
 | **SPF** | Sender Policy Framework | registro DNS que lista os servidores autorizados a enviar e-mail por um domínio |
 | **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
 | **TC** | Truncated, truncada | flag da resposta DNS que avisa não ter cabido no limite do UDP; o resolvedor repete por TCP |
 | **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
+| **TLD** | Top-Level Domain, domínio de topo | último rótulo de um nome, como .br ou .com |
 | **TLS** | Transport Layer Security, segurança da camada de transporte | estabelece um canal cifrado e autenticado entre dois pontos, a base do HTTPS |
 | **TTL** | Time To Live, tempo de vida | limita quantos saltos um pacote pode dar; cada roteador o reduz de 1, e ao chegar a zero o pacote é descartado |
+| **TXT** | Text, texto | registro de texto livre, muito usado para SPF, DKIM e DMARC |
 | **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
+| **ZSK** | Zone Signing Key, chave de assinatura de zona | chave que assina os demais registros da zona; é trocada com mais frequência que a KSK |
 
 
 ---

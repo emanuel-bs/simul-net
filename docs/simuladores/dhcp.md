@@ -675,15 +675,20 @@ Significado e finalidade das siglas usadas neste documento.
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
 | **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
+| **APIPA** | Automatic Private IP Addressing, endereçamento IP privado automático | endereço 169.254.0.0/16 que o cliente atribui a si mesmo quando não acha servidor DHCP ([RFC 3927](https://www.rfc-editor.org/rfc/rfc3927)) |
 | **ARP** | Address Resolution Protocol, protocolo de resolução de endereços | descobre o endereço MAC que corresponde a um endereço IPv4 na rede local |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **BOOTP** | Bootstrap Protocol | antecessor do DHCP, cujo formato de mensagem o DHCP aproveitou |
 | **DHCP** | Dynamic Host Configuration Protocol, protocolo de configuração dinâmica de hosts | entrega ao cliente endereço IP, máscara, gateway e DNS, por empréstimo (lease) |
 | **DHCPDISCOVER** | DHCP Discover | primeira mensagem do DORA: o cliente, ainda sem endereço, pergunta em broadcast se há servidor DHCP |
 | **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **DORA** | Discover, Offer, Request, Acknowledge | as quatro mensagens da obtenção de um endereço: DISCOVER, OFFER, REQUEST e ACK |
 | **IOS** | Internetwork Operating System | sistema operacional dos equipamentos Cisco; os valores padrão citados nos exemplos vêm dele |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
 | **L2** | Layer 2, camada 2 (enlace) | indica que o equipamento encaminha por endereço MAC, como um switch |
 | **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **T1** | Renewal Time, tempo de renovação | momento (por padrão, metade do lease) em que o cliente tenta renovar o endereço com o servidor que o concedeu |
+| **T2** | Rebinding Time, tempo de reassociação | momento (por padrão, 87,5% do lease) em que o cliente, sem resposta, procura qualquer servidor |
 | **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
 
 

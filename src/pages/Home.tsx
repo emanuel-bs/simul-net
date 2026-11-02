@@ -44,8 +44,8 @@ export function Home() {
           <p className="mt-3 text-lg">
             Cada simulador tem ainda uma documentação própria, parte essencial do estudo. Ela apresenta os <strong>cenários</strong> (o funcionamento normal, as falhas e as defesas), as{' '}
             <strong>topologias</strong> de rede usadas em cada um e os <strong>diagramas de sequência</strong>, que mostram a ordem exata das mensagens trocadas. Com esse material, o estudante
-            relaciona o que vê na simulação com o que a especificação determina e chega a um entendimento aprofundado dos protocolos estudados. Ao fim de cada documento há um glossário com o
-            significado e a finalidade de cada sigla. Use o link &quot;Documentação&quot; no cartão de cada simulador.
+            relaciona o que vê na simulação com o que a especificação determina e chega a um entendimento aprofundado dos protocolos estudados.
+            Use o link &quot;Documentação&quot; no cartão de cada simulador.
           </p>
         </aside>
       </section>

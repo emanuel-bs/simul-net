@@ -1206,8 +1206,11 @@ Significado e finalidade das siglas usadas neste documento.
 | **BPDU** | Bridge Protocol Data Unit | frame que as pontes trocam no STP para eleger a raiz e calcular as portas |
 | **FCS** | Frame Check Sequence, sequência de verificação do frame | código (CRC) no fim do frame que permite ao receptor descartar frames corrompidos |
 | **IEEE** | Institute of Electrical and Electronics Engineers | entidade que publica padrões de redes locais, como o 802.3 (Ethernet), o 802.1 (comutação) e o 802.11 (Wi-Fi) |
+| **IGMP** | Internet Group Management Protocol, protocolo de gerência de grupos da Internet | o host avisa à rede quais grupos multicast IPv4 quer receber |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **LLDP** | Link Layer Discovery Protocol, protocolo de descoberta da camada de enlace | os equipamentos anunciam sua identidade e suas portas aos vizinhos diretos (IEEE 802.1AB) |
 | **MAC** | Media Access Control | camada de enlace que controla o acesso ao meio; também nomeia o endereço físico de 48 bits de uma interface |
+| **MLD** | Multicast Listener Discovery, descoberta de receptores multicast | equivalente do IGMP para o IPv6 |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
 | **SNMP** | Simple Network Management Protocol, protocolo simples de gerência de rede | consulta e configura equipamentos de rede, e recebe alertas deles |
 | **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |

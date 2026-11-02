@@ -1771,13 +1771,25 @@ Significado e finalidade das siglas usadas neste documento.
 
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
+| **ACME** | Automatic Certificate Management Environment | protocolo ([RFC 8555](https://www.rfc-editor.org/rfc/rfc8555)) que automatiza a emissão e a renovação de certificados, como no Let's Encrypt |
 | **AEAD** | Authenticated Encryption with Associated Data, cifra autenticada com dados associados | cifra os dados e garante a integridade num só passo, como o AES-GCM |
 | **AES-GCM** | Advanced Encryption Standard, Galois/Counter Mode | cifra autenticada (AEAD) muito usada no TLS e no SSH |
+| **AIA** | Authority Information Access, acesso à informação da autoridade | extensão do certificado que indica onde obter o certificado do emissor e o serviço OCSP |
 | **ALPN** | Application-Layer Protocol Negotiation | extensão do TLS que negocia o protocolo de aplicação, como HTTP/2 ou HTTP/3, no próprio handshake |
+| **BEAST** | Browser Exploit Against SSL/TLS | ataque ao CBC do TLS 1.0, que levou ao uso do TLS 1.1 ou superior |
 | **CA** | Certification Authority, autoridade certificadora | entidade que assina certificados digitais e é a âncora de confiança de quem os valida |
 | **CBC** | Cipher Block Chaining, encadeamento de blocos | modo de cifra de blocos mais antigo, sem autenticação própria, hoje desaconselhado |
 | **CDN** | Content Delivery Network, rede de distribuição de conteúdo | serviço com servidores espalhados que entregam o conteúdo perto do usuário e absorvem volume de tráfego |
+| **CN** | Common Name, nome comum | campo do assunto do certificado que antes trazia o nome do site; hoje vale o SAN |
 | **CPU** | Central Processing Unit, unidade central de processamento | processador do equipamento; nos exemplos, o recurso que um ataque ou uma consulta pesada esgota |
+| **CRL** | Certificate Revocation List, lista de certificados revogados | lista publicada pela CA com os certificados revogados |
+| **DHE** | Diffie-Hellman Ephemeral | troca de chaves efêmera de Diffie-Hellman, que dá sigilo perfeito de encaminhamento |
+| **DTLS** | Datagram Transport Layer Security | TLS adaptado ao UDP ([RFC 9147](https://www.rfc-editor.org/rfc/rfc9147)) |
+| **ECDHE** | Elliptic Curve Diffie-Hellman Ephemeral | troca de chaves efêmera em curvas elípticas, que dá sigilo perfeito de encaminhamento |
+| **ECDSA** | Elliptic Curve Digital Signature Algorithm | assinatura digital em curvas elípticas, usada em certificados e na autenticação do servidor |
+| **ECH** | Encrypted Client Hello, ClientHello cifrado | cifra o ClientHello, inclusive o SNI, para esconder o nome do site de quem observa a rede |
+| **EKU** | Extended Key Usage, uso estendido da chave | campo do certificado que limita para que ele serve, como autenticar servidores |
+| **HKDF** | HMAC-based Key Derivation Function, função de derivação de chaves baseada em HMAC | deriva as várias chaves do TLS 1.3 a partir de um segredo |
 | **HSTS** | HTTP Strict Transport Security | cabeçalho com que o servidor manda o navegador usar sempre HTTPS, dificultando o rebaixamento para HTTP |
 | **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |
 | **HTTP/1** | HTTP versão 1.1 | versão textual do HTTP, com uma requisição por vez em cada conexão |
@@ -1785,10 +1797,16 @@ Significado e finalidade das siglas usadas neste documento.
 | **HTTP/3** | HTTP versão 3 | versão do HTTP sobre QUIC e UDP, que evita o bloqueio de um fluxo por perda em outro |
 | **HTTPS** | HTTP Secure | HTTP protegido por TLS: cifra o conteúdo e autentica o servidor |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
+| **OCSP** | Online Certificate Status Protocol, protocolo de status de certificado online | consulta online se um certificado foi revogado |
+| **POODLE** | Padding Oracle On Downgraded Legacy Encryption | ataque ao SSL 3.0 e ao CBC, que levou ao abandono do SSL 3.0 |
+| **PRF** | Pseudo-Random Function, função pseudoaleatória | função do TLS 1.2 que gera as chaves a partir do segredo e dos números aleatórios; o TLS 1.3 usa o HKDF |
 | **PSK** | Pre-Shared Key, chave pré-compartilhada | senha única conhecida por todos os participantes, da qual se derivam as chaves da sessão; é o modo pessoal do WPA2 |
 | **QUIC** | nome do protocolo, que não é uma sigla oficial | transporte sobre UDP com criptografia embutida e múltiplos fluxos independentes; base do HTTP/3 |
+| **RC4** | Rivest Cipher 4 | cifra de fluxo antiga, proibida no TLS por ser insegura |
 | **RSA** | Rivest, Shamir e Adleman | algoritmo de chave pública usado para assinaturas e troca de chaves |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |
+| **SAN** | Subject Alternative Name, nome alternativo do assunto | lista de nomes para os quais o certificado vale e que o navegador confere |
+| **SCT** | Signed Certificate Timestamp | prova de que o certificado foi registrado em logs públicos de Certificate Transparency |
 | **SNI** | Server Name Indication, indicação do nome do servidor | extensão do TLS em que o cliente informa o nome do site, para o servidor escolher o certificado; costuma ir em claro |
 | **SSH** | Secure Shell | acesso remoto e transferência de arquivos por um canal cifrado, com autenticação do servidor e do usuário |
 | **SSL** | Secure Sockets Layer | antecessor do TLS, com versões obsoletas e inseguras; o nome ainda é usado, de forma imprecisa, para o TLS |

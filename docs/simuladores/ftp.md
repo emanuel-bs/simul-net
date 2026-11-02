@@ -1873,6 +1873,7 @@ Significado e finalidade das siglas usadas neste documento.
 | **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
 | **ALG** | Application Layer Gateway | componente do NAT ou do firewall que entende um protocolo, como o FTP, e reescreve endereços dentro dos dados |
 | **FTP** | File Transfer Protocol, protocolo de transferência de arquivos | transfere arquivos entre cliente e servidor, com canal de controle e canal de dados separados |
+| **FTPS** | File Transfer Protocol Secure | FTP protegido por TLS ([RFC 4217](https://www.rfc-editor.org/rfc/rfc4217)), no modo explícito (AUTH TLS) ou implícito |
 | **IETF** | Internet Engineering Task Force | organização aberta que desenvolve e publica os padrões da Internet, as RFCs |
 | **NAT** | Network Address Translation, tradução de endereços de rede | troca endereços e portas dos pacotes, para que uma rede privada compartilhe poucos endereços públicos |
 | **RTT** | Round-Trip Time, tempo de ida e volta | mede o tempo entre enviar um pacote e receber a resposta; base dos temporizadores e da latência |

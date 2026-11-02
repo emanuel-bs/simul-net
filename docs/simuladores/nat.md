@@ -1402,21 +1402,39 @@ Significado e finalidade das siglas usadas neste documento.
 | Sigla | Significado | Para que serve |
 | --- | --- | --- |
 | **ACK** | Acknowledgment, confirmação | flag que confirma o recebimento de dados anteriores |
+| **AH** | Authentication Header, cabeçalho de autenticação | protocolo IPsec que autentica o pacote sem cifrar; por incluir o endereço IP, não atravessa o NAT |
 | **ALG** | Application Layer Gateway | componente do NAT ou do firewall que entende um protocolo, como o FTP, e reescreve endereços dentro dos dados |
+| **APDM** | Address and Port-Dependent Mapping, mapeamento dependente de endereço e porta | uma tradução diferente para cada destino; é o NAT mais restritivo (simétrico) |
 | **BGP** | Border Gateway Protocol, protocolo de roteador de borda | troca rotas entre sistemas autônomos e sustenta o roteamento entre operadoras na Internet |
+| **CGN** | Carrier-Grade NAT | o mesmo que CGNAT: NAT em grande escala feito pela operadora |
 | **CGNAT** | Carrier-Grade NAT | NAT em grande escala feito pela operadora, que compartilha um endereço público entre muitos clientes |
+| **CLI** | Command-Line Interface, interface de linha de comando | interface de texto para configurar equipamentos |
+| **CPE** | Customer Premises Equipment, equipamento nas instalações do cliente | roteador ou modem que fica na casa ou na empresa do cliente |
 | **DHCP** | Dynamic Host Configuration Protocol, protocolo de configuração dinâmica de hosts | entrega ao cliente endereço IP, máscara, gateway e DNS, por empréstimo (lease) |
+| **DNAT** | Destination NAT | traduz o endereço de destino; serve para publicar um serviço interno |
 | **DNS** | Domain Name System, sistema de nomes de domínio | traduz nomes (www.exemplo.org) em endereços IP e guarda outros registros do domínio |
+| **EIM** | Endpoint-Independent Mapping, mapeamento independente do destino | a mesma tradução para todos os destinos externos, o que facilita aplicações P2P ([RFC 4787](https://www.rfc-editor.org/rfc/rfc4787)) |
+| **ESP** | Encapsulating Security Payload | protocolo IPsec que cifra e autentica os pacotes ([RFC 4303](https://www.rfc-editor.org/rfc/rfc4303)) |
 | **FIN** | Finish | flag do TCP que encerra a conexão de forma ordenada |
 | **FTP** | File Transfer Protocol, protocolo de transferência de arquivos | transfere arquivos entre cliente e servidor, com canal de controle e canal de dados separados |
 | **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |
+| **ICE** | Interactive Connectivity Establishment, estabelecimento interativo de conectividade | testa os caminhos possíveis entre dois hosts atrás de NAT para achar o que funciona |
 | **ICMP** | Internet Control Message Protocol | leva mensagens de controle e de erro da camada IP, como o eco do ping e o aviso de destino inalcançável |
+| **IKE** | Internet Key Exchange | negocia as chaves e os parâmetros de uma associação IPsec |
 | **IP** | Internet Protocol, protocolo de internet | endereça e encaminha pacotes entre redes, de origem a destino |
 | **L2** | Layer 2, camada 2 (enlace) | indica que o equipamento encaminha por endereço MAC, como um switch |
 | **LAN** | Local Area Network, rede local | rede de alcance restrito, como a de um prédio ou laboratório, ligada por switches ou por Wi-Fi |
+| **NAPT** | Network Address and Port Translation, tradução de endereço e porta de rede | NAT que traduz também as portas, para muitos hosts internos compartilharem um endereço público |
 | **NAT** | Network Address Translation, tradução de endereços de rede | troca endereços e portas dos pacotes, para que uma rede privada compartilhe poucos endereços públicos |
+| **NAT-T** | NAT Traversal, travessia de NAT | encapsula o IPsec ESP em UDP 4500 para atravessar um NAT ([RFC 3948](https://www.rfc-editor.org/rfc/rfc3948)) |
+| **NAT64** | nome do mecanismo de tradução de IPv6 para IPv4, que não é uma sigla oficial | permite que hosts só IPv6 acessem servidores IPv4 ([RFC 6146](https://www.rfc-editor.org/rfc/rfc6146)) |
+| **PAT** | Port Address Translation, tradução de endereço de porta | nome, comum em equipamentos de fornecedores, para o NAPT |
 | **RFC** | Request for Comments, pedido de comentários | documento numerado do IETF que define ou descreve um protocolo da Internet; cada documento do projeto cita as RFCs com link para o RFC Editor |
 | **RST** | Reset | flag do TCP que derruba a conexão de imediato, por exemplo ao receber segmento de uma conexão que não existe |
+| **SIP** | Session Initiation Protocol | sinaliza chamadas de voz e vídeo; leva endereços dentro da mensagem, o que exige um ALG no NAT |
+| **SNAT** | Source NAT | traduz o endereço de origem; serve para a rede interna sair para a Internet |
+| **SPI** | Security Parameter Index, índice de parâmetros de segurança | identifica a associação IPsec no ESP e no AH |
+| **STUN** | Session Traversal Utilities for NAT | permite ao host descobrir o endereço e a porta públicos que o NAT lhe deu |
 | **SYN** | Synchronize | flag do TCP que inicia uma conexão e sincroniza os números de sequência |
 | **TCP** | Transmission Control Protocol, protocolo de controle de transmissão | entrega dados de forma ordenada e confiável, com conexão, confirmação e controle de congestionamento |
 | **UDP** | User Datagram Protocol | entrega datagramas sem conexão nem confirmação, com baixo custo; usado em consultas curtas e em tempo real |
