@@ -3,6 +3,7 @@ import { explain, setup } from '../transporte-base/content/explain';
 import { stageTitles } from '../transporte-base/content/scenarios';
 import { derive } from '../transporte-base/derive';
 import { buildTcpUdp, C, type TcpUdpParams } from '../transporte-base/modes';
+import { cwndDoCenario } from './content/charts';
 import { comparacao } from './content/comparacao';
 import { fundamentacao } from './content/fundamentacao';
 import { reference } from './content/reference';
@@ -37,6 +38,7 @@ export const tcpProtocol: ProtocolDef = {
   explain,
   reference,
   fundamentacao,
+  docChart: (s) => cwndDoCenario(d.controls, s),
   setup,
 };
 

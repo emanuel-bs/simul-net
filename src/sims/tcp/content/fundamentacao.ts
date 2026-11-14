@@ -1,5 +1,7 @@
 // Fundamentação do simulador TCP, em Markdown: aparece na documentação (docs/simuladores/tcp.md e na wiki), antes de
 // "Como ler os diagramas". Explica a conexão, a máquina de estados, a janela e a recuperação de perdas.
+import { CURVA_PERDA, CURVA_SACK, CURVA_SLOW_START } from './charts';
+
 export const fundamentacao: string = `
 ### O problema que o TCP resolve
 
@@ -172,6 +174,22 @@ Dois sinais de perda têm custos muito diferentes:
 | Timeout (RTO) | nenhum ACK volta antes do prazo | cwnd volta a 1 segmento e recomeça no slow start |
 
 O prazo de retransmissão (RTO) é calculado a partir do RTT medido (RFC 6298, que a RFC 9293 adota na seção 3.8.1). Com **SACK** (RFC 2018), o receptor informa também os blocos recebidos fora de ordem, e o emissor reenvia só o que falta.
+
+### A curva da janela (cwnd)
+
+Os gráficos abaixo mostram a cwnd ao longo do tempo. Os valores vêm do **próprio motor do simulador**, o mesmo dos cenários, e correspondem à aba Janela (cwnd).
+
+${CURVA_SLOW_START}
+
+*Esquema 6 (slow start e congestion avoidance).* Cenário "Slow start": janela inicial de 1 segmento e ssthresh de 8. Até os 108 ms a cwnd **dobra a cada RTT** (1, 2, 4, 8). Ao chegar ao ssthresh, o TCP passa à *congestion avoidance* e a janela cresce **cerca de 1 segmento por RTT**, até a transferência terminar com a cwnd perto de 10.
+
+${CURVA_PERDA}
+
+*Esquema 7 (fast retransmit e timeout).* Os dois cenários são diferentes e a linha se mantém depois do fim de cada um. No **fast retransmit**, o segmento 8 de 20 se perde e os seguintes geram três ACKs duplicados: aos 118 ms o ssthresh vira 5 (metade dos dados em voo). Durante a recuperação a janela se infla com os ACKs duplicados e, ao fim dela (182 ms), cai para 5, **sem voltar a 1**. No **timeout**, o que se perde é o último segmento (o 6 de 6): não há segmentos depois dele para gerar ACKs duplicados, o RTO expira aos 270 ms e a cwnd **volta a 1 segmento**, recomeçando o slow start.
+
+${CURVA_SACK}
+
+*Esquema 8 (sem SACK e com SACK).* Os mesmos três segmentos (5, 7 e 9) se perdem na mesma janela, com RTT de 100 ms. **Sem SACK**, o emissor descobre um buraco por RTT (ACKs parciais) e a janela se infla durante a recuperação; a transferência termina em 672 ms. **Com SACK**, o receptor informa os blocos que recebeu, o emissor repõe os buracos de uma vez e termina em 564 ms, com a cwnd estável em 7.
 
 ### O que cada modo e aba do simulador mostram
 

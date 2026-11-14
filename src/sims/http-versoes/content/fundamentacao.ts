@@ -1,5 +1,7 @@
 // Fundamentação do simulador de versões do HTTP, em Markdown: aparece na documentação (docs/simuladores/http-versoes.md e na
 // wiki), antes de "Como ler os diagramas". Explica o que muda do HTTP/1.1 ao HTTP/3 e por que o transporte importa.
+import { CURVA_CHEGADA, CURVA_PERDA, CURVA_RTT } from './charts';
+
 export const fundamentacao: string = `
 ### O problema que as versões do HTTP resolvem
 
@@ -120,6 +122,22 @@ flowchart LR
 | Compressão de cabeçalhos | não | HPACK | QPACK |
 | Transporte | TCP | TCP | QUIC sobre UDP |
 | Efeito de uma perda | atrasa a conexão | atrasa **todos** os fluxos | atrasa **só** o fluxo |
+
+### As curvas: tempo de carga e chegada dos recursos
+
+Os gráficos abaixo comparam as três versões nas mesmas condições. Os valores vêm do **próprio motor do simulador**, o mesmo dos cenários. Em todos, a página tem 8 recursos (os do cenário padrão), com TLS e 6 conexões no HTTP/1.1, salvo quando o título diz outra coisa.
+
+${CURVA_RTT}
+
+*Esquema 5 (tempo de carga e RTT).* Com 20 ms, as três versões ficam próximas (390, 380 e 360 ms). Com 200 ms, a diferença é grande: **1374 ms** no HTTP/1.1, **1100 ms** no HTTP/2 e **900 ms** no HTTP/3. O custo dominante é o número de **viagens de ida e volta**: a conexão fica pronta em 2 RTT no HTTP/1.1 e no HTTP/2 (TCP mais TLS) e em 1 RTT no HTTP/3 (o QUIC junta o transporte e o TLS), e cada RTT a mais pesa mais numa rede lenta.
+
+${CURVA_CHEGADA}
+
+*Esquema 6 (chegada dos recursos).* Quantos dos 16 recursos já chegaram em cada instante. O HTTP/1.1 espalha os recursos por 6 conexões e termina aos 922 ms. No HTTP/2 e no HTTP/3, uma só conexão leva todos os fluxos ao mesmo tempo: os seis recursos p1 a p6 chegam juntos (618 ms no HTTP/2 e 538 ms no HTTP/3), e a página termina aos 774 ms e aos 694 ms.
+
+${CURVA_PERDA}
+
+*Esquema 7 (perda de um pacote).* Um pacote de /app.js se perde, com RTT de 200 ms. Sem a perda, o HTTP/2 terminaria aos 1100 ms e o HTTP/3 aos 900 ms. No **HTTP/2**, o TCP entrega os bytes em ordem: os recursos foto1.jpg e foto2.jpg já tinham chegado aos 1052 ms, mas ficam **retidos até a retransmissão** e só são entregues aos 1252 ms (o gráfico para em 5 recursos). No **HTTP/3**, cada fluxo tem a sua própria ordenação: só o /app.js espera (chega aos 1052 ms, em vez de 900 ms), e os outros recursos não sofrem atraso. No HTTP/1.1, a perda atrasa o /app.js (de 1175 para 1327 ms), mas só a conexão dele; o fim da página (1374 ms) continua sendo o das outras conexões.
 
 ### O que cada modo e aba do simulador mostram
 

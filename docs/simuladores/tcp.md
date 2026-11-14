@@ -190,7 +190,56 @@ Dois sinais de perda têm custos muito diferentes:
 
 O prazo de retransmissão (RTO) é calculado a partir do RTT medido ([RFC 6298](https://www.rfc-editor.org/rfc/rfc6298), que a [RFC 9293](https://www.rfc-editor.org/rfc/rfc9293) adota na seção 3.8.1). Com **SACK** ([RFC 2018](https://www.rfc-editor.org/rfc/rfc2018)), o receptor informa também os blocos recebidos fora de ordem, e o emissor reenvia só o que falta.
 
-### 2.8 O que cada modo e aba do simulador mostram
+### 2.8 A curva da janela (cwnd)
+
+Os gráficos abaixo mostram a cwnd ao longo do tempo. Os valores vêm do **próprio motor do simulador**, o mesmo dos cenários, e correspondem à aba Janela (cwnd).
+
+**Legenda:** 🟥 cwnd · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd | ssthresh
+xychart-beta
+  title "Slow start e congestion avoidance (cenário Slow start)"
+  x-axis "Tempo (ms)" 15 --> 315.5
+  y-axis "cwnd (segmentos)" 0 --> 15
+  line [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 8.13, 8.13, 8.25, 8.25, 8.37, 8.37, 8.49, 8.49, 8.61, 8.61, 8.61, 8.72, 8.72, 8.84, 8.84, 8.95, 8.95, 9.06, 9.06, 9.17, 9.17, 9.28, 9.28, 9.39, 9.39, 9.5, 9.5, 9.6, 9.6, 9.71, 9.71, 9.71, 9.81, 9.81, 9.91, 9.91, 10.01, 10.01, 10.11, 10.11, 10.21, 10.21, 10.31, 10.31, 10.41, 10.41, 10.5, 10.5, 10.5, 10.5, 10.5, 10.5, 10.5]
+  line [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Esquema 6 (slow start e congestion avoidance).* Cenário "Slow start": janela inicial de 1 segmento e ssthresh de 8. Até os 108 ms a cwnd **dobra a cada RTT** (1, 2, 4, 8). Ao chegar ao ssthresh, o TCP passa à *congestion avoidance* e a janela cresce **cerca de 1 segmento por RTT**, até a transferência terminar com a cwnd perto de 10.
+
+**Legenda:** 🟥 Fast retransmit (3 ACKs duplicados) · 🟦 Timeout (RTO)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed"}}}}%%
+%% legenda: Fast retransmit (3 ACKs duplicados) | Timeout (RTO)
+xychart-beta
+  title "Uma perda: fast retransmit contra timeout"
+  x-axis "Tempo (ms)" 15 --> 316.5
+  y-axis "cwnd (segmentos)" 0 --> 20
+  line [4, 4, 4, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 8, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 5, 5, 5.2, 5.2, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39]
+  line [4, 4, 4, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2]
+```
+
+*Esquema 7 (fast retransmit e timeout).* Os dois cenários são diferentes e a linha se mantém depois do fim de cada um. No **fast retransmit**, o segmento 8 de 20 se perde e os seguintes geram três ACKs duplicados: aos 118 ms o ssthresh vira 5 (metade dos dados em voo). Durante a recuperação a janela se infla com os ACKs duplicados e, ao fim dela (182 ms), cai para 5, **sem voltar a 1**. No **timeout**, o que se perde é o último segmento (o 6 de 6): não há segmentos depois dele para gerar ACKs duplicados, o RTO expira aos 270 ms e a cwnd **volta a 1 segmento**, recomeçando o slow start.
+
+**Legenda:** 🟥 Sem SACK · 🟩 Com SACK
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2e9e4f"}}}}%%
+%% legenda: Sem SACK | Com SACK
+xychart-beta
+  title "Várias perdas na mesma janela: sem SACK e com SACK"
+  x-axis "Tempo (ms)" 100 --> 671.8
+  y-axis "cwnd (segmentos)" 0 --> 25
+  line [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 14, 14, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 15, 18, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 18, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+  line [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 14, 14, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7.14, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28]
+```
+
+*Esquema 8 (sem SACK e com SACK).* Os mesmos três segmentos (5, 7 e 9) se perdem na mesma janela, com RTT de 100 ms. **Sem SACK**, o emissor descobre um buraco por RTT (ACKs parciais) e a janela se infla durante a recuperação; a transferência termina em 672 ms. **Com SACK**, o receptor informa os blocos que recebeu, o emissor repõe os buracos de uma vez e termina em 564 ms, com a cwnd estável em 7.
+
+### 2.9 O que cada modo e aba do simulador mostram
 
 - **Diagrama de sequência:** cada seta é um segmento. A seta com X é um segmento perdido. No modo de download, cada seta representa uma **rodada** (uma janela inteira), para o desenho caber na tela.
 - **Estado da conexão (painel lateral):** mostra o estado TCP de cada ponta, e a cwnd, o ssthresh e o RTO no instante atual.
@@ -199,7 +248,7 @@ O prazo de retransmissão (RTO) é calculado a partir do RTT medido ([RFC 6298](
 
 Para treinar a abertura e o encerramento, use o cenário "Handshake e encerramento". Para ver o crescimento da janela, use "Slow start". Para comparar as formas de recuperar perdas, use "Fast retransmit", "Timeout (RTO)", "Várias perdas sem SACK" e "Várias perdas com SACK". Para o controle de fluxo, use "Janela do receptor".
 
-### 2.9 Limites do modelo e do diagrama
+### 2.10 Limites do modelo e do diagrama
 
 - O simulador mostra o **caminho típico** da máquina de estados e do controle de congestionamento. Ele não simula CUBIC, BBR, *Nagle*, ACK atrasado nem reinício por RST.
 - Os tempos, os tamanhos e a fila do roteador são **didáticos**: servem para comparar comportamentos, e não para prever o desempenho de uma rede real.
@@ -397,6 +446,21 @@ Veja a aba Janela (cwnd). Repare também que os ACKs voltam espaçados e cadenci
 - No diagrama: rajadas cada vez maiores, cadenciadas pelos ACKs (ACK clocking).
 - Na aba Resultados: o tempo total da transferência.
 
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: Slow start"
+  x-axis "Tempo (ms)" 15 --> 315.5
+  y-axis "Segmentos" 0 --> 12
+  line [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 8.13, 8.13, 8.25, 8.25, 8.37, 8.37, 8.49, 8.49, 8.61, 8.61, 8.61, 8.72, 8.72, 8.84, 8.84, 8.95, 8.95, 9.06, 9.06, 9.17, 9.17, 9.28, 9.28, 9.39, 9.39, 9.5, 9.5, 9.6, 9.6, 9.71, 9.71, 9.71, 9.81, 9.81, 9.91, 9.91, 10.01, 10.01, 10.11, 10.11, 10.21, 10.21, 10.31, 10.31, 10.41, 10.41, 10.5, 10.5, 10.5, 10.5, 10.5, 10.5, 10.5]
+  line [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -503,6 +567,22 @@ No gráfico, a cwnd cai à metade em vez de voltar a 1.
 - No terceiro ACK duplicado, a retransmissão do #8 sai sem esperar o RTO.
 - Na aba Janela (cwnd): a queda à metade, não a 1.
 
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh · 🟦 rwnd (janela do receptor)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c, #2f80ed"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh | rwnd (janela do receptor)
+xychart-beta
+  title "Janela de congestionamento: Fast retransmit"
+  x-axis "Tempo (ms)" 15 --> 221.5
+  y-axis "Segmentos" 0 --> 21
+  line [4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15, 5, 5, 5, 5.2, 5.2, 5.2, 5.2, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39, 5.39]
+  line [19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -591,6 +671,21 @@ Depois do timeout, a cwnd volta a 1 e o RTO dobra. Compare o tempo gasto com o d
 - No diagrama: a espera longa até o temporizador estourar.
 - Na aba Janela (cwnd): a queda para 1. Compare o tempo total com o cenário Fast retransmit.
 
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: Timeout (RTO)"
+  x-axis "Tempo (ms)" 15 --> 316.5
+  y-axis "Segmentos" 0 --> 14
+  line [4, 4, 4, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2]
+  line [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -650,6 +745,22 @@ Compare com rwnd = 16 e veja a diferença no tempo total.
 - A cwnd começa em 10, mas nunca há mais de 4 segmentos em voo.
 - Na aba Mensagem: o campo Janela dos ACKs (4 segmentos = 4000 bytes).
 - Na aba Janela (cwnd): a cwnd cresce, mas o envio fica preso à rwnd.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh · 🟦 rwnd (janela do receptor)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c, #2f80ed"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh | rwnd (janela do receptor)
+xychart-beta
+  title "Janela de congestionamento: Janela do receptor"
+  x-axis "Tempo (ms)" 15 --> 213.5
+  y-axis "Segmentos" 0 --> 42
+  line [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19, 20, 20, 20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+  line [38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38]
+  line [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram
@@ -736,6 +847,21 @@ Troque a semente para ver outras sequências de perdas com a mesma taxa.
 - No diagrama: quais segmentos se perderam e como cada um foi recuperado.
 - Na aba Janela (cwnd): o formato em dente de serra, típico do TCP sob perda.
 - Troque a semente e compare o tempo total com a mesma taxa de perda.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: Perdas aleatórias"
+  x-axis "Tempo (ms)" 15 --> 346.5
+  y-axis "Segmentos" 0 --> 14
+  line [4, 4, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 6, 6, 6, 7, 7, 6, 6, 7, 7, 8, 8, 4, 4, 4.25, 4.25, 4.49, 4.49, 4.71, 4.71, 4.92, 4.92, 5.12, 5.32, 5.32, 5.51, 5.51, 5.69, 5.69, 5.69, 5.69, 5.69, 5.69, 5.69, 5.69, 5, 5, 6, 6, 6, 2, 2, 2.5, 2.5, 2.5, 2.5, 2.9, 2.9, 2.9, 2.9, 2.9, 2.9]
+  line [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram
@@ -848,6 +974,22 @@ O fast retransmit repõe o #5; o ACK parcial revela o #7, que leva mais um RTT; 
 - Os ACKs duplicados repetem sempre o mesmo número (5001), sem dizer o que já chegou.
 - Na aba Resultados: o tempo total, para comparar com o cenário com SACK.
 
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh · 🟦 rwnd (janela do receptor)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c, #2f80ed"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh | rwnd (janela do receptor)
+xychart-beta
+  title "Janela de congestionamento: Várias perdas sem SACK"
+  x-axis "Tempo (ms)" 100 --> 671.8
+  y-axis "Segmentos" 0 --> 27
+  line [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 14, 14, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 15, 18, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 18, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+  line [24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -938,6 +1080,22 @@ O emissor sabe exatamente o que falta e repõe os três buracos juntos, em cerca
 - No handshake: a opção SACK_PERM no SYN e no SYN-ACK (aba Mensagem).
 - Nos ACKs duplicados: os blocos SLE e SRE, com os segmentos recebidos além dos buracos (aba Mensagem).
 - No diagrama: #5, #7 e #9 retransmitidos juntos, em cerca de 1 RTT; compare o tempo com o cenário sem SACK.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh · 🟦 rwnd (janela do receptor)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c, #2f80ed"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh | rwnd (janela do receptor)
+xychart-beta
+  title "Janela de congestionamento: Várias perdas com SACK"
+  x-axis "Tempo (ms)" 100 --> 563.8
+  y-axis "Segmentos" 0 --> 20
+  line [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 13, 14, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28, 7.28]
+  line [18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram
@@ -1034,6 +1192,21 @@ Não há perda aleatória: a perda vem da própria rede. Quando a janela passa d
 - No diagrama: cada seta é uma rodada (uma janela inteira por RTT). Veja as rajadas dobrando: 10, 20, 40, 80.
 - Na aba Janela (cwnd): a primeira queda, quando a fila enche, e depois o dente de serra.
 - Na aba Resultados: a vazão útil perto da capacidade do enlace e o tempo ideal para comparar.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: Download de arquivo"
+  x-axis "Tempo (s)" 0.03 --> 4.37
+  y-axis "Segmentos" 0 --> 111
+  line [10, 40, 80, 80, 41, 42, 44, 46, 47, 49, 50, 51, 25, 27, 30, 32, 34, 36, 38, 40, 41, 43, 45, 46, 48, 49, 50, 51, 26, 28, 30, 33, 35, 37, 38, 40, 42, 43, 45, 47, 48, 49, 51, 51, 26, 29, 31, 33, 35, 37, 39, 41, 42, 44, 46, 47, 48, 50, 51, 25, 27, 30, 32, 34, 36, 38, 40, 41, 43, 44, 46, 47, 49, 50, 51, 25, 28, 30, 33, 33]
+  line [100, 100, 100, 100, 40, 40, 40, 40, 40, 40, 40, 40, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram
@@ -1210,6 +1383,21 @@ Cada perda corta a janela, que nunca chega a encher o enlace. A vazão fica muit
 - Na aba Janela (cwnd): a janela fica baixa e irregular, com muitos cortes.
 - Na aba Resultados: a vazão útil muito abaixo dos 20 Mbps do enlace.
 - Aumente a banda para 50 Mbps e veja que quase nada muda: a perda é o fator limitante.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: Download com perdas"
+  x-axis "Tempo (s)" 0.08 --> 21.69
+  y-axis "Segmentos" 0 --> 36
+  line [10, 9, 14, 12, 17, 5, 11, 8, 14, 19, 24, 14, 19, 5, 5, 5, 10, 9, 7, 7, 12, 18, 11, 9, 15, 10, 16, 6, 6, 6, 5, 10, 16, 11, 17, 22, 13, 19, 24, 15, 9, 14, 20, 8, 7, 5, 4, 6, 11, 17, 12, 8, 8, 6, 11, 17, 11, 17, 10, 4, 10, 9, 15, 20, 11, 17, 12, 8, 14, 8, 13, 10, 15, 21, 14, 20, 25, 6, 5, 8]
+  line [32, 5, 5, 7, 7, 5, 5, 6, 6, 6, 6, 14, 14, 5, 5, 4, 4, 5, 5, 4, 4, 4, 11, 5, 5, 9, 9, 4, 3, 4, 5, 5, 5, 8, 8, 8, 12, 12, 12, 13, 9, 9, 9, 5, 5, 4, 4, 2, 2, 2, 8, 8, 4, 6, 6, 6, 10, 10, 10, 4, 4, 5, 5, 5, 11, 11, 9, 7, 7, 8, 8, 8, 8, 8, 10, 10, 10, 6, 4, 4]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram
@@ -1415,6 +1603,22 @@ No máximo 16 kB chegam por RTT: cerca de 1,3 Mbps. A rede está quase ociosa, e
 - Na aba Resultados: a vazão útil perto de 1,3 Mbps, com o enlace quase ocioso.
 - Troque a rwnd para 256 e compare o tempo total.
 
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh · 🟦 rwnd (janela do receptor)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c, #2f80ed"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh | rwnd (janela do receptor)
+xychart-beta
+  title "Janela de congestionamento: Download limitado pela janela"
+  x-axis "Tempo (s)" 0.15 --> 6.63
+  y-axis "Segmentos" 0 --> 28
+  line [10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+  line [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -1589,6 +1793,21 @@ O primeiro byte só chega 400 ms depois do início, e o slow start ainda precisa
 - Na aba Resultados: compare o tempo ideal (enlace cheio desde o início) com o tempo real.
 - Reduza o RTT para 20 ms e compare a eficiência.
 
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: Download com RTT alto"
+  x-axis "Tempo (s)" 0.3 --> 2.36
+  y-axis "Segmentos" 0 --> 881
+  line [10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20, 40, 40, 40, 40, 40, 40, 40, 40, 80, 80, 80, 80, 80, 80, 80, 160, 160, 160, 160, 160, 160, 160, 160, 320, 320, 320, 320, 320, 320, 320, 320, 320, 320, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640, 640]
+  line [800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -1656,6 +1875,21 @@ Veja a aba Resultados.
 - No diagrama: as retransmissões do TCP, que o UDP não faz.
 - Na aba Janela (cwnd): como cada perda reduz a janela do TCP.
 - Na aba Resultados: o tempo extra do TCP e o fato de ele entregar 100% dos dados.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh
+xychart-beta
+  title "Janela de congestionamento: TCP x UDP: 10% de perda"
+  x-axis "Tempo (ms)" 15 --> 244.5
+  y-axis "Segmentos" 0 --> 14
+  line [4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 9, 9, 6, 6, 6, 6, 6, 6, 7, 7, 6, 6, 6, 7, 7, 7, 8, 8, 8, 4, 4, 4.25, 4.25, 4.25, 4.49, 4.49, 4.49, 4.71, 4.71, 4.71, 4.92, 4.92, 5.12, 5.12, 5.12, 5.12, 5.12, 5.12, 5.12, 5.12, 5.12]
+  line [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram
@@ -1765,6 +1999,22 @@ Sem perdas, mas com 15% dos pacotes atrasados na rede. O **TCP** reordena no buf
 - No TCP: ACKs duplicados causados só pela desordem, sem nenhuma perda.
 - Se surgirem três ACKs duplicados, o TCP retransmite sem necessidade (retransmissão espúria).
 - Na aba Resultados: o UDP, de referência, entregou fora de ordem.
+
+**Legenda:** 🟥 cwnd (janela de congestionamento) · 🟧 ssthresh · 🟦 rwnd (janela do receptor)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c, #2f80ed"}}}}%%
+%% legenda: cwnd (janela de congestionamento) | ssthresh | rwnd (janela do receptor)
+xychart-beta
+  title "Janela de congestionamento: TCP x UDP: reordenação"
+  x-axis "Tempo (ms)" 15 --> 213.5
+  y-axis "Segmentos" 0 --> 33
+  line [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19, 20, 20, 20, 20, 21, 21, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24]
+  line [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (cwnd).* A janela de congestionamento e o limiar do slow start ao longo da conexão, calculados pelo motor do simulador. Corresponde à aba Janela (cwnd).
 
 ```mermaid
 sequenceDiagram

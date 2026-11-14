@@ -1,4 +1,5 @@
 import type { ProtocolDef } from '../../sim-core/ui';
+import { recursosDoCenario } from './content/charts';
 import { controls } from './content/controls';
 import { fundamentacao } from './content/fundamentacao';
 import { explain, setup } from './content/explain';
@@ -38,6 +39,7 @@ export const httpProtocol: ProtocolDef = {
   explain: (tr, P) => explain(tr, P as unknown as HttpParams),
   reference,
   fundamentacao,
+  docChart: recursosDoCenario,
   setup,
 };
 

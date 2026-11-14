@@ -138,7 +138,59 @@ flowchart LR
 | Transporte | TCP | TCP | QUIC sobre UDP |
 | Efeito de uma perda | atrasa a conexão | atrasa **todos** os fluxos | atrasa **só** o fluxo |
 
-### 2.7 O que cada modo e aba do simulador mostram
+### 2.7 As curvas: tempo de carga e chegada dos recursos
+
+Os gráficos abaixo comparam as três versões nas mesmas condições. Os valores vêm do **próprio motor do simulador**, o mesmo dos cenários. Em todos, a página tem 8 recursos (os do cenário padrão), com TLS e 6 conexões no HTTP/1.1, salvo quando o título diz outra coisa.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Tempo para carregar a página (8 recursos) conforme o RTT"
+  x-axis "RTT da rede" ["20 ms", "80 ms", "200 ms"]
+  y-axis "Tempo até o último recurso (ms)" 0 --> 1550
+  line [390, 712, 1374]
+  line [380, 620, 1100]
+  line [360, 540, 900]
+```
+
+*Esquema 5 (tempo de carga e RTT).* Com 20 ms, as três versões ficam próximas (390, 380 e 360 ms). Com 200 ms, a diferença é grande: **1374 ms** no HTTP/1.1, **1100 ms** no HTTP/2 e **900 ms** no HTTP/3. O custo dominante é o número de **viagens de ida e volta**: a conexão fica pronta em 2 RTT no HTTP/1.1 e no HTTP/2 (TCP mais TLS) e em 1 RTT no HTTP/3 (o QUIC junta o transporte e o TLS), e cada RTT a mais pesa mais numa rede lenta.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Chegada de 16 recursos, RTT de 80 ms"
+  x-axis "Tempo (ms)" 0 --> 930
+  y-axis "Recursos recebidos (de 16)" 0 --> 16
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 8, 9, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 14, 15, 16]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 10, 10, 11, 11, 12, 13, 13, 13, 13, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 10, 10, 11, 11, 12, 13, 13, 13, 13, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Esquema 6 (chegada dos recursos).* Quantos dos 16 recursos já chegaram em cada instante. O HTTP/1.1 espalha os recursos por 6 conexões e termina aos 922 ms. No HTTP/2 e no HTTP/3, uma só conexão leva todos os fluxos ao mesmo tempo: os seis recursos p1 a p6 chegam juntos (618 ms no HTTP/2 e 538 ms no HTTP/3), e a página termina aos 774 ms e aos 694 ms.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Perda de um pacote de /app.js, RTT de 200 ms"
+  x-axis "Tempo (ms)" 0 --> 1380
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 6, 6, 6, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Esquema 7 (perda de um pacote).* Um pacote de /app.js se perde, com RTT de 200 ms. Sem a perda, o HTTP/2 terminaria aos 1100 ms e o HTTP/3 aos 900 ms. No **HTTP/2**, o TCP entrega os bytes em ordem: os recursos foto1.jpg e foto2.jpg já tinham chegado aos 1052 ms, mas ficam **retidos até a retransmissão** e só são entregues aos 1252 ms (o gráfico para em 5 recursos). No **HTTP/3**, cada fluxo tem a sua própria ordenação: só o /app.js espera (chega aos 1052 ms, em vez de 900 ms), e os outros recursos não sofrem atraso. No HTTP/1.1, a perda atrasa o /app.js (de 1175 para 1327 ms), mas só a conexão dele; o fim da página (1374 ms) continua sendo o das outras conexões.
+
+### 2.8 O que cada modo e aba do simulador mostram
 
 - **Topologia:** o navegador, a internet e o servidor.
 - **Aba Cascata:** cada recurso da página como uma barra no tempo, no estilo das ferramentas de desenvolvedor do navegador. Ela mostra quando cada pedido começou, esperou e terminou.
@@ -148,7 +200,7 @@ flowchart LR
 
 Para o HTTP/1.1, use "Seis conexões paralelas", "Uma conexão, pedidos em fila" e "Imagem grande ocupa a conexão". Para o HTTP/2, use "Uma conexão, vários fluxos", "Muitos recursos" e "Imagem grande sem bloquear". Para a perda, compare "Perda: bloqueio no TCP" (HTTP/2) com "Perda: só um fluxo espera" (HTTP/3). Para o handshake, use "Handshake de 1 RTT" e "Retomada com 0-RTT". Para as redes difíceis, use "Rede de alta latência" e "UDP bloqueado: volta ao HTTP/2".
 
-### 2.8 Limites do modelo e do diagrama
+### 2.9 Limites do modelo e do diagrama
 
 - O enlace tem **10 Mbit/s** fixos, dividido em partes iguais entre as respostas em andamento. Não há *slow start*, controle de congestionamento nem priorização de fluxos ([RFC 9218](https://www.rfc-editor.org/rfc/rfc9218)).
 - Os tamanhos de cabeçalho, de handshake e o tempo de processamento do servidor (10 ms) são **ilustrativos**. O HPACK e o QPACK não são codificados de verdade.
@@ -387,6 +439,22 @@ Depois do HTML, ele abre mais 5 conexões. Cada uma paga o próprio handshake de
 - Na aba Cascata: cada recurso com a sua conexão; quando uma termina, ela pega o próximo da fila.
 - Na aba Mensagem de um pedido: os mesmos cabeçalhos (User-Agent, Accept, Cookie) repetidos em todo pedido.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Seis conexões paralelas"
+  x-axis "Tempo (ms)" 0 --> 720
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 7, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -468,6 +536,22 @@ Veja na aba Cascata os degraus, um recurso depois do outro.
 - Na Captura: cada GET sai logo depois da chegada da resposta anterior.
 - Mude para 6 conexões e compare o tempo da página completa na aba Comparação.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Uma conexão, pedidos em fila"
+  x-axis "Tempo (ms)" 0 --> 1170
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 3, 4, 4, 5, 5, 5, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -526,6 +610,22 @@ Duas conexões e uma imagem de 400 KB logo depois do HTML. A conexão que a rece
 - Na aba Cascata: uma barra longa (/hero.jpg) e, na outra conexão, os recursos pequenos em fila.
 - Na Captura: a resposta de /hero.jpg dura bastante, e a conexão não recebe outro GET nesse intervalo.
 - Aumente para 6 conexões: o efeito diminui, mas não desaparece.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Imagem grande ocupa a conexão"
+  x-axis "Tempo (ms)" 0 --> 1090
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 7, 7, 8, 9]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -596,6 +696,22 @@ Compare a aba Mensagem de um pedido: os cabeçalhos aparecem legíveis, o que n�
 - Na Captura: não há mensagens de TLS e as mensagens não têm o cadeado.
 - O tempo até o primeiro pedido cai em 1 RTT, e é essa vantagem que o TLS 1.3 e o QUIC reduzem.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: HTTP sem TLS"
+  x-axis "Tempo (ms)" 0 --> 630
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -660,6 +776,22 @@ Um pacote de /app.js se perde. No HTTP/1.1 cada recurso tem a sua conexão TCP, 
 - Na Captura: o segmento perdido (vermelho), o ACK duplicado e a retransmissão.
 - No estado Rede: a perda e a retransmissão recebida.
 - Na aba Cascata: só a barra de /app.js é afetada.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Perda de um pacote"
+  x-axis "Tempo (ms)" 0 --> 1380
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 6, 6, 6, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -748,6 +880,22 @@ Repare no HPACK: o primeiro pedido tem cerca de 330 bytes de cabeçalho e os seg
 - Na aba Mensagem: o primeiro pedido tem cerca de 330 bytes de cabeçalho; os seguintes, cerca de 50.
 - Na aba Cascata: as barras começam juntas e terminam em tempos diferentes, conforme o tamanho.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Uma conexão, vários fluxos"
+  x-axis "Tempo (ms)" 0 --> 720
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 7, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -807,6 +955,22 @@ sequenceDiagram
 - Na Captura: 15 pedidos saindo juntos depois do HTML.
 - Na aba Comparação: o HTTP/1.1 perde mais tempo quanto mais recursos a página tem.
 - Na aba Mensagem: o identificador dos fluxos (1, 3, 5...).
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Muitos recursos"
+  x-axis "Tempo (ms)" 0 --> 930
+  y-axis "Recursos recebidos (de 16)" 0 --> 16
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 8, 9, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 14, 15, 16]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 10, 10, 11, 11, 12, 13, 13, 13, 13, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 10, 10, 11, 11, 12, 13, 13, 13, 13, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 16 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -885,6 +1049,22 @@ A imagem fica pronta mais tarde porque disputa a banda, mas nada fica parado esp
 - Compare com o cenário Imagem grande ocupa a conexão, do HTTP/1.1.
 - Na aba Mensagem da resposta: o número de frames DATA do recurso.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Imagem grande sem bloquear"
+  x-axis "Tempo (ms)" 0 --> 950
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 5, 6, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -952,6 +1132,22 @@ Compare com o HTTP/3 na aba Comparação.
 - Na aba Comparação: o HTTP/3 sai 1 RTT na frente.
 - O tempo do HTML (TTFB) não muda entre as versões; muda o instante em que o pedido pode sair.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Rede de alta latência"
+  x-axis "Tempo (ms)" 0 --> 1380
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 5, 5, 6, 6, 6, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -1012,6 +1208,22 @@ Um pacote de /app.js se perde. Como todos os fluxos compartilham uma só conexã
 - Na Captura: o segmento perdido, o ACK duplicado e a retransmissão.
 - Na aba Cascata: as barras vermelhas de /app.js e de outros fluxos cuja entrega foi retida.
 - Na aba Comparação: o número de fluxos atrasados pela perda no HTTP/2 e no HTTP/3.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Perda: bloqueio no TCP"
+  x-axis "Tempo (ms)" 0 --> 1380
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 6, 6, 6, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -1082,6 +1294,22 @@ Cada pedido usa um fluxo QUIC próprio, com ordem e recuperação de perda indep
 - Na aba Mensagem: o pacote QUIC e o fluxo, com identificador múltiplo de 4.
 - No estado Conexões: a conexão pronta depois de 1 RTT.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Handshake de 1 RTT"
+  x-axis "Tempo (ms)" 0 --> 720
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 7, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -1141,6 +1369,22 @@ Os dados 0-RTT podem ser reenviados por um atacante; por isso só pedidos que n�
 - A tag 0-RTT na mensagem Initial.
 - Na Referência: por que só pedidos idempotentes são aceitos em 0-RTT.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Retomada com 0-RTT"
+  x-axis "Tempo (ms)" 0 --> 720
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 7, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -1195,6 +1439,22 @@ Mesmo cenário do HTTP/2 em rede de 200 ms. O handshake de 1 RTT poupa 200 ms an
 
 - Na Captura: o primeiro GET sai em 200 ms, em vez de 400 ms.
 - Na aba Comparação: a diferença entre as três versões no tempo da página completa.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Rede de alta latência"
+  x-axis "Tempo (ms)" 0 --> 1380
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 5, 5, 6, 6, 6, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -1258,6 +1518,22 @@ Os outros fluxos entregam seus dados normalmente. Compare com o cenário de perd
 - Na aba Cascata: só a barra de /app.js fica vermelha.
 - Na aba Comparação: um fluxo atrasado no HTTP/3, contra mais de um no HTTP/2.
 
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: Perda: só um fluxo espera"
+  x-axis "Tempo (ms)" 0 --> 1380
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 6, 6, 6, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -1319,6 +1595,22 @@ Por isso o HTTP/3 é sempre uma melhoria opcional: a página carrega mesmo sem e
 - Na Captura: o QUIC Initial perdido (vermelho) e, 300 ms depois, o handshake TCP e TLS.
 - No estado Protocolo: de tentando HTTP/3 para HTTP/2 (fallback).
 - Na aba Comparação: o tempo da página completa passa a incluir a espera.
+
+**Legenda:** 🟥 HTTP/1.1 · 🟦 HTTP/2 · 🟩 HTTP/3
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: HTTP/1.1 | HTTP/2 | HTTP/3
+xychart-beta
+  title "Recursos recebidos ao longo do tempo: UDP bloqueado: volta ao HTTP/2"
+  x-axis "Tempo (ms)" 0 --> 930
+  y-axis "Recursos recebidos (de 8)" 0 --> 8
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+  line [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 7, 7, 7, 7, 8]
+```
+
+*Gráfico do cenário (recursos recebidos).* Quantos dos 8 recursos da página já chegaram ao navegador em cada instante, nas condições deste cenário, para as três versões. Vale o instante em que o recurso fica disponível para a página (o retido por perda só conta depois da retransmissão). Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
