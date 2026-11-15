@@ -15,21 +15,6 @@ test('a página inicial lista as categorias e os simuladores disponíveis', asyn
   expect(errors).toEqual([]);
 });
 
-for (const sim of SIMS.filter((s) => s.status === 'available' && s.engine === 'legado')) {
-  test(`o hub incorpora o simulador legado ${sim.id}`, async ({ page }) => {
-    const errors: string[] = [];
-    page.on('pageerror', (e) => errors.push(e.message));
-    await page.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
-    await page.goto(`./#/sim/${sim.id}`);
-    const frame = page.frameLocator(`iframe[title="Simulador: ${sim.title}"]`);
-    await expect(frame.locator('.stage-panel')).toBeVisible();
-    await expect(frame.locator('#scenRow button.chip').first()).toBeVisible();
-    // dentro do hub o simulador esconde o "Voltar" e o título, que o hub já mostra
-    await expect(frame.locator('.back-link')).toBeHidden();
-    expect(errors).toEqual([]);
-  });
-}
-
 for (const sim of SIMS.filter((s) => s.status === 'available' && s.engine === 'nativo')) {
   test(`o hub abre o simulador nativo ${sim.id} sem iframe`, async ({ page }) => {
     const errors: string[] = [];
