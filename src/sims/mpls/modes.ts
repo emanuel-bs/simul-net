@@ -169,10 +169,12 @@ function ldpFields(kind: string, from: string, to: string, net: Net): Field[] {
     f.push(['Transporte', 'TCP 646', 'o LSR com o maior endereço de transporte abre a conexão (papel ativo)']);
     f.push(['Papel de ' + from, 'ativo', 'destino: ' + to + ' (passivo)']);
   } else if (kind === 'Initialization') {
-    f.push(['Tipo', 'Initialization', 'negocia parâmetros: versão, KeepAlive, modo de distribuição']);
-    f.push(['Modo de anúncio', 'Downstream Unsolicited', 'anuncia sem esperar pedido']);
-    f.push(['Controle', 'Independent', 'cada LSR anuncia sem esperar o próximo salto']);
-    f.push(['Retenção', 'Liberal', 'guarda os rótulos de todos os vizinhos na LIB']);
+    f.push(['Tipo', 'Initialization', 'negocia parâmetros da sessão: versão, KeepAlive, modo de anúncio e detecção de laço (RFC 5036, seção 3.5.3)']);
+    f.push(['Protocol Version', '1', 'versão do LDP']);
+    f.push(['KeepAlive Time', '15 s', 'tempo que o LSR propõe sem receber mensagens antes de derrubar a sessão (valor do simulador; o menor dos dois lados vale)']);
+    f.push(['Modo de anúncio (bit A)', '0 (Downstream Unsolicited)', 'anuncia sem esperar pedido']);
+    f.push(['Detecção de laço (bit D)', '0 (desligada)', 'o simulador não usa o vetor de caminho']);
+    f.push(['Controle e retenção', 'não vão na mensagem', 'o modo de controle (Independent) e o de retenção (Liberal) são comportamento local de cada LSR, não parâmetros negociados (RFC 5036, seções 2.6.1 e 2.6.2)']);
   } else if (kind === 'KeepAlive') {
     f.push(['Tipo', 'KeepAlive', 'confirma a Initialization e mantém a sessão; a sessão chega a OPERATIONAL']);
   } else {
