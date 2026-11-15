@@ -79,7 +79,7 @@ function run(P: EndParams): Trace {
     const req = op === 1;
     return tr.add(from, to, {
       label: req ? 'ARP: quem tem ' + who + '?' : 'ARP: ' + who + ' está em ' + tell, proto: 'ARP', color: req ? C0.plain : C0.data, len: 42, info: text, about: text, lost, phaseName: 'ARP',
-      fields: [{ sec: 'Ethernet II' }, ['Destino', req ? BC : tell, ''], { sec: 'ARP (RFC 826)' }, ['Operação', req ? '1 (requisição)' : '2 (resposta)', ''], ['IP procurado', who, '']],
+      fields: [{ sec: 'Ethernet II' }, ['Destino', req ? BC : MAC[to], req ? 'broadcast: todos os hosts do enlace recebem' : 'a resposta é unicast: vai ao MAC de quem perguntou'], { sec: 'ARP (RFC 826)' }, ['Operação', req ? '1 (requisição)' : '2 (resposta)', ''], ['IP procurado', who, '']],
     });
   }
   const ev = (t: number, w: string, text: string, k = ''): void => tr.ev(t, w, text, k);
