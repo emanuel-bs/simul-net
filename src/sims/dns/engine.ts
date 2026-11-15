@@ -165,11 +165,14 @@ export const keyTag = (z: string, k: 'ksk' | 'zsk'): number => 1000 + (h32(z + k
 export const dsDigest = (z: string): string => hex('ds' + z, 16).toUpperCase();
 export const dnskeyRR = (z: string, k: 'ksk' | 'zsk'): RR => ({ n: z, t: 'DNSKEY', ttl: 3600, d: (k === 'ksk' ? '257' : '256') + ' 3 13 ' + b64(z + k, 20) + '... (tag ' + keyTag(z, k) + ')' });
 export const dsRR = (z: string, bad = false): RR => ({ n: z, t: 'DS', ttl: 86400, d: keyTag(z, 'ksk') + ' 13 2 ' + (bad ? dsDigest(z + 'antiga') : dsDigest(z)).slice(0, 24) + '...' });
+/** TTL do RRset de cada tipo no simulador. O RRSIG tem o mesmo TTL do RRset que cobre, e o campo Original TTL também (RFC 4034, seção 3.1.4; RFC 4035, seção 2.2). */
+const TTL_RRSET: Record<string, number> = { A: WWW_A.ttl, SOA: SOA.ttl, DS: 86400, DNSKEY: 3600, NSEC: 3600, NSEC3: 3600 };
+const ttlRrset = (tipo: string): number => TTL_RRSET[tipo] ?? 300;
 export const rrsigRR = (n: string, covered: string, signer: string, k: 'ksk' | 'zsk', expired = false): RR => ({
   n,
   t: 'RRSIG',
-  ttl: 300,
-  d: covered + ' 13 ' + (n === '.' ? 0 : n.split('.').length) + ' 300 ' + (expired ? '20260930000000' : '20261031000000') + ' 20260901000000 ' + keyTag(signer, k) + ' ' + signer + ' ' + b64(n + covered + signer + (expired ? 'x' : ''), 14) + '...',
+  ttl: ttlRrset(covered),
+  d: covered + ' 13 ' + (n === '.' ? 0 : n.split('.').length) + ' ' + ttlRrset(covered) + ' ' + (expired ? '20260930000000' : '20261031000000') + ' 20260901000000 ' + keyTag(signer, k) + ' ' + signer + ' ' + b64(n + covered + signer + (expired ? 'x' : ''), 14) + '...',
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -439,7 +442,7 @@ export function buildRes(P: DnsParams): Trace {
   const lblAns = nx ? 'NXDOMAIN' : 'Resposta autoritativa';
   const infoAns = 'Standard query response 0x' + id.toString(16) + ' ' + (nx ? 'No such name' : A.an.map((r) => r.t + ' ' + r.d).join(', '));
   const aboutAns = nx
-    ? 'O servidor é autoritativo (AA=1) e afirma que o nome não existe: RCODE 3 (NXDOMAIN). A seção Autoridade traz o SOA, cujo campo "minimum" define por quanto tempo essa negação pode ser guardada (RFC 2308).'
+    ? 'O servidor é autoritativo (AA=1) e afirma que o nome não existe: RCODE 3 (NXDOMAIN). A seção Autoridade traz o SOA: a negação pode ser guardada pelo menor valor entre o TTL do SOA e o seu campo "minimum" (RFC 2308, seção 5).'
     : 'Agora sim, o dono da zona responde (AA=1). Cada registro vem com seu TTL: é o prazo que o resolvedor tem para reutilizá-lo.';
   let finalReply: Message;
   if (P.tcp) {
@@ -485,7 +488,7 @@ export function buildRes(P: DnsParams): Trace {
   step(finalReply.tArr, nx ? '<b>' + rn + '</b> respondeu NXDOMAIN com o SOA; o resolvedor guardou a <b>negação por ' + SOA.ttl + ' s</b> (cache negativo).' : '<b>' + rn + '</b> respondeu com autoridade: ' + A.an.map((r) => '<code>' + r.n + ' ' + r.t + ' ' + r.d + '</code> (TTL ' + r.ttl + ' s)').join('; ') + '.');
   if (nx) {
     cache(finalReply.tArr, { n: A.qname, t: 'A', ttl: SOA.ttl, d: 'NXDOMAIN (cache negativo)' }, rn, { neg: true });
-    concept('Cache negativo (RFC 2308): até a inexistência de um nome é guardada, pelo TTL do SOA.');
+    concept('Cache negativo (RFC 2308, seção 5): até a inexistência de um nome é guardada, pelo menor valor entre o TTL do SOA e o campo minimum (aqui os dois valem 3600 s).');
   } else {
     [...A.an, ...A.ar].forEach((r) => cache(finalReply.tArr, r, rn));
   }
@@ -769,7 +772,7 @@ export function buildEnv(P: DnsParams): Trace {
     info: 'Standard query 0x' + idq.toString(16) + ' A ' + qnameWire + ' (porta de origem ' + sport + ')',
     about: fixed
       ? 'O resolvedor consulta o autoritativo usando <b>porta de origem fixa (53)</b> e um ID de 16 bits previsível. Quem enxerga o padrão só precisa acertar o ID, entre 65536 valores.'
-      : 'O resolvedor consulta o autoritativo com <b>porta de origem aleatória (' + sport + ')</b> e ID aleatório (RFC 5452)' + (P.defesa === 'x20' ? ', e escreve o nome com letras maiúsculas e minúsculas aleatórias (0x20, RFC 7873 e draft de 0x20): o autoritativo devolve o nome com a mesma caixa.' : '. Para acertar, o atacante precisaria adivinhar porta e ID juntos: cerca de 2^32 combinações.'),
+      : 'O resolvedor consulta o autoritativo com <b>porta de origem aleatória (' + sport + ')</b> e ID aleatório (RFC 5452)' + (P.defesa === 'x20' ? ', e escreve o nome com letras maiúsculas e minúsculas aleatórias (0x20, descrita no Internet-Draft draft-vixie-dnsext-dns0x20, que nunca virou RFC): o autoritativo devolve o nome com a mesma caixa.' : '. Para acertar, o atacante precisaria adivinhar porta e ID juntos: cerca de 2^32 combinações.'),
     m: q1(idq, qnameWire, 'A'),
     sport,
   });
@@ -837,7 +840,7 @@ export function buildEnv(P: DnsParams): Trace {
     const q2 = send('cl', 'rs', {
       label: 'A ' + qname + ' (depois)',
       info: 'Standard query 0x' + id2.toString(16) + ' A ' + qname,
-      about: 'Meia hora depois, outro cliente faz a mesma pergunta.',
+      about: 'Trinta segundos depois, outro cliente faz a mesma pergunta.',
       m: q1(id2, qname, 'A', { rd: true }),
     });
     const rep2 = send('rs', 'cl', {
@@ -918,7 +921,7 @@ export function buildAmp(P: DnsParams): Trace {
     { n: qname, t: 'A', ttl: 300, d: '192.0.2.80' }, { n: qname, t: 'AAAA', ttl: 300, d: '2001:db8::80' }, { n: qname, t: 'MX', ttl: 3600, d: '10 mail.example.com' },
     { n: qname, t: 'TXT', ttl: 3600, d: '"v=spf1 ip4:192.0.2.0/24 -all"' }, { n: qname, t: 'NS', ttl: 86400, d: 'ns1.example.com' }, { n: qname, t: 'SOA', ttl: 3600, d: SOA.d },
     { n: qname, t: 'TXT', ttl: 3600, d: '"v=DKIM1; k=rsa; p=' + b64('dkim', 380) + '"' },
-    { n: qname, t: 'DNSKEY', ttl: 3600, d: dnskeyRR(qname, 'ksk').d }, { n: qname, t: 'DNSKEY', ttl: 3600, d: dnskeyRR(qname, 'zsk').d }, rrsigRR(qname, 'ANY', qname, 'zsk'),
+    { n: qname, t: 'DNSKEY', ttl: 3600, d: dnskeyRR(qname, 'ksk').d }, { n: qname, t: 'DNSKEY', ttl: 3600, d: dnskeyRR(qname, 'zsk').d }, rrsigRR(qname, 'DNSKEY', qname, 'zsk'),
   ];
   const answer: RR[] = any ? big : [big[0]];
   tr.st(0, 'phase', 'preparação', 'warn');
