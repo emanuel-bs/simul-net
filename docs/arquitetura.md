@@ -47,6 +47,7 @@ O núcleo está em `src/sim-core/` (`trace.ts`, `hash.ts`, `types.ts`) e a banca
 3a. **Topologia (opcional):** o módulo pode declarar `topology` (nós, enlaces, caminho de cada mensagem e notas sob cada nó, como a tabela ARP). A bancada então mostra um seletor "Sequência / Topologia" no painel principal, e os pacotes percorrem os enlaces com o mesmo relógio, o mesmo Passo e o mesmo zoom. Usado pelo ARP, pelo ICMP, pelo DHCP, pelo HTTP, pelo NAT, pelo DNS e pelo Firewall. O módulo também pode configurar a legenda de cores (`legend`) e a formatação do tempo (`timeLabel`), por exemplo para mostrar horas num ciclo de lease.
 3b. **Palco próprio (opcional):** o módulo pode declarar `stage`, uma função pura `(trace, relógio) => HTML` que substitui o diagrama de sequência e a topologia. A bancada só desenha o resultado e mantém Simular, Passo, velocidade, zoom (Zoom -, Ajustada e Zoom +, pela variável CSS `--zoom`) e os painéis. Os demais simuladores não são afetados. Usado só pelo modelo OSI, que anima as pilhas de camadas e o encapsulamento da PDU em `src/sims/osi/stage.ts`, interpolando a posição entre quadros-chave derivados dos passos e das mensagens do trace. Com palco próprio, o botão Passo não salta: o relógio desliza até o próximo passo (`usePlayer`, parâmetro `smooth`), exceto com movimento reduzido, e cada camada de cada nó é um passo próprio (o switch passa por 1, 2 e 1; o roteador, por 1, 2, 3, 2 e 1).
 3c. **Fundamentação (opcional):** o módulo pode declarar `fundamentacao`, um texto em Markdown (com diagramas Mermaid e tabelas) usado só na documentação gerada: o gerador o insere como a seção "Fundamentação", logo depois de "Modos", e numera as subseções. Usado pelo modelo OSI, para explicar o diagrama das sete camadas (`src/sims/osi/content/fundamentacao.ts`). O texto passa pelo teste de ausência de travessão.
+3d. **Gráfico de cenário (opcional):** o módulo pode declarar `docChart`, uma função `(cenário) => Markdown` que devolve um gráfico (bloco Mermaid `xychart-beta`, montado por `src/sim-core/doc-chart.ts`) calculado pelo próprio motor. O gerador o insere depois de "O que observar", na documentação e na wiki; o site desenha a legenda dentro da figura, e o Markdown mantém a linha "Legenda:" em texto. Quando o cenário não tem curva, devolve texto vazio e nada é inserido. Usado por TCP, HTTP e RIP; os testes estão em `tests/sim-core/doc-chart.test.ts`.
 4. **Padrão visual e didático:** abas Cenário, Captura, Mensagem, abas próprias, Experimento, Referência e Log; ajuda em cada campo; uma informação em um único lugar.
 5. **Estilo:** `src/sim-core/ui/simnet.css`, com todos os seletores restritos a `.simnet`, para não interferir no hub (Tailwind).
 
@@ -68,6 +69,8 @@ O núcleo está em `src/sim-core/` (`trace.ts`, `hash.ts`, `types.ts`) e a banca
 - **Motores (`ssh-engine`, `https-engine`, `ftp-engine`, `http-engine`, `osi-engine`, `transporte-engine`, `ipv4-engine`, `ipv6-engine`):** regras específicas de cada protocolo (negociação, downgrade, adulteração, política de encaminhamento, modos ativo e passivo, certificado inválido, RTT de abertura, bloqueio de cabeça de fila e fallback do QUIC; CRC-32 e checksum do IP, passos por camada e palco do OSI; aritmética de endereços, prefixo mais específico, TTL, uRPF e decisão do host no IPv4).
 - **Passo a passo suave (`player-step.test.tsx`):** com palco próprio, o botão Passo desliza o relógio até o destino, e Voltar ao início e Simular cancelam o deslize.
 - **Integridade (`protocol-integrity.test.ts`):** vale para qualquer módulo registrado em `src/sims/native.ts`: ids únicos, parâmetros dos cenários existentes e com valores permitidos, documentação completa de cada cenário e modo, e ausência de travessão nos textos.
+- **Conformidade normativa (`tests/conformidade/`):** testes independentes das impressões digitais, escritos a partir do texto das RFCs (um arquivo por simulador). Cada teste cita a RFC e a seção, foi escrito antes da correção e falhava com o comportamento incorreto. Cobrem, por exemplo, o Identifier do RADIUS, o campo Window e o Window Scale do TCP, o ClientHello por versão do TLS, o TTL do RRSIG e a topologia de NAT do proxy transparente. Ao corrigir um erro de protocolo, acrescente primeiro o teste que o reproduz.
+- **Navegação e falhas da bancada:** `tests/navegacao-simuladores.test.tsx` e `e2e/navegacao.spec.ts` (troca direta de um simulador para outro, link da aba Referência e voltar no histórico) e `tests/erro-bancada.test.tsx` (a falha de um simulador não derruba o site).
 - **Impressões digitais (`golden.test.ts` e `golden.json`):** hash SHA-256 do trace, do Experimento, do texto do cenário e das abas de cada cenário, e de 300 combinações aleatórias por modo (semente fixa). Qualquer mudança de comportamento falha o teste. Quando a mudança é intencional: `UPDATE_GOLDEN=1 npx vitest run tests/sim-core/golden.test.ts`, e revisar o diff de `golden.json` antes de versionar.
 - **Páginas nativas (`tests/native-page.test.tsx`):** cada simulador nativo carrega, percorre todos os modos e passa no axe-core.
 - **Contraste (Playwright, `e2e/contraste.spec.ts`):** o axe mede o contraste de cores (WCAG AA) no Chrome real, o que não funciona no jsdom: páginas do hub nos temas claro e escuro, e cada simulador nativo em todos os modos, numa amostra dos cenários e em todas as abas.
@@ -91,6 +94,19 @@ O portal continua com suas páginas de simuladores até o Simul-Net estar public
 6. **Wiki.** Rode `npm run wiki -- <pasta>`, clone `Simul-Net.wiki.git`, copie os `.md` gerados, faça o commit e o push. Como a wiki é pública, a publicação só é feita com autorização expressa do autor.
 7. **Link no cartão.** Nada a fazer: o cartão do hub mostra o link "Documentação" a partir do `id` do registro (`docUrl`).
 
-## 11. Limitações
+## 11. Convenção de tamanhos (campo `len`)
+
+O campo `len` de uma mensagem do trace é o tamanho, em bytes, do quadro ou da PDU mostrada, conforme a camada:
+
+| Camada ou protocolo | O que `len` mede |
+|---|---|
+| Quadros sobre Ethernet (ARP, IPv4, IPv6, ICMP, TCP, UDP, STP, OSPF, FTP, NAT e outros) | do cabeçalho Ethernet até o último byte do payload, **sem FCS e sem padding**, como numa captura do Wireshark. Cabeçalhos sem opções, salvo quando o simulador mostra as opções. Exemplos: ARP 42, TCP de controle sem opções 54, BPDU 52, quadro de 1500 bytes de MTU 1514 |
+| Wi-Fi (IEEE 802.11) | o quadro 802.11 inteiro, **com** o FCS de 4 bytes (ACK 14, RTS 20, PS-Poll 20) |
+| Mensagens de protocolos sobre TCP (BGP, LDP, EAP) | o tamanho da própria mensagem do protocolo, sem os cabeçalhos de baixo |
+| Congestionamento | rodadas de bytes enviados; não é tamanho de quadro |
+
+Quando um simulador desvia desta convenção, a aba Referência dele deve dizer. Desvios conhecidos, ainda não padronizados: o OSPF Hello (78 bytes) não conta os vizinhos listados; os registros TLS cifrados do FTP/SFTP e do SSH usam tamanhos ilustrativos. Qualquer mudança de convenção deve ser acompanhada do teste em `tests/conformidade/tamanhos.test.ts`.
+
+## 12. Limitações
 
 Os simuladores são didáticos: parâmetros pequenos, valores ilustrativos e nenhuma criptografia real. Os modelos seguem as RFCs citadas em cada página, mas simplificam detalhes que são explicitados na aba Referência de cada simulador.
