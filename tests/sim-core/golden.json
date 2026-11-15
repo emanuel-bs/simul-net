@@ -182,7 +182,7 @@
     "n-hairpin-nao": "963191ac8be1400e",
     "n-hairpin-dnat": "806cc71a9d6871a1",
     "n-hairpin": "290730d221eb9bd8",
-    "n-proxy": "563046d4828c529b",
+    "n-proxy": "95c7bd1570a4e9e5",
     "n-portas": "4360e9a8397b464d",
     "n-expira": "184228c75f4c5ece",
     "n-entrada-napt": "acd6aee6daa7dc9e",
@@ -192,9 +192,9 @@
     "n-natt": "610c7d70c9ae2fe5",
     "n-cgnat": "773a53e5b82da089",
     "amostra:snat": "61076d824e12431c",
-    "amostra:dnat": "fecbeb59d39d9797",
+    "amostra:dnat": "d9e8cec5039897de",
     "amostra:limites": "7f3c0b1ac7b69039",
-    "textos": "864714a8dbefa1d5"
+    "textos": "70f8782c076d2a45"
   },
   "dns": {
     "r-completa": "f870789e18331586",

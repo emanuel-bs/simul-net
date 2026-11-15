@@ -182,12 +182,12 @@ describe('DNAT', () => {
     ]);
   });
 
-  it('proxy transparente: o destino vai ao proxy e a origem original volta no retorno', () => {
+  it('proxy transparente na mesma rede: DNAT e SNAT na ida, e a volta passa pelo roteador, que reverte os dois campos', () => {
     const tr = run('n-proxy');
     expect(tr.msgs.map((m) => m.info)).toEqual([
       '192.168.1.10:50000 > 198.51.100.10:80',
-      '192.168.1.10:50000 > 192.168.1.50:3128',
-      '192.168.1.50:3128 > 192.168.1.10:50000',
+      '192.168.1.1:50000 > 192.168.1.50:3128',
+      '192.168.1.50:3128 > 192.168.1.1:50000',
       '198.51.100.10:80 > 192.168.1.10:50000',
     ]);
   });

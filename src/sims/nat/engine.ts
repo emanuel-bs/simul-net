@@ -377,6 +377,7 @@ export function buildNat(Pin: NatParams, sub: string): Trace {
     if (sub !== 'dnat') return;
     if (P.acao === 'proxy') {
       nat.rules.push('DNAT (interna): TCP, destino qualquer:80 para ' + IP.web + ':3128');
+      nat.rules.push('SNAT (interna): origem do cliente para ' + NAT_IN + ' (o proxy está na mesma rede)');
     } else {
       nat.rules.push('DNAT (externa): TCP ' + NAT_OUT + ':443 para ' + IP.web + ':8443');
     }
@@ -607,20 +608,21 @@ export function buildNat(Pin: NatParams, sub: string): Trace {
     const c: Ep = { ip: IP.pc1, port: 50000 };
     const p0 = mkReq('tcp', c, { ip: SRV_IP, port: 80 });
     const m0 = hop('pc1', 'nat', p0, null, { about: 'O cliente quer falar com o servidor externo na porta 80.' });
-    const p1 = withDst(p0, web, 3128);
-    note(m0, 'nat', 'PREROUTING (interna): DNAT ' + epText(p0.dst) + ' para ' + epText(p1.dst));
-    const en = addEntry(nat, { kind: 'dnat', proto: 'tcp', intIp: web, intPort: 3128, extIp: SRV_IP, extPort: 80, remIp: c.ip, remPort: c.port, perm: false, obs: 'redirecionamento transparente' });
-    tr.lg(m0.tArr, 'R-NAT redirecionou o destino ' + epText(p0.dst) + ' para o proxy ' + epText(p1.dst) + '.', 'sys');
-    jr(m0.tArr, 'R-NAT desviou o destino <b>' + epText(p0.dst) + '</b> para o proxy <b>' + epText(p1.dst) + '</b>. A origem não muda e o cliente não é avisado.');
+    // O proxy está na mesma rede do cliente: o roteador também troca a origem (SNAT), senão o proxy responderia direto ao cliente, que descartaria a resposta (como no hairpin só com DNAT).
+    const p1 = withSrc(withDst(p0, web, 3128), NAT_IN, 50000);
+    note(m0, 'nat', 'PREROUTING (interna): DNAT ' + epText(p0.dst) + ' para ' + epText(p1.dst) + '; POSTROUTING: SNAT ' + epText(c) + ' para ' + epText(p1.src));
+    const en = addEntry(nat, { kind: 'dnat', proto: 'tcp', intIp: web, intPort: 3128, extIp: SRV_IP, extPort: 80, remIp: c.ip, remPort: c.port, perm: false, obs: 'DNAT para o proxy + SNAT para ' + NAT_IN + ':50000' });
+    tr.lg(m0.tArr, 'R-NAT redirecionou o destino ' + epText(p0.dst) + ' para o proxy ' + epText(p1.dst) + ' e trocou a origem ' + epText(c) + ' por ' + epText(p1.src) + '.', 'sys');
+    jr(m0.tArr, 'R-NAT desviou o destino <b>' + epText(p0.dst) + '</b> para o proxy <b>' + epText(p1.dst) + '</b> e a origem <b>' + epText(c) + '</b> por <b>' + epText(p1.src) + '</b> (SNAT), porque o proxy está na mesma rede do cliente e, sem isso, responderia direto a ele. O cliente não é avisado.');
     flag('proxy');
-    hop('nat', 'web', p1, p0, { by: 'R-NAT', about: 'O proxy recebe o pedido que era para o servidor externo.' });
+    hop('nat', 'web', p1, p0, { by: 'R-NAT', about: 'O proxy recebe o pedido que era para o servidor externo, com o roteador como origem.' });
     const p2 = mkRep(p1);
     const m = hop('web', 'nat', p2, p1, { about: 'A resposta do proxy volta pelo roteador.' });
-    const p3: Pkt = withSrc(p2, SRV_IP, 80);
+    const p3: Pkt = { proto: 'tcp', role: 'rep', src: { ip: SRV_IP, port: 80 }, dst: c };
     touch(en);
-    note(m, 'nat', 'Reverte: origem ' + epText(p2.src) + ' vira ' + epText(p3.src));
-    tr.lg(m.tArr, 'R-NAT reverteu a origem para ' + epText(p3.src) + ', o servidor que o cliente acredita ter contatado.', 'sys');
-    jr(m.tArr, 'R-NAT reverteu a origem <b>' + epText(p2.src) + '</b> para <b>' + epText(p3.src) + '</b>: o cliente acredita ter falado com o servidor externo.');
+    note(m, 'nat', 'Reverte: origem ' + epText(p2.src) + ' vira ' + epText(p3.src) + ' e destino ' + epText(p2.dst) + ' vira ' + epText(p3.dst));
+    tr.lg(m.tArr, 'R-NAT reverteu a origem para ' + epText(p3.src) + ', o servidor que o cliente acredita ter contatado, e o destino para ' + epText(p3.dst) + '.', 'sys');
+    jr(m.tArr, 'R-NAT reverteu a origem <b>' + epText(p2.src) + '</b> para <b>' + epText(p3.src) + '</b> e o destino <b>' + epText(p2.dst) + '</b> para <b>' + epText(p3.dst) + '</b>: o cliente acredita ter falado com o servidor externo.');
     hop('nat', 'pc1', p3, p2, { by: 'R-NAT', about: 'O cliente vê a resposta vinda do endereço que consultou.' });
     R.delivered++;
   }

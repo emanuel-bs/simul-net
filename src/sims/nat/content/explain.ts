@@ -54,7 +54,7 @@ function concepts(flags: string[]): string {
   if (has('hairpin-nao')) items.push('Sem <b>hairpinning</b>, o acesso de dentro ao endereço público do próprio serviço falha. Um DNS interno (split DNS) evita o problema.');
   if (has('hairpin-dnat')) items.push('Só o DNAT não basta no hairpin: o servidor responde direto ao cliente, na mesma rede, e a resposta é recusada.');
   if (has('hairpin-ok')) items.push('No hairpin completo, DNAT e SNAT atuam no mesmo pacote (<i>Twice NAT</i>). O servidor responde ao roteador, que reverte os dois campos.');
-  if (has('proxy')) items.push('O redirecionamento transparente usa DNAT na interface interna para desviar o tráfego a um proxy sem configurar o cliente.');
+  if (has('proxy')) items.push('O redirecionamento transparente usa DNAT na interface interna para desviar o tráfego a um proxy sem configurar o cliente, e SNAT quando o proxy está na mesma rede, para a resposta voltar pelo roteador.');
   if (!items.length) items.push('Execute para ver os conceitos que aparecem nesta sessão.');
   items.push('<b>Segurança:</b> NAT não é firewall. A reescrita de endereços não substitui a filtragem, e o DNAT apenas redireciona: quem pode acessar o serviço publicado é decidido por regras de filtragem.');
   return '<ul>' + items.map((t) => '<li>' + t + '</li>').join('') + '</ul>';
