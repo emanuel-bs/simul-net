@@ -35,3 +35,13 @@ describe('DHCP (RFC 2131)', () => {
     });
   });
 });
+
+describe('DHCP: alcance do DECLINE (RFC 2131 4.4.4)', () => {
+  // O DECLINE é broadcast: a animação deve levá-lo a todos os servidores ativos, como o DISCOVER, e não só ao servidor que concedeu.
+  it('o DHCPDECLINE chega a todos os servidores ativos, e não apenas a um', () => {
+    const s = dhcpProtocol.scenarios.find((x) => x.id === 'd-conflict')!;
+    const msgs = roda(s).msgs as unknown as { label: string; to: string }[];
+    const destinos = (rot: string) => new Set(msgs.filter((m) => m.label === rot).map((m) => m.to));
+    expect(destinos('DECLINE').size).toBe(destinos('DISCOVER').size);
+  });
+});

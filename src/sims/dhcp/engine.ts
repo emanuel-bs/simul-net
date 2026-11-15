@@ -302,9 +302,9 @@ export function buildDhcp(P: DhcpParams, sub: string): Trace {
       ev(probeArr, 'pcb', 'Já uso ' + ip + ': responde', 'warn');
       tr.lg(rp.tSend, 'PC-B responde ao ARP: ele já usa ' + ip + '. Conflito de endereço detectado.', 'fail');
       tr.st(tr.t, 'phase', 'conflito', 'bad');
-      const dc = send('pc', s.key, mkDecline(s, ip), { about: 'O cliente recusa o endereço e avisa o servidor, que o tira do pool.', tags: ['conflito'] });
-      tr.lg(dc.tSend, 'PC-A envia <b>DHCPDECLINE</b> para ' + s.id + ' e descarta ' + ip + '.', 'fail');
-      ev(dc.tArr, 'pc', 'Conflito: DECLINE e recomeça', 'warn');
+      const dcArr = bcast(mkDecline(s, ip), 'O cliente recusa o endereço e o DECLINE vai em broadcast (RFC 2131 seção 4.4.4): todos os servidores o recebem, mas só o do Server Identifier o processa e tira o endereço do pool.');
+      tr.lg(tr.t, 'PC-A envia <b>DHCPDECLINE</b> em broadcast (Server Identifier ' + s.id + ') e descarta ' + ip + '.', 'fail');
+      ev(dcArr, 'pc', 'Conflito: DECLINE e recomeça', 'warn');
       setLease(s, ip, 'DECLINED', '-');
       tr.lg(tr.t, s.id + ' marca ' + ip + ' como indisponível e não o oferecerá novamente. O cliente espera 10 s e volta ao estado INIT.', 'fail');
       jr('conflict', { s: s.id, ip });

@@ -505,6 +505,7 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
   n_pcb ->> n_pc: ARP Reply
   n_pc ->> n_s1: DECLINE
+  n_pc ->> n_pcb: DECLINE
   Note over n_pc,n_pcb: 1. DISCOVER (broadcast)
   n_pc ->> n_s1: DISCOVER
   n_pc ->> n_pcb: DISCOVER
@@ -519,7 +520,7 @@ sequenceDiagram
   n_pc ->> n_pcb: ARP Probe
 ```
 
-*Figura 7.1.4 (Tipo B, sequência).* Mensagens do cenário "Conflito de IP", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 8 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
+*Figura 7.1.4 (Tipo B, sequência).* Mensagens do cenário "Conflito de IP", na ordem do tempo, entre PC-A, DHCP-1, PC-B: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 8 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Concessão (DORA)", com a configuração aplicada acima.
 
 **Mensagens**
 
