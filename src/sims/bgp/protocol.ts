@@ -13,7 +13,7 @@ export const bgpProtocol: ProtocolDef = {
   id: 'bgp',
   label: 'BGP (sessões e seleção de caminho)',
   stateTitle: 'Estado da rede',
-  rfcs: [[4271, 'BGP-4'], [6793, 'ASN de 4 bytes'], [5398, 'ASN de documentação'], [6811, 'Validação de origem (ROV)'], [7908, 'Vazamento de rota'], [9319, 'maxLength dos ROAs'], [9582, 'ROA'], [8212, 'eBGP sem política']],
+  rfcs: [[4271, 'BGP-4'], [6793, 'ASN de 4 bytes'], [5398, 'ASN de documentação'], [6996, 'ASN de uso privado'], [6811, 'Validação de origem (ROV)'], [7908, 'Vazamento de rota'], [9319, 'maxLength dos ROAs'], [9582, 'ROA'], [8212, 'eBGP sem política']],
   subs: [
     { key: 'sessao', label: 'Sessões', default: 'open' },
     { key: 'rotas', label: 'Rotas e política', default: 'prop' },

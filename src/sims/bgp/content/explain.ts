@@ -32,7 +32,7 @@ export function explain(tr: Trace): string {
   const st = R.stats as Stats;
   const ev = R.evStats as Stats | null;
   const fwd = R.fwd as Fwd;
-  let h = '<ul>' + li('Protocolo: <b>BGP-4</b> (RFC 4271), um roteador por sistema autônomo (sem iBGP), com números de AS de documentação (RFC 5398) e prefixos de documentação (RFC 5737).');
+  let h = '<ul>' + li('Protocolo: <b>BGP-4</b> (RFC 4271), um roteador por sistema autônomo (sem iBGP), com números de AS de documentação (RFC 5398; o Atacante usa um AS de uso privado, RFC 6996) e prefixos de documentação (RFC 5737).');
   if (R.sub === 'seguranca') h += li('Problema de segurança: ' + (R.attack === 'none' ? 'nenhum' : ATTACK[R.attack]) + '. Defesas: ' + (R.defText || 'nenhuma') + '.');
 
   h += li('<b>Sessões:</b> ' + plural(R.net.links.length, 'enlace subiu', 'enlaces subiram') + ' pelas fases TCP (porta 179), OPEN (hold time de ' + HOLD + ' s) e KEEPALIVE até Established.');

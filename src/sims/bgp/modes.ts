@@ -73,7 +73,7 @@ function openFields(x: string): Field[] {
     { sec: 'BGP OPEN (tipo 1)' },
     ['Tipo', '1 (OPEN)', 'Primeira mensagem da sessão.'],
     ['Version', '4', 'BGP-4.'],
-    ['My Autonomous System', '23456 (AS_TRANS) / AS' + ASES[x].asn + ' na capacidade', 'Com ASN de 4 bytes (RFC 6793), o campo de 2 bytes leva AS_TRANS e o número real vai na capacidade.'],
+    ['My Autonomous System', ASES[x].asn > 65535 ? '23456 (AS_TRANS)' : String(ASES[x].asn), 'Campo de 2 bytes. Todos os AS deste simulador têm número de 2 bytes, então o campo leva o próprio número. Só um AS de 4 bytes envia aqui o AS_TRANS (23456), com o número real na capacidade (RFC 6793, seção 3).'],
     ['Hold Time', HOLD + ' s', 'Tempo máximo sem receber mensagens antes de derrubar a sessão. Vale o menor valor entre os dois lados.'],
     ['BGP Identifier', ASES[x].rid, 'Router ID: identifica o roteador e desempata decisões.'],
     ['Capacidades', 'IPv4 unicast, route refresh, ASN de 4 bytes', 'Recursos negociados para esta sessão.'],
