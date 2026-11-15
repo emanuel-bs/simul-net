@@ -169,16 +169,20 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
   const serverRandom = hex('sr' + P.sProf + ver, 32);
   const keyShare = hex('ks' + P.cProf, 32);
   const serverShare = hex('ss' + P.sProf, 32);
+  // supported_versions é do TLS 1.3 (RFC 8446, seção 4.2.1); um cliente que só fala TLS 1.2 ou anterior declara a versão mais alta em client_version e não a envia.
+  // signature_algorithms nasceu no TLS 1.2 (RFC 5246, seção 7.4.1.4.1), e o ALPN (RFC 7301) acompanha os clientes modernos.
+  const tem13 = C.vers.indexOf('TLS 1.3') >= 0;
+  const tem12 = C.vers.indexOf('TLS 1.2') >= 0;
+  const verCliente = ({ 'TLS 1.2': '0x0303', 'TLS 1.1': '0x0302', 'TLS 1.0': '0x0301' } as Record<string, string>)[C.vers[0]];
   const chFields: Field[] = [
-    ['legacy_version', '0x0303 (TLS 1.2)', 'valor legado; o TLS 1.3 usa a extensão supported_versions'],
+    tem13 ? ['legacy_version', '0x0303 (TLS 1.2)', 'valor legado; o TLS 1.3 usa a extensão supported_versions'] : ['client_version', verCliente + ' (' + C.vers[0] + ')', 'a versão mais alta que o cliente aceita (RFC 5246, seção 7.4.1.2); sem a extensão supported_versions, que é do TLS 1.3'],
     ['random', clientRandom, '32 bytes aleatórios'],
     ['cipher_suites', lines(C.s13.concat(C.s12)), 'lista do cliente, em ordem de preferência', C.s12.concat(C.s13).some(isWeakSuite) ? 'expert' : ''],
     ['compression_methods', 'null (0)', ''],
     ['Extensão: server_name (SNI)', SNI, 'o nome do site vai em claro: quem observa a rede vê QUAL site é acessado (ECH esconderia)', 'expert'],
-    ['Extensão: supported_versions', lines(C.vers), weakVer(C.vers[0]) ? 'só versões obsoletas' : 'versões que o cliente aceita'],
+    ...(tem13 ? [['Extensão: supported_versions', lines(C.vers), weakVer(C.vers[0]) ? 'só versões obsoletas' : 'versões que o cliente aceita'] as Field] : []),
     ['Extensão: supported_groups', 'x25519, secp256r1', ''],
-    ['Extensão: signature_algorithms', 'ecdsa_secp256r1_sha256, rsa_pss_rsae_sha256', 'assinaturas aceitas para o certificado'],
-    ['Extensão: ALPN', (C.vers.indexOf('TLS 1.2') >= 0 ? 'h2, ' : '') + 'http/1.1', 'protocolo de aplicação'],
+    ...(tem12 ? [['Extensão: signature_algorithms', 'ecdsa_secp256r1_sha256, rsa_pss_rsae_sha256', 'assinaturas aceitas para o certificado'] as Field, ['Extensão: ALPN', 'h2, http/1.1', 'protocolo de aplicação'] as Field] : []),
     ['Extensão: status_request', 'OCSP', 'pede a resposta de revogação grampeada'],
   ];
   if (C.vers.indexOf('TLS 1.3') >= 0) chFields.splice(7, 0, ['Extensão: key_share', 'x25519: ' + keyShare.slice(0, 32) + '…', 'metade pública do ECDHE já no primeiro pacote: por isso o TLS 1.3 gasta 1 RTT']);
@@ -459,19 +463,25 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
       phase('3. Troca de chaves do cliente e Finished', 'cke', 'Troca de chaves');
       tr.st(tr.t, 'phase', 'Troca de chaves', 'warn');
       tr.mile(tr.t, 'Troca de chaves', rsaKt ? 'RSA' : 'ECDHE');
+      // RFC 5246, seção 7.4.6: com CertificateRequest, o cliente envia o próprio Certificate antes do ClientKeyExchange.
+      const ccert = P.mtls ? plain('c', 's', 'Certificate', 11, [['certificate_list', 'cadeia do certificado do cliente', 'o servidor pediu o certificado (Certificate Request): o cliente se identifica']], { len: 1400, info: 'Client: Certificate', about: 'Por causa do Certificate Request, o cliente envia o seu certificado, para o servidor poder autenticá-lo.' }) : null;
       const cke = plain('c', 's', 'Client Key Exchange', 16,
         rsaKt
           ? [['EncryptedPreMasterSecret', hex('pms', 24) + '…', 'o segredo é cifrado com a chave pública RSA do servidor: SEM sigilo futuro', 'expert']]
           : [['Pubkey (ponto EC)', hex('cke' + P.cProf, 32) + '…', 'metade pública do ECDHE']],
         {
+          ...(ccert ? { at: ccert.tSend + 0.2 } : {}),
           len: 150, info: 'Client: Client Key Exchange',
           about: rsaKt
             ? 'Na troca de chaves por RSA, o cliente envia o pre-master secret cifrado com a chave pública do servidor. Quem gravar o tráfego hoje e obtiver a chave privada um dia decifra tudo (sem sigilo futuro).'
             : 'O cliente envia sua metade do ECDHE. O segredo é calculado nas pontas e nunca trafega.',
         });
       if (rsaKt) cke.tags.push('sem sigilo futuro: o segredo viaja cifrado pela chave do servidor');
+      // RFC 5246, seção 7.4.8: o CertificateVerify prova que o cliente tem a chave privada do certificado enviado.
+      const cverify = P.mtls ? plain('c', 's', 'Certificate Verify', 15, [['signature', hex('cv' + P.cProf, 32) + '…', 'assinatura sobre o hash das mensagens do handshake até aqui: prova a posse da chave privada do certificado do cliente']], { at: cke.tSend + 0.2, len: 300, info: 'Client: Certificate Verify', about: 'O cliente assina o handshake com a chave privada do seu certificado. O servidor confere com a chave pública do certificado recebido.' }) : null;
+      if (cverify) tr.ev(cverify.tArr, 's', 'Valida o certificado do cliente contra a CA de clientes e confere a assinatura do Certificate Verify', 'ok');
       const cfin = plain('c', 's', 'Change Cipher Spec, Finished', 20, [['Change Cipher Spec', '1', 'a partir daqui o cliente cifra'], ['Finished (cifrado)', 'verify_data', 'confirma o handshake']], {
-        at: cke.tSend + 0.2, len: 100, info: 'Client: Change Cipher Spec, Encrypted Handshake Message', ctype: 20, cname: 'Change Cipher Spec', about: 'O cliente liga a cifragem e confirma o handshake.',
+        at: (cverify || cke).tSend + 0.2, len: 100, info: 'Client: Change Cipher Spec, Encrypted Handshake Message', ctype: 20, cname: 'Change Cipher Spec', about: 'O cliente liga a cifragem e confirma o handshake.',
       });
       cfin.color = C0.enc;
       cfin.enc = true;
