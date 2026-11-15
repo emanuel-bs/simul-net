@@ -135,16 +135,16 @@
     "textos": "5b1079ed78930c68"
   },
   "dhcp": {
-    "d-dora": "fee7f9c531b89feb",
-    "d-two": "261ab357ac50be61",
-    "d-short": "6015e1a7eef5e8f2",
-    "d-conflict": "ba2e7a1afc2f4649",
-    "d-down": "d22a28bef9dbae5f",
-    "d-renew": "bb7913ba3165cf2c",
-    "d-rebind": "eddd83654152f234",
-    "d-release": "a053ec4713a409e9",
-    "amostra:dora": "f9f9e4795e4d7255",
-    "amostra:lease": "6ccc2bed4be3dab0",
+    "d-dora": "45a0c11a6061587b",
+    "d-two": "6e466fbd322c4ca1",
+    "d-short": "872b9c175ddfe1d5",
+    "d-conflict": "d643f9a810716f72",
+    "d-down": "44e9a209dc063dae",
+    "d-renew": "fa61aa697c8fc0a4",
+    "d-rebind": "d051402b44167b82",
+    "d-release": "e250b808992f6a7d",
+    "amostra:dora": "ba60538479f34f43",
+    "amostra:lease": "5a5a0de69326e084",
     "textos": "749f53c5c1763368"
   },
   "http-versoes": {

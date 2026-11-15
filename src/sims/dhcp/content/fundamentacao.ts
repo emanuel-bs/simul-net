@@ -113,7 +113,7 @@ Por isso o DISCOVER, o OFFER, o REQUEST e o ACK têm o **mesmo formato** e só s
 
 ### Conflito de endereço e DECLINE
 
-Antes de usar o endereço recebido, o cliente pode testá-lo com um **ARP Probe** (RFC 5227; veja o simulador de ARP). Se alguém responder, o endereço já está em uso: o cliente envia **DHCPDECLINE**, e o servidor marca o endereço como indisponível. Quando o cliente sai de propósito, envia **DHCPRELEASE**, e o servidor devolve o endereço ao pool.
+Antes de usar o endereço recebido, o cliente pode testá-lo com um **ARP Probe** (RFC 5227; veja o simulador de ARP). Se alguém responder, o endereço já está em uso: o cliente envia **DHCPDECLINE**, e o servidor marca o endereço como indisponível. O DECLINE vai em **broadcast**, pois o cliente está recusando o endereço e não o usa como origem (RFC 2131, seção 4.4.4). Quando o cliente sai de propósito, envia **DHCPRELEASE**, em **unicast** ao servidor, e o servidor devolve o endereço ao pool.
 
 ### O que o DHCP não faz
 
