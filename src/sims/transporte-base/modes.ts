@@ -52,7 +52,7 @@ function csum(b: number[]): number {
   return ~s & 0xffff;
 }
 /** Tamanho do cabeçalho TCP: 20 fixos + opções do SYN (MSS e SACK_PERM) + opção SACK dos ACKs. */
-const hdrLen = (s: any): number => 20 + (s.opts ? (s.opts.includes('SACK_PERM') ? 8 : 4) : 0) + (s.sack && s.sack.length ? 4 + 8 * s.sack.length : 0);
+const hdrLen = (s: any): number => 20 + (s.opts ? 4 + (s.opts.includes('SACK_PERM') ? 4 : 0) + (s.opts.includes('WS=') ? 4 : 0) : 0) + (s.sack && s.sack.length ? 4 + 8 * s.sack.length : 0);
 
 function checksumOf(s: any): number {
   const src = s.from === 's' ? SRV.ip : CLI.ip;
@@ -77,6 +77,8 @@ function checksumOf(s: any): number {
   if (s.opts) {
     h.push(2, 4, MSS >> 8, MSS & 255);
     if (s.opts.includes('SACK_PERM')) h.push(4, 2, 1, 1);
+    const ws = /WS=(d+)/.exec(s.opts);
+    if (ws) h.push(1, 3, 3, Number(ws[1]));
   }
   if (s.sack && s.sack.length) {
     h.push(1, 1, 5, 2 + 8 * s.sack.length);
@@ -107,9 +109,9 @@ function fieldsOf(s: any): Field[] {
     f.push(['Tamanho do cabeçalho', hdrLen(s) + ' bytes', hdrLen(s) > 20 ? '20 fixos + opções' : 'sem opções']);
     const meaning: Record<string, string> = { SYN: 'abre a conexão', FIN: 'encerra este sentido', ACK: 'campo de reconhecimento válido', PSH: 'entregar os dados à aplicação sem esperar' };
     f.push(['Flags', s.flags.join(', '), meaning[s.flags[0]] || '']);
-    f.push(['Janela', s.win + ' bytes', 'espaço livre anunciado pelo emissor deste segmento (controle de fluxo)']);
+    f.push(s.ws ? ['Janela', s.win + ' (x 2^' + s.ws + ' = ' + s.win * Math.pow(2, s.ws) + ' bytes)', 'campo de 16 bits multiplicado pelo fator do Window Scale negociado nos SYN (RFC 7323): espaço livre anunciado, em bytes'] : ['Janela', s.win + ' bytes', 'espaço livre anunciado pelo emissor deste segmento (controle de fluxo); no SYN o valor nunca é escalado (RFC 7323, seção 2.2)']);
     f.push(['Checksum', hex(checksumOf(s)), 'cobre pseudo-cabeçalho IP, cabeçalho e dados']);
-    if (s.opts) f.push(['Opções', s.opts, 'negociadas apenas no SYN e no SYN-ACK' + (s.opts.includes('SACK_PERM') ? '. SACK_PERM: os dois lados aceitam a confirmação seletiva' : '')]);
+    if (s.opts) f.push(['Opções', s.opts, 'negociadas apenas no SYN e no SYN-ACK' + (s.opts.includes('SACK_PERM') ? '. SACK_PERM: os dois lados aceitam a confirmação seletiva' : '') + (s.opts.includes('WS=') ? '. WS: fator de escala da janela (RFC 7323), válido só se os dois SYN o trazem' : '')]);
     if (s.sack && s.sack.length) f.push(['Opção SACK (RFC 2018)', s.sack.map((b: number[]) => 'SLE=' + b[0] + ' SRE=' + b[1]).join('; '), 'blocos de bytes já recebidos além da lacuna (números relativos; SRE é exclusivo). O emissor repõe só o que falta']);
     f.push(['Dados', s.len + ' bytes', s.agg ? s.agg : s.len ? 'segmento ' + (s.idx + 1) + ' do arquivo (MSS = 1000)' : 'segmento só de controle']);
   } else {

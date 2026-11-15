@@ -11,7 +11,12 @@ export const COL = { conn: '#5FD4C0', data: '#F2A65A', ack: '#6FB8E8', bad: '#E2
 
 export const fmtMs = (v: number): string => (Math.round(v * 10) / 10).toString().replace('.', ',') + ' ms';
 export const listSeg = (a: number[]): string => a.map((n) => '#' + n).join(', ').replace(/, ([^,]*)$/, ' e $1');
-export const synOpts = (P: any): string => (P.sack ? 'MSS=1000, SACK_PERM' : 'MSS=1000');
+/** Window Scale (RFC 7323): o campo Window tem 16 bits; acima de 65535 bytes é preciso um fator de escala 2^n (n até 14), negociado nos dois SYN. */
+export const wsOf = (P: any): number => { const w = P.rwnd * MSS; let s = 0; while (Math.ceil(w / Math.pow(2, s)) > 65535 && s < 14) s++; return s; };
+/** Valor do campo Window dos segmentos que não são SYN: a janela real dividida pelo fator de escala. */
+export const rwin = (P: any): number => Math.ceil((P.rwnd * MSS) / Math.pow(2, wsOf(P)));
+export const synOpts = (P: any): string => 'MSS=1000' + (P.sack ? ', SACK_PERM' : '') + (wsOf(P) ? ', WS=' + wsOf(P) + ' (x' + Math.pow(2, wsOf(P)) + ')' : '');
+const wsInfo = (P: any): string => (wsOf(P) ? ' WS=' + Math.pow(2, wsOf(P)) : '');
 
 function rnd(seed: any, kind: any, idx: any, att: any): any {
   let t=((seed*1000003)^(kind.charCodeAt(0)*7919)^(idx*104729)^(att*1299709))>>>0;
@@ -69,10 +74,10 @@ function simTcp(P: any, title: any): any {
   // Abertura da conexão (sem perdas, para manter o foco na transferência)
   st(tr,0,'s','LISTEN'); st(tr,0,'c','SYN_SENT');
   tr.metro.push({t:0,label:'Handshake',sub:'SYN, SYN-ACK, ACK'});
-  addSeg(tr,dataSeg({from:'c',to:'s',tSend:0,tArr:ow,kind:'ctl',color:COL.conn,label:'SYN Seq=0',sport:CLI.port,dport:80,flags:['SYN'],seq:0,ack:null,opts:synOpts(P),info:CLI.port+' → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000'+(P.sack?' SACK_PERM':'')}));
+  addSeg(tr,dataSeg({from:'c',to:'s',tSend:0,tArr:ow,kind:'ctl',color:COL.conn,label:'SYN Seq=0',sport:CLI.port,dport:80,flags:['SYN'],seq:0,ack:null,opts:synOpts(P),info:CLI.port+' → 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1000'+(P.sack?' SACK_PERM':'')+wsInfo(P)}));
   lg(tr,0,'Cliente envia SYN (ISN mostrado como Seq=0 relativo) e anuncia MSS = 1000. Estado: SYN_SENT.','conn');
   st(tr,ow,'s','SYN_RCVD');
-  addSeg(tr,dataSeg({from:'s',to:'c',tSend:ow,tArr:2*ow,kind:'ctl',color:COL.conn,label:'SYN, ACK Seq=0 Ack=1',sport:80,dport:CLI.port,flags:['SYN','ACK'],seq:0,ack:1,win:P.rwnd*MSS,opts:synOpts(P),info:'80 → '+CLI.port+' [SYN, ACK] Seq=0 Ack=1 Win='+(P.rwnd*MSS)+' Len=0 MSS=1000'+(P.sack?' SACK_PERM':'')}));
+  addSeg(tr,dataSeg({from:'s',to:'c',tSend:ow,tArr:2*ow,kind:'ctl',color:COL.conn,label:'SYN, ACK Seq=0 Ack=1',sport:80,dport:CLI.port,flags:['SYN','ACK'],seq:0,ack:1,win:Math.min(65535,P.rwnd*MSS),opts:synOpts(P),info:'80 → '+CLI.port+' [SYN, ACK] Seq=0 Ack=1 Win='+Math.min(65535,P.rwnd*MSS)+' Len=0 MSS=1000'+(P.sack?' SACK_PERM':'')+wsInfo(P)}));
   lg(tr,ow,'Servidor responde SYN-ACK: confirma o SYN (Ack=1) e envia o próprio ISN. Estado: SYN_RCVD.','conn');
   st(tr,2*ow,'c','ESTABLISHED');
   addSeg(tr,dataSeg({from:'c',to:'s',tSend:2*ow,tArr:3*ow,kind:'ctl',color:COL.conn,label:'ACK Ack=1',sport:CLI.port,dport:80,flags:['ACK'],seq:1,ack:1,info:CLI.port+' → 80 [ACK] Seq=1 Ack=1 Win=64240 Len=0'}));
@@ -150,7 +155,7 @@ function simTcp(P: any, title: any): any {
     else { dupN=0; ackNum++; lastAck=ackVal; }
     const k=S.acks++, lost=P.ackLoss && rnd(P.seed,'a',k,0)<P.loss;
     const a=addSeg(tr,dataSeg({from:'s',to:'c',tSend:t,tArr:t+ow,lost:lost,kind:'ack',color:dupN?COL.bad:COL.ack,label:label,
-      sport:80,dport:CLI.port,flags:['ACK'],seq:1,ack:ackVal,win:P.rwnd*MSS,
+      sport:80,dport:CLI.port,flags:['ACK'],seq:1,ack:ackVal,win:rwin(P),ws:wsOf(P),
       sack:blocks?blocks.map((b: any)=>[1+b[0]*MSS,1+(b[1]+1)*MSS]):null,
       info:pre+'80 → '+CLI.port+' [ACK] Seq=1 Ack='+ackVal+' Win='+(P.rwnd*MSS)+' Len=0'+(blocks?' '+blocks.map((b: any)=>'SLE='+(1+b[0]*MSS)+' SRE='+(1+(b[1]+1)*MSS)).join(' '):'')}));
     if(dupN) a.tags.push('Dup ACK');
@@ -230,9 +235,9 @@ function simTcp(P: any, title: any): any {
     addSeg(tr,dataSeg({from:'c',to:'s',tSend:t,tArr:t+ow,kind:'ctl',color:COL.conn,label:'FIN, ACK Seq='+fs,sport:CLI.port,dport:80,flags:['FIN','ACK'],seq:fs,ack:1,info:CLI.port+' → 80 [FIN, ACK] Seq='+fs+' Ack=1 Len=0'}));
     lg(tr,t,'Cliente terminou de enviar: FIN. Estado: FIN_WAIT_1.','conn');
     st(tr,t+ow,'s','CLOSE_WAIT');
-    addSeg(tr,dataSeg({from:'s',to:'c',tSend:t+ow,tArr:t+2*ow,kind:'ctl',color:COL.conn,label:'ACK='+(fs+1),sport:80,dport:CLI.port,flags:['ACK'],seq:1,ack:fs+1,win:P.rwnd*MSS,info:'80 → '+CLI.port+' [ACK] Seq=1 Ack='+(fs+1)+' Len=0'}));
+    addSeg(tr,dataSeg({from:'s',to:'c',tSend:t+ow,tArr:t+2*ow,kind:'ctl',color:COL.conn,label:'ACK='+(fs+1),sport:80,dport:CLI.port,flags:['ACK'],seq:1,ack:fs+1,win:rwin(P),ws:wsOf(P),info:'80 → '+CLI.port+' [ACK] Seq=1 Ack='+(fs+1)+' Len=0'}));
     st(tr,t+ow+1,'s','LAST_ACK');
-    addSeg(tr,dataSeg({from:'s',to:'c',tSend:t+ow+1,tArr:t+2*ow+1,kind:'ctl',color:COL.conn,label:'FIN, ACK Seq=1',sport:80,dport:CLI.port,flags:['FIN','ACK'],seq:1,ack:fs+1,win:P.rwnd*MSS,info:'80 → '+CLI.port+' [FIN, ACK] Seq=1 Ack='+(fs+1)+' Len=0'}));
+    addSeg(tr,dataSeg({from:'s',to:'c',tSend:t+ow+1,tArr:t+2*ow+1,kind:'ctl',color:COL.conn,label:'FIN, ACK Seq=1',sport:80,dport:CLI.port,flags:['FIN','ACK'],seq:1,ack:fs+1,win:rwin(P),ws:wsOf(P),info:'80 → '+CLI.port+' [FIN, ACK] Seq=1 Ack='+(fs+1)+' Len=0'}));
     lg(tr,t+ow,'Servidor confirma o FIN (CLOSE_WAIT); a aplicação fecha e ele envia o próprio FIN (LAST_ACK).','conn');
     st(tr,t+2*ow,'c','FIN_WAIT_2'); st(tr,t+2*ow+1,'c','TIME_WAIT');
     addSeg(tr,dataSeg({from:'c',to:'s',tSend:t+2*ow+1,tArr:t+3*ow+1,kind:'ctl',color:COL.conn,label:'ACK=2',sport:CLI.port,dport:80,flags:['ACK'],seq:fs+1,ack:2,info:CLI.port+' → 80 [ACK] Seq='+(fs+1)+' Ack=2 Len=0'}));
