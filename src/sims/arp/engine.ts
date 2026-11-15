@@ -92,7 +92,7 @@ export function arpBody(op: 1 | 2, sha: string, spa: string, tha: string, tpa: s
     ['Operação', op === 1 ? '1 (requisição)' : '2 (resposta)', op === 1 ? 'pergunta: quem tem este IP?' : 'resposta: este IP está neste endereço físico'],
     ['Endereço físico do remetente', sha, 'SHA'],
     ['IP do remetente', spa, 'SPA'],
-    ['Endereço físico do alvo', tha, op === 1 ? 'TPA ainda não tem MAC: vai zerado' : 'THA: quem fez a pergunta'],
+    ['Endereço físico do alvo', tha, op === 1 ? 'THA: o MAC do alvo ainda é desconhecido, por isso vai zerado' : 'THA: quem fez a pergunta'],
     ['IP do alvo', tpa, 'TPA'],
   );
 }
