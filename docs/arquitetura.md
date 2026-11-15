@@ -110,3 +110,20 @@ Quando um simulador desvia desta convenção, a aba Referência dele deve dizer.
 ## 12. Limitações
 
 Os simuladores são didáticos: parâmetros pequenos, valores ilustrativos e nenhuma criptografia real. Os modelos seguem as RFCs citadas em cada página, mas simplificam detalhes que são explicitados na aba Referência de cada simulador.
+
+## 13. Pendências conhecidas
+
+Itens da auditoria de conformidade (NC-01 a NC-33) que não foram encerrados. Cada um diz o que falta e por que ainda está aberto.
+
+### NC-04 (P2): oráculo de teste dependente da implementação
+
+- **Situação:** atendida só em parte. O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. A correção prevista, os testes de `tests/conformidade/`, existe para 802-1x, arp, bgp, dhcp, dns, http, https, ipv4, ipv6, mpls, nat, ssh e tcp (mais `tamanhos`).
+- **Falta:** arquivo de conformidade para os demais simuladores nativos, entre eles wifi, rip, stp, vlan, switching, tls e ftp.
+- **Como fechar:** para cada simulador, escrever os testes a partir do texto da RFC (citando a seção), vê-los falhar com o comportamento incorreto, e só então corrigir (ver seção 7).
+
+### NC-32 (P3): Wi-Fi, Address 3 e temporizações de 5 GHz
+
+- **Situação:** aberta. Depende do texto do IEEE 802.11, que não é público e não foi consultado, então não foi corrigida nem testada.
+- **Address 3 (`src/sims/wifi/engine.ts`, quadros de dados nas linhas 363, 587 e 692):** em quadros com To DS=1 o campo recebe o endereço de broadcast. O rótulo do campo (`model.ts`, "BSSID ou destino final, conforme To DS e From DS") exige que o valor corresponda ao destino final nesses quadros. Na linha 750 (From DS=1) o campo recebe o endereço do AP, quando deveria ser o originador (SA). A tabela de endereços por To DS e From DS do padrão precisa ser conferida.
+- **Temporizações (`src/sims/wifi/model.ts`):** SLOT 9 µs, SIFS 16 µs e DIFS 34 µs são valores OFDM de 5 GHz, mas os cenários usam os canais 1, 6 e 11 (2,4 GHz), onde o SIFS é de 10 µs. Os valores corretos por faixa e modo de transmissão também dependem do padrão.
+- **Como fechar:** obter o trecho do IEEE 802.11 (tabela de endereços e parâmetros de temporização da camada física), escrever `tests/conformidade/wifi.test.ts` e então corrigir. Até lá, a aba Referência do Wi-Fi deve manter o aviso de que os valores de 5 GHz são usados em todo o simulador.
