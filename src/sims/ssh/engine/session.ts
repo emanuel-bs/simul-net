@@ -48,6 +48,7 @@ export function simSession(P: SshParams): Trace {
         fields: o && o.f ? plainFields(num, name, o.f) : plainFields(num, name, []),
       }),
     );
+  let cifra: { enc: string; mac: string } | undefined;
   const encm = (from: string, to: string, num: number | string, name: string, o?: Opts) => {
     const op = o || {};
     const len = op.len || 60 + (op.n || 0);
@@ -58,7 +59,7 @@ export function simSession(P: SshParams): Trace {
       Object.assign(
         { label: name, type: num, color: op.bad ? C0.bad : op.data ? C0.data : C0.enc, enc: true, proto: 'SSHv2', len, info: who(from) + ': Encrypted packet (len=' + (len - 20) + ')', phaseName: curPhase },
         op,
-        { fields: encFields(len, num, name, op.f || []) },
+        { fields: encFields(len, num, name, op.f || [], cifra) },
       ),
     );
   };
@@ -174,6 +175,7 @@ export function simSession(P: SshParams): Trace {
   }
   // depois do teste acima, todos os quatro algoritmos foram negociados
   const ng = neg as Record<'kex' | 'hostkey' | 'enc' | 'mac', string>;
+  cifra = { enc: ng.enc, mac: ng.mac };
   tr.ev(tr.t, 'c', 'Negociado: ' + ng.kex + ', ' + ng.hostkey + ', ' + ng.enc + (isAead(ng.enc) ? '' : ', ' + ng.mac), 'ok');
   tr.ev(tr.t, 's', 'Mesma escolha: o primeiro da lista do cliente que o servidor tem', 'ok');
   tr.lg(tr.t, 'Algoritmos negociados: troca de chaves ' + ng.kex + '; chave de host ' + ng.hostkey + '; cifra ' + ng.enc + '; MAC ' + (isAead(ng.enc) ? 'implícito (AEAD)' : ng.mac) + '.', 'cc');

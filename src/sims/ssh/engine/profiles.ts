@@ -100,12 +100,28 @@ export function plainFields(num: number | string, name: string, extra?: Field[])
   return ([SEC_BIN, ['Tipo da mensagem', num + ' (' + name + ')', 'primeiro byte do payload'], ['Cifrado?', 'não', 'esta mensagem ainda trafega em claro']] as Field[]).concat(extra || []);
 }
 
-export function encFields(len: number, num: number | string, name: string, extra?: Field[]): Field[] {
+/** Tamanho do MAC ou da tag, em bytes, conforme o algoritmo negociado. */
+export const macBytes = (enc: string, mac: string): number => (isAead(enc) ? 16 : /sha2-512/.test(mac) ? 64 : /sha2-256/.test(mac) ? 32 : /sha1/.test(mac) ? 20 : 16);
+
+/**
+ * O packet_length no fio. A RFC 4253, seção 6.3, o cifra; a RFC 5647, seção 7.3, abre exceção no AES-GCM (dado autenticado, não cifrado);
+ * nos MACs ETM o comprimento também fica em claro; o chacha20-poly1305@openssh o cifra com uma chave própria.
+ */
+function lengthField(len: number, c?: { enc: string; mac: string }): [string, string, string] {
+  const n = len - 20;
+  if (!c) return ['packet_length', n + ' bytes', 'cifrado ou em claro conforme a cifra negociada: o chacha20-poly1305@openssh o cifra; o AES-GCM (RFC 5647, seção 7.3) e os MACs ETM o deixam em claro, só autenticado'];
+  if (/gcm@openssh/.test(c.enc)) return ['packet_length', 'em claro (' + n + ' bytes)', 'AES-GCM: o comprimento é dado associado, autenticado e não cifrado (RFC 5647, seção 7.3)'];
+  if (/chacha20-poly1305/.test(c.enc)) return ['packet_length', 'cifrado (' + n + ' bytes)', 'chacha20-poly1305@openssh cifra o comprimento com uma chave própria'];
+  if (/-etm@/.test(c.mac)) return ['packet_length', 'em claro (' + n + ' bytes)', 'com MAC encrypt-then-MAC o comprimento não é cifrado: só autenticado'];
+  return ['packet_length', 'cifrado (' + n + ' bytes)', 'a RFC 4253, seção 6.3, cifra o comprimento, o padding e o payload'];
+}
+
+export function encFields(len: number, num: number | string, name: string, extra?: Field[], c?: { enc: string; mac: string }): Field[] {
   return ([
     { sec: 'No fio (o que um observador vê)' },
-    ['packet_length', 'cifrado (' + (len - 20) + ' bytes)', 'o próprio comprimento vai cifrado (ETM/AEAD)'],
+    lengthField(len, c),
     ['payload', 'cifrado', 'ilegível sem as chaves da sessão'],
-    ['MAC ou tag de autenticação', '16 bytes', 'detecta qualquer alteração do pacote'],
+    ['MAC ou tag de autenticação', c ? macBytes(c.enc, c.mac) + ' bytes' : '16 a 64 bytes', 'detecta qualquer alteração do pacote' + (c ? '' : '; o tamanho depende do algoritmo negociado')],
     { sec: 'Nas pontas (depois de decifrar)' },
     ['Tipo da mensagem', num + ' (' + name + ')', 'só cliente e servidor enxergam isto'],
   ] as Field[]).concat(extra || []);
