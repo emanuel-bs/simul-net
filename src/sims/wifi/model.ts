@@ -99,8 +99,8 @@ export function dot11Fields(o: Dot11): Field[] {
   return f;
 }
 
-/** Tamanho aproximado em bytes de cada tipo de frame (cabeçalho, corpo típico e FCS). */
-export const LEN = { beacon: 130, probeReq: 60, probeResp: 130, auth: 30, assocReq: 140, assocResp: 90, ack: 14, cts: 14, rts: 20, psPoll: 16, data: 1528, nullData: 28, action: 40, eapol: 150 };
+/** Tamanho aproximado em bytes de cada tipo de frame, sempre com o FCS de 4 bytes: cabeçalho MAC, corpo típico e FCS (convenção em docs/arquitetura.md). */
+export const LEN = { beacon: 130, probeReq: 60, probeResp: 130, auth: 34, assocReq: 140, assocResp: 90, ack: 14, cts: 14, rts: 20, psPoll: 20, data: 1528, nullData: 28, action: 40, eapol: 150 };
 
 // ---- elementos de informação (IEs) usados nos corpos ----
 

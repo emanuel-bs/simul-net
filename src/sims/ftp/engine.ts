@@ -60,7 +60,7 @@ function tcp3(tr: Trace, init: string, pInit: number, pResp: number, what: strin
       to,
       Object.assign(
         {
-          label: flags, proto: 'TCP', color: C0.tcp as string, len: flags === 'SYN' ? 60 : 52,
+          label: flags, proto: 'TCP', color: C0.tcp as string, len: 54,
           info: (from === init ? pInit + ' → ' + pResp : pResp + ' → ' + pInit) + ' [' + flags + ']', phaseName: what,
           fields: fl({ sec: 'TCP (RFC 9293)' }, ['Porta de origem', String(from === init ? pInit : pResp), ''], ['Porta de destino', String(from === init ? pResp : pInit), ''], ['Flags', flags, '']),
           about: 'Segmento do handshake de três vias da ' + what + '. Quem inicia a conexão é o ' + (init === 'c' ? 'cliente' : 'servidor') + '.',
@@ -82,7 +82,7 @@ function tcpFin(tr: Trace, init: string, pInit: number, pResp: number, what: str
       to,
       Object.assign(
         {
-          label: 'FIN, ACK', proto: 'TCP', color: C0.tcp as string, len: 52, info: (from === init ? pInit + ' → ' + pResp : pResp + ' → ' + pInit) + ' [FIN, ACK]', phaseName: what,
+          label: 'FIN, ACK', proto: 'TCP', color: C0.tcp as string, len: 54, info: (from === init ? pInit + ' → ' + pResp : pResp + ' → ' + pInit) + ' [FIN, ACK]', phaseName: what,
           fields: fl({ sec: 'TCP (RFC 9293)' }, ['Flags', 'FIN, ACK', 'encerra a conexão']), about: 'Encerramento da ' + what + '.',
           dump: { text: 'TCP  ' + (from === init ? pInit + ' → ' + pResp : pResp + ' → ' + pInit) + '  [FIN, ACK]', hot: false },
         },
@@ -96,13 +96,13 @@ function tcpFin(tr: Trace, init: string, pInit: number, pResp: number, what: str
 /** SYN sem resposta (filtrado): tenta duas vezes e desiste. */
 function synLost(tr: Trace, from: string, to: string, pFrom: number, pTo: number, what: string): Message {
   const m = tr.add(from, to, {
-    label: 'SYN (sem resposta)', proto: 'TCP', color: C0.bad, len: 60, lost: true, info: pFrom + ' → ' + pTo + ' [SYN]', phaseName: what,
+    label: 'SYN (sem resposta)', proto: 'TCP', color: C0.bad, len: 54, lost: true, info: pFrom + ' → ' + pTo + ' [SYN]', phaseName: what,
     fields: fl({ sec: 'TCP (RFC 9293)' }, ['Flags', 'SYN', ''], ['Resultado', 'descartado no caminho', 'nenhum SYN, ACK volta', 'expert']), tags: ['SYN sem resposta (filtrado)'],
     about: 'O SYN foi descartado: o firewall ou o NAT não tem regra para esta conexão.', dump: { text: 'TCP  ' + pFrom + ' → ' + pTo + '  [SYN]   (sem resposta)', hot: true },
   });
   tr.wait(1000);
   tr.add(from, to, {
-    label: 'SYN (retransmissão)', proto: 'TCP', color: C0.bad, len: 60, lost: true, info: pFrom + ' → ' + pTo + ' [SYN] retransmissão', phaseName: what,
+    label: 'SYN (retransmissão)', proto: 'TCP', color: C0.bad, len: 54, lost: true, info: pFrom + ' → ' + pTo + ' [SYN] retransmissão', phaseName: what,
     fields: fl({ sec: 'TCP (RFC 9293)' }, ['Flags', 'SYN', ''], ['Resultado', 'descartado de novo', '', 'expert']), tags: ['retransmissão de SYN'],
     about: 'Segunda tentativa, depois de 1 s, e outra vez sem resposta.', dump: { text: 'TCP  ' + pFrom + ' → ' + pTo + '  [SYN] retransmissão', hot: true },
   });
