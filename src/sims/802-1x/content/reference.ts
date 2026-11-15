@@ -17,8 +17,8 @@ export const reference: string = [
   '<h3>RADIUS e EAP no simulador</h3><ul>' +
     '<li><b>Access-Request</b> (RFC 2865, seção 4.1): leva User-Name, NAS-IP-Address, NAS-Port, NAS-Port-Type, Calling-Station-Id, o EAP-Message e o Message-Authenticator.</li>' +
     '<li><b>Access-Challenge</b> (seção 4.4): o servidor pede o próximo passo do método e devolve um <b>State</b> (seção 5.24), que o autenticador repete no próximo Access-Request.</li>' +
-    '<li><b>Access-Accept</b> (seção 4.2) e <b>Access-Reject</b> (seção 4.3): o resultado. No Reject só se permitem as mensagens EAP e o Proxy-State (RFC 5080, seção 2.6.1).</li>' +
-    '<li><b>Session-Timeout</b> (seção 5.27): por quanto tempo a sessão vale antes de uma nova autenticação.</li>' +
+    '<li><b>Access-Accept</b> (seção 4.2) e <b>Access-Reject</b> (seção 4.3): o resultado. No Reject, além das mensagens EAP, só se permitem Proxy-State, Reply-Message e Error-Cause (RFC 5080, seção 2.6.1). O <b>Identifier</b> da resposta é o do Access-Request que ela responde (RFC 2865, seções 4.2 a 4.4).</li>' +
+    '<li><b>Session-Timeout</b> (seção 5.27): duração da sessão. Para que o fim do prazo provoque uma nova autenticação, e não o encerramento, o Access-Accept leva também o <b>Termination-Action</b> (seção 5.29) com o valor RADIUS-Request (RFC 3580, seção 3.17).</li>' +
     '<li><b>Retransmissão</b> (RFC 5080, seção 2.2.1): o cliente repete o pedido com o mesmo Identifier; o intervalo e o limite de tentativas são ajustes do equipamento.</li>' +
     '<li><b>Segredo compartilhado:</b> liga o switch ao servidor e entra no cálculo do Message-Authenticator. Se o segredo difere, o servidor descarta o pacote em silêncio (RFC 3579, seção 3.2).</li></ul>',
   '<h3>Métodos EAP do simulador</h3><table class="sc-msgs"><thead><tr><th>Método</th><th>Referência</th><th>Característica</th></tr></thead><tbody>' +

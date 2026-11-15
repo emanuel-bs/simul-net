@@ -349,15 +349,15 @@
     "textos": "10899749e40cebf6"
   },
   "802-1x": {
-    "a-tls": "94450a8e0b288969",
-    "a-peap": "58d6502a853fca9f",
-    "a-md5": "e15106a812b3bf3f",
-    "f-cred": "6b82ab4e6ae0bf6f",
-    "f-cert": "5bde06b3e1ca1483",
+    "a-tls": "08b479a3fb7ad73c",
+    "a-peap": "b9cd72e26fa2c16f",
+    "a-md5": "5767c4a200430028",
+    "f-cred": "99def78d95000ff1",
+    "f-cert": "f4242877298fc37d",
     "f-noserver": "f611b341279abe25",
     "f-secret": "7ddebc1cb849e069",
     "f-nosup": "bfe2f44df84662b3",
-    "p-reauth": "75482678b2d265ea",
+    "p-reauth": "5ab39ccb6448efc4",
     "p-logoff": "93ed82ac94d783dd",
     "p-extra": "724d0c0fb40738a9",
     "p-extra-def": "a715f8ae6ac95066",
@@ -365,11 +365,11 @@
     "s-md5-def": "d8fb4cb4d303d1f9",
     "s-peap": "d552aa9d56443bc7",
     "s-peap-def": "5053ecfacc2b2725",
-    "amostra:auth": "fac484406b6052d9",
-    "amostra:falha": "086c6549488c24ff",
-    "amostra:porta": "dd66ec67ad0a878c",
+    "amostra:auth": "0c9d2cb9a474e2e1",
+    "amostra:falha": "686f6e1b81456360",
+    "amostra:porta": "2dbbaba82fcd61f7",
     "amostra:seg": "8fff35d9df40932e",
-    "textos": "38710918b7651ad2"
+    "textos": "6b9de6a5b25ec47c"
   },
   "wifi": {
     "d-passivo": "1b704774bb8a3228",

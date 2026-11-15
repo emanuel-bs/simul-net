@@ -94,7 +94,7 @@ export const scenDoc: Record<string, ScenarioDoc> = {
   },
   'p-reauth': {
     short: 'A porta segue aberta durante a renovação.',
-    concept: 'O Access-Accept inicial trouxe um Session-Timeout (RFC 2865, seção 5.27). Quando ele expira, o autenticador reautentica o suplicante, começando por um novo EAP-Request/Identity. Durante todo o processo a porta permanece autorizada, e o frame enviado no meio da troca passa normalmente. Se a reautenticação falhasse, a porta seria fechada.',
+    concept: 'O Access-Accept inicial trouxe um Session-Timeout (RFC 2865, seção 5.27) acompanhado do Termination-Action RADIUS-Request (RFC 3580, seção 3.17). Quando o prazo expira, o autenticador reautentica o suplicante, começando por um novo EAP-Request/Identity. Durante todo o processo a porta permanece autorizada, e o frame enviado no meio da troca passa normalmente. Se a reautenticação falhasse, a porta seria fechada.',
     observe: ['O estado da porta continua autorizado do início ao fim.', 'Um frame de dados passa no meio da reautenticação.', 'O novo Access-Accept traz outro Session-Timeout.'],
     msgs: [['EAP-Request/Identity', 'o switch inicia a reautenticação', 'SW1 para Notebook'], ['Dados durante a reautenticação', 'a porta segue aberta', 'Notebook para SW1'], ['Access-Accept', 'a sessão é renovada', 'RADIUS para SW1']],
     why: 'A reautenticação limita por quanto tempo uma credencial roubada ou revogada continua valendo, sem derrubar o usuário.',

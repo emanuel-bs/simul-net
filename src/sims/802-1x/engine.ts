@@ -213,6 +213,8 @@ function authenticate(c: Ctx, o: AuthOpts): boolean {
   let lastId = idRes.id;
   const idUser = (n: number): [string, string, string?][] => [...nasAttrs(user, NODE.sup.mac), eapAttr('EAP-Response/Identity'), ...(n > 0 ? [stateAttr(n)] : []), maAttr('req' + n)];
   const first = ++c.radId;
+  // Cada Access-Request recebe um Identifier novo; a resposta (Challenge, Accept ou Reject) copia o do pedido (RFC 2865, seções 3 e 4.2 a 4.4).
+  let pedido = first;
   radius(c, { toSrv: true, code: 1, id: first, label: 'Access-Request (Identity)', attrs: idUser(0), info: 'EAP-Message: Response/Identity', about: 'O autenticador repassa a identidade ao servidor RADIUS (RFC 3579). O servidor identifica o método a usar.', phaseName: 'Identidade' });
   if (o.during) o.during();
 
@@ -220,20 +222,21 @@ function authenticate(c: Ctx, o: AuthOpts): boolean {
     const rd: Round = m.rounds[i];
     const rid = c.eapId++;
     const req: EapHdr = { code: 1, id: rid, type: m.type, data: rd.reqData, bytes: rd.reqBytes };
-    const challenge = ++c.radId;
+    const challenge = pedido;
     radius(c, { toSrv: false, code: 11, id: challenge, label: 'Access-Challenge (' + rd.req + ')', color: rd.enc ? C0.enc : C0.data, enc: rd.enc, attrs: [eapAttr('Request/' + m.typeName + ': ' + rd.req), stateAttr(i + 1), maAttr('chal' + i)], info: 'EAP-Message: Request/' + m.typeName, about: 'O servidor pede o próximo passo do método e devolve um State. ' + rd.reqAbout, phaseName: 'Método' });
     eapol(c, { dir: 'down', pkt: 'eap', eap: req, label: 'EAP-Request/' + rd.req, color: rd.enc ? C0.enc : C0.plain, enc: rd.enc, info: rd.reqData, about: rd.reqAbout, phaseName: 'Método' });
     const res: EapHdr = { code: 2, id: rid, type: m.type, data: rd.resData, bytes: rd.resBytes };
     eapol(c, { dir: 'up', pkt: 'eap', eap: res, label: 'EAP-Response/' + rd.res, color: rd.enc ? C0.enc : C0.plain, enc: rd.enc, info: rd.resData, about: rd.resAbout, phaseName: 'Método' });
     lastId = rid;
     const ar = ++c.radId;
+    pedido = ar;
     radius(c, { toSrv: true, code: 1, id: ar, label: 'Access-Request (' + rd.res + ')', color: rd.enc ? C0.enc : C0.data, enc: rd.enc, attrs: [...nasAttrs(user, NODE.sup.mac), eapAttr('Response/' + m.typeName + ': ' + rd.res), stateAttr(i + 1), maAttr('ar' + i)], info: 'EAP-Message: Response/' + m.typeName, about: 'O autenticador repassa a resposta, com o State recebido, para o servidor reconhecer a conversa.', phaseName: 'Método' });
     if (i === m.decisive && o.reject) {
       tr.phase('3. Decisão do servidor', 'decisao');
       tr.st(tr.t, 'phase', 'decisão: recusa', 'bad');
       tr.ev(tr.t, 'srv', (o.reason || 'A credencial não confere') + '. Decide Access-Reject', 'bad');
-      const rej = ++c.radId;
-      radius(c, { toSrv: false, code: 3, id: rej, label: 'Access-Reject', color: C0.bad, attrs: [eapAttr('Failure'), maAttr('rej')], info: 'EAP-Message: Failure', about: 'O servidor nega o acesso. No Access-Reject não se permitem outros atributos além do Proxy-State e das mensagens EAP (RFC 5080, seção 2.6.1).', phaseName: 'Decisão' });
+      const rej = pedido;
+      radius(c, { toSrv: false, code: 3, id: rej, label: 'Access-Reject', color: C0.bad, attrs: [eapAttr('Failure'), maAttr('rej')], info: 'EAP-Message: Failure', about: 'O servidor nega o acesso. O Access-Reject só pode levar, além das mensagens EAP, os atributos Proxy-State, Reply-Message e Error-Cause (RFC 5080, seção 2.6.1).', phaseName: 'Decisão' });
       eapol(c, { dir: 'down', pkt: 'eap', eap: { code: 4, id: lastId }, label: 'EAP-Failure', color: C0.bad, info: 'acesso negado', about: 'O autenticador informa o fracasso ao suplicante. O EAP-Failure não é confirmado (RFC 3748, seção 4.2).', phaseName: 'Decisão' });
       tr.phase('4. Porta', 'porta');
       setPort(c, 'unauth', 'o servidor recusou: a porta permanece fechada para dados');
@@ -243,9 +246,9 @@ function authenticate(c: Ctx, o: AuthOpts): boolean {
   tr.phase('3. Decisão do servidor', 'decisao');
   tr.st(tr.t, 'phase', 'decisão: aceita', 'est');
   tr.ev(tr.t, 'srv', SRV_OK[m.key], 'ok');
-  const acc = ++c.radId;
-  const accAttrs: [string, string, string?][] = [eapAttr('Success'), ...(o.reauth || R.sessionTimeout ? [['Session-Timeout (27)', String(SESSION_TIMEOUT), 'a sessão vale por esta duração, em segundos (RFC 2865, seção 5.27)'] as [string, string, string]] : []), maAttr('acc')];
-  radius(c, { toSrv: false, code: 2, id: acc, label: 'Access-Accept', color: GREEN, attrs: accAttrs, info: 'EAP-Message: Success', about: 'O servidor aceita o suplicante.' + (R.sessionTimeout || o.reauth ? ' O Session-Timeout diz por quanto tempo a sessão vale antes de uma nova autenticação.' : ''), phaseName: 'Decisão' });
+  const acc = pedido;
+  const accAttrs: [string, string, string?][] = [eapAttr('Success'), ...(o.reauth || R.sessionTimeout ? [['Session-Timeout (27)', String(SESSION_TIMEOUT), 'a sessão vale por esta duração, em segundos (RFC 2865, seção 5.27)'] as [string, string, string], ['Termination-Action (29)', 'RADIUS-Request (1)', 'ao fim do Session-Timeout o autenticador reautentica em vez de encerrar a sessão (RFC 2865, seção 5.29; RFC 3580, seção 3.17)'] as [string, string, string]] : []), maAttr('acc')];
+  radius(c, { toSrv: false, code: 2, id: acc, label: 'Access-Accept', color: GREEN, attrs: accAttrs, info: 'EAP-Message: Success', about: 'O servidor aceita o suplicante.' + (R.sessionTimeout || o.reauth ? ' O Session-Timeout, acompanhado do Termination-Action RADIUS-Request, diz por quanto tempo a sessão vale antes de uma nova autenticação (RFC 3580, seção 3.17). Sem o Termination-Action, o fim do prazo encerraria a sessão.' : ''), phaseName: 'Decisão' });
   eapol(c, { dir: 'down', pkt: 'eap', eap: { code: 3, id: lastId }, label: 'EAP-Success', color: GREEN, info: 'acesso concedido', about: 'O autenticador informa o sucesso ao suplicante. É o Access-Accept que faz o autenticador abrir a porta.', phaseName: 'Decisão' });
   tr.phase('4. Porta', 'porta');
   setPort(c, 'auth', o.reauth ? 'reautenticação concluída: a sessão foi renovada' : 'Access-Accept recebido: a porta passa a encaminhar todo o tráfego');
