@@ -129,7 +129,58 @@ flowchart LR
 
 As duas técnicas evitam o laço entre **dois** vizinhos, mas não os laços de **três ou mais** roteadores. A topologia do simulador contém esses laços, e por isso a contagem ao infinito ainda acontece, mesmo com a técnica ligada. As **atualizações disparadas** (seção 3.4.4) aceleram a notícia de uma mudança, mas também não eliminam o problema.
 
-### 2.7 O que cada modo e aba do simulador mostram
+### 2.7 As curvas: como a métrica evolui rodada a rodada
+
+**Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: R2 (1 salto) | R3 (2 saltos) | R6 (3 saltos)
+xychart-beta
+  title "Convergência: a métrica de R1 a cada rodada"
+  x-axis "Rodada de Response" ["início", "1", "2", "3", "4"]
+  y-axis "Métrica de R1 (16 = sem rota)" 0 --> 17
+  line [16, 1, 1, 1, 1]
+  line [16, 16, 2, 2, 2]
+  line [16, 16, 16, 3, 3]
+```
+
+*Esquema 5 (aprendizado das rotas).* A informação anda **um salto por rodada**: R1 aprende R2 na rodada 1, R3 na 2 e R6 na 3. Antes disso, a métrica vale 16 (sem rota). Com a rede de seis roteadores, a convergência leva três rodadas com mudança; em uma rede real, cada rodada pode levar até 30 s.
+
+**Legenda:** 🟥 R1 · 🟦 R2 · 🟩 R4 · 🟧 16 (infinito)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f, #f4900c"}}}}%%
+%% legenda: R1 | R2 | R4 | 16 (infinito)
+xychart-beta
+  title "Queda do enlace R2 / R3: a rede se recupera em poucas rodadas"
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4"]
+  y-axis "Métrica para R3 (saltos)" 0 --> 17
+  line [2, 2, 16, 16, 4, 4]
+  line [1, 16, 16, 3, 3, 3]
+  line [3, 3, 3, 3, 3, 3]
+  line [16, 16, 16, 16, 16, 16]
+```
+
+*Esquema 6 (queda de um enlace).* O enlace R2 / R3 cai. R2 perde na hora a rota para R3 (de 1 para 16) e R1, que chegava a R3 por R2, a perde na rodada 1. R2 volta a alcançar R3 por R5 e R6 (3 saltos) na rodada 2 e R1, por R4, na rodada 3 (4 saltos). R4, que já usava outro caminho, não muda. O RIP se recupera rápido porque existe um caminho alternativo.
+
+**Legenda:** 🟥 Sem split horizon · 🟦 Com split horizon e poison reverse · 🟧 16 (infinito)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #f4900c"}}}}%%
+%% legenda: Sem split horizon | Com split horizon e poison reverse | 16 (infinito)
+xychart-beta
+  title "Contagem ao infinito: R6 isolado"
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
+  y-axis "Menor métrica para R6 (saltos)" 0 --> 17
+  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Esquema 7 (contagem ao infinito).* R6 fica isolado e a menor métrica para ele, na rede, **sobe uma unidade por rodada**, de 2 logo após a falha até 16 na rodada 13: os roteadores seguem anunciando um caminho que já não existe. As duas curvas, **sem split horizon** e **com split horizon e poison reverse**, são iguais e se sobrepõem na figura: nesta topologia, de laços com três ou mais roteadores, a técnica não reduz a contagem.
+
+### 2.8 O que cada modo e aba do simulador mostram
 
 - **Topologia:** seis roteadores e os dois PCs. O RIP conta só **saltos**, então o caminho escolhido pode não ser o de maior velocidade.
 - **Diagrama de sequência e legenda de cores:** *Response* periódica, *Response* disparada por mudança e pacote de dados.
@@ -139,7 +190,7 @@ As duas técnicas evitam o laço entre **dois** vizinhos, mas não os laços de 
 
 Para ver a convergência, use "Convergência do RIPv2" e, para a diferença para o OSPF, "O RIP ignora o custo". Para as falhas, use "Queda do enlace R2 / R3", "Contagem ao infinito (sem split horizon)" e "Isolamento com split horizon".
 
-### 2.8 Limites do modelo e do diagrama
+### 2.9 Limites do modelo e do diagrama
 
 - As rodadas são **síncronas**: todos enviam e recebem ao mesmo tempo. Em uma rede real, cada roteador tem seu relógio de 30 s.
 - Não há timeout de 180 s nem coleta de lixo de 120 s. A falha é detectada na hora, e as rotas inalcançáveis ficam na tabela com métrica 16.
@@ -357,6 +408,22 @@ O caminho do PC-A ao PC-B é R1, R2, R3, R6, com 3 saltos.
 - Na aba Tabela de roteamento: o roteador escolhido aprende os vizinhos na rodada 1, os vizinhos dos vizinhos na 2, e assim por diante.
 - A última rodada não muda nada: é assim que se sabe que convergiu.
 
+**Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: R2 (1 salto) | R3 (2 saltos) | R6 (3 saltos)
+xychart-beta
+  title "Rotas de R1 aprendidas a cada rodada: Convergência do RIPv2"
+  x-axis "Rodada de Response" ["início", "1", "2", "3", "4"]
+  y-axis "Métrica de R1 (16 = sem rota)" 0 --> 17
+  line [16, 1, 1, 1, 1]
+  line [16, 16, 2, 2, 2]
+  line [16, 16, 16, 3, 3]
+```
+
+*Gráfico do cenário (métrica de R1).* A métrica que R1 guarda para R2, R3 e R6 a cada rodada de Response. Vale 16 enquanto R1 ainda não tem rota para o destino. Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -460,6 +527,22 @@ O custo do enlace **R2 / R3** sobe para 50, mas o RIP conta só saltos: o caminh
 
 - O caminho continua R1, R2, R3, R6, igual ao do cenário anterior.
 - No resultado: o custo do caminho do RIP (70) contra o do caminho de menor custo (45).
+
+**Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
+%% legenda: R2 (1 salto) | R3 (2 saltos) | R6 (3 saltos)
+xychart-beta
+  title "Rotas de R1 aprendidas a cada rodada: O RIP ignora o custo"
+  x-axis "Rodada de Response" ["início", "1", "2", "3", "4"]
+  y-axis "Métrica de R1 (16 = sem rota)" 0 --> 17
+  line [16, 1, 1, 1, 1]
+  line [16, 16, 2, 2, 2]
+  line [16, 16, 16, 3, 3]
+```
+
+*Gráfico do cenário (métrica de R1).* A métrica que R1 guarda para R2, R3 e R6 a cada rodada de Response. Vale 16 enquanto R1 ainda não tem rota para o destino. Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -572,6 +655,23 @@ A rede já convergiu. O enlace **L3 (R2 / R3)** cai: R2 e R3 marcam com métrica
 - Na aba Tabela de roteamento: rotas em 16 logo após a falha e a rota nova nas rodadas seguintes.
 - O pacote segue por outro caminho, também de 3 saltos.
 
+**Legenda:** 🟥 R1 · 🟦 R2 · 🟩 R4 · 🟧 16 (infinito)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f, #f4900c"}}}}%%
+%% legenda: R1 | R2 | R4 | 16 (infinito)
+xychart-beta
+  title "Reconvergência após a falha: Queda do enlace R2 / R3"
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4"]
+  y-axis "Métrica para R3 (saltos)" 0 --> 17
+  line [2, 2, 16, 16, 4, 4]
+  line [1, 16, 16, 3, 3, 3]
+  line [3, 3, 3, 3, 3, 3]
+  line [16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (métrica para R3).* A métrica de R1, R2 e R4 para R3 antes da falha, logo após ela (16 nas rotas que usavam o enlace) e em cada rodada seguinte. Calculado pelo motor do simulador.
+
 ```mermaid
 sequenceDiagram
   autonumber
@@ -671,6 +771,21 @@ Caem **L5 (R3 / R6)** e **L7 (R5 / R6)** e o R6, com o PC-B, fica isolado. Sem s
 - Na aba Tabela de roteamento de R5 ou R2: a métrica de R6 sobe de rodada em rodada.
 - Durante a contagem, os roteadores ainda encaminhariam pacotes para R6 por rotas que já não existem; o pacote de teste só é enviado depois que tudo estabiliza.
 - O número de rodadas até estabilizar, no resumo do Experimento.
+
+**Legenda:** 🟥 Sem split horizon · 🟧 16 (infinito)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: Sem split horizon | 16 (infinito)
+xychart-beta
+  title "Contagem ao infinito: Contagem ao infinito (sem split horizon)"
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
+  y-axis "Menor métrica para R6 (saltos)" 0 --> 17
+  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (menor métrica para R6).* A menor métrica para R6 entre R1, R2, R3, R4 e R5 a cada rodada, depois que R6 ficou isolado. Sobe de 1 em 1 até 16, quando a rede enfim reconhece que o destino sumiu. Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram
@@ -879,6 +994,21 @@ A mesma falha, agora com split horizon e poison reverse. Ele evita o laço entre
 
 - Compare o número de rodadas com o do cenário sem split horizon: é o mesmo.
 - O poison reverse aparece nos campos do Response: rotas aprendidas de um vizinho voltam a ele com 16.
+
+**Legenda:** 🟥 Com split horizon · 🟧 16 (infinito)
+
+```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #f4900c"}}}}%%
+%% legenda: Com split horizon | 16 (infinito)
+xychart-beta
+  title "Contagem ao infinito: Isolamento com split horizon"
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
+  y-axis "Menor métrica para R6 (saltos)" 0 --> 17
+  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+```
+
+*Gráfico do cenário (menor métrica para R6).* A menor métrica para R6 entre R1, R2, R3, R4 e R5 a cada rodada, depois que R6 ficou isolado. Sobe de 1 em 1 até 16, quando a rede enfim reconhece que o destino sumiu. Calculado pelo motor do simulador.
 
 ```mermaid
 sequenceDiagram

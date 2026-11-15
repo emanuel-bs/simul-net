@@ -1,5 +1,7 @@
 // Fundamentação do simulador RIP, em Markdown: aparece na documentação (docs/simuladores/rip.md e na wiki), antes de
 // "Como ler os diagramas". Explica o vetor de distância, a contagem ao infinito e o split horizon.
+import { CURVA_APRENDIZADO, CURVA_INFINITO, CURVA_RECUPERACAO } from './charts';
+
 export const fundamentacao: string = `
 ### O problema que o RIP resolve
 
@@ -112,6 +114,20 @@ flowchart LR
 *Esquema 4 (as três variantes).* O **split horizon** não anuncia a um vizinho as rotas aprendidas dele. O **poison reverse** as anuncia com métrica 16, o que desfaz uma rota errada mais depressa (RFC 2453, seção 3.4.3).
 
 As duas técnicas evitam o laço entre **dois** vizinhos, mas não os laços de **três ou mais** roteadores. A topologia do simulador contém esses laços, e por isso a contagem ao infinito ainda acontece, mesmo com a técnica ligada. As **atualizações disparadas** (seção 3.4.4) aceleram a notícia de uma mudança, mas também não eliminam o problema.
+
+### As curvas: como a métrica evolui rodada a rodada
+
+${CURVA_APRENDIZADO}
+
+*Esquema 5 (aprendizado das rotas).* A informação anda **um salto por rodada**: R1 aprende R2 na rodada 1, R3 na 2 e R6 na 3. Antes disso, a métrica vale 16 (sem rota). Com a rede de seis roteadores, a convergência leva três rodadas com mudança; em uma rede real, cada rodada pode levar até 30 s.
+
+${CURVA_RECUPERACAO}
+
+*Esquema 6 (queda de um enlace).* O enlace R2 / R3 cai. R2 perde na hora a rota para R3 (de 1 para 16) e R1, que chegava a R3 por R2, a perde na rodada 1. R2 volta a alcançar R3 por R5 e R6 (3 saltos) na rodada 2 e R1, por R4, na rodada 3 (4 saltos). R4, que já usava outro caminho, não muda. O RIP se recupera rápido porque existe um caminho alternativo.
+
+${CURVA_INFINITO}
+
+*Esquema 7 (contagem ao infinito).* R6 fica isolado e a menor métrica para ele, na rede, **sobe uma unidade por rodada**, de 2 logo após a falha até 16 na rodada 13: os roteadores seguem anunciando um caminho que já não existe. As duas curvas, **sem split horizon** e **com split horizon e poison reverse**, são iguais e se sobrepõem na figura: nesta topologia, de laços com três ou mais roteadores, a técnica não reduz a contagem.
 
 ### O que cada modo e aba do simulador mostram
 

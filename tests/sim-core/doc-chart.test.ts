@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { COR, degrau, grafico, teto } from '../../src/sim-core/doc-chart';
 import { tcpProtocol } from '../../src/sims/tcp/protocol';
+import { ripProtocol } from '../../src/sims/rip/protocol';
 import { httpProtocol } from '../../src/sims/http-versoes/protocol';
 
 const linhasDe = (md: string): number[][] => [...md.matchAll(/^ {2}line \[([^\]]*)\]$/gm)].map((m) => m[1].split(', ').map(Number));
@@ -60,5 +61,31 @@ describe('gráficos da documentação: TCP e HTTP', () => {
     expect(i).toBeGreaterThan(0);
     expect(h2[i]).toBeLessThan(7);
     expect(h1[h1.length - 1]).toBe(8);
+  });
+});
+
+describe('gráficos da documentação: RIP', () => {
+  const rip = (id: string) => ripProtocol.scenarios.find((s) => s.id === id)!;
+
+  it('convergência: R1 aprende um salto por rodada, de 16 (sem rota) até a métrica final', () => {
+    const [r2, r3, r6] = linhasDe(ripProtocol.docChart!(rip('rip')));
+    expect(r2.slice(0, 3)).toEqual([16, 1, 1]);
+    expect(r3.slice(0, 4)).toEqual([16, 16, 2, 2]);
+    expect(r6.slice(0, 5)).toEqual([16, 16, 16, 3, 3]);
+  });
+
+  it('queda de enlace: R2 perde a rota para R3 na hora e a recupera por outro caminho', () => {
+    const [, r2, , inf] = linhasDe(ripProtocol.docChart!(rip('ripfail')));
+    expect(r2[0]).toBe(1);
+    expect(r2[1]).toBe(16);
+    expect(r2[r2.length - 1]).toBe(3);
+    expect(new Set(inf)).toEqual(new Set([16]));
+  });
+
+  it('contagem ao infinito: a menor métrica para R6 sobe uma unidade por rodada até 16, com ou sem split horizon', () => {
+    for (const id of ['infinity', 'ripiso']) {
+      const [menor] = linhasDe(ripProtocol.docChart!(rip(id)));
+      expect(menor.slice(0, 16)).toEqual(Array.from({ length: 16 }, (_, i) => i + 1));
+    }
   });
 });

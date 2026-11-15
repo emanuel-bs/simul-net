@@ -1,5 +1,6 @@
 import type { ProtocolDef } from '../../sim-core/ui';
 import { controls } from './content/controls';
+import { metricaDoCenario } from './content/charts';
 import { fundamentacao } from './content/fundamentacao';
 import { explain, setup } from './content/explain';
 import { reference } from './content/reference';
@@ -35,6 +36,7 @@ export const ripProtocol: ProtocolDef = {
   explain: (tr) => explain(tr),
   reference,
   fundamentacao,
+  docChart: metricaDoCenario,
   setup,
 };
 
