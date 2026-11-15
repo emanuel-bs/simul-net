@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
 import { expect, test, type Page } from '@playwright/test';
-import { SIMS } from '../src/sims/registry';
+import { CATEGORIES, SIMS } from '../src/sims/registry';
 
 // Contraste de cores (WCAG AA) medido no Chrome real, que o axe não consegue medir no jsdom.
 // Hub: páginas principais nos temas claro e escuro. Simuladores nativos: cada modo, uma amostra dos cenários, todas as abas.
@@ -20,7 +20,7 @@ for (const theme of ['dark', 'light']) {
   test(`o hub tem contraste suficiente no tema ${theme}`, async ({ page }) => {
     await page.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
     await page.addInitScript((t) => localStorage.setItem('simulnet-theme', t), theme);
-    for (const path of ['#/', '#/categoria/camada-de-rede', '#/categoria/transporte', '#/categoria/protocolos-seguros']) {
+    for (const path of ['#/', ...CATEGORIES.map((c) => `#/categoria/${c.id}`)]) {
       await page.goto(path);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       expect(await contrast(page), `contraste em ${path} (${theme})`).toEqual([]);

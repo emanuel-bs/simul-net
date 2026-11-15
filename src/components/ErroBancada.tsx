@@ -16,17 +16,17 @@ interface Estado {
  * funcionando, e o aluno recebe uma mensagem e a opção de tentar de novo.
  */
 export class ErroBancada extends Component<Props, Estado> {
-  state: Estado = { erro: null };
+  override state: Estado = { erro: null };
 
   static getDerivedStateFromError(erro: Error): Estado {
     return { erro };
   }
 
-  componentDidCatch(erro: Error, info: ErrorInfo) {
+  override componentDidCatch(erro: Error, info: ErrorInfo) {
     console.error(`Falha no simulador ${this.props.titulo}:`, erro, info.componentStack);
   }
 
-  render() {
+  override render() {
     if (!this.state.erro) return this.props.children;
     return (
       <div role="alert" className="mx-auto max-w-3xl space-y-3 p-6">
