@@ -216,7 +216,7 @@ function run(P: EndParams): Trace {
     const sol = solicited6(target);
     tr.phase('Neighbor Discovery', 'nd');
     m6('a', k, { label: 'NS: quem tem ' + target + '?', src: srcAddr, dst: sol, hl: 255, ty: 135, plen: 32, color: C0.plain, phase: 'ND', dmac: mcastMac6(sol), info: 'Neighbor Solicitation', about: 'O host pergunta, no endereço de nó solicitado, qual é o MAC de ' + target + '. Só os nós com os mesmos 24 bits finais recebem a pergunta.', extra: [['Endereço alvo', target, ''], ['Opção 1', 'endereço de enlace de origem ' + MAC.a, '']] });
-    m6(k, 'a', { label: 'NA: ' + target + ' está em ' + mac, src: target, dst: srcAddr, hl: 255, ty: 136, plen: 32, color: C0.data, phase: 'ND', dmac: MAC.a, info: 'Neighbor Advertisement', about: 'O alvo responde por unicast com o próprio MAC.', extra: [['Flags', 'R, S, O', ''], ['Opção 2', 'endereço de enlace do alvo ' + mac, '']] });
+    m6(k, 'a', { label: 'NA: ' + target + ' está em ' + mac, src: target, dst: srcAddr, hl: 255, ty: 136, plen: 32, color: C0.data, phase: 'ND', dmac: MAC.a, info: 'Neighbor Advertisement', about: 'O alvo responde por unicast com o próprio MAC.', extra: [['Flags', k === 'r' ? 'R, S, O' : 'S, O', k === 'r' ? 'R: quem responde é um roteador; S: resposta a uma solicitação; O: sobrescreve a entrada antiga' : 'S: resposta a uma solicitação; O: sobrescreve a entrada antiga (R fica desligado: quem responde é um host)'], ['Opção 2', 'endereço de enlace do alvo ' + mac, '']] });
     R.cache.push(target);
     tr.phase('Ping', 'ping');
   };

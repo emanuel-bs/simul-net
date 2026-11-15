@@ -172,7 +172,7 @@ export function buildFwd(P: FwdParams, _sub: string): Trace {
       const toMac = MAC[to] || MAC.r1;
       tr.add(col(to), col(from), {
         label: 'NA: ' + target + ' está em ' + toMac, proto: 'ICMPv6', color: C0.data, len: 72, info: 'Neighbor Advertisement', about: 'O alvo responde por unicast, com o próprio MAC, e o nó que perguntou guarda a entrada na tabela de vizinhos.', phaseName: 'Neighbor Discovery',
-        fields: [{ sec: 'IPv6 (RFC 8200)' }, ['Hop Limit', '255', ''], ['Origem', target, ''], ['Destino', srcAddr, ''], { sec: 'ICMPv6 (RFC 4861)' }, ['Tipo', '136 (Neighbor Advertisement)', ''], ['Flags', 'R, S, O', 'S: resposta a uma solicitação; O: sobrescreve a entrada antiga'], ['Opção 2', 'endereço de enlace do alvo ' + toMac, '']],
+        fields: [{ sec: 'IPv6 (RFC 8200)' }, ['Hop Limit', '255', ''], ['Origem', target, ''], ['Destino', srcAddr, ''], { sec: 'ICMPv6 (RFC 4861)' }, ['Tipo', '136 (Neighbor Advertisement)', ''], ['Flags', /^r/.test(to) ? 'R, S, O' : 'S, O', (/^r/.test(to) ? 'R: quem responde é um roteador; ' : 'R desligado: quem responde é um host; ') + 'S: resposta a uma solicitação; O: sobrescreve a entrada antiga'], ['Opção 2', 'endereço de enlace do alvo ' + toMac, '']],
         route: [to, from],
       });
     }

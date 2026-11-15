@@ -104,8 +104,11 @@ export const TIPOS6: Tipo6[] = [
 
 const GLOBAL6: Tipo6 = { net: '2000::', len: 3, nome: 'Unicast global', rfc: 'RFC 4291, seção 2.4', ambito: 'a internet', publico: true, nota: 'endereço roteável na internet (hoje alocado pelo IANA dentro de 2000::/3)' };
 
+/** Espaço fora de 2000::/3 e das faixas especiais: ainda não delegado pela IANA (RFC 4291, seção 2.4), logo não é unicast global. */
+const NAO_ATRIBUIDO6: Tipo6 = { net: '::', len: 0, nome: 'Não atribuído (reservado)', rfc: 'RFC 4291, seção 2.4', ambito: 'nenhum', publico: false, nota: 'fora de 2000::/3 e das faixas especiais: espaço ainda não delegado, que não deve ser usado como unicast global' };
+
 export function classify6(ip: string): Tipo6 {
-  let best: Tipo6 = GLOBAL6;
+  let best: Tipo6 = inNet6(ip, GLOBAL6.net, GLOBAL6.len) ? GLOBAL6 : NAO_ATRIBUIDO6;
   let bl = -1;
   TIPOS6.forEach((s) => {
     if (inNet6(ip, s.net, s.len) && s.len > bl) {
@@ -116,7 +119,7 @@ export function classify6(ip: string): Tipo6 {
   return best;
 }
 
-/** Escopo de um endereço multicast (RFC 4291, seção 2.7): o último dígito hexadecimal do segundo grupo. */
+/** Escopo de um endereço multicast (RFC 4291, seção 2.7): o último dígito hexadecimal do primeiro grupo (os 4 bits baixos do segundo octeto, depois do ff e dos flags). */
 export function scope6(ip: string): string {
   const s = groups6(parse6(ip))[0] & 0xf;
   return ({ 1: 'interface', 2: 'enlace', 4: 'administrativo', 5: 'local', 8: 'organização', 14: 'global' } as Record<number, string>)[s] || 'reservado';
