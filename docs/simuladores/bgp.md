@@ -5,7 +5,7 @@ BGP-4 entre seis sistemas autônomos: sessões, OPEN, UPDATE e KEEPALIVE, relaç
 - **Categoria:** Roteamento e serviços de rede
 - **Motor:** nativo (TypeScript puro, apresentado pela bancada genérica)
 - **Código-fonte:** `src/sims/bgp/`
-- **RFCs e padrões:** [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271) (BGP-4), [RFC 6793](https://www.rfc-editor.org/rfc/rfc6793) (ASN de 4 bytes), [RFC 5398](https://www.rfc-editor.org/rfc/rfc5398) (ASN de documentação), [RFC 6811](https://www.rfc-editor.org/rfc/rfc6811) (Validação de origem (ROV)), [RFC 7908](https://www.rfc-editor.org/rfc/rfc7908) (Vazamento de rota), [RFC 9319](https://www.rfc-editor.org/rfc/rfc9319) (maxLength dos ROAs), [RFC 9582](https://www.rfc-editor.org/rfc/rfc9582) (ROA), [RFC 8212](https://www.rfc-editor.org/rfc/rfc8212) (eBGP sem política)
+- **RFCs e padrões:** [RFC 4271](https://www.rfc-editor.org/rfc/rfc4271) (BGP-4), [RFC 6793](https://www.rfc-editor.org/rfc/rfc6793) (ASN de 4 bytes), [RFC 5398](https://www.rfc-editor.org/rfc/rfc5398) (ASN de documentação), [RFC 6996](https://www.rfc-editor.org/rfc/rfc6996) (ASN de uso privado), [RFC 6811](https://www.rfc-editor.org/rfc/rfc6811) (Validação de origem (ROV)), [RFC 7908](https://www.rfc-editor.org/rfc/rfc7908) (Vazamento de rota), [RFC 9319](https://www.rfc-editor.org/rfc/rfc9319) (maxLength dos ROAs), [RFC 9582](https://www.rfc-editor.org/rfc/rfc9582) (ROA), [RFC 8212](https://www.rfc-editor.org/rfc/rfc8212) (eBGP sem política)
 - **Tópicos:** Sessões e mensagens; Seleção de caminho; Sequestro, vazamento e flapping; Defesas (RPKI/ROV, filtros)
 
 ## 1. Modos

@@ -1010,7 +1010,7 @@ sequenceDiagram
 
 O roteador desvia o tráfego dos clientes internos para a porta 80 de qualquer servidor para o proxy interno, na porta 3128, sem avisar o cliente.
 
-**Conceito.** No **redirecionamento transparente**, uma regra de DNAT na interface interna desvia o tráfego de saída (por exemplo, TCP porta 80) para um proxy local. O cliente acredita falar com o servidor externo; o proxy recebe o pedido. Na volta, a origem é revertida para o servidor original.
+**Conceito.** No **redirecionamento transparente**, uma regra de DNAT na interface interna desvia o tráfego de saída (por exemplo, TCP porta 80) para um proxy local. O cliente acredita falar com o servidor externo; o proxy recebe o pedido. Como o proxy está na mesma rede do cliente, o roteador também troca a origem (SNAT) pelo seu próprio endereço: sem isso o proxy responderia direto ao cliente, que descartaria a resposta (o mesmo problema do hairpin só com DNAT). Na volta, o roteador reverte a origem para o servidor original e o destino para o cliente.
 
 **O que observar**
 
@@ -1039,11 +1039,11 @@ sequenceDiagram
 | Mensagem | Significado | Origem |
 | --- | --- | --- |
 | SYN para 198.51.100.10:80 | destino original | PC1 |
-| SYN para 192.168.1.50:3128 | destino redirecionado (DNAT) | R-NAT |
-| SYN+ACK do proxy | origem do proxy | proxy |
-| SYN+ACK revertido | origem volta a ser o servidor | R-NAT |
+| SYN para 192.168.1.50:3128 | destino redirecionado (DNAT) e origem trocada (SNAT) | R-NAT |
+| SYN+ACK do proxy | volta ao roteador, que foi a origem | proxy |
+| SYN+ACK revertido | origem volta a ser o servidor e destino volta a ser o cliente | R-NAT |
 
-**Por que importa.** É usado para filtragem e cache sem configurar cada cliente. O simulador mostra só o trecho redirecionado, não a conexão que o proxy abre ao servidor externo.
+**Por que importa.** É usado para filtragem e cache sem configurar cada cliente. O simulador mostra só o trecho redirecionado, não a conexão que o proxy abre ao servidor externo. O proxy transparente também pode ficar em outro segmento do roteador; nesse caso o SNAT não é necessário.
 
 ### 7.3 Modo: Limites, IPsec e CGNAT
 
