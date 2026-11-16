@@ -12,8 +12,8 @@ RIPv2 passo a passo: rodadas de Response (Bellman-Ford), métrica em saltos que 
 
 | Modo | Cenário inicial | Cenários |
 | --- | --- | --- |
-| Convergência | Convergência do RIPv2 | 7.1.1 e 7.1.2 |
-| Falha e contagem ao infinito | Queda do enlace R2 / R3 | 7.2.1 a 7.2.3 |
+| Convergência | Convergência do RIPv2 | 6.1.1 e 6.1.2 |
+| Falha e contagem ao infinito | Queda do enlace R2 / R3 | 6.2.1 a 6.2.3 |
 
 ## 2. Fundamentação
 
@@ -230,126 +230,26 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 **Tipo A (topologia)**
 
-- [Figura 4.1a](#41-convergência): topologia do modo "Convergência", variante a
-- [Figura 4.1b](#41-convergência): topologia do modo "Convergência", variante b
-- [Figura 4.2a](#42-falha-e-contagem-ao-infinito): topologia do modo "Falha e contagem ao infinito", variante a
-- [Figura 4.2b](#42-falha-e-contagem-ao-infinito): topologia do modo "Falha e contagem ao infinito", variante b
+- [Figura 6.1a](#61-modo-convergência): topologia do modo "Convergência", variante a
+- [Figura 6.1b](#612-o-rip-ignora-o-custo): topologia do modo "Convergência", variante b
+- [Figura 6.2a](#62-modo-falha-e-contagem-ao-infinito): topologia do modo "Falha e contagem ao infinito", variante a
+- [Figura 6.2b](#622-contagem-ao-infinito-sem-split-horizon): topologia do modo "Falha e contagem ao infinito", variante b
 
 **Tipo B (sequência)**
 
-- [Figura 7.1.1](#711-convergência-do-ripv2): sequência de "Convergência do RIPv2"
-- [Figura 7.1.2](#712-o-rip-ignora-o-custo): sequência de "O RIP ignora o custo"
-- [Figura 7.2.1](#721-queda-do-enlace-r2--r3): sequência de "Queda do enlace R2 / R3"
-- [Figura 7.2.2](#722-contagem-ao-infinito-sem-split-horizon): sequência de "Contagem ao infinito (sem split horizon)"
-- [Figura 7.2.3](#723-isolamento-com-split-horizon): sequência de "Isolamento com split horizon"
+- [Figura 6.1.1](#611-convergência-do-ripv2): sequência de "Convergência do RIPv2"
+- [Figura 6.1.2](#612-o-rip-ignora-o-custo): sequência de "O RIP ignora o custo"
+- [Figura 6.2.1](#621-queda-do-enlace-r2--r3): sequência de "Queda do enlace R2 / R3"
+- [Figura 6.2.2](#622-contagem-ao-infinito-sem-split-horizon): sequência de "Contagem ao infinito (sem split horizon)"
+- [Figura 6.2.3](#623-isolamento-com-split-horizon): sequência de "Isolamento com split horizon"
 
-## 4. Topologia
-
-Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
-
-### 4.1 Convergência
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>10.0.0.1")
-  n_R2("R2<br/>10.0.0.2")
-  n_R3("R3<br/>10.0.0.3")
-  n_R4("R4<br/>10.0.0.4")
-  n_R5("R5<br/>10.0.0.5")
-  n_R6("R6<br/>10.0.0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, 1 salto" --- n_R2
-  n_R1 -- "L2, 1 salto" --- n_R4
-  n_R2 -- "L3, 1 salto" --- n_R3
-  n_R2 -- "L4, 1 salto" --- n_R5
-  n_R3 -- "L5, 1 salto" --- n_R6
-  n_R4 -- "L6, 1 salto" --- n_R5
-  n_R5 -- "L7, 1 salto" --- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.1a (Tipo A, topologia).* Elementos do modo "Convergência": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (7.1.1).
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>10.0.0.1")
-  n_R2("R2<br/>10.0.0.2")
-  n_R3("R3<br/>10.0.0.3")
-  n_R4("R4<br/>10.0.0.4")
-  n_R5("R5<br/>10.0.0.5")
-  n_R6("R6<br/>10.0.0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, 1 salto" --- n_R2
-  n_R1 -- "L2, 1 salto" --- n_R4
-  n_R2 -- "L3, 1 salto, custo 50 (ignorado)" --- n_R3
-  n_R2 -- "L4, 1 salto" --- n_R5
-  n_R3 -- "L5, 1 salto" --- n_R6
-  n_R4 -- "L6, 1 salto" --- n_R5
-  n_R5 -- "L7, 1 salto" --- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.1b (Tipo A, topologia).* Elementos do modo "Convergência": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (7.1.2).
-
-### 4.2 Falha e contagem ao infinito
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>10.0.0.1")
-  n_R2("R2<br/>10.0.0.2")
-  n_R3("R3<br/>10.0.0.3")
-  n_R4("R4<br/>10.0.0.4")
-  n_R5("R5<br/>10.0.0.5")
-  n_R6("R6<br/>10.0.0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, 1 salto" --- n_R2
-  n_R1 -- "L2, 1 salto" --- n_R4
-  n_R2 -. "L3, 1 salto (caído)" .- n_R3
-  n_R2 -- "L4, 1 salto" --- n_R5
-  n_R3 -- "L5, 1 salto" --- n_R6
-  n_R4 -- "L6, 1 salto" --- n_R5
-  n_R5 -- "L7, 1 salto" --- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.2a (Tipo A, topologia).* Elementos do modo "Falha e contagem ao infinito": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (7.2.1).
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>10.0.0.1")
-  n_R2("R2<br/>10.0.0.2")
-  n_R3("R3<br/>10.0.0.3")
-  n_R4("R4<br/>10.0.0.4")
-  n_R5("R5<br/>10.0.0.5")
-  n_R6("R6<br/>10.0.0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, 1 salto" --- n_R2
-  n_R1 -- "L2, 1 salto" --- n_R4
-  n_R2 -- "L3, 1 salto" --- n_R3
-  n_R2 -- "L4, 1 salto" --- n_R5
-  n_R3 -. "L5, 1 salto (caído)" .- n_R6
-  n_R4 -- "L6, 1 salto" --- n_R5
-  n_R5 -. "L7, 1 salto (caído)" .- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.2b (Tipo A, topologia).* Elementos do modo "Falha e contagem ao infinito": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (7.2.2 e 7.2.3).
-
-## 5. Abas da bancada
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, Tabela de roteamento, Vetores, Experimento, Referência e Log.
 
-## 6. Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### 6.1 Teste
+### 5.1 Teste
 
 - **Sentido do tráfego**. Valores: PC-A (192.168.1.10) → PC-B; PC-B (192.168.2.10) → PC-A. Padrão: PC-A (192.168.1.10) → PC-B. Modos: todos.
   - Quem envia o pacote de teste ao final da simulação.
@@ -359,14 +259,14 @@ Cenário, Captura, Mensagem, Tabela de roteamento, Vetores, Experimento, Referê
   - O RIP usa só o número de saltos. Aumente o custo e veja que o caminho escolhido não muda, mesmo ficando bem mais caro.
   - O resultado mostra, para comparação, o caminho que um protocolo de estado de enlace (OSPF) escolheria com esse custo.
 
-### 6.2 Protocolo
+### 5.2 Protocolo
 
 - **Split horizon com poison reverse**. Valores: caixa de seleção. Padrão: sim. Modos: todos.
   - Anuncia de volta, com métrica 16, a rota aprendida de um vizinho.
   - **Marcado:** o roteador diz ao vizinho de quem aprendeu a rota que ela é inalcançável (métrica 16), o que evita o laço entre dois vizinhos ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453), seção 3.4.3).
   - **Desmarcado:** o vetor é anunciado igual a todos os vizinhos, e a contagem ao infinito aparece mais cedo.
 
-### 6.3 Falha
+### 5.3 Falha
 
 - **Enlace que cai**. Valores: L1: R1 / R2; L2: R1 / R4; L3: R2 / R3; L4: R2 / R5; L5: R3 / R6; L6: R4 / R5; L7: R5 / R6. Padrão: L3: R2 / R3. Modos: Falha e contagem ao infinito.
   - O enlace que falha depois que a rede converge.
@@ -375,22 +275,45 @@ Cenário, Captura, Mensagem, Tabela de roteamento, Vetores, Experimento, Referê
   - Derruba um segundo enlace junto com o primeiro.
   - Para isolar o PC-B, derrube L5 (R3 / R6) e L7 (R5 / R6). Como a rede fica dividida, as rotas para R6 só terminam em 16 depois de várias rodadas: é a **contagem ao infinito**.
 
-### 6.4 Tabelas
+### 5.4 Tabelas
 
 - **Ver as tabelas do roteador**. Valores: R1; R2; R3; R4; R5; R6. Padrão: R1. Modos: todos.
   - Escolhe o roteador cujas tabelas aparecem nas abas Vetores e Tabela de roteamento.
   - A tabela acompanha o relógio: ela muda a cada rodada de Response.
   - Não muda o resultado da simulação.
 
-## 7. Cenários
+## 6. Cenários
 
-### 7.1 Modo: Convergência
+### 6.1 Modo: Convergência
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>10.0.0.1")
+  n_R2("R2<br/>10.0.0.2")
+  n_R3("R3<br/>10.0.0.3")
+  n_R4("R4<br/>10.0.0.4")
+  n_R5("R5<br/>10.0.0.5")
+  n_R6("R6<br/>10.0.0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, 1 salto" --- n_R2
+  n_R1 -- "L2, 1 salto" --- n_R4
+  n_R2 -- "L3, 1 salto" --- n_R3
+  n_R2 -- "L4, 1 salto" --- n_R5
+  n_R3 -- "L5, 1 salto" --- n_R6
+  n_R4 -- "L6, 1 salto" --- n_R5
+  n_R5 -- "L7, 1 salto" --- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.1a (Tipo A, topologia).* Elementos do modo "Convergência": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (6.1.1).
 
 > **Grupo:** Convergência
 
 Como os roteadores aprendem as rotas só com o que os vizinhos anunciam, e por que a métrica é o número de saltos.
 
-#### 7.1.1 Convergência do RIPv2
+#### 6.1.1 Convergência do RIPv2
 
 *Vetores de distância trocados em rodadas até as tabelas estabilizarem.*
 
@@ -503,7 +426,7 @@ sequenceDiagram
   n_R6 ->> n_PC_B: IP ttl 60
 ```
 
-*Figura 7.1.1 (Tipo B, sequência).* Mensagens do cenário "Convergência do RIPv2", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 61 mensagens, numeradas de 1 a 61 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Convergência", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Convergência do RIPv2", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 61 mensagens, numeradas de 1 a 61 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Convergência", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -513,7 +436,7 @@ sequenceDiagram
 
 **Por que importa.** A informação viaja um salto por rodada. Em redes reais, as rodadas são de 30 s, e é por isso que o RIP converge devagar.
 
-#### 7.1.2 O RIP ignora o custo
+#### 6.1.2 O RIP ignora o custo
 
 *O RIP escolhe por saltos, mesmo com um enlace caro no caminho.*
 
@@ -527,6 +450,29 @@ O custo do enlace **R2 / R3** sobe para 50, mas o RIP conta só saltos: o caminh
 
 - O caminho continua R1, R2, R3, R6, igual ao do cenário anterior.
 - No resultado: o custo do caminho do RIP (70) contra o do caminho de menor custo (45).
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>10.0.0.1")
+  n_R2("R2<br/>10.0.0.2")
+  n_R3("R3<br/>10.0.0.3")
+  n_R4("R4<br/>10.0.0.4")
+  n_R5("R5<br/>10.0.0.5")
+  n_R6("R6<br/>10.0.0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, 1 salto" --- n_R2
+  n_R1 -- "L2, 1 salto" --- n_R4
+  n_R2 -- "L3, 1 salto, custo 50 (ignorado)" --- n_R3
+  n_R2 -- "L4, 1 salto" --- n_R5
+  n_R3 -- "L5, 1 salto" --- n_R6
+  n_R4 -- "L6, 1 salto" --- n_R5
+  n_R5 -- "L7, 1 salto" --- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.1b (Tipo A, topologia).* Elementos do modo "Convergência": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (6.1.2).
 
 **Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
 
@@ -623,7 +569,7 @@ sequenceDiagram
   n_R6 ->> n_PC_B: IP ttl 60
 ```
 
-*Figura 7.1.2 (Tipo B, sequência).* Mensagens do cenário "O RIP ignora o custo", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 61 mensagens, numeradas de 1 a 61 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Convergência", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "O RIP ignora o custo", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 61 mensagens, numeradas de 1 a 61 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Convergência", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -633,13 +579,36 @@ sequenceDiagram
 
 **Por que importa.** É a razão principal de o RIP ter dado lugar ao OSPF e ao EIGRP em redes com enlaces de velocidades diferentes.
 
-### 7.2 Modo: Falha e contagem ao infinito
+### 6.2 Modo: Falha e contagem ao infinito
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>10.0.0.1")
+  n_R2("R2<br/>10.0.0.2")
+  n_R3("R3<br/>10.0.0.3")
+  n_R4("R4<br/>10.0.0.4")
+  n_R5("R5<br/>10.0.0.5")
+  n_R6("R6<br/>10.0.0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, 1 salto" --- n_R2
+  n_R1 -- "L2, 1 salto" --- n_R4
+  n_R2 -. "L3, 1 salto (caído)" .- n_R3
+  n_R2 -- "L4, 1 salto" --- n_R5
+  n_R3 -- "L5, 1 salto" --- n_R6
+  n_R4 -- "L6, 1 salto" --- n_R5
+  n_R5 -- "L7, 1 salto" --- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.2a (Tipo A, topologia).* Elementos do modo "Falha e contagem ao infinito": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.2.1).
 
 > **Grupo:** Falhas
 
 Como o RIP reage a uma falha, e por que a convergência é lenta quando a rede se divide.
 
-#### 7.2.1 Queda do enlace R2 / R3
+#### 6.2.1 Queda do enlace R2 / R3
 
 *A atualização disparada propaga a falha sem esperar os 30 s.*
 
@@ -745,7 +714,7 @@ sequenceDiagram
   n_R6 ->> n_PC_B: IP ttl 60
 ```
 
-*Figura 7.2.1 (Tipo B, sequência).* Mensagens do cenário "Queda do enlace R2 / R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 54 mensagens, numeradas de 1 a 54 na ordem da comunicação (em 7 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Queda do enlace R2 / R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 54 mensagens, numeradas de 1 a 54 na ordem da comunicação (em 7 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -756,7 +725,7 @@ sequenceDiagram
 
 **Por que importa.** Sem o triggered update, a falha só seria percebida depois do timeout de 180 s (seção 3.8) e propagada de 30 em 30 segundos.
 
-#### 7.2.2 Contagem ao infinito (sem split horizon)
+#### 6.2.2 Contagem ao infinito (sem split horizon)
 
 *Sem split horizon, as métricas sobem até 16, uma por rodada.*
 
@@ -771,6 +740,29 @@ Caem **L5 (R3 / R6)** e **L7 (R5 / R6)** e o R6, com o PC-B, fica isolado. Sem s
 - Na aba Tabela de roteamento de R5 ou R2: a métrica de R6 sobe de rodada em rodada.
 - Durante a contagem, os roteadores ainda encaminhariam pacotes para R6 por rotas que já não existem; o pacote de teste só é enviado depois que tudo estabiliza.
 - O número de rodadas até estabilizar, no resumo do Experimento.
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>10.0.0.1")
+  n_R2("R2<br/>10.0.0.2")
+  n_R3("R3<br/>10.0.0.3")
+  n_R4("R4<br/>10.0.0.4")
+  n_R5("R5<br/>10.0.0.5")
+  n_R6("R6<br/>10.0.0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, 1 salto" --- n_R2
+  n_R1 -- "L2, 1 salto" --- n_R4
+  n_R2 -- "L3, 1 salto" --- n_R3
+  n_R2 -- "L4, 1 salto" --- n_R5
+  n_R3 -. "L5, 1 salto (caído)" .- n_R6
+  n_R4 -- "L6, 1 salto" --- n_R5
+  n_R5 -. "L7, 1 salto (caído)" .- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.2b (Tipo A, topologia).* Elementos do modo "Falha e contagem ao infinito": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.2.2 e 6.2.3).
 
 **Legenda:** 🟥 Sem split horizon · 🟧 16 (infinito)
 
@@ -970,7 +962,7 @@ sequenceDiagram
   n_PC_A ->> n_R1: IP ttl 64
 ```
 
-*Figura 7.2.2 (Tipo B, sequência).* Mensagens do cenário "Contagem ao infinito (sem split horizon)", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 153 mensagens, numeradas de 1 a 153 na ordem da comunicação (em 18 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Contagem ao infinito (sem split horizon)", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 153 mensagens, numeradas de 1 a 153 na ordem da comunicação (em 18 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -980,7 +972,7 @@ sequenceDiagram
 
 **Por que importa.** Durante a contagem a rede perde pacotes. Este é um dos motivos de o RIP ser indicado só para redes pequenas.
 
-#### 7.2.3 Isolamento com split horizon
+#### 6.2.3 Isolamento com split horizon
 
 *O split horizon não resolve laços de três ou mais roteadores.*
 
@@ -1193,7 +1185,7 @@ sequenceDiagram
   n_PC_A ->> n_R1: IP ttl 64
 ```
 
-*Figura 7.2.3 (Tipo B, sequência).* Mensagens do cenário "Isolamento com split horizon", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 153 mensagens, numeradas de 1 a 153 na ordem da comunicação (em 18 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Isolamento com split horizon", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 153 mensagens, numeradas de 1 a 153 na ordem da comunicação (em 18 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1203,13 +1195,13 @@ sequenceDiagram
 
 **Por que importa.** Mecanismos como o holddown e o route poisoning (com triggered update) reduzem o problema, mas a solução de fundo é usar outro tipo de protocolo (estado de enlace) em redes maiores.
 
-## 8. Referência
+## 7. Referência
 
-### 8.1 Roteamento por vetor de distância
+### 7.1 Roteamento por vetor de distância
 
 No **RIP** (Routing Information Protocol, versão 2, [RFC 2453](https://www.rfc-editor.org/rfc/rfc2453)), cada roteador conhece só o que os vizinhos anunciam: uma lista de destinos com a distância até cada um. Não há mapa da rede. O roteador soma a distância até o vizinho à que ele anuncia e adota o melhor resultado, pelo algoritmo de **Bellman-Ford** distribuído. O RIP é um IGP (Interior Gateway Protocol), e a versão 2 acrescenta máscara de sub-rede, próximo salto, etiqueta de rota e autenticação à versão 1.
 
-### 8.2 Como funciona
+### 7.2 Como funciona
 
 - **Métrica:** número de saltos. O valor 16 significa inalcançável, o que limita a rede a 15 saltos (seção 3.1).
 - **Mensagens:** Request e **Response**, em UDP porta 520. O RIPv2 envia por multicast 224.0.0.9 (seção 4.5). Cada mensagem leva até 25 rotas (seção 3.6).
@@ -1217,13 +1209,13 @@ No **RIP** (Routing Information Protocol, versão 2, [RFC 2453](https://www.rfc-
 - **Regra de atualização:** o roteador soma 1 à métrica recebida e adota a rota se ela for melhor que a atual ou se vier do próximo salto atual, o que permite aceitar também notícias ruins (seção 3.9.2).
 - **Atualização disparada:** depois de uma mudança, o roteador anuncia a alteração imediatamente (seção 3.4.4).
 
-### 8.3 Contagem ao infinito e split horizon
+### 7.3 Contagem ao infinito e split horizon
 
 Se um destino some, roteadores que ainda têm uma rota para ele via o vizinho podem aceitar do próprio vizinho um caminho que depende deles. Cada um anuncia ao outro uma rota mais longa, e a métrica sobe a cada rodada até 16: é a **contagem ao infinito** (seção 3.4.2), e é por ela que o infinito é tão pequeno. Enquanto isso o tráfego é perdido.
 
 O **split horizon** não anuncia a um vizinho as rotas aprendidas dele. Com **poison reverse**, as anuncia com métrica 16 (seção 3.4.3). Isso evita o laço entre dois vizinhos, mas não os laços com três ou mais roteadores, que a topologia deste simulador contém: por isso a contagem ao infinito ainda acontece mesmo com ele ligado. Outras técnicas, como o *holddown*, são práticas de fabricantes e não são simuladas.
 
-### 8.4 Comparação com o OSPF
+### 7.4 Comparação com o OSPF
 
 | Aspecto | RIPv2 | OSPF |
 | --- | --- | --- |
@@ -1235,21 +1227,21 @@ O **split horizon** não anuncia a um vizinho as rotas aprendidas dele. Com **po
 | Transporte | UDP 520, 224.0.0.9 | IP protocolo 89, 224.0.0.5 e 224.0.0.6 |
 | Escala | Pequena | Grande, com áreas |
 
-### 8.5 RIP e segurança
+### 7.5 RIP e segurança
 
 - **Injeção de rotas:** qualquer host na rede pode enviar Response e anunciar rotas falsas para desviar tráfego ou criar um buraco negro. A defesa é a **autenticação** do RIPv2: a senha simples (seção 4.1) é fraca; o MD5 e o HMAC-SHA da [RFC 4822](https://www.rfc-editor.org/rfc/rfc4822) são os indicados.
 - **Interfaces passivas:** desativar o envio e a recepção de atualizações nas interfaces voltadas para usuários impede que um host participe do roteamento.
 - **Filtragem de rotas:** aceitar só os prefixos esperados reduz o efeito de anúncios indevidos.
 - **Limite de saltos:** o infinito em 16 impede que uma rota falsa viaje indefinidamente.
 
-### 8.6 O que o simulador simplifica
+### 7.6 O que o simulador simplifica
 
 - As rodadas são síncronas: todos enviam e recebem ao mesmo tempo. Em uma rede real, cada roteador tem seu relógio de 30 s, e a atualização disparada tem atraso aleatório de 1 a 5 s (seção 3.10.1).
 - Não há timeout de 180 s nem garbage collection de 120 s: a falha é detectada de imediato, e as rotas inalcançáveis ficam na tabela com métrica 16.
 - Cada roteador anuncia um destino: o próprio Router ID, e não as redes dos PCs. Não há Request, etiqueta de rota, rotas externas nem autenticação.
 - Os atrasos dos enlaces são fixos e iguais. RIPng e IPv6 estão fora do escopo.
 
-### 8.7 Roteiro de exercícios
+### 7.7 Roteiro de exercícios
 
 1. No modo **Convergência**, escolha R1 e acompanhe a tabela rodada a rodada. Em que rodada R1 aprende R6? Por quê?
 2. Aumente o custo de **R2 / R3** para 50. O caminho muda? Compare o custo dele com o do caminho de menor custo.
@@ -1259,7 +1251,7 @@ O **split horizon** não anuncia a um vizinho as rotas aprendidas dele. Com **po
 6. **Segurança:** um host na rede do PC-A passa a enviar Response com rotas falsas. Que configurações impediriam a injeção?
 
 
-## 9. Glossário
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

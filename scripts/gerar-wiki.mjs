@@ -236,6 +236,7 @@ function topologyData(def) {
   return out;
 }
 
+/** Nos simuladores nativos a topologia de cada modo vem junto dos cenários: a figura padrão abre o modo e as variantes abrem o primeiro cenário que as usa. */
 function nativePage(sim, def) {
   const L = [];
   L.push(`# ${sim.title}\n`);
@@ -247,10 +248,10 @@ function nativePage(sim, def) {
   if (sim.topics?.length) L.push(`- **Tópicos:** ${sim.topics.join('; ')}`);
   L.push('');
 
-  // Numeração das seções (a de topologia só existe quando há desenho) e dos cenários, na ordem em que são exibidos.
+  // Numeração das seções e dos cenários, na ordem em que são exibidos. A topologia de cada modo fica dentro da seção de cenários.
   const topo = def.topology ? topologyData(def) : [];
   let n = 0;
-  const S = { modos: ++n, fund: def.fundamentacao ? ++n : 0, ler: ++n, topo: topo.length ? ++n : 0, abas: ++n, conf: ++n, cen: ++n, ref: ++n };
+  const S = { modos: ++n, fund: def.fundamentacao ? ++n : 0, ler: ++n, abas: ++n, conf: ++n, cen: ++n, ref: ++n };
   const order = def.subs.map((sub, i) => {
     const sc = def.scenarios.filter((s) => s.sub === sub.key);
     const list = [];
@@ -261,6 +262,17 @@ function nativePage(sim, def) {
   const numOf = Object.fromEntries(order.flatMap((o) => o.list.map((e) => [e.s.id, e])));
   const figs = [];
   const usa = { A: topo.length > 0, B: false };
+
+  /** Figura de topologia (Tipo A) da variante vi do modo t; num é o número do modo e heading, o título onde ela aparece. */
+  const figTopo = (t, vi, num, heading, prefix) => {
+    const v = t.kept[vi];
+    const fnum = t.kept.length > 1 ? num + 'abcdefghij'[vi] : num;
+    L.push('```mermaid\n' + v.mm + '\n```\n');
+    const todos = v.ids.length === t.total;
+    const rel = rangeText(prefix, v.ids.map((id) => numOf[id].j));
+    L.push(`*Figura ${fnum} (Tipo A, topologia).* Elementos do modo "${t.sub.label}": ${v.elems.join('; ')}.${v.dashed ? ' Linhas tracejadas: enlaces alternativos, forjados ou caídos.' : ''} Vale para ${todos ? 'todos os cenários do modo' : 'os cenários'} (${rel}).\n`);
+    figs.push({ tipo: 'A', num: fnum, heading, titulo: `topologia do modo "${t.sub.label}"${t.kept.length > 1 ? ', variante ' + 'abcdefghij'[vi] : ''}` });
+  };
 
   L.push(`## ${S.modos}. Modos\n`);
   L.push('| Modo | Cenário inicial | Cenários |', '| --- | --- | --- |');
@@ -278,25 +290,6 @@ function nativePage(sim, def) {
   }
 
   const lerAt = L.length;
-
-  if (topo.length) {
-    L.push(`## ${S.topo}. Topologia\n`);
-    L.push('Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.\n');
-    topo.forEach((t, k) => {
-      const num = `${S.topo}.${k + 1}`;
-      const heading = `${num} ${t.sub.label}`;
-      L.push(`### ${heading}\n`);
-      const cen = order.find((o) => o.sub.key === t.sub.key);
-      t.kept.forEach((v, vi) => {
-        const fnum = t.kept.length > 1 ? num + 'abcdefghij'[vi] : num;
-        L.push('```mermaid\n' + v.mm + '\n```\n');
-        const todos = v.ids.length === t.total;
-        const rel = rangeText(cen.prefix, v.ids.map((id) => numOf[id].j));
-        L.push(`*Figura ${fnum} (Tipo A, topologia).* Elementos do modo "${t.sub.label}": ${v.elems.join('; ')}.${v.dashed ? ' Linhas tracejadas: enlaces alternativos, forjados ou caídos.' : ''} Vale para ${todos ? 'todos os cenários do modo' : 'os cenários'} (${rel}).\n`);
-        figs.push({ tipo: 'A', num: fnum, heading, titulo: `topologia do modo "${t.sub.label}"${t.kept.length > 1 ? ', variante ' + 'abcdefghij'[vi] : ''}` });
-      });
-    });
-  }
 
   L.push(`## ${S.abas}. Abas da bancada\n`);
   const own = (def.tabs ?? []).map((t) => {
@@ -324,7 +317,10 @@ function nativePage(sim, def) {
   L.push(`## ${S.cen}. Cenários\n`);
   const base = Object.fromEntries(def.controls.map((c) => [c.id, c.def]));
   for (const o of order) {
-    L.push(`### ${S.cen}.${o.i + 1} Modo: ${o.sub.label}\n`);
+    const modoHeading = `${S.cen}.${o.i + 1} Modo: ${o.sub.label}`;
+    L.push(`### ${modoHeading}\n`);
+    const tm = topo.find((t) => t.sub.key === o.sub.key);
+    if (tm) figTopo(tm, 0, `${S.cen}.${o.i + 1}`, modoHeading, o.prefix);
     let curG;
     for (const { s, g, num } of o.list) {
       if (g !== curG) {
@@ -341,6 +337,7 @@ function nativePage(sim, def) {
       if (s.what) L.push(`${md(s.what)}\n`);
       if (d?.concept) L.push(`**Conceito.** ${md(d.concept)}\n`);
       if (d?.observe?.length) { L.push('**O que observar**\n'); for (const x of d.observe) L.push(`- ${md(x)}`); L.push(''); }
+      if (tm) tm.kept.forEach((v, vi) => { if (vi > 0 && o.list.find((e) => v.ids.includes(e.s.id)).s.id === s.id) figTopo(tm, vi, `${S.cen}.${o.i + 1}`, heading, o.prefix); });
       const dc = def.docChart ? def.docChart(s) : '';
       if (dc) L.push(dc, '');
       try {

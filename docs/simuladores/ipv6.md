@@ -12,8 +12,8 @@ Os fundamentos do IPv6: endereço de 128 bits e seus tipos, identificador de int
 
 | Modo | Cenário inicial | Cenários |
 | --- | --- | --- |
-| Endereçamento e SLAAC | SLAAC com EUI-64 e ping ao vizinho | 7.1.1 a 7.1.10 |
-| Encaminhamento | Dois candidatos: vence o /48 | 7.2.1 a 7.2.8 |
+| Endereçamento e SLAAC | SLAAC com EUI-64 e ping ao vizinho | 6.1.1 a 6.1.10 |
+| Encaminhamento | Dois candidatos: vence o /48 | 6.2.1 a 6.2.8 |
 
 ## 2. Fundamentação
 
@@ -241,36 +241,98 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 **Tipo A (topologia)**
 
-- [Figura 4.1a](#41-endereçamento-e-slaac): topologia do modo "Endereçamento e SLAAC", variante a
-- [Figura 4.1b](#41-endereçamento-e-slaac): topologia do modo "Endereçamento e SLAAC", variante b
-- [Figura 4.2](#42-encaminhamento): topologia do modo "Encaminhamento"
+- [Figura 6.1a](#61-modo-endereçamento-e-slaac): topologia do modo "Endereçamento e SLAAC", variante a
+- [Figura 6.1b](#613-identificador-temporário-privacidade): topologia do modo "Endereçamento e SLAAC", variante b
+- [Figura 6.2](#62-modo-encaminhamento): topologia do modo "Encaminhamento"
 
 **Tipo B (sequência)**
 
-- [Figura 7.1.1](#711-slaac-com-eui-64-e-ping-ao-vizinho): sequência de "SLAAC com EUI-64 e ping ao vizinho"
-- [Figura 7.1.2](#712-destino-remoto-pelo-roteador-padrão): sequência de "Destino remoto pelo roteador padrão"
-- [Figura 7.1.3](#713-identificador-temporário-privacidade): sequência de "Identificador temporário (privacidade)"
-- [Figura 7.1.4](#714-sem-router-advertisement): sequência de "Sem Router Advertisement"
-- [Figura 7.1.5](#715-flag-a-desligada): sequência de "Flag A desligada"
-- [Figura 7.1.6](#716-prefixo-80-anunciado): sequência de "Prefixo /80 anunciado"
-- [Figura 7.1.7](#717-endereço-duplicado-dad): sequência de "Endereço duplicado (DAD)"
-- [Figura 7.1.8](#718-enlace-local-sem-roteador): sequência de "Enlace local sem roteador"
-- [Figura 7.1.9](#719-multicast-de-todos-os-nós-ff021): sequência de "Multicast de todos os nós (ff02::1)"
-- [Figura 7.1.10](#7110-endereço-local-único-ula): sequência de "Endereço local único (ULA)"
-- [Figura 7.2.1](#721-dois-candidatos-vence-o-48): sequência de "Dois candidatos: vence o /48"
-- [Figura 7.2.2](#722-três-candidatos-vence-o-64): sequência de "Três candidatos: vence o /64"
-- [Figura 7.2.3](#723-rota-padrão-até-a-borda): sequência de "Rota padrão até a borda"
-- [Figura 7.2.4](#724-sem-rota-no-r3-icmpv6-10): sequência de "Sem rota no R3 (ICMPv6 1/0)"
-- [Figura 7.2.5](#725-sem-agregada-e-sem-padrão): sequência de "Sem agregada e sem padrão"
-- [Figura 7.2.6](#726-neighbor-discovery-sem-resposta-13): sequência de "Neighbor Discovery sem resposta (1/3)"
-- [Figura 7.2.7](#727-ida-entregue-volta-perdida): sequência de "Ida entregue, volta perdida"
-- [Figura 7.2.8](#728-hop-limit-expira-no-r3): sequência de "Hop Limit expira no R3"
+- [Figura 6.1.1](#611-slaac-com-eui-64-e-ping-ao-vizinho): sequência de "SLAAC com EUI-64 e ping ao vizinho"
+- [Figura 6.1.2](#612-destino-remoto-pelo-roteador-padrão): sequência de "Destino remoto pelo roteador padrão"
+- [Figura 6.1.3](#613-identificador-temporário-privacidade): sequência de "Identificador temporário (privacidade)"
+- [Figura 6.1.4](#614-sem-router-advertisement): sequência de "Sem Router Advertisement"
+- [Figura 6.1.5](#615-flag-a-desligada): sequência de "Flag A desligada"
+- [Figura 6.1.6](#616-prefixo-80-anunciado): sequência de "Prefixo /80 anunciado"
+- [Figura 6.1.7](#617-endereço-duplicado-dad): sequência de "Endereço duplicado (DAD)"
+- [Figura 6.1.8](#618-enlace-local-sem-roteador): sequência de "Enlace local sem roteador"
+- [Figura 6.1.9](#619-multicast-de-todos-os-nós-ff021): sequência de "Multicast de todos os nós (ff02::1)"
+- [Figura 6.1.10](#6110-endereço-local-único-ula): sequência de "Endereço local único (ULA)"
+- [Figura 6.2.1](#621-dois-candidatos-vence-o-48): sequência de "Dois candidatos: vence o /48"
+- [Figura 6.2.2](#622-três-candidatos-vence-o-64): sequência de "Três candidatos: vence o /64"
+- [Figura 6.2.3](#623-rota-padrão-até-a-borda): sequência de "Rota padrão até a borda"
+- [Figura 6.2.4](#624-sem-rota-no-r3-icmpv6-10): sequência de "Sem rota no R3 (ICMPv6 1/0)"
+- [Figura 6.2.5](#625-sem-agregada-e-sem-padrão): sequência de "Sem agregada e sem padrão"
+- [Figura 6.2.6](#626-neighbor-discovery-sem-resposta-13): sequência de "Neighbor Discovery sem resposta (1/3)"
+- [Figura 6.2.7](#627-ida-entregue-volta-perdida): sequência de "Ida entregue, volta perdida"
+- [Figura 6.2.8](#628-hop-limit-expira-no-r3): sequência de "Hop Limit expira no R3"
 
-## 4. Topologia
+## 4. Abas da bancada
 
-Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
+Cenário, Captura, Mensagem, Tabela de rotas (modos: Encaminhamento), Endereços (modos: Endereçamento e SLAAC), Cabeçalho IPv6, Experimento, Referência e Log.
 
-### 4.1 Endereçamento e SLAAC
+## 5. Configurações (campos do painel)
+
+### 5.1 Rede
+
+- **Atraso por enlace (ms)**. Valores: 1; 2; 5; 10; 20. Padrão: 2. Modos: todos.
+  - Tempo de cada salto.
+  - Define quanto tempo o pacote leva em cada enlace. Não muda nenhuma decisão de rota: só estica ou encolhe a linha do tempo.
+- **Duplicidade do endereço global**. Valores: Nenhum outro host usa o endereço; O host B já usa o endereço que A formaria. Padrão: Nenhum outro host usa o endereço. Modos: Endereçamento e SLAAC.
+  - Detecção de duplicidade antes de usar o endereço.
+  - Todo endereço unicast passa por DAD: o host pergunta se alguém já o usa, com a origem não especificada. Se houver resposta, o endereço não é atribuído ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seções 5.4 e 5.4.5).
+
+### 5.2 Pacote
+
+- **Destino do ping**. Valores: SRV1, 2001:db8:2:1::20 (atrás do R3); SRV2, 2001:db8:2:5::20 (atrás do R4); 2001:db8:2:1::99 (rede do R3, sem host); 2001:db8:2:9::9 (faixa 2001:db8:2::/48, sem rota no R3); 2001:db8:ffff::1 (internet). Padrão: SRV1, 2001:db8:2:1::20 (atrás do R3). Modos: Encaminhamento.
+  - Para onde o PC-A envia o ping.
+  - Cada destino casa com um conjunto diferente de rotas. O **SRV2** casa com três rotas em R2 (/64, /48 e a padrão), o **SRV1** com duas (/48 e a padrão). O **2001:db8:2:1::99** está na rede do R3, mas nenhum host responde por ele. O **2001:db8:2:9::9** pertence ao /48, mas o R3 não tem rota para ele.
+- **Hop Limit inicial**. Valores: 64 (padrão do Linux); 16; 8; 4 (o mínimo para chegar ao SRV1); 3; 2; 1. Padrão: 64 (padrão do Linux). Modos: Encaminhamento.
+  - Limite de saltos do pacote.
+  - É o equivalente do TTL do IPv4. Cada roteador o diminui de um. Um pacote que chega com Hop Limit 1 é descartado, e o roteador avisa a origem com ICMPv6 3/0 ([RFC 8200](https://www.rfc-editor.org/rfc/rfc8200), seção 3; [RFC 4443](https://www.rfc-editor.org/rfc/rfc4443), seção 3.3). O IPv6 não tem checksum de cabeçalho, então nada precisa ser recalculado a cada salto.
+
+### 5.3 Rotas do R2
+
+- **R2 tem a rota agregada 2001:db8:2::/48**. Valores: caixa de seleção. Padrão: sim. Modos: Encaminhamento.
+  - Uma rota que cobre toda a faixa 2001:db8:2::/48 via R3.
+  - A agregação resume muitas redes em um só prefixo. Sem ela, o R2 só alcança o SRV1 pela rota padrão, se houver.
+- **R2 tem rota padrão (::/0, via R4)**. Valores: caixa de seleção. Padrão: sim. Modos: Encaminhamento.
+  - ::/0: o que não casa com nada mais específico.
+  - É o prefixo mais curto possível, por isso só vence quando nada mais casa. Também esconde falhas: um destino sem rota sai pela borda em vez de gerar erro.
+
+### 5.4 Rotas do R3
+
+- **R3 tem rota de volta para a LAN de A (2001:db8:1::/48)**. Valores: caixa de seleção. Padrão: sim. Modos: Encaminhamento.
+  - A resposta também precisa de rota.
+  - O ping só funciona se o caminho de volta existir. Sem a rota no R3, o pedido é entregue, a resposta não, e o PC-A só vê um timeout.
+
+### 5.5 Destino
+
+- **Destino do ping**. Valores: Host B, 2001:db8:10:1::20 (mesma LAN); fe80::1 (enlace local do roteador); Servidor, 2001:db8:20:2::50; ff02::1 (todos os nós do enlace); fd12:3456:789a:1::50 (local único, ULA). Padrão: Host B, 2001:db8:10:1::20 (mesma LAN). Modos: Endereçamento e SLAAC.
+  - O tipo de endereço decide o caminho.
+  - Cada destino aciona uma regra diferente: vizinho, roteador padrão, multicast do enlace ou erro. A aba Endereços mostra o tipo do destino e a anatomia dos endereços do host.
+
+### 5.6 Host A
+
+- **Identificador de interface**. Valores: EUI-64 modificado, derivado do MAC; Temporário, aleatório ([RFC 8981](https://www.rfc-editor.org/rfc/rfc8981)). Padrão: EUI-64 modificado, derivado do MAC. Modos: Endereçamento e SLAAC.
+  - Os 64 bits finais do endereço do host.
+  - **EUI-64:** deriva do MAC, inserindo ff:fe no meio e invertendo o bit U/L ([RFC 4291](https://www.rfc-editor.org/rfc/rfc4291), apêndice A). É estável, mas permite rastrear o dispositivo por onde ele passa.
+  - **Temporário:** um valor aleatório que não revela o MAC e que muda com o tempo ([RFC 8981](https://www.rfc-editor.org/rfc/rfc8981)), o que protege a privacidade.
+
+### 5.7 Roteador
+
+- **O roteador envia Router Advertisement**. Valores: caixa de seleção. Padrão: sim. Modos: Endereçamento e SLAAC.
+  - Sem RA, o host fica só com o endereço de enlace local.
+  - O RA traz o prefixo da rede e diz que o roteador é o padrão ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861), seção 4.2). Sem ele, o host não tem prefixo nem rota padrão, e só se comunica no enlace.
+- **Comprimento do prefixo anunciado**. Valores: /64; /80. Padrão: /64. Modos: Endereçamento e SLAAC.
+  - O SLAAC exige um prefixo /64 com identificador de 64 bits.
+  - O endereço tem 128 bits. Com identificador de interface de 64 bits, o prefixo precisa ter 64 bits. Se o prefixo anunciado tiver outro comprimento, o host ignora o RA para SLAAC ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seção 5.5.3).
+- **Flag A (autoconfiguração) ligada no prefixo**. Valores: caixa de seleção. Padrão: sim. Modos: Endereçamento e SLAAC.
+  - Autoriza o host a formar o próprio endereço com o prefixo.
+  - Com a flag A desligada, o prefixo só informa o que está no enlace (flag L) e o host não forma endereço global ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seção 5.5.3). Seria preciso outro meio de configuração, como o DHCPv6.
+
+## 6. Cenários
+
+### 6.1 Modo: Endereçamento e SLAAC
 
 ```mermaid
 flowchart LR
@@ -283,117 +345,13 @@ flowchart LR
   n_r -- "eth1 2001:db8:20:2::/64" --- n_s
 ```
 
-*Figura 4.1a (Tipo A, topologia).* Elementos do modo "Endereçamento e SLAAC": Host A (fe80::200:5eff:fe00:530a); Host B (2001:db8:10:1::20); Roteador (fe80::1); Servidor (2001:db8:20:2::50). Vale para os cenários (7.1.1 e 7.1.2; 7.1.4 a 7.1.10).
-
-```mermaid
-flowchart LR
-  n_a["Host A<br/>fe80::8b3a:41c2:f09d:1e77"]
-  n_b["Host B<br/>2001:db8:10:1::20"]
-  n_r("Roteador<br/>fe80::1")
-  n_s["Servidor<br/>2001:db8:20:2::50"]
-  n_a -- "eth0 2001:db8:10:1::/64" --- n_r
-  n_b --- n_r
-  n_r -- "eth1 2001:db8:20:2::/64" --- n_s
-```
-
-*Figura 4.1b (Tipo A, topologia).* Elementos do modo "Endereçamento e SLAAC": Host A (fe80::8b3a:41c2:f09d:1e77); Host B (2001:db8:10:1::20); Roteador (fe80::1); Servidor (2001:db8:20:2::50). Vale para os cenários (7.1.3).
-
-### 4.2 Encaminhamento
-
-```mermaid
-flowchart LR
-  n_pc["PC-A<br/>2001:db8:1:1::10"]
-  n_r1("R1<br/>fe80::1")
-  n_r2("R2<br/>2001:db8:0:12::2")
-  n_r3("R3<br/>2001:db8:0:23::2")
-  n_r4("R4<br/>2001:db8:0:24::2")
-  n_srv1["SRV1<br/>2001:db8:2:1::20"]
-  n_srv2["SRV2<br/>2001:db8:2:5::20"]
-  n_isp(["Provedor<br/>2001:db8:0:ff::1"])
-  n_pc -- "2001:db8:1:1::/64" --- n_r1
-  n_r1 -- "2001:db8:0:12::/64" --- n_r2
-  n_r2 -- "2001:db8:0:23::/64" --- n_r3
-  n_r2 -- "2001:db8:0:24::/64" --- n_r4
-  n_r3 -- "2001:db8:2:1::/64" --- n_srv1
-  n_r4 -- "2001:db8:2:5::/64" --- n_srv2
-  n_r4 -- "2001:db8:0:ff::/64" --- n_isp
-```
-
-*Figura 4.2 (Tipo A, topologia).* Elementos do modo "Encaminhamento": PC-A (2001:db8:1:1::10); R1 (fe80::1); R2 (2001:db8:0:12::2); R3 (2001:db8:0:23::2); R4 (2001:db8:0:24::2); SRV1 (2001:db8:2:1::20); SRV2 (2001:db8:2:5::20); Provedor (2001:db8:0:ff::1). Vale para todos os cenários do modo (7.2.1 a 7.2.8).
-
-## 5. Abas da bancada
-
-Cenário, Captura, Mensagem, Tabela de rotas (modos: Encaminhamento), Endereços (modos: Endereçamento e SLAAC), Cabeçalho IPv6, Experimento, Referência e Log.
-
-## 6. Configurações (campos do painel)
-
-### 6.1 Rede
-
-- **Atraso por enlace (ms)**. Valores: 1; 2; 5; 10; 20. Padrão: 2. Modos: todos.
-  - Tempo de cada salto.
-  - Define quanto tempo o pacote leva em cada enlace. Não muda nenhuma decisão de rota: só estica ou encolhe a linha do tempo.
-- **Duplicidade do endereço global**. Valores: Nenhum outro host usa o endereço; O host B já usa o endereço que A formaria. Padrão: Nenhum outro host usa o endereço. Modos: Endereçamento e SLAAC.
-  - Detecção de duplicidade antes de usar o endereço.
-  - Todo endereço unicast passa por DAD: o host pergunta se alguém já o usa, com a origem não especificada. Se houver resposta, o endereço não é atribuído ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seções 5.4 e 5.4.5).
-
-### 6.2 Pacote
-
-- **Destino do ping**. Valores: SRV1, 2001:db8:2:1::20 (atrás do R3); SRV2, 2001:db8:2:5::20 (atrás do R4); 2001:db8:2:1::99 (rede do R3, sem host); 2001:db8:2:9::9 (faixa 2001:db8:2::/48, sem rota no R3); 2001:db8:ffff::1 (internet). Padrão: SRV1, 2001:db8:2:1::20 (atrás do R3). Modos: Encaminhamento.
-  - Para onde o PC-A envia o ping.
-  - Cada destino casa com um conjunto diferente de rotas. O **SRV2** casa com três rotas em R2 (/64, /48 e a padrão), o **SRV1** com duas (/48 e a padrão). O **2001:db8:2:1::99** está na rede do R3, mas nenhum host responde por ele. O **2001:db8:2:9::9** pertence ao /48, mas o R3 não tem rota para ele.
-- **Hop Limit inicial**. Valores: 64 (padrão do Linux); 16; 8; 4 (o mínimo para chegar ao SRV1); 3; 2; 1. Padrão: 64 (padrão do Linux). Modos: Encaminhamento.
-  - Limite de saltos do pacote.
-  - É o equivalente do TTL do IPv4. Cada roteador o diminui de um. Um pacote que chega com Hop Limit 1 é descartado, e o roteador avisa a origem com ICMPv6 3/0 ([RFC 8200](https://www.rfc-editor.org/rfc/rfc8200), seção 3; [RFC 4443](https://www.rfc-editor.org/rfc/rfc4443), seção 3.3). O IPv6 não tem checksum de cabeçalho, então nada precisa ser recalculado a cada salto.
-
-### 6.3 Rotas do R2
-
-- **R2 tem a rota agregada 2001:db8:2::/48**. Valores: caixa de seleção. Padrão: sim. Modos: Encaminhamento.
-  - Uma rota que cobre toda a faixa 2001:db8:2::/48 via R3.
-  - A agregação resume muitas redes em um só prefixo. Sem ela, o R2 só alcança o SRV1 pela rota padrão, se houver.
-- **R2 tem rota padrão (::/0, via R4)**. Valores: caixa de seleção. Padrão: sim. Modos: Encaminhamento.
-  - ::/0: o que não casa com nada mais específico.
-  - É o prefixo mais curto possível, por isso só vence quando nada mais casa. Também esconde falhas: um destino sem rota sai pela borda em vez de gerar erro.
-
-### 6.4 Rotas do R3
-
-- **R3 tem rota de volta para a LAN de A (2001:db8:1::/48)**. Valores: caixa de seleção. Padrão: sim. Modos: Encaminhamento.
-  - A resposta também precisa de rota.
-  - O ping só funciona se o caminho de volta existir. Sem a rota no R3, o pedido é entregue, a resposta não, e o PC-A só vê um timeout.
-
-### 6.5 Destino
-
-- **Destino do ping**. Valores: Host B, 2001:db8:10:1::20 (mesma LAN); fe80::1 (enlace local do roteador); Servidor, 2001:db8:20:2::50; ff02::1 (todos os nós do enlace); fd12:3456:789a:1::50 (local único, ULA). Padrão: Host B, 2001:db8:10:1::20 (mesma LAN). Modos: Endereçamento e SLAAC.
-  - O tipo de endereço decide o caminho.
-  - Cada destino aciona uma regra diferente: vizinho, roteador padrão, multicast do enlace ou erro. A aba Endereços mostra o tipo do destino e a anatomia dos endereços do host.
-
-### 6.6 Host A
-
-- **Identificador de interface**. Valores: EUI-64 modificado, derivado do MAC; Temporário, aleatório ([RFC 8981](https://www.rfc-editor.org/rfc/rfc8981)). Padrão: EUI-64 modificado, derivado do MAC. Modos: Endereçamento e SLAAC.
-  - Os 64 bits finais do endereço do host.
-  - **EUI-64:** deriva do MAC, inserindo ff:fe no meio e invertendo o bit U/L ([RFC 4291](https://www.rfc-editor.org/rfc/rfc4291), apêndice A). É estável, mas permite rastrear o dispositivo por onde ele passa.
-  - **Temporário:** um valor aleatório que não revela o MAC e que muda com o tempo ([RFC 8981](https://www.rfc-editor.org/rfc/rfc8981)), o que protege a privacidade.
-
-### 6.7 Roteador
-
-- **O roteador envia Router Advertisement**. Valores: caixa de seleção. Padrão: sim. Modos: Endereçamento e SLAAC.
-  - Sem RA, o host fica só com o endereço de enlace local.
-  - O RA traz o prefixo da rede e diz que o roteador é o padrão ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861), seção 4.2). Sem ele, o host não tem prefixo nem rota padrão, e só se comunica no enlace.
-- **Comprimento do prefixo anunciado**. Valores: /64; /80. Padrão: /64. Modos: Endereçamento e SLAAC.
-  - O SLAAC exige um prefixo /64 com identificador de 64 bits.
-  - O endereço tem 128 bits. Com identificador de interface de 64 bits, o prefixo precisa ter 64 bits. Se o prefixo anunciado tiver outro comprimento, o host ignora o RA para SLAAC ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seção 5.5.3).
-- **Flag A (autoconfiguração) ligada no prefixo**. Valores: caixa de seleção. Padrão: sim. Modos: Endereçamento e SLAAC.
-  - Autoriza o host a formar o próprio endereço com o prefixo.
-  - Com a flag A desligada, o prefixo só informa o que está no enlace (flag L) e o host não forma endereço global ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seção 5.5.3). Seria preciso outro meio de configuração, como o DHCPv6.
-
-## 7. Cenários
-
-### 7.1 Modo: Endereçamento e SLAAC
+*Figura 6.1a (Tipo A, topologia).* Elementos do modo "Endereçamento e SLAAC": Host A (fe80::200:5eff:fe00:530a); Host B (2001:db8:10:1::20); Roteador (fe80::1); Servidor (2001:db8:20:2::50). Vale para os cenários (6.1.1 e 6.1.2; 6.1.4 a 6.1.10).
 
 > **Grupo:** SLAAC
 
 A autoconfiguração sem estado: o host forma o endereço de enlace local, descobre o prefixo por um Router Advertisement e monta o endereço global, testando cada um por DAD.
 
-#### 7.1.1 SLAAC com EUI-64 e ping ao vizinho
+#### 6.1.1 SLAAC com EUI-64 e ping ao vizinho
 
 *O host forma o endereço de enlace local, descobre o prefixo e monta o endereço global.*
 
@@ -435,7 +393,7 @@ sequenceDiagram
   n_b ->> n_a: Echo Reply de 2001:db8:10:1::20
 ```
 
-*Figura 7.1.1 (Tipo B, sequência).* Mensagens do cenário "SLAAC com EUI-64 e ping ao vizinho", na ordem do tempo, entre Host A, Host B, Roteador: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 7 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "SLAAC com EUI-64 e ping ao vizinho", na ordem do tempo, entre Host A, Host B, Roteador: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 7 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -449,7 +407,7 @@ sequenceDiagram
 
 **Por que importa.** O SLAAC dispensa um servidor de endereços: o roteador diz o prefixo, e o host completa o endereço.
 
-#### 7.1.2 Destino remoto pelo roteador padrão
+#### 6.1.2 Destino remoto pelo roteador padrão
 
 *Fora do prefixo do enlace, o pacote vai ao roteador padrão aprendido no RA.*
 
@@ -489,7 +447,7 @@ sequenceDiagram
   n_r ->> n_a: Echo Reply de 2001:db8:20:2::50
 ```
 
-*Figura 7.1.2 (Tipo B, sequência).* Mensagens do cenário "Destino remoto pelo roteador padrão", na ordem do tempo, entre Host A, Host B, Roteador, Servidor: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.2 (Tipo B, sequência).* Mensagens do cenário "Destino remoto pelo roteador padrão", na ordem do tempo, entre Host A, Host B, Roteador, Servidor: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -500,7 +458,7 @@ sequenceDiagram
 
 **Por que importa.** O MAC vale em um enlace, e o IP vale fim a fim. O RA já entrega o necessário para alcançar o roteador.
 
-#### 7.1.3 Identificador temporário (privacidade)
+#### 6.1.3 Identificador temporário (privacidade)
 
 *O identificador temporário esconde o MAC e muda com o tempo.*
 
@@ -515,6 +473,19 @@ O identificador de interface é um valor temporário e aleatório ([RFC 8981](ht
 - Compare o identificador na aba Endereços com o do cenário EUI-64.
 - O restante do processo (DAD, RA, SLAAC) é igual.
 - O ping ao servidor funciona do mesmo modo.
+
+```mermaid
+flowchart LR
+  n_a["Host A<br/>fe80::8b3a:41c2:f09d:1e77"]
+  n_b["Host B<br/>2001:db8:10:1::20"]
+  n_r("Roteador<br/>fe80::1")
+  n_s["Servidor<br/>2001:db8:20:2::50"]
+  n_a -- "eth0 2001:db8:10:1::/64" --- n_r
+  n_b --- n_r
+  n_r -- "eth1 2001:db8:20:2::/64" --- n_s
+```
+
+*Figura 6.1b (Tipo A, topologia).* Elementos do modo "Endereçamento e SLAAC": Host A (fe80::8b3a:41c2:f09d:1e77); Host B (2001:db8:10:1::20); Roteador (fe80::1); Servidor (2001:db8:20:2::50). Vale para os cenários (6.1.3).
 
 ```mermaid
 sequenceDiagram
@@ -540,7 +511,7 @@ sequenceDiagram
   n_r ->> n_a: Echo Reply de 2001:db8:20:2::50
 ```
 
-*Figura 7.1.3 (Tipo B, sequência).* Mensagens do cenário "Identificador temporário (privacidade)", na ordem do tempo, entre Host A, Host B, Roteador, Servidor: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.3 (Tipo B, sequência).* Mensagens do cenário "Identificador temporário (privacidade)", na ordem do tempo, entre Host A, Host B, Roteador, Servidor: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -556,7 +527,7 @@ sequenceDiagram
 
 Sem RA, com a flag A desligada, com prefixo de comprimento errado ou com endereço duplicado, o host fica só com o endereço de enlace local, que o roteador não encaminha.
 
-#### 7.1.4 Sem Router Advertisement
+#### 6.1.4 Sem Router Advertisement
 
 *Sem RA, o host só tem enlace local e não sai da rede.*
 
@@ -587,7 +558,7 @@ sequenceDiagram
   n_a ->> n_r: RS: há roteadores?
 ```
 
-*Figura 7.1.4 (Tipo B, sequência).* Mensagens do cenário "Sem Router Advertisement", na ordem do tempo, entre Host A, Host B, Roteador: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.4 (Tipo B, sequência).* Mensagens do cenário "Sem Router Advertisement", na ordem do tempo, entre Host A, Host B, Roteador: 5 mensagens, numeradas de 1 a 5 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -597,7 +568,7 @@ sequenceDiagram
 
 **Por que importa.** Sem roteador anunciando o prefixo, o SLAAC não tem o que montar.
 
-#### 7.1.5 Flag A desligada
+#### 6.1.5 Flag A desligada
 
 *Sem a flag A, o host não forma o endereço global.*
 
@@ -631,7 +602,7 @@ sequenceDiagram
   n_r ->> n_a: ICMPv6 1/2 além do escopo
 ```
 
-*Figura 7.1.5 (Tipo B, sequência).* Mensagens do cenário "Flag A desligada", na ordem do tempo, entre Host A, Host B, Roteador: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.5 (Tipo B, sequência).* Mensagens do cenário "Flag A desligada", na ordem do tempo, entre Host A, Host B, Roteador: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -643,7 +614,7 @@ sequenceDiagram
 
 **Por que importa.** O código 2 existe para este caso: o destino está além do escopo da origem.
 
-#### 7.1.6 Prefixo /80 anunciado
+#### 6.1.6 Prefixo /80 anunciado
 
 *Um prefixo que não é /64 não serve para SLAAC.*
 
@@ -677,7 +648,7 @@ sequenceDiagram
   n_r ->> n_a: ICMPv6 1/2 além do escopo
 ```
 
-*Figura 7.1.6 (Tipo B, sequência).* Mensagens do cenário "Prefixo /80 anunciado", na ordem do tempo, entre Host A, Host B, Roteador: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.6 (Tipo B, sequência).* Mensagens do cenário "Prefixo /80 anunciado", na ordem do tempo, entre Host A, Host B, Roteador: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 4 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -689,7 +660,7 @@ sequenceDiagram
 
 **Por que importa.** O SLAAC fixa o tamanho do identificador, então os prefixos de redes que o usam são /64.
 
-#### 7.1.7 Endereço duplicado (DAD)
+#### 6.1.7 Endereço duplicado (DAD)
 
 *A DAD impede o uso de um endereço que já existe no enlace.*
 
@@ -727,7 +698,7 @@ sequenceDiagram
   n_r ->> n_a: ICMPv6 1/2 além do escopo
 ```
 
-*Figura 7.1.7 (Tipo B, sequência).* Mensagens do cenário "Endereço duplicado (DAD)", na ordem do tempo, entre Host A, Host B, Roteador: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.7 (Tipo B, sequência).* Mensagens do cenário "Endereço duplicado (DAD)", na ordem do tempo, entre Host A, Host B, Roteador: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -743,7 +714,7 @@ sequenceDiagram
 
 O IPv6 tem tipos de endereço com regras próprias: enlace local, multicast (que substitui o broadcast) e local único (ULA).
 
-#### 7.1.8 Enlace local sem roteador
+#### 6.1.8 Enlace local sem roteador
 
 *O enlace local funciona sem RA, com o ND para achar o MAC.*
 
@@ -781,7 +752,7 @@ sequenceDiagram
   n_r ->> n_a: Echo Reply de fe80::1
 ```
 
-*Figura 7.1.8 (Tipo B, sequência).* Mensagens do cenário "Enlace local sem roteador", na ordem do tempo, entre Host A, Host B, Roteador: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.8 (Tipo B, sequência).* Mensagens do cenário "Enlace local sem roteador", na ordem do tempo, entre Host A, Host B, Roteador: 9 mensagens, numeradas de 1 a 9 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -792,7 +763,7 @@ sequenceDiagram
 
 **Por que importa.** O enlace local é a base do IPv6: tudo no enlace funciona com ele, e o roteamento começa só além dele.
 
-#### 7.1.9 Multicast de todos os nós (ff02::1)
+#### 6.1.9 Multicast de todos os nós (ff02::1)
 
 *O multicast de todos os nós substitui o broadcast.*
 
@@ -831,7 +802,7 @@ sequenceDiagram
   n_r ->> n_a: Echo Reply de fe80::1
 ```
 
-*Figura 7.1.9 (Tipo B, sequência).* Mensagens do cenário "Multicast de todos os nós (ff02::1)", na ordem do tempo, entre Host A, Host B, Roteador: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.9 (Tipo B, sequência).* Mensagens do cenário "Multicast de todos os nós (ff02::1)", na ordem do tempo, entre Host A, Host B, Roteador: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -842,7 +813,7 @@ sequenceDiagram
 
 **Por que importa.** O multicast alcança só quem escuta o grupo, e não interrompe os demais nós como o broadcast do IPv4.
 
-#### 7.1.10 Endereço local único (ULA)
+#### 6.1.10 Endereço local único (ULA)
 
 *Os endereços locais únicos não são roteáveis na internet.*
 
@@ -879,7 +850,7 @@ sequenceDiagram
   n_r ->> n_a: ICMPv6 1/0 sem rota
 ```
 
-*Figura 7.1.10 (Tipo B, sequência).* Mensagens do cenário "Endereço local único (ULA)", na ordem do tempo, entre Host A, Host B, Roteador: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
+*Figura 6.1.10 (Tipo B, sequência).* Mensagens do cenário "Endereço local único (ULA)", na ordem do tempo, entre Host A, Host B, Roteador: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Endereçamento e SLAAC", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -890,13 +861,34 @@ sequenceDiagram
 
 **Por que importa.** Um ULA é estável e privado, mas não resolve a conectividade com a internet.
 
-### 7.2 Modo: Encaminhamento
+### 6.2 Modo: Encaminhamento
+
+```mermaid
+flowchart LR
+  n_pc["PC-A<br/>2001:db8:1:1::10"]
+  n_r1("R1<br/>fe80::1")
+  n_r2("R2<br/>2001:db8:0:12::2")
+  n_r3("R3<br/>2001:db8:0:23::2")
+  n_r4("R4<br/>2001:db8:0:24::2")
+  n_srv1["SRV1<br/>2001:db8:2:1::20"]
+  n_srv2["SRV2<br/>2001:db8:2:5::20"]
+  n_isp(["Provedor<br/>2001:db8:0:ff::1"])
+  n_pc -- "2001:db8:1:1::/64" --- n_r1
+  n_r1 -- "2001:db8:0:12::/64" --- n_r2
+  n_r2 -- "2001:db8:0:23::/64" --- n_r3
+  n_r2 -- "2001:db8:0:24::/64" --- n_r4
+  n_r3 -- "2001:db8:2:1::/64" --- n_srv1
+  n_r4 -- "2001:db8:2:5::/64" --- n_srv2
+  n_r4 -- "2001:db8:0:ff::/64" --- n_isp
+```
+
+*Figura 6.2 (Tipo A, topologia).* Elementos do modo "Encaminhamento": PC-A (2001:db8:1:1::10); R1 (fe80::1); R2 (2001:db8:0:12::2); R3 (2001:db8:0:23::2); R4 (2001:db8:0:24::2); SRV1 (2001:db8:2:1::20); SRV2 (2001:db8:2:5::20); Provedor (2001:db8:0:ff::1). Vale para todos os cenários do modo (6.2.1 a 6.2.8).
 
 > **Grupo:** Prefixo mais específico
 
 O roteador compara o destino com todos os prefixos da tabela e escolhe o que casa com mais bits. A rota padrão (::/0) só vence quando nada mais específico casa. A regra é a mesma do IPv4, com endereços de 128 bits.
 
-#### 7.2.1 Dois candidatos: vence o /48
+#### 6.2.1 Dois candidatos: vence o /48
 
 *O maior prefixo vence, mesmo com a rota padrão também casando.*
 
@@ -942,7 +934,7 @@ sequenceDiagram
   n_r1 ->> n_pc: Echo Reply, HL 61
 ```
 
-*Figura 7.2.1 (Tipo B, sequência).* Mensagens do cenário "Dois candidatos: vence o /48", na ordem do tempo, entre PC-A, R1, R2, R3, R4, SRV1: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Dois candidatos: vence o /48", na ordem do tempo, entre PC-A, R1, R2, R3, R4, SRV1: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -954,7 +946,7 @@ sequenceDiagram
 
 **Por que importa.** A escolha pelo prefixo mais específico é igual à do IPv4. A diferença está nos endereços de 128 bits e no uso do ND em lugar do ARP.
 
-#### 7.2.2 Três candidatos: vence o /64
+#### 6.2.2 Três candidatos: vence o /64
 
 *Três rotas casam e a mais específica manda o pacote por outro caminho.*
 
@@ -999,7 +991,7 @@ sequenceDiagram
   n_r1 ->> n_pc: Echo Reply, HL 61
 ```
 
-*Figura 7.2.2 (Tipo B, sequência).* Mensagens do cenário "Três candidatos: vence o /64", na ordem do tempo, entre PC-A, R1, R2, R3, R4, SRV2: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Três candidatos: vence o /64", na ordem do tempo, entre PC-A, R1, R2, R3, R4, SRV2: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1010,7 +1002,7 @@ sequenceDiagram
 
 **Por que importa.** Agregar e abrir exceções é a base do roteamento hierárquico do IPv6.
 
-#### 7.2.3 Rota padrão até a borda
+#### 6.2.3 Rota padrão até a borda
 
 *O que não tem rota específica segue a rota padrão até a borda.*
 
@@ -1046,7 +1038,7 @@ sequenceDiagram
   n_r4 ->> n_isp: Echo Request, HL 61
 ```
 
-*Figura 7.2.3 (Tipo B, sequência).* Mensagens do cenário "Rota padrão até a borda", na ordem do tempo, entre PC-A, R1, R2, R3, R4, Provedor: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Rota padrão até a borda", na ordem do tempo, entre PC-A, R1, R2, R3, R4, Provedor: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1060,7 +1052,7 @@ sequenceDiagram
 
 Uma tabela incompleta produz sintomas diferentes: aviso ICMPv6 de rota ausente, o aviso de endereço inalcançável quando o Neighbor Discovery falha, ou uma resposta sem caminho de volta.
 
-#### 7.2.4 Sem rota no R3 (ICMPv6 1/0)
+#### 6.2.4 Sem rota no R3 (ICMPv6 1/0)
 
 *Sem rota, o roteador descarta e avisa a origem.*
 
@@ -1097,7 +1089,7 @@ sequenceDiagram
   n_r1 ->> n_pc: No Route, HL 62
 ```
 
-*Figura 7.2.4 (Tipo B, sequência).* Mensagens do cenário "Sem rota no R3 (ICMPv6 1/0)", na ordem do tempo, entre PC-A, R1, R2, R3, R4: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.4 (Tipo B, sequência).* Mensagens do cenário "Sem rota no R3 (ICMPv6 1/0)", na ordem do tempo, entre PC-A, R1, R2, R3, R4: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1108,7 +1100,7 @@ sequenceDiagram
 
 **Por que importa.** O código 0 do tipo 1 diz que não existe rota. Compare com o código 3, do cenário do Neighbor Discovery.
 
-#### 7.2.5 Sem agregada e sem padrão
+#### 6.2.5 Sem agregada e sem padrão
 
 *Sem rota agregada nem padrão, o R2 não tem como encaminhar.*
 
@@ -1143,7 +1135,7 @@ sequenceDiagram
   n_r1 ->> n_pc: No Route, HL 63
 ```
 
-*Figura 7.2.5 (Tipo B, sequência).* Mensagens do cenário "Sem agregada e sem padrão", na ordem do tempo, entre PC-A, R1, R2, R3, R4: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.5 (Tipo B, sequência).* Mensagens do cenário "Sem agregada e sem padrão", na ordem do tempo, entre PC-A, R1, R2, R3, R4: 6 mensagens, numeradas de 1 a 6 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1154,7 +1146,7 @@ sequenceDiagram
 
 **Por que importa.** Sem rota padrão, a falha vira um aviso claro, em vez de um vazamento.
 
-#### 7.2.6 Neighbor Discovery sem resposta (1/3)
+#### 6.2.6 Neighbor Discovery sem resposta (1/3)
 
 *O ND sem resposta produz o aviso de endereço inalcançável.*
 
@@ -1196,7 +1188,7 @@ sequenceDiagram
   n_r1 ->> n_pc: Address Unreachable, HL 62
 ```
 
-*Figura 7.2.6 (Tipo B, sequência).* Mensagens do cenário "Neighbor Discovery sem resposta (1/3)", na ordem do tempo, entre PC-A, R1, R2, R3, R4, Destino: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 4 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.6 (Tipo B, sequência).* Mensagens do cenário "Neighbor Discovery sem resposta (1/3)", na ordem do tempo, entre PC-A, R1, R2, R3, R4, Destino: 11 mensagens, numeradas de 1 a 11 na ordem da comunicação (em 4 fases; 3 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1207,7 +1199,7 @@ sequenceDiagram
 
 **Por que importa.** No IPv4 o mesmo problema aparece como ARP sem resposta e ICMP 3/1. No IPv6, o ND é o mecanismo, e o código 3 do ICMPv6 é o aviso.
 
-#### 7.2.7 Ida entregue, volta perdida
+#### 6.2.7 Ida entregue, volta perdida
 
 *A ida funciona, mas a resposta não tem caminho de volta.*
 
@@ -1250,7 +1242,7 @@ sequenceDiagram
   n_r3 ->> n_dst: No Route, HL 64
 ```
 
-*Figura 7.2.7 (Tipo B, sequência).* Mensagens do cenário "Ida entregue, volta perdida", na ordem do tempo, entre PC-A, R1, R2, R3, R4, SRV1: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.7 (Tipo B, sequência).* Mensagens do cenário "Ida entregue, volta perdida", na ordem do tempo, entre PC-A, R1, R2, R3, R4, SRV1: 10 mensagens, numeradas de 1 a 10 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1265,7 +1257,7 @@ sequenceDiagram
 
 O Hop Limit limita a vida do pacote em saltos. Ele corta loops de roteamento e é a base do traceroute. No IPv6 não há checksum de cabeçalho a recalcular.
 
-#### 7.2.8 Hop Limit expira no R3
+#### 6.2.8 Hop Limit expira no R3
 
 *O Hop Limit acaba no caminho e o roteador avisa a origem.*
 
@@ -1302,7 +1294,7 @@ sequenceDiagram
   n_r1 ->> n_pc: Time Exceeded, HL 62
 ```
 
-*Figura 7.2.8 (Tipo B, sequência).* Mensagens do cenário "Hop Limit expira no R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
+*Figura 6.2.8 (Tipo B, sequência).* Mensagens do cenário "Hop Limit expira no R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4: 8 mensagens, numeradas de 1 a 8 na ordem da comunicação (em 3 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Encaminhamento", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1313,13 +1305,13 @@ sequenceDiagram
 
 **Por que importa.** O Hop Limit é o que impede um loop de rotas de durar para sempre.
 
-## 8. Referência
+## 7. Referência
 
-### 8.1 O que o IPv6 muda em relação ao IPv4
+### 7.1 O que o IPv6 muda em relação ao IPv4
 
 O IPv6 ([RFC 8200](https://www.rfc-editor.org/rfc/rfc8200)) usa endereços de 128 bits e um cabeçalho fixo de 40 bytes, sem checksum e sem fragmentação em roteadores: só a origem fragmenta (seção 4.5). O Hop Limit substitui o TTL, e o Neighbor Discovery ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861)), sobre ICMPv6, substitui o ARP. O IPv6 não tem broadcast: usa multicast.
 
-### 8.2 Representação e tipos de endereço
+### 7.2 Representação e tipos de endereço
 
 - Oito grupos de 16 bits em hexadecimal. Zeros à esquerda podem sumir, e uma sequência de grupos zero pode virar "::", uma só vez ([RFC 4291](https://www.rfc-editor.org/rfc/rfc4291), seção 2.2). A forma recomendada para texto é a da [RFC 5952](https://www.rfc-editor.org/rfc/rfc5952): minúsculas e "::" na maior sequência.
 - **Link-local** fe80::/10: vale só no enlace; roteadores não o encaminham ([RFC 4291](https://www.rfc-editor.org/rfc/rfc4291), seção 2.5.6).
@@ -1327,30 +1319,30 @@ O IPv6 ([RFC 8200](https://www.rfc-editor.org/rfc/rfc8200)) usa endereços de 12
 - **Multicast** ff00::/8: ff02::1 (todos os nós) e ff02::2 (todos os roteadores) são do escopo do enlace; o nó solicitado ff02::1:ff00:0/104 serve ao ND ([RFC 4291](https://www.rfc-editor.org/rfc/rfc4291), seção 2.7).
 - **Unicast global**: hoje alocado dentro de 2000::/3. O bloco 2001:db8::/32 é de documentação ([RFC 3849](https://www.rfc-editor.org/rfc/rfc3849)) e aparece em todo o simulador.
 
-### 8.3 Encaminhamento
+### 7.3 Encaminhamento
 
 A decisão é a do IPv4: entre as rotas cujo prefixo contém o destino, vence a de maior comprimento; a rota padrão é ::/0. Sem nenhuma rota, o roteador descarta e envia ICMPv6 1/0 ([RFC 4443](https://www.rfc-editor.org/rfc/rfc4443), seção 3.1). Cada roteador decrementa o Hop Limit; ao chegar a zero, o pacote é descartado com ICMPv6 3/0 (seção 3.3). Não se gera erro ICMPv6 sobre outro erro, e o erro leva o máximo do pacote original sem passar do MTU mínimo do IPv6, 1280 bytes (seção 2.4; [RFC 8200](https://www.rfc-editor.org/rfc/rfc8200), seção 5).
 
-### 8.4 Neighbor Discovery
+### 7.4 Neighbor Discovery
 
 - **NS e NA** (tipos 135 e 136) resolvem o MAC de um vizinho. O NS vai ao endereço de nó solicitado do alvo, e o MAC de destino é 33:33 mais os 32 bits finais ([RFC 2464](https://www.rfc-editor.org/rfc/rfc2464)).
 - **RS e RA** (tipos 133 e 134): o host pede, e o roteador anuncia prefixo, flags L e A, tempo de vida como roteador padrão e MTU ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861), seção 4).
 - Todas as mensagens saem com Hop Limit 255: um valor menor indicaria que vieram de fora do enlace (seção 7.1).
 - Sem resposta ao NS, o roteador desiste e envia ICMPv6 1/3, endereço inalcançável: são até 3 Neighbor Solicitation com intervalo de 1 s ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861), seções 7.2.2 e 10; [RFC 4443](https://www.rfc-editor.org/rfc/rfc4443), seção 3.1).
 
-### 8.5 Autoconfiguração (SLAAC) e DAD
+### 7.5 Autoconfiguração (SLAAC) e DAD
 
 1. O host forma o endereço de enlace local fe80:: com o identificador de interface ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seção 5.3).
 2. Antes de usar qualquer endereço unicast, testa-o por **DAD**: NS com origem :: ao nó solicitado; uma resposta indica duplicidade (seção 5.4).
 3. Pede e recebe o RA. Com a flag A e prefixo /64, forma o endereço global: prefixo mais identificador de interface (seção 5.5.3).
 4. O identificador pode ser o EUI-64 modificado do MAC ([RFC 4291](https://www.rfc-editor.org/rfc/rfc4291), apêndice A), um temporário ([RFC 8981](https://www.rfc-editor.org/rfc/rfc8981)) ou um estável opaco ([RFC 7217](https://www.rfc-editor.org/rfc/rfc7217)).
 
-### 8.6 Limitações do simulador
+### 7.6 Limitações do simulador
 
 As rotas são estáticas e não há protocolo de roteamento em execução. Não há cabeçalhos de extensão, fragmentação, Path MTU Discovery, DHCPv6, Redirect, NUD (detecção de inalcançabilidade de vizinho), Router Advertisement periódico, nem as demais opções do ND. A DAD usa uma só tentativa, e os temporizadores são os padrões do [RFC 4861](https://www.rfc-editor.org/rfc/rfc4861), seção 10, mas simplificados. A tabela de vizinhos dos roteadores intermediários é suposta preenchida, e o endereço temporário do modo privado é um valor fixo de exemplo, usado também no endereço de enlace local (a [RFC 8981](https://www.rfc-editor.org/rfc/rfc8981) trata dos endereços globais). A DAD de um endereço de enlace local duplicado, que pode desativar o IP da interface ([RFC 4862](https://www.rfc-editor.org/rfc/rfc4862), seção 5.4.5), não é simulada. Os endereços são de documentação ([RFC 3849](https://www.rfc-editor.org/rfc/rfc3849)) e locais únicos ([RFC 4193](https://www.rfc-editor.org/rfc/rfc4193)). Os tempos são didáticos.
 
 
-## 9. Glossário
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 

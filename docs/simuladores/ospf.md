@@ -12,9 +12,9 @@ OSPF passo a passo: Hello, adjacências, inundação de LSAs, SPF e tabela de ro
 
 | Modo | Cenário inicial | Cenários |
 | --- | --- | --- |
-| Convergência | Convergência em área única | 7.1.1 |
-| Custo e falha | Custo 50 em R2 / R3 | 7.2.1 a 7.2.3 |
-| Multiárea | Três áreas e Summary LSAs | 7.3.1 e 7.3.2 |
+| Convergência | Convergência em área única | 6.1.1 |
+| Custo e falha | Custo 50 em R2 / R3 | 6.2.1 a 6.2.3 |
+| Multiárea | Três áreas e Summary LSAs | 6.3.1 e 6.3.2 |
 
 ## 2. Fundamentação
 
@@ -239,202 +239,36 @@ Este documento usa até dois tipos de diagrama. Cada figura traz uma legenda com
 
 **Tipo A (topologia)**
 
-- [Figura 4.1](#41-convergência): topologia do modo "Convergência"
-- [Figura 4.2a](#42-custo-e-falha): topologia do modo "Custo e falha", variante a
-- [Figura 4.2b](#42-custo-e-falha): topologia do modo "Custo e falha", variante b
-- [Figura 4.2c](#42-custo-e-falha): topologia do modo "Custo e falha", variante c
-- [Figura 4.3a](#43-multiárea): topologia do modo "Multiárea", variante a
-- [Figura 4.3b](#43-multiárea): topologia do modo "Multiárea", variante b
+- [Figura 6.1](#61-modo-convergência): topologia do modo "Convergência"
+- [Figura 6.2a](#62-modo-custo-e-falha): topologia do modo "Custo e falha", variante a
+- [Figura 6.2b](#622-queda-do-enlace-r2--r3): topologia do modo "Custo e falha", variante b
+- [Figura 6.2c](#623-isolamento-do-pc-b): topologia do modo "Custo e falha", variante c
+- [Figura 6.3a](#63-modo-multiárea): topologia do modo "Multiárea", variante a
+- [Figura 6.3b](#632-enlace-r4--r8-fora-de-serviço): topologia do modo "Multiárea", variante b
 
 **Tipo B (sequência)**
 
-- [Figura 7.1.1](#711-convergência-em-área-única): sequência de "Convergência em área única"
-- [Figura 7.2.1](#721-custo-50-em-r2--r3): sequência de "Custo 50 em R2 / R3"
-- [Figura 7.2.2](#722-queda-do-enlace-r2--r3): sequência de "Queda do enlace R2 / R3"
-- [Figura 7.2.3](#723-isolamento-do-pc-b): sequência de "Isolamento do PC-B"
-- [Figura 7.3.1](#731-três-áreas-e-summary-lsas): sequência de "Três áreas e Summary LSAs"
-- [Figura 7.3.2](#732-enlace-r4--r8-fora-de-serviço): sequência de "Enlace R4 / R8 fora de serviço"
+- [Figura 6.1.1](#611-convergência-em-área-única): sequência de "Convergência em área única"
+- [Figura 6.2.1](#621-custo-50-em-r2--r3): sequência de "Custo 50 em R2 / R3"
+- [Figura 6.2.2](#622-queda-do-enlace-r2--r3): sequência de "Queda do enlace R2 / R3"
+- [Figura 6.2.3](#623-isolamento-do-pc-b): sequência de "Isolamento do PC-B"
+- [Figura 6.3.1](#631-três-áreas-e-summary-lsas): sequência de "Três áreas e Summary LSAs"
+- [Figura 6.3.2](#632-enlace-r4--r8-fora-de-serviço): sequência de "Enlace R4 / R8 fora de serviço"
 
-## 4. Topologia
-
-Figuras do Tipo A, uma por modo (e uma por variante do desenho, quando a rede muda entre cenários). Foram geradas a partir da mesma definição de topologia que a bancada usa.
-
-### 4.1 Convergência
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>0.1")
-  n_R2("R2<br/>0.2")
-  n_R3("R3<br/>0.3")
-  n_R4("R4<br/>0.4")
-  n_R5("R5<br/>0.5")
-  n_R6("R6<br/>0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, custo 10" --- n_R2
-  n_R1 -- "L2, custo 20" --- n_R4
-  n_R2 -- "L3, custo 10" --- n_R3
-  n_R2 -- "L4, custo 15" --- n_R5
-  n_R3 -- "L5, custo 10" --- n_R6
-  n_R4 -- "L6, custo 10" --- n_R5
-  n_R5 -- "L7, custo 20" --- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.1 (Tipo A, topologia).* Elementos do modo "Convergência": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para todos os cenários do modo (7.1.1).
-
-### 4.2 Custo e falha
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>0.1")
-  n_R2("R2<br/>0.2")
-  n_R3("R3<br/>0.3")
-  n_R4("R4<br/>0.4")
-  n_R5("R5<br/>0.5")
-  n_R6("R6<br/>0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, custo 10" --- n_R2
-  n_R1 -- "L2, custo 20" --- n_R4
-  n_R2 -- "L3, custo 50 (era 10)" --- n_R3
-  n_R2 -- "L4, custo 15" --- n_R5
-  n_R3 -- "L5, custo 10" --- n_R6
-  n_R4 -- "L6, custo 10" --- n_R5
-  n_R5 -- "L7, custo 20" --- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.2a (Tipo A, topologia).* Elementos do modo "Custo e falha": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (7.2.1).
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>0.1")
-  n_R2("R2<br/>0.2")
-  n_R3("R3<br/>0.3")
-  n_R4("R4<br/>0.4")
-  n_R5("R5<br/>0.5")
-  n_R6("R6<br/>0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, custo 10" --- n_R2
-  n_R1 -- "L2, custo 20" --- n_R4
-  n_R2 -. "L3, custo 10 (caído)" .- n_R3
-  n_R2 -- "L4, custo 15" --- n_R5
-  n_R3 -- "L5, custo 10" --- n_R6
-  n_R4 -- "L6, custo 10" --- n_R5
-  n_R5 -- "L7, custo 20" --- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.2b (Tipo A, topologia).* Elementos do modo "Custo e falha": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (7.2.2).
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>0.1")
-  n_R2("R2<br/>0.2")
-  n_R3("R3<br/>0.3")
-  n_R4("R4<br/>0.4")
-  n_R5("R5<br/>0.5")
-  n_R6("R6<br/>0.6")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "L1, custo 10" --- n_R2
-  n_R1 -- "L2, custo 20" --- n_R4
-  n_R2 -- "L3, custo 10" --- n_R3
-  n_R2 -- "L4, custo 15" --- n_R5
-  n_R3 -. "L5, custo 10 (caído)" .- n_R6
-  n_R4 -- "L6, custo 10" --- n_R5
-  n_R5 -. "L7, custo 20 (caído)" .- n_R6
-  n_PC_A --- n_R1
-  n_PC_B --- n_R6
-```
-
-*Figura 4.2c (Tipo A, topologia).* Elementos do modo "Custo e falha": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (7.2.3).
-
-### 4.3 Multiárea
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>área 1, 0.1")
-  n_R2("R2<br/>ABR, área 1 e 0, 0.2")
-  n_R3("R3<br/>ABR, área 1 e 0, 0.3")
-  n_R4("R4<br/>área 0, 0.4")
-  n_R5("R5<br/>área 0, 0.5")
-  n_R6("R6<br/>área 0, 0.6")
-  n_R7("R7<br/>área 2, 0.7")
-  n_R8("R8<br/>ABR, área 2 e 0, 0.8")
-  n_R9("R9<br/>ABR, área 2 e 0, 0.9")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "MA1, custo 10, área 1" --- n_R2
-  n_R1 -- "MA2, custo 15, área 1" --- n_R3
-  n_R2 -- "MA3, custo 10, área 1" --- n_R3
-  n_R4 -- "MA4, custo 10, área 0" --- n_R5
-  n_R5 -- "MA5, custo 15, área 0" --- n_R6
-  n_R4 -- "MA6, custo 20, área 0" --- n_R6
-  n_R7 -- "MA7, custo 10, área 2" --- n_R8
-  n_R7 -- "MA8, custo 15, área 2" --- n_R9
-  n_R8 -- "MA9, custo 10, área 2" --- n_R9
-  n_R2 -- "MA10, custo 25, área 0" --- n_R4
-  n_R3 -- "MA11, custo 30, área 0" --- n_R6
-  n_R4 -- "MA12, custo 20, área 0" --- n_R8
-  n_R6 -- "MA13, custo 25, área 0" --- n_R9
-  n_PC_A --- n_R1
-  n_PC_B --- n_R7
-```
-
-*Figura 4.3a (Tipo A, topologia).* Elementos do modo "Multiárea": R1 (área 1, 0.1); R2 (ABR, área 1 e 0, 0.2); R3 (ABR, área 1 e 0, 0.3); R4 (área 0, 0.4); R5 (área 0, 0.5); R6 (área 0, 0.6); R7 (área 2, 0.7); R8 (ABR, área 2 e 0, 0.8); R9 (ABR, área 2 e 0, 0.9); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (7.3.1).
-
-```mermaid
-flowchart LR
-  n_R1("R1<br/>área 1, 0.1")
-  n_R2("R2<br/>ABR, área 1 e 0, 0.2")
-  n_R3("R3<br/>ABR, área 1 e 0, 0.3")
-  n_R4("R4<br/>área 0, 0.4")
-  n_R5("R5<br/>área 0, 0.5")
-  n_R6("R6<br/>área 0, 0.6")
-  n_R7("R7<br/>área 2, 0.7")
-  n_R8("R8<br/>ABR, área 2 e 0, 0.8")
-  n_R9("R9<br/>ABR, área 2 e 0, 0.9")
-  n_PC_A["PC-A<br/>192.168.1.10"]
-  n_PC_B["PC-B<br/>192.168.2.10"]
-  n_R1 -- "MA1, custo 10, área 1" --- n_R2
-  n_R1 -- "MA2, custo 15, área 1" --- n_R3
-  n_R2 -- "MA3, custo 10, área 1" --- n_R3
-  n_R4 -- "MA4, custo 10, área 0" --- n_R5
-  n_R5 -- "MA5, custo 15, área 0" --- n_R6
-  n_R4 -- "MA6, custo 20, área 0" --- n_R6
-  n_R7 -- "MA7, custo 10, área 2" --- n_R8
-  n_R7 -- "MA8, custo 15, área 2" --- n_R9
-  n_R8 -- "MA9, custo 10, área 2" --- n_R9
-  n_R2 -- "MA10, custo 25, área 0" --- n_R4
-  n_R3 -- "MA11, custo 30, área 0" --- n_R6
-  n_R4 -. "MA12, custo 20, área 0 (caído)" .- n_R8
-  n_R6 -- "MA13, custo 25, área 0" --- n_R9
-  n_PC_A --- n_R1
-  n_PC_B --- n_R7
-```
-
-*Figura 4.3b (Tipo A, topologia).* Elementos do modo "Multiárea": R1 (área 1, 0.1); R2 (ABR, área 1 e 0, 0.2); R3 (ABR, área 1 e 0, 0.3); R4 (área 0, 0.4); R5 (área 0, 0.5); R6 (área 0, 0.6); R7 (área 2, 0.7); R8 (ABR, área 2 e 0, 0.8); R9 (ABR, área 2 e 0, 0.9); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (7.3.2).
-
-## 5. Abas da bancada
+## 4. Abas da bancada
 
 Cenário, Captura, Mensagem, LSDB, Tabela de roteamento, Experimento, Referência e Log.
 
-## 6. Configurações (campos do painel)
+## 5. Configurações (campos do painel)
 
-### 6.1 Teste
+### 5.1 Teste
 
 - **Sentido do tráfego**. Valores: PC-A (192.168.1.10) → PC-B; PC-B (192.168.2.10) → PC-A. Padrão: PC-A (192.168.1.10) → PC-B. Modos: todos.
   - Quem envia o pacote de teste ao final da simulação.
   - Escolhe se o pacote sai do PC-A para o PC-B ou do PC-B para o PC-A.
   - Como o custo é o mesmo nos dois sentidos, o caminho de volta é o inverso da ida. Em redes reais, custos diferentes por interface podem tornar o caminho assimétrico.
 
-### 6.2 Evento
+### 5.2 Evento
 
 - **Tipo de evento**. Valores: Mudança de custo de um enlace; Queda de enlace. Padrão: Mudança de custo de um enlace. Modos: Custo e falha.
   - O que acontece depois que a rede converge.
@@ -451,14 +285,14 @@ Cenário, Captura, Mensagem, LSDB, Tabela de roteamento, Experimento, Referênci
   - Derruba um segundo enlace junto com o primeiro.
   - Usado só na queda de enlace. Para isolar o PC-B, derrube L5 (R3 / R6) e L7 (R5 / R6): R6 fica sem nenhum vizinho e o pacote é descartado.
 
-### 6.3 Falha
+### 5.3 Falha
 
 - **Enlace fora de serviço**. Valores: Nenhum (rede íntegra); MA1: R1 / R2 (área 1); MA2: R1 / R3 (área 1); MA3: R2 / R3 (área 1); MA4: R4 / R5 (área 0); MA5: R5 / R6 (área 0); MA6: R4 / R6 (área 0); MA7: R7 / R8 (área 2); MA8: R7 / R9 (área 2); MA9: R8 / R9 (área 2); MA10: R2 / R4 (área 0); MA11: R3 / R6 (área 0); MA12: R4 / R8 (área 0); MA13: R6 / R9 (área 0). Padrão: Nenhum (rede íntegra). Modos: Multiárea.
   - Um enlace que já está caído quando a rede converge.
   - Com o enlace MA12 (R4 / R8) fora de serviço, o caminho do backbone para a área 2 passa por R6 e R9.
   - Dentro de uma área a falha altera o Router-LSA; entre áreas, o ABR muda o custo dos Summary LSAs.
 
-### 6.4 Tabelas
+### 5.4 Tabelas
 
 - **Ver a LSDB e a tabela do roteador**. Valores: R1; R2; R3; R4; R5; R6. Padrão: R1. Modos: Convergência; Custo e falha.
   - Escolhe o roteador cujas tabelas aparecem nas abas LSDB e Tabela de roteamento.
@@ -469,15 +303,38 @@ Cenário, Captura, Mensagem, LSDB, Tabela de roteamento, Experimento, Referênci
   - Compare R1 (só a área 1 e Summary LSAs) com R2 (ABR: duas LSDBs, uma por área) e com R4 (só o backbone).
   - Não muda o resultado da simulação.
 
-## 7. Cenários
+## 6. Cenários
 
-### 7.1 Modo: Convergência
+### 6.1 Modo: Convergência
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>0.1")
+  n_R2("R2<br/>0.2")
+  n_R3("R3<br/>0.3")
+  n_R4("R4<br/>0.4")
+  n_R5("R5<br/>0.5")
+  n_R6("R6<br/>0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, custo 10" --- n_R2
+  n_R1 -- "L2, custo 20" --- n_R4
+  n_R2 -- "L3, custo 10" --- n_R3
+  n_R2 -- "L4, custo 15" --- n_R5
+  n_R3 -- "L5, custo 10" --- n_R6
+  n_R4 -- "L6, custo 10" --- n_R5
+  n_R5 -- "L7, custo 20" --- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.1 (Tipo A, topologia).* Elementos do modo "Convergência": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para todos os cenários do modo (6.1.1).
 
 > **Grupo:** Convergência
 
 Como roteadores sem nenhuma rota chegam a um mapa comum da rede e calculam o melhor caminho.
 
-#### 7.1.1 Convergência em área única
+#### 6.1.1 Convergência em área única
 
 *Todos os roteadores obtêm a mesma LSDB e calculam o caminho de menor custo.*
 
@@ -603,7 +460,7 @@ sequenceDiagram
   n_R6 ->> n_PC_B: IP ttl 60
 ```
 
-*Figura 7.1.1 (Tipo B, sequência).* Mensagens do cenário "Convergência em área única", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 90 mensagens, numeradas de 1 a 90 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Convergência", com a configuração aplicada acima.
+*Figura 6.1.1 (Tipo B, sequência).* Mensagens do cenário "Convergência em área única", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 90 mensagens, numeradas de 1 a 90 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Convergência", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -615,13 +472,36 @@ sequenceDiagram
 
 **Por que importa.** Como todos enxergam o mesmo mapa, o resultado é um caminho sem laços e a convergência é rápida. O custo, e não o número de saltos, define a escolha.
 
-### 7.2 Modo: Custo e falha
+### 6.2 Modo: Custo e falha
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>0.1")
+  n_R2("R2<br/>0.2")
+  n_R3("R3<br/>0.3")
+  n_R4("R4<br/>0.4")
+  n_R5("R5<br/>0.5")
+  n_R6("R6<br/>0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, custo 10" --- n_R2
+  n_R1 -- "L2, custo 20" --- n_R4
+  n_R2 -- "L3, custo 50 (era 10)" --- n_R3
+  n_R2 -- "L4, custo 15" --- n_R5
+  n_R3 -- "L5, custo 10" --- n_R6
+  n_R4 -- "L6, custo 10" --- n_R5
+  n_R5 -- "L7, custo 20" --- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.2a (Tipo A, topologia).* Elementos do modo "Custo e falha": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (6.2.1).
 
 > **Grupo:** Custo e falha
 
 Como o OSPF reage depois de convergir: um novo LSA é inundado e cada roteador refaz o SPF.
 
-#### 7.2.1 Custo 50 em R2 / R3
+#### 6.2.1 Custo 50 em R2 / R3
 
 *Uma mudança de custo gera novos LSAs e um novo SPF.*
 
@@ -675,7 +555,7 @@ sequenceDiagram
   n_R6 ->> n_PC_B: IP ttl 60
 ```
 
-*Figura 7.2.1 (Tipo B, sequência).* Mensagens do cenário "Custo 50 em R2 / R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Custo e falha", com a configuração aplicada acima.
+*Figura 6.2.1 (Tipo B, sequência).* Mensagens do cenário "Custo 50 em R2 / R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 19 mensagens, numeradas de 1 a 19 na ordem da comunicação (em 5 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Custo e falha", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -686,7 +566,7 @@ sequenceDiagram
 
 **Por que importa.** Mostra por que o administrador usa o custo para fazer engenharia de tráfego: o caminho muda sem mexer na topologia.
 
-#### 7.2.2 Queda do enlace R2 / R3
+#### 6.2.2 Queda do enlace R2 / R3
 
 *A falha é detectada e o enlace sai dos Router-LSAs.*
 
@@ -701,6 +581,29 @@ O enlace **L3** cai. R2 e R3 perdem a adjacência (por falha da interface ou por
 - O Hello sem resposta, em vermelho, no enlace caído.
 - Os dois roteadores originam novos LSAs.
 - O pacote segue por outro caminho, com custo maior.
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>0.1")
+  n_R2("R2<br/>0.2")
+  n_R3("R3<br/>0.3")
+  n_R4("R4<br/>0.4")
+  n_R5("R5<br/>0.5")
+  n_R6("R6<br/>0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, custo 10" --- n_R2
+  n_R1 -- "L2, custo 20" --- n_R4
+  n_R2 -. "L3, custo 10 (caído)" .- n_R3
+  n_R2 -- "L4, custo 15" --- n_R5
+  n_R3 -- "L5, custo 10" --- n_R6
+  n_R4 -- "L6, custo 10" --- n_R5
+  n_R5 -- "L7, custo 20" --- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.2b (Tipo A, topologia).* Elementos do modo "Custo e falha": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.2.2).
 
 ```mermaid
 sequenceDiagram
@@ -737,7 +640,7 @@ sequenceDiagram
   n_R6 ->> n_PC_B: IP ttl 60
 ```
 
-*Figura 7.2.2 (Tipo B, sequência).* Mensagens do cenário "Queda do enlace R2 / R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 5 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Custo e falha", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Queda do enlace R2 / R3", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 18 mensagens, numeradas de 1 a 18 na ordem da comunicação (em 5 fases; 1 perdida). Corresponde ao diagrama de sequência e à aba Captura, no modo "Custo e falha", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -748,7 +651,7 @@ sequenceDiagram
 
 **Por que importa.** A rapidez da reconvergência depende da detecção da falha e do tempo de inundação e de SPF. Em produção, esses temporizadores são ajustados.
 
-#### 7.2.3 Isolamento do PC-B
+#### 6.2.3 Isolamento do PC-B
 
 *Sem nenhum caminho, o destino sai da tabela e o pacote é descartado.*
 
@@ -763,6 +666,29 @@ Caem **L5 (R3 / R6)** e **L7 (R5 / R6)**: o R6 fica sem vizinhos e o PC-B deixa 
 - R6 fica sem adjacências.
 - Na aba Tabela de roteamento: R6 aparece sem rota.
 - O último evento é o descarte do pacote.
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>0.1")
+  n_R2("R2<br/>0.2")
+  n_R3("R3<br/>0.3")
+  n_R4("R4<br/>0.4")
+  n_R5("R5<br/>0.5")
+  n_R6("R6<br/>0.6")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "L1, custo 10" --- n_R2
+  n_R1 -- "L2, custo 20" --- n_R4
+  n_R2 -- "L3, custo 10" --- n_R3
+  n_R2 -- "L4, custo 15" --- n_R5
+  n_R3 -. "L5, custo 10 (caído)" .- n_R6
+  n_R4 -- "L6, custo 10" --- n_R5
+  n_R5 -. "L7, custo 20 (caído)" .- n_R6
+  n_PC_A --- n_R1
+  n_PC_B --- n_R6
+```
+
+*Figura 6.2c (Tipo A, topologia).* Elementos do modo "Custo e falha": R1 (0.1); R2 (0.2); R3 (0.3); R4 (0.4); R5 (0.5); R6 (0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.2.3).
 
 ```mermaid
 sequenceDiagram
@@ -793,7 +719,7 @@ sequenceDiagram
   n_PC_A ->> n_R1: IP ttl 64
 ```
 
-*Figura 7.2.3 (Tipo B, sequência).* Mensagens do cenário "Isolamento do PC-B", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 5 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Custo e falha", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Isolamento do PC-B", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 12 mensagens, numeradas de 1 a 12 na ordem da comunicação (em 5 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Custo e falha", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -804,13 +730,45 @@ sequenceDiagram
 
 **Por que importa.** Mostra que o roteamento dinâmico só encontra caminhos que existem: a redundância física precisa ser projetada.
 
-### 7.3 Modo: Multiárea
+### 6.3 Modo: Multiárea
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>área 1, 0.1")
+  n_R2("R2<br/>ABR, área 1 e 0, 0.2")
+  n_R3("R3<br/>ABR, área 1 e 0, 0.3")
+  n_R4("R4<br/>área 0, 0.4")
+  n_R5("R5<br/>área 0, 0.5")
+  n_R6("R6<br/>área 0, 0.6")
+  n_R7("R7<br/>área 2, 0.7")
+  n_R8("R8<br/>ABR, área 2 e 0, 0.8")
+  n_R9("R9<br/>ABR, área 2 e 0, 0.9")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "MA1, custo 10, área 1" --- n_R2
+  n_R1 -- "MA2, custo 15, área 1" --- n_R3
+  n_R2 -- "MA3, custo 10, área 1" --- n_R3
+  n_R4 -- "MA4, custo 10, área 0" --- n_R5
+  n_R5 -- "MA5, custo 15, área 0" --- n_R6
+  n_R4 -- "MA6, custo 20, área 0" --- n_R6
+  n_R7 -- "MA7, custo 10, área 2" --- n_R8
+  n_R7 -- "MA8, custo 15, área 2" --- n_R9
+  n_R8 -- "MA9, custo 10, área 2" --- n_R9
+  n_R2 -- "MA10, custo 25, área 0" --- n_R4
+  n_R3 -- "MA11, custo 30, área 0" --- n_R6
+  n_R4 -- "MA12, custo 20, área 0" --- n_R8
+  n_R6 -- "MA13, custo 25, área 0" --- n_R9
+  n_PC_A --- n_R1
+  n_PC_B --- n_R7
+```
+
+*Figura 6.3a (Tipo A, topologia).* Elementos do modo "Multiárea": R1 (área 1, 0.1); R2 (ABR, área 1 e 0, 0.2); R3 (ABR, área 1 e 0, 0.3); R4 (área 0, 0.4); R5 (área 0, 0.5); R6 (área 0, 0.6); R7 (área 2, 0.7); R8 (ABR, área 2 e 0, 0.8); R9 (ABR, área 2 e 0, 0.9); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (6.3.1).
 
 > **Grupo:** Multiárea
 
 Como as áreas limitam a inundação e como os ABRs resumem uma área para as outras.
 
-#### 7.3.1 Três áreas e Summary LSAs
+#### 6.3.1 Três áreas e Summary LSAs
 
 *Cada área inunda os próprios LSAs e os ABRs resumem as outras áreas.*
 
@@ -917,7 +875,7 @@ sequenceDiagram
   n_R7 ->> n_PC_B: IP ttl 59
 ```
 
-*Figura 7.3.1 (Tipo B, sequência).* Mensagens do cenário "Três áreas e Summary LSAs", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, R7, R8, R9, PC-B: 68 mensagens, numeradas de 1 a 68 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Multiárea", com a configuração aplicada acima.
+*Figura 6.3.1 (Tipo B, sequência).* Mensagens do cenário "Três áreas e Summary LSAs", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, R7, R8, R9, PC-B: 68 mensagens, numeradas de 1 a 68 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Multiárea", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -928,7 +886,7 @@ sequenceDiagram
 
 **Por que importa.** O resumo esconde a topologia interna de cada área: uma falha dentro de uma área não obriga as outras a refazer o SPF, só a atualizar um custo.
 
-#### 7.3.2 Enlace R4 / R8 fora de serviço
+#### 6.3.2 Enlace R4 / R8 fora de serviço
 
 *A falha no backbone muda o custo dos Summary LSAs.*
 
@@ -943,6 +901,38 @@ Com **MA12 (R4 / R8)** fora de serviço, o tráfego do backbone para a área 2 p
 - O caminho do pacote passa por R9.
 - Na aba Tabela de roteamento de R1: o custo até R7 é maior.
 - R1 não sabe quais enlaces foram usados dentro do backbone.
+
+```mermaid
+flowchart LR
+  n_R1("R1<br/>área 1, 0.1")
+  n_R2("R2<br/>ABR, área 1 e 0, 0.2")
+  n_R3("R3<br/>ABR, área 1 e 0, 0.3")
+  n_R4("R4<br/>área 0, 0.4")
+  n_R5("R5<br/>área 0, 0.5")
+  n_R6("R6<br/>área 0, 0.6")
+  n_R7("R7<br/>área 2, 0.7")
+  n_R8("R8<br/>ABR, área 2 e 0, 0.8")
+  n_R9("R9<br/>ABR, área 2 e 0, 0.9")
+  n_PC_A["PC-A<br/>192.168.1.10"]
+  n_PC_B["PC-B<br/>192.168.2.10"]
+  n_R1 -- "MA1, custo 10, área 1" --- n_R2
+  n_R1 -- "MA2, custo 15, área 1" --- n_R3
+  n_R2 -- "MA3, custo 10, área 1" --- n_R3
+  n_R4 -- "MA4, custo 10, área 0" --- n_R5
+  n_R5 -- "MA5, custo 15, área 0" --- n_R6
+  n_R4 -- "MA6, custo 20, área 0" --- n_R6
+  n_R7 -- "MA7, custo 10, área 2" --- n_R8
+  n_R7 -- "MA8, custo 15, área 2" --- n_R9
+  n_R8 -- "MA9, custo 10, área 2" --- n_R9
+  n_R2 -- "MA10, custo 25, área 0" --- n_R4
+  n_R3 -- "MA11, custo 30, área 0" --- n_R6
+  n_R4 -. "MA12, custo 20, área 0 (caído)" .- n_R8
+  n_R6 -- "MA13, custo 25, área 0" --- n_R9
+  n_PC_A --- n_R1
+  n_PC_B --- n_R7
+```
+
+*Figura 6.3b (Tipo A, topologia).* Elementos do modo "Multiárea": R1 (área 1, 0.1); R2 (ABR, área 1 e 0, 0.2); R3 (ABR, área 1 e 0, 0.3); R4 (área 0, 0.4); R5 (área 0, 0.5); R6 (área 0, 0.6); R7 (área 2, 0.7); R8 (ABR, área 2 e 0, 0.8); R9 (ABR, área 2 e 0, 0.9); PC-A (192.168.1.10); PC-B (192.168.2.10). Linhas tracejadas: enlaces alternativos, forjados ou caídos. Vale para os cenários (6.3.2).
 
 ```mermaid
 sequenceDiagram
@@ -1023,7 +1013,7 @@ sequenceDiagram
   n_R7 ->> n_PC_B: IP ttl 59
 ```
 
-*Figura 7.3.2 (Tipo B, sequência).* Mensagens do cenário "Enlace R4 / R8 fora de serviço", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, R7, R8, R9, PC-B: 58 mensagens, numeradas de 1 a 58 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Multiárea", com a configuração aplicada acima.
+*Figura 6.3.2 (Tipo B, sequência).* Mensagens do cenário "Enlace R4 / R8 fora de serviço", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, R7, R8, R9, PC-B: 58 mensagens, numeradas de 1 a 58 na ordem da comunicação (em 6 fases). Corresponde ao diagrama de sequência e à aba Captura, no modo "Multiárea", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1033,13 +1023,13 @@ sequenceDiagram
 
 **Por que importa.** É a vantagem e o preço do resumo: a rede escala, mas o roteador interno não vê o caminho completo.
 
-## 8. Referência
+## 7. Referência
 
-### 8.1 Roteamento por estado de enlace
+### 7.1 Roteamento por estado de enlace
 
 No **OSPF** (Open Shortest Path First, versão 2, [RFC 2328](https://www.rfc-editor.org/rfc/rfc2328)), cada roteador descreve os próprios enlaces e os custos em um **LSA** (Link State Advertisement) e o inunda por toda a área. Quando todos têm a mesma **LSDB** (base de estado de enlace), cada um calcula sozinho a árvore de menor custo, com raiz em si mesmo, pelo algoritmo de **Dijkstra** (**SPF**, seção 16.1). O OSPF é um IGP (Interior Gateway Protocol) e transporta seus pacotes direto sobre o IP, protocolo 89.
 
-### 8.2 Do Hello à tabela de rotas
+### 7.2 Do Hello à tabela de rotas
 
 - **Hello:** descobre vizinhos, em 224.0.0.5 (AllSPFRouters). Quando um roteador vê o próprio Router ID na lista de vizinhos do Hello recebido, o estado passa a **2-Way** (seção 10.5). Os padrões são HelloInterval de 10 s e RouterDeadInterval de 40 s em redes ponto a ponto e broadcast.
 - **Adjacência:** os vizinhos trocam **DBD** (cabeçalhos dos LSAs), **LSR** (pedido dos LSAs que faltam), **LSU** (entrega dos LSAs) e **LSAck** (confirmação) até o estado **Full** (seção 10.1 e seção 7.2).
@@ -1047,11 +1037,11 @@ No **OSPF** (Open Shortest Path First, versão 2, [RFC 2328](https://www.rfc-edi
 - **SPF:** cada roteador executa o Dijkstra sobre a LSDB e instala o próximo salto de cada destino.
 - **Custo:** a RFC trata o custo da interface apenas como parâmetro configurável (quanto menor, mais preferido); vence o menor custo total. A fórmula "largura de banda de referência dividida pela do enlace" é prática de fabricantes, como o Cisco IOS, e não faz parte da RFC.
 
-### 8.3 Multiárea
+### 7.3 Multiárea
 
 A **área 0** é o backbone, e toda área precisa se ligar a ela. Um **ABR** (Area Border Router) tem interfaces em mais de uma área e mantém uma LSDB por área. Os Router-LSAs não saem da própria área. Para que as áreas se alcancem, o ABR origina **Summary LSAs** (tipo 3, seção 12.4.3): cada um carrega só o destino e o custo, sem a topologia. O roteador interno soma o custo até o ABR ao custo anunciado e obtém uma rota **inter-área**. Uma falha dentro de uma área não obriga as outras a refazer o SPF, apenas a atualizar um custo.
 
-### 8.4 Comparação com o RIP
+### 7.4 Comparação com o RIP
 
 | Aspecto | OSPF | RIPv2 |
 | --- | --- | --- |
@@ -1062,14 +1052,14 @@ A **área 0** é o backbone, e toda área precisa se ligar a ela. Um **ABR** (Ar
 | Transporte | IP protocolo 89, 224.0.0.5 e 224.0.0.6 | UDP 520, 224.0.0.9 |
 | Escala | Grande, com áreas | Pequena |
 
-### 8.5 OSPF e segurança
+### 7.5 OSPF e segurança
 
 - **Injeção de LSAs e de rotas:** um atacante na mesma rede pode anunciar LSAs falsos para desviar tráfego (homem no meio) ou criar um buraco negro. A defesa é a **autenticação**: no OSPFv2, o HMAC-SHA da [RFC 5709](https://www.rfc-editor.org/rfc/rfc5709) (a autenticação simples e o MD5 original são fracos).
 - **Interfaces passivas:** desativar o Hello nas interfaces voltadas para usuários impede que um host participe do roteamento.
 - **Filtragem e resumo de rotas:** reduzem o efeito de anúncios indevidos e da instabilidade de enlaces (flapping).
 - **Proteção do plano de controle:** limitar quem pode enviar OSPF aos roteadores vizinhos conhecidos e usar o TTL de segurança (GTSM, [RFC 5082](https://www.rfc-editor.org/rfc/rfc5082)) quando aplicável.
 
-### 8.6 O que o simulador simplifica
+### 7.6 O que o simulador simplifica
 
 - Todos os enlaces são ponto a ponto: não há eleição de **DR** e **BDR** (redes de acesso múltiplo), e o endereço 224.0.0.6 (AllDRouters) aparece só nesta referência.
 - Cada roteador anuncia um destino: o próprio Router ID. As redes dos PCs não entram em LSAs próprios (não há Network-LSA, Type 5 nem áreas stub).
@@ -1078,7 +1068,7 @@ A **área 0** é o backbone, e toda área precisa se ligar a ela. Um **ABR** (Ar
 - O custo de cada enlace é fixo no cenário, sem cálculo por largura de banda de referência. OSPFv3 e IPv6 estão fora do escopo.
 - A detecção da falha é instantânea no desenho; em redes reais depende do RouterDeadInterval (40 s) ou de BFD.
 
-### 8.7 Roteiro de exercícios
+### 7.7 Roteiro de exercícios
 
 1. No modo **Convergência**, anote o caminho de PC-A a PC-B. Todos os caminhos de R1 a R6 têm 3 saltos; por que o OSPF escolheu R1, R2, R3, R6?
 2. Na aba **LSDB**, escolha R1 e compare com R6 depois da inundação. O que mudou entre os dois? E na **Tabela de roteamento**?
@@ -1090,7 +1080,7 @@ A **área 0** é o backbone, e toda área precisa se ligar a ela. Um **ABR** (Ar
 8. **Segurança:** um host na rede do PC-A passa a enviar LSAs falsos. Que configurações impediriam a injeção?
 
 
-## 9. Glossário
+## 8. Glossário
 
 Significado e finalidade das siglas usadas neste documento.
 
