@@ -39,6 +39,7 @@ export const reference: string = [
     '<li>Valores de desafios, State e autenticadores são ilustrativos (determinísticos). Não há criptografia real.</li>' +
     '<li>Sem derivação nem uso de chaves (MSK e EMSK, RFC 5247) e sem MACsec. No Wi-Fi o resultado do EAP serve também para derivar as chaves da rede sem fio, que não é o foco deste simulador.</li>' +
     '<li>Sem autorização por atributos do servidor (VLAN, listas de controle de acesso), sem mudança de autorização durante a sessão e sem verificação de postura do dispositivo. Dispositivos sem suplicante exigem uma política à parte, que não é tratada.</li>' +
+    '<li>Do Session-Timeout, o simulador mostra só o caso com Termination-Action RADIUS-Request e prazo positivo (reautenticação). Não mostra o Termination-Action Default (0), em que o fim do prazo encerra a sessão, nem o Session-Timeout igual a zero com RADIUS-Request, que pede uma nova autenticação logo após a primeira (RFC 3580, seção 3.17 e seção 3.19).</li>' +
     '<li>A autorização por endereço MAC é um recurso das implementações, com nomes e comportamentos que variam por fabricante. O simulador mostra só a ideia.</li>' +
     '<li>Os endereços MAC seguem a faixa de documentação (RFC 9542) e os endereços IP, as redes de documentação (RFC 5737).</li></ul>',
 ].join('');
