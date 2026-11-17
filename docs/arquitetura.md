@@ -106,7 +106,7 @@ O campo `len` de uma mensagem do trace é o tamanho, em bytes, do quadro ou da P
 | Mensagens de protocolos sobre TCP (BGP, LDP, EAP) | o tamanho da própria mensagem do protocolo, sem os cabeçalhos de baixo |
 | Congestionamento | rodadas de bytes enviados; não é tamanho de quadro |
 
-Quando um simulador desvia desta convenção, a aba Referência dele deve dizer. Desvios conhecidos, ainda não padronizados: o OSPF Hello (78 bytes) não conta os vizinhos listados; os registros TLS cifrados do FTP/SFTP e do SSH usam tamanhos ilustrativos. Qualquer mudança de convenção deve ser acompanhada do teste em `tests/conformidade/tamanhos.test.ts`.
+Quando um simulador desvia desta convenção, a aba Referência dele deve dizer. Desvios conhecidos, ainda não padronizados: o OSPF Hello (78 bytes) não conta os vizinhos listados; os registros TLS cifrados do FTP/SFTP, do HTTPS e do SSH, e o conteúdo HTTP do HTTPS, usam tamanhos ilustrativos (o quadro soma sempre os 54 bytes de Ethernet, IPv4 e TCP). Qualquer mudança de convenção deve ser acompanhada do teste em `tests/conformidade/tamanhos.test.ts`.
 
 ## 12. Limitações
 

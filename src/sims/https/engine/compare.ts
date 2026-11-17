@@ -84,7 +84,7 @@ export function simCompare(P: TlsParams): Trace {
   raw.tamper = !!P.tamper;
   const tcp80 = (from: string, to: string, label: string, flags: string) =>
     tr.add(from, to, {
-      label, proto: 'TCP', color: C0.tcp, len: 40, info: (from === 'c' ? '50121 → 80' : '80 → 50121') + ' [' + flags + ']', phaseName: 'HTTP',
+      label, proto: 'TCP', color: C0.tcp, len: 54, info: (from === 'c' ? '50121 → 80' : '80 → 50121') + ' [' + flags + ']', phaseName: 'HTTP',
       fields: [{ sec: 'TCP (RFC 9293)' }, ['Flags', flags, ''], ['Porta', '80 (HTTP)', 'porta sem proteção']],
       about: 'Segmento TCP da conexão HTTP, na porta 80.',
     });
@@ -94,10 +94,12 @@ export function simCompare(P: TlsParams): Trace {
       to,
       Object.assign(
         {
-          label, proto: 'HTTP', color: C0.plain as string, len: 260, info: label, phaseName: 'HTTP', about: '',
+          label, proto: 'HTTP', color: C0.plain as string, info: label, phaseName: 'HTTP', about: '',
           fields: ([{ sec: 'HTTP (texto puro, porta 80)' }] as Field[]).concat(fields, [['Cifrado?', 'não', 'qualquer observador no caminho lê e pode alterar', 'expert']] as Field[]),
         },
         o,
+        // o.len é o tamanho do conteúdo HTTP; o quadro soma Ethernet, IPv4 e TCP (54 bytes)
+        { len: 54 + (o.len ?? 260) },
       ),
     );
   tr.st(0, 'phase', 'início', 'warn');
@@ -214,7 +216,7 @@ export function simCompare(P: TlsParams): Trace {
     else if (label === 'Server Hello') sl.push({ t: m.tArr, text: 'TLS Server Hello   ' + (R.ver || '') + ', ' + (R.suite || ''), hot: false });
     else if (!m.enc && /Certificate/.test(label)) sl.push({ t: m.tArr, text: 'TLS Certificate (em claro: ' + SNI + ')', hot: false });
     else if (m.enc) {
-      const sz = m.len - 40;
+      const sz = m.len - 54 - 5; // corpo do registro TLS
       const hx = hex('rec' + i + P.action, 12).replace(/(..)/g, '$1 ').trim();
       const tag =
         /^(HTTP\/2 |HTTP\/1\.1 )?(GET|POST)/.test(label) || /^HTTP\/2 (GET|POST)/.test(label)

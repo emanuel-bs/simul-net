@@ -138,3 +138,26 @@ describe('TLS 1.3: sentinela de downgrade no random do ServerHello (RFC 9846, se
     expect(valor(sh, 'random')).not.toMatch(/444f574e4752440[01]$/i);
   });
 });
+
+describe('HTTPS: campo len pela convenção de tamanhos (arquitetura, seção 11): quadro Ethernet sem FCS', () => {
+  const todos = () => httpsProtocol.scenarios.flatMap((s) => httpsProtocol.build(scenarioParams(httpsProtocol.controls, s), s.sub).msgs.map((m) => ({ s, m })));
+  it('segmento TCP sem opções e sem dados: 14 + 20 + 20 = 54 bytes', () => {
+    const tcp = todos().filter(({ m }) => m.proto === 'TCP');
+    expect(tcp.length).toBeGreaterThan(0);
+    tcp.forEach(({ s, m }) => expect(m.len, `${s.id}: ${m.label}`).toBe(54));
+  });
+  it('registro TLS: o campo Length é o tamanho do quadro menos 54 (Ethernet, IPv4 e TCP) e menos 5 (cabeçalho do registro)', () => {
+    let vistos = 0;
+    todos().filter(({ m }) => /^TLSv/.test(String(m.proto))).forEach(({ s, m }) => {
+      const n = Number(/^(\d+) bytes/.exec(valor(m, 'Length'))![1]);
+      vistos++;
+      expect(m.len - 54 - 5, `${s.id}: ${m.label}`).toBe(n);
+    });
+    expect(vistos).toBeGreaterThan(0);
+  });
+  it('ClientHello: registro de 517 bytes (5 de cabeçalho e 512 de corpo), quadro de 571', () => {
+    const ch = clientHello(roda('h13', {}));
+    expect(ch.len).toBe(571);
+    expect(valor(ch, 'Length')).toContain('512');
+  });
+});

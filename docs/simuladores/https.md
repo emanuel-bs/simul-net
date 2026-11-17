@@ -1880,7 +1880,7 @@ O custo do HTTPS é pago uma vez por conexão e diminui com TLS 1.3, retomada de
 
 ### 7.9 O que este simulador simplifica
 
-Não há criptografia real: chaves, assinaturas e hashes são valores ilustrativos. Não são simulados o HelloRetryRequest, o pós-handshake (KeyUpdate), a compressão, o DTLS, o QUIC, o ECH, o certificate pinning e o Must-Staple. Os tamanhos de registro são aproximados.
+Não há criptografia real: chaves, assinaturas e hashes são valores ilustrativos. Os tamanhos seguem a convenção de quadros Ethernet sem FCS (TCP de 54 bytes; registro TLS com 5 bytes de cabeçalho), mas os tamanhos dos registros cifrados, do certificado e do conteúdo HTTP são ilustrativos. Não são simulados o HelloRetryRequest, o pós-handshake (KeyUpdate), a compressão, o DTLS, o QUIC, o ECH, o certificate pinning e o Must-Staple. Os tamanhos de registro são aproximados.
 
 ### 7.10 Segurança
 
@@ -1927,6 +1927,7 @@ Significado e finalidade das siglas usadas neste documento.
 | **ECDSA** | Elliptic Curve Digital Signature Algorithm | assinatura digital em curvas elípticas, usada em certificados e na autenticação do servidor |
 | **ECH** | Encrypted Client Hello, ClientHello cifrado | cifra o ClientHello, inclusive o SNI, para esconder o nome do site de quem observa a rede |
 | **EKU** | Extended Key Usage, uso estendido da chave | campo do certificado que limita para que ele serve, como autenticar servidores |
+| **FCS** | Frame Check Sequence, sequência de verificação do frame | código (CRC) no fim do frame que permite ao receptor descartar frames corrompidos |
 | **HKDF** | HMAC-based Key Derivation Function, função de derivação de chaves baseada em HMAC | deriva as várias chaves do TLS 1.3 a partir de um segredo |
 | **HSTS** | HTTP Strict Transport Security | cabeçalho com que o servidor manda o navegador usar sempre HTTPS, dificultando o rebaixamento para HTTP |
 | **HTTP** | Hypertext Transfer Protocol, protocolo de transferência de hipertexto | transporta páginas e dados entre navegador e servidor web |

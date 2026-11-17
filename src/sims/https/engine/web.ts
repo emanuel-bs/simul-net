@@ -11,7 +11,7 @@ export function simWeb(P: TlsParams): Trace {
   const W = raw.W;
   const tcp80 = (from: string, to: string, label: string, flags: string) =>
     tr.add(from, to, {
-      label, proto: 'TCP', color: C0.tcp, len: 40, info: (from === 'c' ? '50121 → 80' : '80 → 50121') + ' [' + flags + ']', phaseName: 'HTTP',
+      label, proto: 'TCP', color: C0.tcp, len: 54, info: (from === 'c' ? '50121 → 80' : '80 → 50121') + ' [' + flags + ']', phaseName: 'HTTP',
       fields: [{ sec: 'TCP (RFC 9293)' }, ['Flags', flags, ''], ['Porta', '80 (HTTP)', 'porta sem proteção']],
       about: 'Segmento TCP da conexão HTTP na porta 80.',
     });
@@ -21,10 +21,12 @@ export function simWeb(P: TlsParams): Trace {
       to,
       Object.assign(
         {
-          label, proto: 'HTTP', color: C0.plain as string, len: 260, info: label, phaseName: 'HTTP', about: '',
+          label, proto: 'HTTP', color: C0.plain as string, info: label, phaseName: 'HTTP', about: '',
           fields: ([{ sec: 'HTTP (texto puro, porta 80)' }] as Field[]).concat(fields, [['Cifrado?', 'não', 'qualquer observador no caminho lê e pode alterar', 'expert']] as Field[]),
         },
         o,
+        // o.len é o tamanho do conteúdo HTTP; o quadro soma Ethernet, IPv4 e TCP (54 bytes)
+        { len: 54 + (o.len ?? 260) },
       ),
     );
   const tcpAt = (a: string, b: string) => {

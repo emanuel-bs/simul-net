@@ -25,6 +25,9 @@ export function mkTrace(P: Pick<TlsParams, 'rtt'>, ocsp: boolean, states?: State
 }
 const lines = (a: string[]): string => a.join(', ');
 
+/** Cabeçalhos até o TCP sem opções: Ethernet 14, IPv4 20 e TCP 20. O `len` de cada quadro é este valor mais o que vai no TCP (arquitetura, seção 11). */
+export const HDR = 54;
+
 type TOpts = MessageOptions & { ctype?: number; cname?: string; rver?: string; data?: boolean; bad?: boolean };
 
 // ---------- Ferramentas de mensagem ----------
@@ -39,12 +42,14 @@ export function toolkit(tr: Trace) {
   ];
   const plain = (from: string, to: string, label: string, hsNum: number | null, fields: Field[] | null, o?: TOpts) => {
     const op = o || {};
+    // op.len é o tamanho do registro TLS (cabeçalho de 5 bytes mais o corpo); o quadro soma Ethernet, IPv4 e TCP.
     const len = op.len || 200;
     return tr.add(
       from,
       to,
-      Object.assign({ label, color: C0.plain as string, proto: op.proto || state.ver, len, info: op.info || who(from) + ': ' + label, phaseName: state.phase, about: '' }, op, {
-        fields: recSec(op.ctype || 22, op.cname || 'Handshake', op.rver || '0x0303 (TLS 1.2)', len - 40)
+      Object.assign({ label, color: C0.plain as string, proto: op.proto || state.ver, info: op.info || who(from) + ': ' + label, phaseName: state.phase, about: '' }, op, {
+        len: HDR + len,
+        fields: recSec(op.ctype || 22, op.cname || 'Handshake', op.rver || '0x0303 (TLS 1.2)', len - 5)
           .concat(hsNum ? ([{ sec: 'Handshake: ' + label + ' (tipo ' + hsNum + ')' }] as Field[]) : [], fields || [])
           .concat([['Cifrado?', 'não', 'trafega em claro: qualquer observador lê', '']] as Field[]),
       }),
@@ -52,22 +57,23 @@ export function toolkit(tr: Trace) {
   };
   const enc = (from: string, to: string, label: string, fields: Field[] | null, o?: TOpts) => {
     const op = o || {};
-    const len = op.len || 200;
+    const len = op.len || 200; // tamanho do registro TLS; o quadro soma HDR
     const t13 = state.ver === 'TLSv1.3';
     return tr.add(
       from,
       to,
       Object.assign(
         {
-          label, color: op.data ? C0.data : op.bad ? C0.bad : C0.enc, enc: true, proto: op.proto || state.ver, len,
+          label, color: op.data ? C0.data : op.bad ? C0.bad : C0.enc, enc: true, proto: op.proto || state.ver,
           info: op.info || (t13 ? 'Application Data' : who(from) + ': Encrypted Handshake Message'), phaseName: state.phase, about: '',
         },
         op,
         {
+          len: HDR + len,
           fields: ([
             { sec: 'TLS Record Layer (o que aparece no fio)' },
             ['Content type', t13 ? '23 (Application Data)' : '22 (Handshake, cifrado)', t13 ? 'no TLS 1.3 todo registro protegido aparece como Application Data; o tipo real vai cifrado' : 'conteúdo cifrado depois do ChangeCipherSpec'],
-            ['Length', len - 40 + ' bytes', ''],
+            ['Length', len - 5 + ' bytes', ''],
             ['Encrypted Application Data', 'cifrado', 'ilegível sem as chaves de tráfego'],
             { sec: 'Nas pontas (depois de decifrar)' },
           ] as Field[]).concat(fields || []),
@@ -81,7 +87,7 @@ export function toolkit(tr: Trace) {
       to,
       Object.assign(
         {
-          label, proto: 'TCP', color: C0.tcp as string, len: 40, info: (from === 'c' ? '50122 → 443' : '443 → 50122') + ' [' + flags + ']', phaseName: 'TCP',
+          label, proto: 'TCP', color: C0.tcp as string, len: HDR, info: (from === 'c' ? '50122 → 443' : '443 → 50122') + ' [' + flags + ']', phaseName: 'TCP',
           fields: [{ sec: 'TCP (RFC 9293)' }, ['Flags', flags, '']] as Field[],
           about: 'Segmento TCP: o TLS roda sobre uma conexão TCP comum, na porta 443.',
         },
