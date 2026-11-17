@@ -186,14 +186,13 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
     ['Extensão: status_request', 'OCSP', 'pede a resposta de revogação grampeada'],
   ];
   if (C.vers.indexOf('TLS 1.3') >= 0) chFields.splice(7, 0, ['Extensão: key_share', 'x25519: ' + keyShare.slice(0, 32) + '…', 'metade pública do ECDHE já no primeiro pacote: por isso o TLS 1.3 gasta 1 RTT']);
-  if (mode !== 'full' && C.vers.indexOf('TLS 1.3') >= 0) {
-    chFields.push(
-      ['Extensão: pre_shared_key', 'identidade = ticket da conexão anterior', 'chave pré-compartilhada vinda do NewSessionTicket'],
-      ['Extensão: psk_key_exchange_modes', 'psk_dhe_ke', 'mantém o sigilo futuro na retomada'],
-    );
-  }
+  // RFC 9846, seção 4.3.11: pre_shared_key é obrigatoriamente a última extensão do ClientHello.
+  const usaPsk = mode !== 'full' && C.vers.indexOf('TLS 1.3') >= 0;
+  if (usaPsk) chFields.push(['Extensão: psk_key_exchange_modes', 'psk_dhe_ke', 'mantém o sigilo futuro na retomada']);
   if (mode === 'zero') chFields.push(['Extensão: early_data', 'presente', 'o cliente enviará dados antes de terminar o handshake', 'expert']);
-  if (mode !== 'full' && !is13) chFields.push(['Extensão: session_ticket', 'ticket da sessão anterior', 'retomada da sessão sem novo handshake completo']);
+  // RFC 5077, seção 3.2: o cliente que quer ticket envia a extensão SessionTicket, vazia se ainda não tem um.
+  if (!is13) chFields.push(['Extensão: session_ticket', mode === 'full' ? 'vazia (o cliente ainda não tem ticket)' : 'ticket da sessão anterior', mode === 'full' ? 'pede ao servidor um ticket para retomar a sessão depois (RFC 5077)' : 'retomada da sessão sem novo handshake completo']);
+  if (usaPsk) chFields.push(['Extensão: pre_shared_key', 'identidade = ticket da conexão anterior', 'chave pré-compartilhada vinda do NewSessionTicket; é sempre a última extensão']);
   const clientHelloAbout = 'O primeiro pacote do TLS: versões, cifras, extensões e (no TLS 1.3) a metade pública do ECDHE. O nome do site (SNI) vai em claro, mesmo no TLS 1.3, a menos que o ECH seja usado.';
   phase('1. Handshake TLS: ClientHello', 'hello', 'ClientHello');
   tr.st(tr.t, 'phase', 'ClientHello', 'warn');
@@ -271,8 +270,10 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
     R.keys = { kind: '1.3', kex: 'x25519', ecdhe, tHs: sh.tArr, hsC, hsS, apC, apS, tApp: 0 };
     // voo cifrado do servidor
     const certMsg = mode === 'full';
+    const mtls13 = P.mtls && certMsg;
     const flFields: Field[] = [['EncryptedExtensions', 'ALPN: ' + alpn + (mode === 'zero' ? ', early_data aceito' : ''), 'extensões que não precisam ir em claro']];
-    if (P.mtls) flFields.push(['CertificateRequest', 'certificado de cliente solicitado', 'mTLS: o servidor quer autenticar o cliente']);
+    // RFC 9846, seção 4.4.2: com PSK de retomada o servidor não envia CertificateRequest no handshake principal.
+    if (mtls13) flFields.push(['CertificateRequest', 'certificado de cliente solicitado', 'mTLS: o servidor quer autenticar o cliente']);
     if (certMsg) {
       flFields.push(
         ['Certificate', 'cadeia de 3 certificados: ' + SNI + ' (leaf), Example CA R3 (intermediário), Example Root CA X1 (raiz)', 'a identidade do servidor, agora cifrada (no TLS 1.2 ia em claro)'],
@@ -348,21 +349,21 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
     phase('3. Finished e dados da aplicação', 'fin', 'Dados');
     tr.st(tr.t, 'phase', 'Estabelecida', 'est');
     tr.mile(tr.t, 'Estabelecida', 'Finished');
-    const cfFields: Field[] = (P.mtls
+    const cfFields: Field[] = (mtls13
       ? ([
           ['Certificate', 'certificado do cliente (CN=aluno01)', 'o cliente se identifica'],
           ['CertificateVerify', 'assinatura do hash da conversa', 'prova a posse da chave do certificado de cliente'],
         ] as Field[])
       : []
     ).concat(mode === 'zero' ? ([['EndOfEarlyData', 'fim dos dados 0-RTT', '']] as Field[]) : [], [['Finished', 'HMAC da conversa', 'confirma o handshake do lado do cliente']] as Field[]);
-    const cf = enc('c', 's', P.mtls ? 'Certificate, CertificateVerify, Finished' : mode === 'zero' ? 'EndOfEarlyData, Finished' : 'Finished', cfFields, {
-      len: P.mtls ? 1800 : 100, info: 'Change Cipher Spec, Application Data',
+    const cf = enc('c', 's', mtls13 ? 'Certificate, CertificateVerify, Finished' : mode === 'zero' ? 'EndOfEarlyData, Finished' : 'Finished', cfFields, {
+      len: mtls13 ? 1800 : 100, info: 'Change Cipher Spec, Application Data',
       about: 'O cliente confirma o handshake. No TLS 1.3 já pode enviar dados junto: o handshake custa 1 RTT.',
     });
-    if (P.mtls) {
+    if (mtls13) {
       tr.ev(cf.tArr, 's', 'Valida o certificado do cliente contra a CA de clientes', 'ok');
       tr.st(tr.t, 'client', 'autenticado (mTLS)', 'est');
-    }
+    } else if (P.mtls) tr.st(tr.t, 'client', 'sem certificado nesta conexão', 'closed');
     R.keys.tApp = cf.tSend;
     tr.ev(cf.tSend, 'c', 'Chaves de aplicação derivadas: dados protegidos com chaves novas', 'ok');
     let req: Message | null = null;
@@ -387,12 +388,16 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
     phase('2. ServerHello, certificado e troca de chaves (em claro)', 'sh', 'ServerHello');
     tr.st(tr.t, 'phase', 'ServerHello', 'warn');
     tr.mile(tr.t, 'ServerHello', ver);
-    const sentinel = R.downgrade ? serverRandom.slice(0, 48) + '444f574e47524401' : serverRandom;
+    // RFC 9846, seção 4.2.3: servidor com TLS 1.3 que negocia 1.2 (ou menos) sempre termina o random com DOWNGRD, 01 para o 1.2 e 00 para o 1.1 ou anterior.
+    const comSentinela = S.vers.indexOf('TLS 1.3') >= 0;
+    const sentinel = comSentinela ? serverRandom.slice(0, 48) + (ver === 'TLS 1.2' ? '444f574e47524401' : '444f574e47524400') : serverRandom;
     const sh = plain('s', 'c', 'Server Hello', 2, [
       ['version', verNum + ' (' + ver + ')', ''],
-      ['random', sentinel, R.downgrade ? 'termina em 44 4F 57 4E 47 52 44 01 ("DOWNGRD"): o servidor suporta TLS 1.3 mas foi forçado ao 1.2' : '32 bytes aleatórios do servidor', R.downgrade ? 'expert' : ''],
+      ['random', sentinel, comSentinela ? 'termina em 44 4F 57 4E 47 52 44 ' + (ver === 'TLS 1.2' ? '01' : '00') + ' ("DOWNGRD"): o servidor suporta TLS 1.3 e negociou ' + ver + (R.downgrade ? ' (forçado)' : '') : '32 bytes aleatórios do servidor', comSentinela ? 'expert' : ''],
       ['cipher_suite', suite, isWeakSuite(suite) ? 'cifra fraca' : 'escolhida entre as do cliente', isWeakSuite(suite) ? 'expert' : ''],
-      ['Extensão: ALPN', alpn, ''],
+      // RFC 7301, seção 3.1: o servidor só responde ALPN se o ClientHello a trouxe. RFC 5077, seção 3.2: o SessionTicket vazio anuncia o NewSessionTicket.
+      ...(tem12 ? [['Extensão: ALPN', alpn, ''] as Field] : []),
+      ...(mode === 'full' ? [['Extensão: session_ticket', 'vazia', 'o servidor enviará um NewSessionTicket (RFC 5077)'] as Field] : []),
     ], {
       len: 112, info: 'Server: Server Hello',
       about: 'O servidor escolhe a versão e a cifra. No TLS 1.2 e anteriores, tudo o que vem a seguir (inclusive o certificado) trafega em claro.',
@@ -509,7 +514,8 @@ export function runTls(tr: Trace, P: TlsParams, o: RunOptions): Record<string, a
     phase('4. Dados da aplicação', 'data', 'Dados');
     tr.st(tr.t, 'phase', 'Estabelecida', 'est');
     tr.mile(tr.t, 'Estabelecida', '2 RTT');
-    if (P.mtls) tr.st(tr.t, 'client', 'autenticado (mTLS)', 'est');
+    if (P.mtls && mode === 'full') tr.st(tr.t, 'client', 'autenticado (mTLS)', 'est');
+    else if (P.mtls) tr.st(tr.t, 'client', 'sem certificado nesta conexão', 'closed');
     const req = enc('c', 's', reqLabel, [['Dados', reqData, '']], { data: true, len: 240, info: 'Application Data', about: 'Requisição HTTP cifrada.' });
     const resp = enc('s', 'c', alpn === 'h2' ? 'HTTP/2 200 OK' : 'HTTP/1.1 200 OK', [['Dados', respData, '']], { data: true, len: 1400, info: 'Application Data', about: 'Resposta cifrada.' });
     if (o.tamper) return tamperEnd(resp);
