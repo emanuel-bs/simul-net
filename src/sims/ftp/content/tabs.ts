@@ -36,7 +36,7 @@ const portas: TabDef = {
     h += '<tr><td>Conexões TCP</td><td>' + R.conns + '</td><td class="meaning">' + (r.sub === 'sftp' ? 'uma só: comandos e arquivos viajam no mesmo canal' : 'controle + uma conexão de dados por transferência') + '</td></tr>';
     h += '<tr><td>Portas</td><td>' + esc((R.ports as string[]).join('; ')) + '</td><td class="meaning">' + (r.sub === 'sftp' ? 'só a 22 precisa estar liberada' : 'o firewall precisa tratar a conexão de dados') + '</td></tr>';
     if (r.sub !== 'sftp') {
-      h += '<tr><td>Modo de dados</td><td>' + (P.mode === 'active' ? 'ativo (PORT)' : 'passivo (PASV)') + '</td><td class="meaning">' + (P.mode === 'active' ? 'o servidor conecta ao cliente, a partir da porta 20' : 'o cliente conecta a uma porta alta do servidor') + '</td></tr>';
+      h += '<tr><td>Modo de dados</td><td>' + (P.mode === 'active' ? 'ativo (PORT)' : 'passivo (PASV)') + '</td><td class="meaning">' + (P.mode === 'active' ? 'o servidor conecta ao cliente, a partir da porta ' + (P.tlsMode === 'implicit' ? '989' : '20') : 'o cliente conecta a uma porta alta do servidor') + '</td></tr>';
       h +=
         '<tr><td>Firewall do cliente</td><td>' + ({ none: 'sem NAT nem filtro', nat: 'NAT com firewall de estado', helper: 'NAT com inspeção de FTP' } as Record<string, string>)[P.cfw as string] + '</td><td class="meaning">' +
         (R.helper ? 'o helper leu o PORT e abriu a porta' : '') + '</td></tr>';

@@ -611,8 +611,8 @@ sequenceDiagram
   n_s ->> n_c: 331 Password required
   n_c ->> n_s: PASS S3nh@123
   n_s ->> n_c: 230 User aluno logged in
-  n_c ->> n_s: TYPE I
-  n_s ->> n_c: 200 Type set to I
+  n_c ->> n_s: TYPE A
+  n_s ->> n_c: 200 Type set to A
   Note over n_c,n_s: 3. Canal de dados (modo passivo: o cliente conecta ao servidor)
   n_c ->> n_s: PASV
   n_s ->> n_c: 227 Entering Passive Mode (203,0,113,21,195,80)
@@ -620,7 +620,7 @@ sequenceDiagram
   n_s ->> n_c: SYN, ACK
   n_c ->> n_s: ACK
   n_c ->> n_s: LIST
-  n_s ->> n_c: 150 Opening BINARY mode data connection
+  n_s ->> n_c: 150 Opening ASCII mode data connection
   Note over n_c,n_s: 4. Transferência pelo canal de dados
   n_s ->> n_c: Listagem do diretório
   n_s ->> n_c: FIN, ACK
@@ -1817,8 +1817,8 @@ sequenceDiagram
   n_s ->> n_c: 331 Password required
   n_c ->> n_s: PASS S3nh@123
   n_s ->> n_c: 230 User aluno logged in
-  n_c ->> n_s: TYPE I
-  n_s ->> n_c: 200 Type set to I
+  n_c ->> n_s: TYPE A
+  n_s ->> n_c: 200 Type set to A
   Note over n_c,n_s: 3. Canal de dados (modo passivo: o cliente conecta ao servidor)
   n_c ->> n_s: PASV
   n_s ->> n_c: 227 Entering Passive Mode (203,0,113,21,195,80)
@@ -1826,7 +1826,7 @@ sequenceDiagram
   n_s ->> n_c: SYN, ACK
   n_c ->> n_s: ACK
   n_c ->> n_s: LIST
-  n_s ->> n_c: 150 Opening BINARY mode data connection
+  n_s ->> n_c: 150 Opening ASCII mode data connection
   Note over n_c,n_s: 4. Transferência pelo canal de dados
   n_s ->> n_c: Listagem do diretório
   n_s ->> n_c: FIN, ACK
@@ -1859,8 +1859,8 @@ sequenceDiagram
   n_s ->> n_c: [cifrado] 200 PBSZ=0
   n_c ->> n_s: [cifrado] PROT P
   n_s ->> n_c: [cifrado] 200 Protection level set to P
-  n_c ->> n_s: [cifrado] TYPE I
-  n_s ->> n_c: [cifrado] 200 Type set to I
+  n_c ->> n_s: [cifrado] TYPE A
+  n_s ->> n_c: [cifrado] 200 Type set to A
   Note over n_c,n_s: 3. Canal de dados (modo passivo: o cliente conecta ao servidor)
   n_c ->> n_s: [cifrado] PASV
   n_s ->> n_c: [cifrado] 227 Entering Passive Mode (203,0,113,21,195,80)
@@ -1868,7 +1868,7 @@ sequenceDiagram
   n_s ->> n_c: SYN, ACK
   n_c ->> n_s: ACK
   n_c ->> n_s: [cifrado] LIST
-  n_s ->> n_c: [cifrado] 150 Opening BINARY mode data connection
+  n_s ->> n_c: [cifrado] 150 Opening ASCII mode data connection
   n_c ->> n_s: Client Hello (retoma a sessão)
   n_s ->> n_c: [cifrado] Server Hello, Finished
   n_c ->> n_s: [cifrado] Finished
@@ -1942,7 +1942,7 @@ sequenceDiagram
 ### 7.2 Modos de dados do FTP
 
 - **Passivo (`PASV` ou `EPSV`, [RFC 2428](https://www.rfc-editor.org/rfc/rfc2428)):** o servidor abre uma porta de uma faixa e o cliente conecta nela. É o modo que atravessa NAT e firewalls de estado, desde que a faixa de portas esteja liberada no servidor.
-- **Ativo (`PORT` ou `EPRT`):** o cliente anuncia seu endereço e uma porta, e o **servidor** conecta, a partir da porta 20. Atrás de NAT, o endereço anunciado é privado e a conexão falha, a menos que um helper do firewall reescreva o comando.
+- **Ativo (`PORT` ou `EPRT`):** o cliente anuncia seu endereço e uma porta, e o **servidor** conecta, a partir da porta 20 (a vizinha da porta de controle, L-1; no FTPS implícito é a 989, [RFC 959](https://www.rfc-editor.org/rfc/rfc959), seção 3.2). Atrás de NAT, o endereço anunciado é privado e a conexão falha, a menos que um helper do firewall reescreva o comando.
 - O helper de FTP precisa ler o canal de controle. Com FTPS o canal é cifrado e o helper não consegue fazer isso.
 
 ### 7.3 Códigos de resposta

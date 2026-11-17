@@ -169,7 +169,7 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
     const enc = E.on;
     const sens = !!xx.sens;
     return tr.add(from, to, {
-      label: xx.label || text, proto: enc ? 'FTP/TLS' : 'FTP', color: enc ? C0.enc : xx.bad ? C0.bad : C0.plain, enc, len: 70 + text.length, info: text, phaseName: xx.phase || 'Controle', about: about || '',
+      label: xx.label || text, proto: enc ? 'FTP/TLS' : 'FTP', color: enc ? C0.enc : xx.bad ? C0.bad : C0.plain, enc, len: enc ? 70 + text.length : 54 + text.length + 2, info: text, phaseName: xx.phase || 'Controle', about: about || '',
       fields: enc
         ? fl({ sec: 'TLS: dados do aplicativo (canal de controle cifrado)' }, ['Registro', 'Application Data (cifrado)', 'a captura não mostra o conteúdo do comando'], [from === 'c' ? 'Comando (após decifrar)' : 'Resposta (após decifrar)', text, mean])
         : fl({ sec: 'FTP (RFC 959): canal de controle' }, [from === 'c' ? 'Comando' : 'Resposta', text, mean], ...(sens ? ([['Exposição', 'texto puro', 'qualquer observador no caminho lê o usuário e a senha', 'expert']] as Field[]) : [])),
@@ -281,8 +281,10 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
     ctl('s', 'c', '200 Protection level set to ' + o.prot, '', '', { phase: 'Proteção' });
     R.dataEnc = o.prot === 'P';
   }
-  ctl('c', 's', 'TYPE I', 'modo binário', 'Transferência binária (imagem).', { phase: 'Login' });
-  ctl('s', 'c', '200 Type set to I', '', '', { phase: 'Login' });
+  // RFC 959, seção 4.1.3: a resposta ao LIST deve ir em ASCII ou EBCDIC; o TYPE I (imagem) é para arquivos.
+  const tipo = o.op === 'list' ? 'A' : 'I';
+  ctl('c', 's', 'TYPE ' + tipo, tipo === 'A' ? 'modo texto (ASCII)' : 'modo binário', tipo === 'A' ? 'A listagem do diretório é texto: transferência em ASCII.' : 'Transferência binária (imagem).', { phase: 'Login' });
+  ctl('s', 'c', '200 Type set to ' + tipo, '', '', { phase: 'Login' });
 
   // 3. canal de dados
   const op = o.op;
@@ -300,7 +302,8 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
     R.fail = { stage: 'data', why };
   };
   let ok = true;
-  const dport = active ? 20 : PASV_PORT;
+  // RFC 959, seção 3.2: a porta de dados padrão do servidor é a vizinha da porta de controle (L-1): 20 para a 21 e 989 para a 990.
+  const dport = active ? cport - 1 : PASV_PORT;
   const cdp = active ? ACT_PORT : SPORT + 1;
   if (!active) {
     ctl('c', 's', 'PASV', 'pede um endereço e uma porta para a conexão de dados', 'No modo passivo o servidor abre uma porta e o cliente conecta nela.', { phase: 'Dados' });
@@ -326,7 +329,7 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
     let seen = CLI;
     const helper = o.cfw === 'helper' && !E.on;
     ctl('c', 's', portCmd, 'o cliente anuncia o endereço ' + CLI + ' e a porta ' + ACT_PORT + ' (195×256+81)', 'No modo ativo o cliente escuta e o SERVIDOR conecta. O endereço no comando é o endereço privado do cliente.', { phase: 'Dados' });
-    R.ports.push(ACT_PORT + ' (cliente) e 20 (servidor)');
+    R.ports.push(ACT_PORT + ' (cliente) e ' + dport + ' (servidor)');
     if (helper) {
       fev(tr.t - 0.4, 'Inspeciona o PORT: troca ' + CLI + ' por ' + PUB + ' e abre a porta ' + ACT_PORT + ' para o servidor', 'ok');
       seen = PUB;
@@ -340,11 +343,11 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
   // comando da operação
   ctl('c', 's', opCmd, op === 'get' ? 'baixar o arquivo' : op === 'put' ? 'enviar o arquivo' : 'listar o diretório', 'O cliente pede a operação. Os dados irão pelo canal de dados.', { phase: 'Dados' });
   if (active) {
-    ctl('s', 'c', '150 Opening BINARY mode data connection', 'código 150: vou abrir o canal de dados', 'O servidor vai conectar de volta ao cliente.', { phase: 'Dados' });
+    ctl('s', 'c', '150 Opening ' + (op === 'list' ? 'ASCII' : 'BINARY') + ' mode data connection', 'código 150: vou abrir o canal de dados', 'O servidor vai conectar de volta ao cliente.', { phase: 'Dados' });
     const reach = o.cfw === 'none' || (o.cfw === 'helper' && !E.on);
     if (!reach) {
       tr.ev(tr.t, 's', 'Conecta em ' + CLI + ':' + ACT_PORT + ' (endereço privado)', '');
-      synLost(tr, 's', 'c', 20, ACT_PORT, 'conexão de dados');
+      synLost(tr, 's', 'c', dport, ACT_PORT, 'conexão de dados');
       fev(tr.t, o.cfw === 'helper' && E.on ? 'Sem o PORT legível, não há regra: descarta o SYN de entrada' : 'O NAT não traduz ' + CLI + ' e o firewall de estado descarta o SYN de entrada', 'warn');
       ctl('s', 'c', "425 Can't build data connection: Connection timed out", 'código 425: o servidor não conseguiu abrir o canal de dados', 'Falha clássica do modo ativo atrás de NAT.', { bad: true, phase: 'Dados' });
       tr.lg(tr.t, 'FTP: o servidor não alcançou ' + CLI + ':' + ACT_PORT + '. ' + (o.cfw === 'helper' && E.on ? 'O helper não lê comandos cifrados.' : 'Endereço privado atrás de NAT.'), 'loss');
@@ -352,13 +355,13 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
       R.why = o.cfw === 'helper' && E.on ? 'o FTPS cifra o comando PORT e o helper do NAT não consegue lê-lo' : 'o servidor tentou conectar a um endereço privado atrás de NAT';
       dataFail(R.why);
     } else {
-      tcp3(tr, 's', 20, ACT_PORT, 'conexão de dados');
+      tcp3(tr, 's', dport, ACT_PORT, 'conexão de dados');
       R.conns = 2;
       st(tr.t, 'data', 'conectado', 'est');
       if (o.cfw === 'none') fev(tr.t - 0.4, 'Sem NAT nem filtro: o SYN de entrada passa', '');
     }
   } else if (ok) {
-    ctl('s', 'c', '150 Opening BINARY mode data connection', 'código 150: canal de dados aberto', 'O servidor confirma e começa a transferência.', { phase: 'Dados' });
+    ctl('s', 'c', '150 Opening ' + (op === 'list' ? 'ASCII' : 'BINARY') + ' mode data connection', 'código 150: canal de dados aberto', 'O servidor confirma e começa a transferência.', { phase: 'Dados' });
   }
   if (!ok) {
     tr.phase('Encerramento', 'end');
@@ -402,7 +405,7 @@ export function runFtp(tr: Trace, o: RunFtpOptions): X {
     const label = op === 'list' ? 'Listagem do diretório' : 'Dados do arquivo (' + (i + 1) + '/' + parts + ')';
     const body = op === 'list' ? '-rw-r--r-- 1 aluno aluno 1245184 out 13 relatorio.pdf' : MAGIC;
     return tr.add(from, to, {
-      label, proto: dataEnc ? 'FTP-DATA/TLS' : 'FTP-DATA', color: dataEnc ? C0.enc : C0.data, enc: dataEnc, len: op === 'list' ? 220 : 1514, info: label, phaseName: 'Dados',
+      label, proto: dataEnc ? 'FTP-DATA/TLS' : 'FTP-DATA', color: dataEnc ? C0.enc : C0.data, enc: dataEnc, len: op === 'list' ? (dataEnc ? 220 : 56 + body.length) : 1514, info: label, phaseName: 'Dados',
       fields: dataEnc
         ? fl({ sec: 'TLS: dados do aplicativo (canal de dados cifrado)' }, ['Registro', 'Application Data (cifrado)', 'o conteúdo do arquivo não aparece na captura'])
         : fl({ sec: 'FTP-DATA (RFC 959): canal de dados' }, ['Conteúdo', body, 'o arquivo trafega em claro', 'expert'], ['Cifrado?', 'não', 'quem captura reconstrói o arquivo', 'expert']),
