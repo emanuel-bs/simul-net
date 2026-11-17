@@ -118,8 +118,8 @@ Itens da auditoria de conformidade (NC-01 a NC-33) que não foram encerrados. Ca
 
 ### NC-04 (P2): oráculo de teste dependente da implementação
 
-- **Situação:** atendida só em parte. O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. A correção prevista, os testes de `tests/conformidade/`, existe para 802-1x, arp, bgp, dhcp, dns, http, https, ipv4, ipv6, mpls, nat, ssh e tcp (mais `tamanhos`).
-- **Falta:** arquivo de conformidade para os demais simuladores nativos, entre eles wifi, rip, stp, vlan, switching, tls e ftp.
+- **Situação:** atendida só em parte. O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. A correção prevista, os testes de `tests/conformidade/`, existe para 802-1x, arp, bgp, dhcp, dns, ftp, http, https (que cobre o TLS), ipv4, ipv6, mpls, nat, rip, ssh e tcp (mais `tamanhos`).
+- **Falta:** arquivo de conformidade para os simuladores cuja norma é do IEEE e não é pública: wifi (802.11), stp (802.1D), vlan (802.1Q) e switching. Sem o texto da norma não há como escrever o teste a partir dela.
 - **Como fechar:** para cada simulador, escrever os testes a partir do texto da RFC (citando a seção), vê-los falhar com o comportamento incorreto, e só então corrigir (ver seção 7).
 
 ### NC-32 (P3): Wi-Fi, Address 3 e temporizações de 5 GHz
