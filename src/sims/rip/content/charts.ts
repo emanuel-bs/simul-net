@@ -26,7 +26,7 @@ const infinito = (n: number): Linha => lin('16 (infinito)', COR.laranja, Array(n
 /** Métrica de R1, R2 e R4 para R3 quando um enlace cai, mas a rede continua conectada. */
 function recuperacao(P: FalhaParams, titulo: string): string {
   const s = snapsFalha(P);
-  return grafico({ titulo, x: 'Rodada de atualização', y: 'Métrica para R3 (saltos)', categorias: rotulosFalha(s.length) }, [
+  return grafico({ titulo, x: 'Rodada de atualização', y: 'Métrica para R3', categorias: rotulosFalha(s.length) }, [
     lin('R1', COR.vermelho, metrica(s, 'R1', 'R3')), lin('R2', COR.azul, metrica(s, 'R2', 'R3')), lin('R4', COR.verde, metrica(s, 'R4', 'R3')), infinito(s.length),
   ], 17);
 }
@@ -37,7 +37,7 @@ function isolamento(Ps: [string, FalhaParams][], titulo: string): string {
   const n = Math.max(...todos.map((t) => t.s.length));
   const pad = (v: number[]) => [...v, ...Array(n - v.length).fill(v[v.length - 1])];
   const cores = [COR.vermelho, COR.azul];
-  return grafico({ titulo, x: 'Rodada de atualização', y: 'Menor métrica para R6 (saltos)', categorias: rotulosFalha(n) }, [
+  return grafico({ titulo, x: 'Rodada de atualização', y: 'Menor métrica para R6', categorias: rotulosFalha(n) }, [
     ...todos.map((t, i) => lin(t.nome, cores[i], pad(menor(t.s, 'R6')))), infinito(n),
   ], 17);
 }
@@ -46,7 +46,7 @@ function isolamento(Ps: [string, FalhaParams][], titulo: string): string {
 function aprendizado(P: ConvParams, titulo: string): string {
   const s = snapsConv(P);
   return grafico({ titulo, x: 'Rodada de Response', y: 'Métrica de R1 (16 = sem rota)', categorias: rotulosConv(s.length) }, [
-    lin('R2 (1 salto)', COR.vermelho, metrica(s, 'R1', 'R2')), lin('R3 (2 saltos)', COR.azul, metrica(s, 'R1', 'R3')), lin('R6 (3 saltos)', COR.verde, metrica(s, 'R1', 'R6')),
+    lin('R2 (métrica 2)', COR.vermelho, metrica(s, 'R1', 'R2')), lin('R3 (métrica 3)', COR.azul, metrica(s, 'R1', 'R3')), lin('R6 (métrica 4)', COR.verde, metrica(s, 'R1', 'R6')),
   ], 17);
 }
 

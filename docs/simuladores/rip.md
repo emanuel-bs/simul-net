@@ -39,10 +39,10 @@ sequenceDiagram
   participant A as R1
   participant B as R2
   participant C as R3
-  A->>B: Response: R1 está a 0 saltos
-  B->>A: Response: R2 a 0 e R3 a 1
-  B->>C: Response: R2 a 0 e R1 a 1
-  C->>B: Response: R3 a 0
+  A->>B: Response: R1 com métrica 1
+  B->>A: Response: R2 com 1 e R3 com 2
+  B->>C: Response: R2 com 1 e R1 com 2
+  C->>B: Response: R3 com métrica 1
   Note over A,C: cada roteador soma 1 ao que recebe e guarda o melhor
 ```
 
@@ -52,8 +52,8 @@ sequenceDiagram
 
 | Item | Valor | Seção da [RFC 2453](https://www.rfc-editor.org/rfc/rfc2453) |
 | --- | --- | --- |
-| Métrica | número de saltos; 16 significa inalcançável | 3.1 |
-| Alcance máximo | 15 saltos | 3.1 |
+| Métrica | número de saltos, com 1 para a rede conectada diretamente; 16 significa inalcançável | 3.1 e 3.5 |
+| Alcance máximo | métrica 15 | 3.1 |
 | Mensagens | Request e Response, em UDP porta 520 | 3.6 |
 | Endereço do RIPv2 | multicast 224.0.0.9 | 4.5 |
 | Rotas por mensagem | até 25 | 3.6 |
@@ -131,18 +131,18 @@ As duas técnicas evitam o laço entre **dois** vizinhos, mas não os laços de 
 
 ### 2.7 As curvas: como a métrica evolui rodada a rodada
 
-**Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
+**Legenda:** 🟥 R2 (métrica 2) · 🟦 R3 (métrica 3) · 🟩 R6 (métrica 4)
 
 ```mermaid
 %%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
-%% legenda: R2 (1 salto) | R3 (2 saltos) | R6 (3 saltos)
+%% legenda: R2 (métrica 2) | R3 (métrica 3) | R6 (métrica 4)
 xychart-beta
   title "Convergência: a métrica de R1 a cada rodada"
   x-axis "Rodada de Response" ["início", "1", "2", "3", "4"]
   y-axis "Métrica de R1 (16 = sem rota)" 0 --> 17
-  line [16, 1, 1, 1, 1]
-  line [16, 16, 2, 2, 2]
-  line [16, 16, 16, 3, 3]
+  line [16, 2, 2, 2, 2]
+  line [16, 16, 3, 3, 3]
+  line [16, 16, 16, 4, 4]
 ```
 
 *Esquema 5 (aprendizado das rotas).* A informação anda **um salto por rodada**: R1 aprende R2 na rodada 1, R3 na 2 e R6 na 3. Antes disso, a métrica vale 16 (sem rota). Com a rede de seis roteadores, a convergência leva três rodadas com mudança; em uma rede real, cada rodada pode levar até 30 s.
@@ -155,14 +155,14 @@ xychart-beta
 xychart-beta
   title "Queda do enlace R2 / R3: a rede se recupera em poucas rodadas"
   x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4"]
-  y-axis "Métrica para R3 (saltos)" 0 --> 17
-  line [2, 2, 16, 16, 4, 4]
-  line [1, 16, 16, 3, 3, 3]
-  line [3, 3, 3, 3, 3, 3]
+  y-axis "Métrica para R3" 0 --> 17
+  line [3, 3, 16, 16, 5, 5]
+  line [2, 16, 16, 4, 4, 4]
+  line [4, 4, 4, 4, 4, 4]
   line [16, 16, 16, 16, 16, 16]
 ```
 
-*Esquema 6 (queda de um enlace).* O enlace R2 / R3 cai. R2 perde na hora a rota para R3 (de 1 para 16) e R1, que chegava a R3 por R2, a perde na rodada 1. R2 volta a alcançar R3 por R5 e R6 (3 saltos) na rodada 2 e R1, por R4, na rodada 3 (4 saltos). R4, que já usava outro caminho, não muda. O RIP se recupera rápido porque existe um caminho alternativo.
+*Esquema 6 (queda de um enlace).* O enlace R2 / R3 cai. R2 perde na hora a rota para R3 (de 2 para 16) e R1, que chegava a R3 por R2, a perde na rodada 1. R2 volta a alcançar R3 por R5 e R6 (3 saltos, métrica 4) na rodada 2 e R1, por R4, na rodada 3 (4 saltos, métrica 5). R4, que já usava outro caminho, não muda. O RIP se recupera rápido porque existe um caminho alternativo.
 
 **Legenda:** 🟥 Sem split horizon · 🟦 Com split horizon e poison reverse · 🟧 16 (infinito)
 
@@ -171,11 +171,11 @@ xychart-beta
 %% legenda: Sem split horizon | Com split horizon e poison reverse | 16 (infinito)
 xychart-beta
   title "Contagem ao infinito: R6 isolado"
-  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
-  y-axis "Menor métrica para R6 (saltos)" 0 --> 17
-  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
-  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
-  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+  y-axis "Menor métrica para R6" 0 --> 17
+  line [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
 ```
 
 *Esquema 7 (contagem ao infinito).* R6 fica isolado e a menor métrica para ele, na rede, **sobe uma unidade por rodada**, de 2 logo após a falha até 16 na rodada 13: os roteadores seguem anunciando um caminho que já não existe. As duas curvas, **sem split horizon** e **com split horizon e poison reverse**, são iguais e se sobrepõem na figura: nesta topologia, de laços com três ou mais roteadores, a técnica não reduz a contagem.
@@ -331,18 +331,18 @@ O caminho do PC-A ao PC-B é R1, R2, R3, R6, com 3 saltos.
 - Na aba Tabela de roteamento: o roteador escolhido aprende os vizinhos na rodada 1, os vizinhos dos vizinhos na 2, e assim por diante.
 - A última rodada não muda nada: é assim que se sabe que convergiu.
 
-**Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
+**Legenda:** 🟥 R2 (métrica 2) · 🟦 R3 (métrica 3) · 🟩 R6 (métrica 4)
 
 ```mermaid
 %%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
-%% legenda: R2 (1 salto) | R3 (2 saltos) | R6 (3 saltos)
+%% legenda: R2 (métrica 2) | R3 (métrica 3) | R6 (métrica 4)
 xychart-beta
   title "Rotas de R1 aprendidas a cada rodada: Convergência do RIPv2"
   x-axis "Rodada de Response" ["início", "1", "2", "3", "4"]
   y-axis "Métrica de R1 (16 = sem rota)" 0 --> 17
-  line [16, 1, 1, 1, 1]
-  line [16, 16, 2, 2, 2]
-  line [16, 16, 16, 3, 3]
+  line [16, 2, 2, 2, 2]
+  line [16, 16, 3, 3, 3]
+  line [16, 16, 16, 4, 4]
 ```
 
 *Gráfico do cenário (métrica de R1).* A métrica que R1 guarda para R2, R3 e R6 a cada rodada de Response. Vale 16 enquanto R1 ainda não tem rota para o destino. Calculado pelo motor do simulador.
@@ -474,18 +474,18 @@ flowchart LR
 
 *Figura 6.1b (Tipo A, topologia).* Elementos do modo "Convergência": R1 (10.0.0.1); R2 (10.0.0.2); R3 (10.0.0.3); R4 (10.0.0.4); R5 (10.0.0.5); R6 (10.0.0.6); PC-A (192.168.1.10); PC-B (192.168.2.10). Vale para os cenários (6.1.2).
 
-**Legenda:** 🟥 R2 (1 salto) · 🟦 R3 (2 saltos) · 🟩 R6 (3 saltos)
+**Legenda:** 🟥 R2 (métrica 2) · 🟦 R3 (métrica 3) · 🟩 R6 (métrica 4)
 
 ```mermaid
 %%{init: {"xyChart": {"width": 900, "height": 560}, "themeVariables": {"xyChart": {"plotColorPalette": "#dd2e44, #2f80ed, #2e9e4f"}}}}%%
-%% legenda: R2 (1 salto) | R3 (2 saltos) | R6 (3 saltos)
+%% legenda: R2 (métrica 2) | R3 (métrica 3) | R6 (métrica 4)
 xychart-beta
   title "Rotas de R1 aprendidas a cada rodada: O RIP ignora o custo"
   x-axis "Rodada de Response" ["início", "1", "2", "3", "4"]
   y-axis "Métrica de R1 (16 = sem rota)" 0 --> 17
-  line [16, 1, 1, 1, 1]
-  line [16, 16, 2, 2, 2]
-  line [16, 16, 16, 3, 3]
+  line [16, 2, 2, 2, 2]
+  line [16, 16, 3, 3, 3]
+  line [16, 16, 16, 4, 4]
 ```
 
 *Gráfico do cenário (métrica de R1).* A métrica que R1 guarda para R2, R3 e R6 a cada rodada de Response. Vale 16 enquanto R1 ainda não tem rota para o destino. Calculado pelo motor do simulador.
@@ -632,10 +632,10 @@ A rede já convergiu. O enlace **L3 (R2 / R3)** cai: R2 e R3 marcam com métrica
 xychart-beta
   title "Reconvergência após a falha: Queda do enlace R2 / R3"
   x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4"]
-  y-axis "Métrica para R3 (saltos)" 0 --> 17
-  line [2, 2, 16, 16, 4, 4]
-  line [1, 16, 16, 3, 3, 3]
-  line [3, 3, 3, 3, 3, 3]
+  y-axis "Métrica para R3" 0 --> 17
+  line [3, 3, 16, 16, 5, 5]
+  line [2, 16, 16, 4, 4, 4]
+  line [4, 4, 4, 4, 4, 4]
   line [16, 16, 16, 16, 16, 16]
 ```
 
@@ -771,10 +771,10 @@ flowchart LR
 %% legenda: Sem split horizon | 16 (infinito)
 xychart-beta
   title "Contagem ao infinito: Contagem ao infinito (sem split horizon)"
-  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
-  y-axis "Menor métrica para R6 (saltos)" 0 --> 17
-  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
-  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+  y-axis "Menor métrica para R6" 0 --> 17
+  line [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
 ```
 
 *Gráfico do cenário (menor métrica para R6).* A menor métrica para R6 entre R1, R2, R3, R4 e R5 a cada rodada, depois que R6 ficou isolado. Sobe de 1 em 1 até 16, quando a rede enfim reconhece que o destino sumiu. Calculado pelo motor do simulador.
@@ -947,22 +947,11 @@ sequenceDiagram
   n_R5 ->> n_R2: Response (6)
   n_R4 ->> n_R5: Response (6)
   n_R5 ->> n_R4: Response (6)
-  Note over n_PC_A,n_PC_B: Atualização disparada 15
-  n_R1 ->> n_R2: Response (6)
-  n_R2 ->> n_R1: Response (6)
-  n_R1 ->> n_R4: Response (6)
-  n_R4 ->> n_R1: Response (6)
-  n_R2 ->> n_R3: Response (6)
-  n_R3 ->> n_R2: Response (6)
-  n_R2 ->> n_R5: Response (6)
-  n_R5 ->> n_R2: Response (6)
-  n_R4 ->> n_R5: Response (6)
-  n_R5 ->> n_R4: Response (6)
   Note over n_PC_A,n_PC_B: Pacote PC-A → PC-B
   n_PC_A ->> n_R1: IP ttl 64
 ```
 
-*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Contagem ao infinito (sem split horizon)", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 153 mensagens, numeradas de 1 a 153 na ordem da comunicação (em 18 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
+*Figura 6.2.2 (Tipo B, sequência).* Mensagens do cenário "Contagem ao infinito (sem split horizon)", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 143 mensagens, numeradas de 1 a 143 na ordem da comunicação (em 17 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -994,10 +983,10 @@ A mesma falha, agora com split horizon e poison reverse. Ele evita o laço entre
 %% legenda: Com split horizon | 16 (infinito)
 xychart-beta
   title "Contagem ao infinito: Isolamento com split horizon"
-  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
-  y-axis "Menor métrica para R6 (saltos)" 0 --> 17
-  line [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
-  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
+  x-axis "Rodada de atualização" ["antes", "falha", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+  y-axis "Menor métrica para R6" 0 --> 17
+  line [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16]
+  line [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
 ```
 
 *Gráfico do cenário (menor métrica para R6).* A menor métrica para R6 entre R1, R2, R3, R4 e R5 a cada rodada, depois que R6 ficou isolado. Sobe de 1 em 1 até 16, quando a rede enfim reconhece que o destino sumiu. Calculado pelo motor do simulador.
@@ -1170,22 +1159,11 @@ sequenceDiagram
   n_R5 ->> n_R2: Response (6)
   n_R4 ->> n_R5: Response (6)
   n_R5 ->> n_R4: Response (6)
-  Note over n_PC_A,n_PC_B: Atualização disparada 15
-  n_R1 ->> n_R2: Response (6)
-  n_R2 ->> n_R1: Response (6)
-  n_R1 ->> n_R4: Response (6)
-  n_R4 ->> n_R1: Response (6)
-  n_R2 ->> n_R3: Response (6)
-  n_R3 ->> n_R2: Response (6)
-  n_R2 ->> n_R5: Response (6)
-  n_R5 ->> n_R2: Response (6)
-  n_R4 ->> n_R5: Response (6)
-  n_R5 ->> n_R4: Response (6)
   Note over n_PC_A,n_PC_B: Pacote PC-A → PC-B
   n_PC_A ->> n_R1: IP ttl 64
 ```
 
-*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Isolamento com split horizon", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 153 mensagens, numeradas de 1 a 153 na ordem da comunicação (em 18 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
+*Figura 6.2.3 (Tipo B, sequência).* Mensagens do cenário "Isolamento com split horizon", na ordem do tempo, entre PC-A, R1, R2, R3, R4, R5, R6, PC-B: 143 mensagens, numeradas de 1 a 143 na ordem da comunicação (em 17 fases; 2 perdidas). Corresponde ao diagrama de sequência e à aba Captura, no modo "Falha e contagem ao infinito", com a configuração aplicada acima.
 
 **Mensagens**
 
@@ -1203,7 +1181,7 @@ No **RIP** (Routing Information Protocol, versão 2, [RFC 2453](https://www.rfc-
 
 ### 7.2 Como funciona
 
-- **Métrica:** número de saltos. O valor 16 significa inalcançável, o que limita a rede a 15 saltos (seção 3.1).
+- **Métrica:** número de saltos, sendo 1 a métrica de uma rede conectada diretamente (seção 3.5); cada roteador soma 1 ao receber (seção 3.9.2). O valor 16 significa inalcançável, o que limita a rede a 15 saltos (seção 3.1).
 - **Mensagens:** Request e **Response**, em UDP porta 520. O RIPv2 envia por multicast 224.0.0.9 (seção 4.5). Cada mensagem leva até 25 rotas (seção 3.6).
 - **Atualização periódica:** a cada 30 s, cada roteador envia a tabela inteira aos vizinhos. Uma rota sem atualização por 180 s expira, e é removida depois de mais 120 s (seção 3.8).
 - **Regra de atualização:** o roteador soma 1 à métrica recebida e adota a rota se ela for melhor que a atual ou se vier do próximo salto atual, o que permite aceitar também notícias ruins (seção 3.9.2).

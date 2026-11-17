@@ -7,23 +7,24 @@ import { buildConv, buildFalha } from '../../src/sims/rip/modes';
 const conv = (down: string[] = [], sh = true) => converge(SINGLE, liveLinks(SINGLE, down), initTables(SINGLE), sh);
 
 describe('RIPv2: convergência', () => {
-  it('cada roteador começa conhecendo só a si mesmo, com métrica 0', () => {
+  it('cada roteador começa conhecendo só a si mesmo, com métrica 1 (rede conectada, RFC 2453, seção 3.5)', () => {
     const tb = initTables(SINGLE);
     expect(tb.R1.size).toBe(1);
-    expect(tb.R1.get('R1')).toEqual({ metric: 0, next: null });
+    expect(tb.R1.get('R1')).toEqual({ metric: 1, next: null });
   });
 
-  it('a primeira rodada ensina os vizinhos diretos, com métrica 1', () => {
+  it('a primeira rodada ensina os vizinhos diretos, com métrica 2', () => {
     const r = ripRound(SINGLE, liveLinks(SINGLE), initTables(SINGLE), true);
-    expect(r.next.R1.get('R2')).toEqual({ metric: 1, next: 'R2' });
+    expect(r.next.R1.get('R2')).toEqual({ metric: 2, next: 'R2' });
     expect(r.next.R1.get('R3')).toBeUndefined();
   });
 
-  it('o caminho de PC-A a PC-B tem 3 saltos: R1, R2, R3, R6', () => {
+  it('o caminho de PC-A a PC-B tem 3 saltos (métrica 4): R1, R2, R3, R6', () => {
     const { tables } = conv();
     const p = ripPath(tables, 'R1', 'R6');
     expect(p.path).toEqual(['R1', 'R2', 'R3', 'R6']);
-    expect(p.metric).toBe(3);
+    expect(p.metric).toBe(4);
+    expect(p.hops).toBe(3);
   });
 
   it('o custo do enlace é ignorado: com custo 50 em R2 / R3 o caminho continua o mesmo', () => {
@@ -37,7 +38,7 @@ describe('RIPv2: convergência', () => {
     const { tables } = conv();
     const vec = advertise(tables.R2, 'R3', true);
     expect(vec.get('R6')).toBe(INF);
-    expect(advertise(tables.R2, 'R3', false).get('R6')).toBe(2);
+    expect(advertise(tables.R2, 'R3', false).get('R6')).toBe(3);
   });
 
   it('o modo de convergência termina com uma rodada sem mudança e entrega o pacote', () => {

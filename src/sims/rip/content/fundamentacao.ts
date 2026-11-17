@@ -25,10 +25,10 @@ sequenceDiagram
   participant A as R1
   participant B as R2
   participant C as R3
-  A->>B: Response: R1 está a 0 saltos
-  B->>A: Response: R2 a 0 e R3 a 1
-  B->>C: Response: R2 a 0 e R1 a 1
-  C->>B: Response: R3 a 0
+  A->>B: Response: R1 com métrica 1
+  B->>A: Response: R2 com 1 e R3 com 2
+  B->>C: Response: R2 com 1 e R1 com 2
+  C->>B: Response: R3 com métrica 1
   Note over A,C: cada roteador soma 1 ao que recebe e guarda o melhor
 \`\`\`
 
@@ -38,8 +38,8 @@ sequenceDiagram
 
 | Item | Valor | Seção da RFC 2453 |
 | --- | --- | --- |
-| Métrica | número de saltos; 16 significa inalcançável | 3.1 |
-| Alcance máximo | 15 saltos | 3.1 |
+| Métrica | número de saltos, com 1 para a rede conectada diretamente; 16 significa inalcançável | 3.1 e 3.5 |
+| Alcance máximo | métrica 15 | 3.1 |
 | Mensagens | Request e Response, em UDP porta 520 | 3.6 |
 | Endereço do RIPv2 | multicast 224.0.0.9 | 4.5 |
 | Rotas por mensagem | até 25 | 3.6 |
@@ -123,7 +123,7 @@ ${CURVA_APRENDIZADO}
 
 ${CURVA_RECUPERACAO}
 
-*Esquema 6 (queda de um enlace).* O enlace R2 / R3 cai. R2 perde na hora a rota para R3 (de 1 para 16) e R1, que chegava a R3 por R2, a perde na rodada 1. R2 volta a alcançar R3 por R5 e R6 (3 saltos) na rodada 2 e R1, por R4, na rodada 3 (4 saltos). R4, que já usava outro caminho, não muda. O RIP se recupera rápido porque existe um caminho alternativo.
+*Esquema 6 (queda de um enlace).* O enlace R2 / R3 cai. R2 perde na hora a rota para R3 (de 2 para 16) e R1, que chegava a R3 por R2, a perde na rodada 1. R2 volta a alcançar R3 por R5 e R6 (3 saltos, métrica 4) na rodada 2 e R1, por R4, na rodada 3 (4 saltos, métrica 5). R4, que já usava outro caminho, não muda. O RIP se recupera rápido porque existe um caminho alternativo.
 
 ${CURVA_INFINITO}
 

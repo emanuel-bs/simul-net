@@ -174,7 +174,7 @@ export function buildFalha(P: FalhaParams): Trace {
   R.before = ripPath(tables, src.attach, dst.attach);
   startStates(tr, 'Convergido', 'estáveis', 'est');
   tr.ev(0, 'R1', 'Rede convergida: as tabelas estão estáveis em todos os roteadores', '');
-  tr.lg(0, 'Ponto de partida: RIPv2 convergido' + (P.sh ? '' : ' (split horizon desativado)') + '. Caminho de ' + src.id + ' a ' + dst.id + ': ' + R.before.path.join(' → ') + ' (' + R.before.metric + ' saltos).', 'sys');
+  tr.lg(0, 'Ponto de partida: RIPv2 convergido' + (P.sh ? '' : ' (split horizon desativado)') + '. Caminho de ' + src.id + ' a ' + dst.id + ': ' + R.before.path.join(' → ') + ' (' + R.before.hops + ' saltos).', 'sys');
 
   tr.wait(1);
   tr.phase('Falha de enlace', 'evento');

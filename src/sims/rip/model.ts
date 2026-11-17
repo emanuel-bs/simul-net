@@ -1,10 +1,10 @@
 // Modelo do RIPv2 (RFC 2453): vetores de distância, rodadas de Response (Bellman-Ford), split horizon com poison reverse e
-// falha com contagem ao infinito. Funções puras. O RIP usa só o número de saltos: o custo dos enlaces é ignorado.
+// falha com contagem ao infinito. Funções puras. O RIP usa só o número de saltos: o custo dos enlaces é ignorado. A métrica de uma rota é o número de enlaces até o destino mais 1 (o custo da rede conectada).
 // Simplificações: rodadas síncronas (em vez de temporizadores de 30 s por roteador), um destino por roteador (o Router ID)
 // e nenhuma temporização de timeout e de garbage collection.
 import { buildGraph, type LiveLink, type Topo } from '../roteamento-base/topologia';
 
-/** Métrica 16 significa inalcançável (RFC 2453, seção 3.1). */
+/** Métrica 16 significa inalcançável (RFC 2453, seção 3.1). Uma rede diretamente conectada tem métrica 1, o custo dela (seção 3.5). */
 export const INF = 16;
 
 export interface Entry {
@@ -15,7 +15,7 @@ export type Tables = Record<string, Map<string, Entry>>;
 
 export const initTables = (t: Topo): Tables => {
   const out: Tables = {};
-  t.routers.forEach((r) => (out[r.id] = new Map([[r.id, { metric: 0, next: null }]])));
+  t.routers.forEach((r) => (out[r.id] = new Map([[r.id, { metric: 1, next: null }]])));
   return out;
 };
 
@@ -84,19 +84,19 @@ export function poisonLink(tables: Tables, l: { a: string; b: string }): void {
   }));
 }
 
-export function ripPath(tables: Tables, src: string, dst: string): { path: string[]; reached: boolean; metric: number | null } {
+export function ripPath(tables: Tables, src: string, dst: string): { path: string[]; reached: boolean; metric: number | null; hops: number } {
   const path = [src];
   let cur = src;
   const seen = new Set([src]);
   while (cur !== dst) {
     const e = tables[cur].get(dst);
-    if (!e || e.metric >= INF || !e.next) return { path, reached: false, metric: null };
+    if (!e || e.metric >= INF || !e.next) return { path, reached: false, metric: null, hops: path.length - 1 };
     cur = e.next;
-    if (seen.has(cur) || path.length > 20) return { path, reached: false, metric: null };
+    if (seen.has(cur) || path.length > 20) return { path, reached: false, metric: null, hops: path.length - 1 };
     seen.add(cur);
     path.push(cur);
   }
-  return { path, reached: true, metric: tables[src].get(dst)!.metric };
+  return { path, reached: true, metric: tables[src].get(dst)!.metric, hops: path.length - 1 };
 }
 
 export type Plain = Record<string, Record<string, Entry>>;

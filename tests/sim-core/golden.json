@@ -430,14 +430,14 @@
     "textos": "02a1dfa23ff8434a"
   },
   "rip": {
-    "rip": "6b1c51cfaa78cdbc",
-    "ripcost": "1a5196427021a6e6",
-    "ripfail": "c24401bb76a8d03d",
-    "infinity": "00ce5a71310665a8",
-    "ripiso": "41848ffad1deadca",
-    "amostra:conv": "834f9955a2391a10",
-    "amostra:falha": "9717552c9e0f2ac6",
-    "textos": "f580f167710a5304"
+    "rip": "49661327bc7ecfe8",
+    "ripcost": "fd69cd27ca12e4f2",
+    "ripfail": "77b4e3a1a59fbc59",
+    "infinity": "443a3630fe865f46",
+    "ripiso": "fe78a349c3bf9032",
+    "amostra:conv": "94e1cdca62ffc54f",
+    "amostra:falha": "9ca471d36b6ac973",
+    "textos": "400408d644823427"
   },
   "bgp": {
     "open": "c862ea12c6825f66",

@@ -16,20 +16,20 @@ export function setup(s: ScenarioDef): string {
 export function explain(tr: Trace): string {
   const R = tr.raw;
   const fp = R.sub === 'falha' ? R.after : R.fp;
-  let h = '<ul>' + li('Protocolo: <b>RIPv2</b> (RFC 2453), ' + (R.sh ? 'com split horizon e poison reverse' : 'sem split horizon') + '. A métrica é o número de saltos e 16 é o infinito.');
+  let h = '<ul>' + li('Protocolo: <b>RIPv2</b> (RFC 2453), ' + (R.sh ? 'com split horizon e poison reverse' : 'sem split horizon') + '. A métrica conta os saltos, com 1 para a rede conectada diretamente, e 16 é o infinito.');
 
   if (R.sub === 'conv') {
     h += li('<b>Response:</b> a cada rodada, cada roteador enviou o vetor aos vizinhos ativos (' + plural(R.links.length * 2, 'mensagem', 'mensagens') + ' por rodada, uma por enlace e sentido).');
     h += li('<b>Convergência:</b> as tabelas mudaram em ' + plural(R.roundsChanged, 'rodada', 'rodadas') + '; a rodada seguinte não mudou nada e confirmou que estabilizaram. A informação avança <b>um salto por rodada</b>.');
   } else {
-    h += li('Caminho antes da falha: ' + caminho(R.before.path) + ' (' + plural(R.before.metric, 'salto', 'saltos') + ').');
+    h += li('Caminho antes da falha: ' + caminho(R.before.path) + ' (' + plural(R.before.hops, 'salto', 'saltos') + ', métrica ' + R.before.metric + ').');
     h += li('Caiu ' + plural(R.down.length, 'enlace', 'enlaces') + ' (' + esc(R.down.join(', ')) + '): as pontas marcaram com métrica 16 as rotas que passavam por ele e enviaram <b>atualizações disparadas</b>.');
     h += li('As tabelas mudaram em ' + plural(R.roundsChanged, 'rodada', 'rodadas') + (R.capHit ? ', e o limite de ' + R.rounds + ' rodadas foi atingido' : '') + ' até estabilizar.' + (R.res === 'partition' ? ' Como a rede ficou dividida, esse tempo é a <b>contagem ao infinito</b>: as métricas das rotas para o destino isolado sobem de 1 em 1 até 16 (seção 3.4.2).' : ''));
     if (R.res === 'partition') h += li(R.sh ? 'Mesmo com <b>split horizon</b> e poison reverse a contagem acontece: ele só rompe laços entre dois vizinhos, e esta topologia tem laços maiores.' : 'Sem split horizon, os roteadores trocam entre si rotas cada vez mais longas para o destino que já não existe.');
   }
 
   if (fp.reached) {
-    h += li('<span class="chk-ok">Pacote entregue:</span> ' + esc(R.src) + ' → ' + caminho(fp.path) + ' → ' + esc(R.dst) + ', ' + plural(fp.metric, 'salto', 'saltos') + ' de roteador (métrica RIP).');
+    h += li('<span class="chk-ok">Pacote entregue:</span> ' + esc(R.src) + ' → ' + caminho(fp.path) + ' → ' + esc(R.dst) + ', ' + plural(fp.hops, 'salto', 'saltos') + ' (métrica RIP ' + fp.metric + ').');
     if (R.sub === 'conv' && R.cmp) {
       const igual = R.cmp.path.join('>') === fp.path.join('>');
       h += li(igual ? 'O caminho de menor custo é o mesmo.' : 'O RIP ignorou o custo: o caminho escolhido custa <b>' + R.ripCost + '</b>, enquanto o de menor custo (' + caminho(R.cmp.path) + ') custa <b>' + R.cmp.cost + '</b>. Um protocolo de estado de enlace escolheria este.');

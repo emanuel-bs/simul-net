@@ -27,9 +27,9 @@ const tabela: TabDef = {
     const { snap } = snapAt(tr, ctx.timeAt(ctx.c));
     const rows = Object.keys(snap.tables[root] || {}).map((d) => [d, snap.tables[root][d]] as [string, Entry]);
     let h = '<h3>Tabela de roteamento de ' + esc(root) + '</h3><p>Instante: ' + esc(snap.label) + '.</p>';
-    h += '<table class="sc-msgs"><thead><tr><th>Destino</th><th>Métrica (saltos)</th><th>Próximo salto</th></tr></thead><tbody>';
+    h += '<table class="sc-msgs"><thead><tr><th>Destino</th><th>Métrica</th><th>Próximo salto</th></tr></thead><tbody>';
     rows.forEach(([d, e]) => {
-      h += td([esc(d + ' (10.0.0.' + d.slice(1) + ')'), m(d === root ? '0' : mt(e.metric)), m(d === root ? 'Local' : e.next || (e.metric >= INF ? 'inalcançável' : '-'))]);
+      h += td([esc(d + ' (10.0.0.' + d.slice(1) + ')'), m(mt(e.metric)), m(d === root ? 'Local' : e.next || (e.metric >= INF ? 'inalcançável' : '-'))]);
     });
     h += '</tbody></table><p>Uma rota com métrica 16 é inalcançável: o roteador a mantém na tabela e a anuncia como tal por um tempo, para que os vizinhos também a descartem.</p>';
     return h;

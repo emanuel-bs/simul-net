@@ -9,6 +9,27 @@ import { ripProtocol } from '../../src/sims/rip/protocol';
 const traces = () => ripProtocol.scenarios.map((s) => ({ s, tr: ripProtocol.build(scenarioParams(ripProtocol.controls, s), s.sub) }));
 const responses = () => traces().flatMap(({ s, tr }) => tr.msgs.filter((m) => m.proto === 'RIPv2' && !m.lost).map((m) => ({ s, m })));
 
+describe('RIPv2: métrica (RFC 2453, seções 3.5 e 3.9.2)', () => {
+  // 3.5: a métrica de uma rede diretamente conectada é o custo dela, normalmente 1. 3.9.2: métrica válida está entre 1 e 16.
+  it('a tabela inicial de cada roteador tem a rota própria com métrica 1 (custo da rede conectada)', () => {
+    const tb = initTables(SINGLE);
+    SINGLE.routers.forEach((r) => expect(tb[r.id].get(r.id)!.metric, r.id).toBe(1));
+  });
+  it('nenhuma entrada de Response anuncia métrica fora de 1 a 16', () => {
+    let vistas = 0;
+    responses().forEach(({ s, m }) => {
+      m.fields.forEach((f) => {
+        if (!Array.isArray(f) || !/^Rota /.test(f[0])) return;
+        vistas++;
+        const n = Number(/métrica (\d+)/.exec(f[1])![1]);
+        expect(n, `${s.id}: ${m.label} ${f[0]}`).toBeGreaterThanOrEqual(1);
+        expect(n, `${s.id}: ${m.label} ${f[0]}`).toBeLessThanOrEqual(INF);
+      });
+    });
+    expect(vistas).toBeGreaterThan(0);
+  });
+});
+
 describe('RIPv2: processamento de Response (RFC 2453, seção 3.9.2)', () => {
   // "If there is no such route, add this route to the routing table, unless the metric is infinity."
   it('não cria rota nova para um destino desconhecido quando a métrica recebida é infinito', () => {

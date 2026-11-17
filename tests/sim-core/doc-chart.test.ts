@@ -67,25 +67,25 @@ describe('gráficos da documentação: TCP e HTTP', () => {
 describe('gráficos da documentação: RIP', () => {
   const rip = (id: string) => ripProtocol.scenarios.find((s) => s.id === id)!;
 
-  it('convergência: R1 aprende um salto por rodada, de 16 (sem rota) até a métrica final', () => {
+  it('convergência: R1 aprende um salto por rodada, de 16 (sem rota) até a métrica final (saltos + 1)', () => {
     const [r2, r3, r6] = linhasDe(ripProtocol.docChart!(rip('rip')));
-    expect(r2.slice(0, 3)).toEqual([16, 1, 1]);
-    expect(r3.slice(0, 4)).toEqual([16, 16, 2, 2]);
-    expect(r6.slice(0, 5)).toEqual([16, 16, 16, 3, 3]);
+    expect(r2.slice(0, 3)).toEqual([16, 2, 2]);
+    expect(r3.slice(0, 4)).toEqual([16, 16, 3, 3]);
+    expect(r6.slice(0, 5)).toEqual([16, 16, 16, 4, 4]);
   });
 
   it('queda de enlace: R2 perde a rota para R3 na hora e a recupera por outro caminho', () => {
     const [, r2, , inf] = linhasDe(ripProtocol.docChart!(rip('ripfail')));
-    expect(r2[0]).toBe(1);
+    expect(r2[0]).toBe(2);
     expect(r2[1]).toBe(16);
-    expect(r2[r2.length - 1]).toBe(3);
+    expect(r2[r2.length - 1]).toBe(4);
     expect(new Set(inf)).toEqual(new Set([16]));
   });
 
   it('contagem ao infinito: a menor métrica para R6 sobe uma unidade por rodada até 16, com ou sem split horizon', () => {
     for (const id of ['infinity', 'ripiso']) {
       const [menor] = linhasDe(ripProtocol.docChart!(rip(id)));
-      expect(menor.slice(0, 16)).toEqual(Array.from({ length: 16 }, (_, i) => i + 1));
+      expect(menor.slice(0, 15)).toEqual(Array.from({ length: 15 }, (_, i) => i + 2));
     }
   });
 });

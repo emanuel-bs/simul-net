@@ -2,7 +2,7 @@
 export const reference: string = [
   '<h3>Roteamento por vetor de distância</h3><p>No <b>RIP</b> (Routing Information Protocol, versão 2, RFC 2453), cada roteador conhece só o que os vizinhos anunciam: uma lista de destinos com a distância até cada um. Não há mapa da rede. O roteador soma a distância até o vizinho à que ele anuncia e adota o melhor resultado, pelo algoritmo de <b>Bellman-Ford</b> distribuído. O RIP é um IGP (Interior Gateway Protocol), e a versão 2 acrescenta máscara de sub-rede, próximo salto, etiqueta de rota e autenticação à versão 1.</p>',
   '<h3>Como funciona</h3><ul>' +
-    '<li><b>Métrica:</b> número de saltos. O valor 16 significa inalcançável, o que limita a rede a 15 saltos (seção 3.1).</li>' +
+    '<li><b>Métrica:</b> número de saltos, sendo 1 a métrica de uma rede conectada diretamente (seção 3.5); cada roteador soma 1 ao receber (seção 3.9.2). O valor 16 significa inalcançável, o que limita a rede a 15 saltos (seção 3.1).</li>' +
     '<li><b>Mensagens:</b> Request e <b>Response</b>, em UDP porta 520. O RIPv2 envia por multicast 224.0.0.9 (seção 4.5). Cada mensagem leva até 25 rotas (seção 3.6).</li>' +
     '<li><b>Atualização periódica:</b> a cada 30 s, cada roteador envia a tabela inteira aos vizinhos. Uma rota sem atualização por 180 s expira, e é removida depois de mais 120 s (seção 3.8).</li>' +
     '<li><b>Regra de atualização:</b> o roteador soma 1 à métrica recebida e adota a rota se ela for melhor que a atual ou se vier do próximo salto atual, o que permite aceitar também notícias ruins (seção 3.9.2).</li>' +
