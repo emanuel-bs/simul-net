@@ -32,6 +32,9 @@ export interface Snap {
   tables: Plain;
 }
 
+/** Quadro de uma Response: Ethernet 14 + IPv4 20 + UDP 8 + cabeçalho RIP 4 + 20 por entrada (RFC 2453, seção 3.6), sem FCS. */
+const RIP_LEN = (entradas: number): number => 46 + 20 * entradas;
+
 const CP = 2;
 const CAP = 25;
 
@@ -70,7 +73,7 @@ function emitRound(tr: Trace, R: Record<string, any>, links: LiveLink[], tables:
       fields.push(['Rota ' + dest + ' (' + routerIdOf(dest) + ')', 'métrica ' + metricText(m), poisoned ? 'poison reverse: aprendida de ' + b + ', volta com 16' : '']);
     });
     tr.add(a, b, {
-      at: t0, dur: CP, par: true, color: trig ? C.trig : C.resp, proto: 'RIPv2', len: 24 + 20 * vec.size, label: 'Response (' + vec.size + ')',
+      at: t0, dur: CP, par: true, color: trig ? C.trig : C.resp, proto: 'RIPv2', len: RIP_LEN(vec.size), label: 'Response (' + vec.size + ')',
       info: 'Response de ' + a + ' para ' + b + ' com ' + vec.size + (vec.size > 1 ? ' rotas' : ' rota'),
       about: trig ? 'Atualização disparada (RFC 2453, seção 3.4.4): o roteador anuncia a mudança de imediato, sem esperar os 30 s.' : 'O roteador anuncia seu vetor de distância (RFC 2453, seção 3.9.2). O vizinho soma 1 a cada métrica e adota a rota se ela for melhor ou se vier do próximo salto atual.',
       fields, phaseName: trig ? 'Atualização disparada' : 'Response',
@@ -179,7 +182,7 @@ export function buildFalha(P: FalhaParams): Trace {
   const t0 = tr.t;
   const failed = t.links.filter((l) => down.indexOf(l.id) >= 0);
   failed.forEach((l) => {
-    tr.add(l.a, l.b, { at: t0, dur: CP, par: true, lost: true, color: COLORS.bad, proto: 'RIPv2', len: 44, label: 'Response (sem resposta)', info: 'O enlace ' + l.id + ' caiu: ' + l.a + ' não recebe mais Response de ' + l.b, about: 'A falha é detectada porque a interface cai ou porque o timeout de 180 s sem Response expira (RFC 2453, seção 3.8). O simulador mostra a detecção como imediata.', fields: [{ sec: 'Evento' }, ['Enlace', l.id + ' ' + l.a + ' / ' + l.b], ['Efeito', 'as rotas que usavam o enlace recebem métrica 16']], phaseName: 'Falha' });
+    tr.add(l.a, l.b, { at: t0, dur: CP, par: true, lost: true, color: COLORS.bad, proto: 'RIPv2', len: RIP_LEN(tables[l.a].size), label: 'Response (sem resposta)', info: 'O enlace ' + l.id + ' caiu: ' + l.a + ' não recebe mais Response de ' + l.b, about: 'A falha é detectada porque a interface cai ou porque o timeout de 180 s sem Response expira (RFC 2453, seção 3.8). O simulador mostra a detecção como imediata.', fields: [{ sec: 'Evento' }, ['Enlace', l.id + ' ' + l.a + ' / ' + l.b], ['Efeito', 'as rotas que usavam o enlace recebem métrica 16']], phaseName: 'Falha' });
     tr.ev(t0, l.a, 'Perde o vizinho ' + l.b + ': as rotas por ele passam a métrica 16', 'warn');
     tr.ev(t0, l.b, 'Perde o vizinho ' + l.a + ': as rotas por ele passam a métrica 16', 'warn');
     tr.lg(t0, 'Falha no enlace ' + l.a + ' / ' + l.b + ' (' + l.id + ').', 'loss');

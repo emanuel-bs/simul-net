@@ -49,6 +49,8 @@ export function ripRound(t: Topo, links: LiveLink[], tables: Tables, sh: boolean
       advertise(tables[nb], r.id, sh).forEach((m, dest) => {
         const cand = Math.min(INF, m + 1);
         const cur = next[r.id].get(dest);
+        // RFC 2453, 3.9.2: sem rota existente, uma rota com métrica infinito não é adicionada (não há por que guardar rota inútil).
+        if (!cur && cand >= INF) return;
         if (!cur || cand < cur.metric || cur.next === nb) {
           const novo: Entry = cand >= INF ? { metric: INF, next: null } : { metric: cand, next: nb };
           if (!cur || cur.metric !== novo.metric || cur.next !== novo.next) {
