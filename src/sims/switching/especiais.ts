@@ -73,10 +73,10 @@ export function buildEsp(P: EspParams): Trace {
     phase('1. Assinatura do grupo (IGMP)', 'IGMP');
     if (P.ejoin) {
       const rep: Frame = {
-        label: 'IGMP Membership Report', proto: 'IGMP', len: 64, color: C0.data, dst: IGMP_MAC, etype: '0x0800 (IPv4)',
+        label: 'IGMP Membership Report', proto: 'IGMP', len: 54, color: C0.data, dst: IGMP_MAC, etype: '0x0800 (IPv4)',
         info: 'B entra no grupo ' + GROUP_IP,
         about: 'B avisa que quer receber o grupo ' + GROUP_IP + '. O relatório do IGMPv3 vai ao endereço 224.0.0.22 (MAC ' + IGMP_MAC + ').',
-        body: [...ipFields(HOSTS.b.ip, '224.0.0.22', '2 (IGMP)'), { sec: 'IGMPv3 (RFC 9776)' }, ['Tipo', '0x22 (Membership Report)', ''], ['Grupo', GROUP_IP, 'registro do grupo que B quer receber']],
+        body: [...ipFields(HOSTS.b.ip, '224.0.0.22', '2 (IGMP)', [['Opção', 'Router Alert (RFC 2113)', 'o cabeçalho IP tem 24 bytes (RFC 9776, seção 4.1.8)']]), { sec: 'IGMPv3 (RFC 9776)' }, ['Tipo', '0x22 (Membership Report)', ''], ['Registros de grupo', '1', 'cada registro sem fontes tem 8 bytes'], ['Grupo', GROUP_IP, 'registro do grupo que B quer receber']],
       };
       if (P.esnoop) {
         sendFrame(tr, sw, decs, 'b', rep, { phaseName: 'IGMP', consume: 'IGMP snooping: o switch lê o relatório e passa a enviar o grupo à porta 2' });
@@ -103,17 +103,17 @@ export function buildEsp(P: EspParams): Trace {
   } else {
     phase('1. Frames para endereços de grupo reservados', 'reservado');
     const bpdu: Frame = {
-      label: 'BPDU', proto: 'STP', len: 60, color: C0.plain, dst: '01:80:c2:00:00:00', etype: '0x0026 (LLC)',
+      label: 'BPDU', proto: 'STP', len: 52, color: C0.plain, dst: '01:80:c2:00:00:00', etype: '0x0026 (LLC)',
       info: 'BPDU do spanning tree, como o enviaria um switch vizinho',
       about: 'O destino 01-80-C2-00-00-00 é reservado para o spanning tree. A ponte que recebe o frame o processa e não o encaminha, para que o protocolo funcione salto a salto.',
       body: [{ sec: 'LLC' }, ['DSAP/SSAP', '0x42/0x42', 'Spanning Tree']],
     };
     sendFrame(tr, sw, decs, 'a', bpdu, { phaseName: 'Reservado', consume: 'Endereço reservado 01-80-C2-00-00-00: a ponte processa e não encaminha' });
     const lldp: Frame = {
-      label: 'LLDP', proto: 'LLDP', len: 60, color: C0.plain, dst: '01:80:c2:00:00:0e', etype: '0x88cc (LLDP)',
+      label: 'LLDP', proto: 'LLDP', len: 33, color: C0.plain, dst: '01:80:c2:00:00:0e', etype: '0x88cc (LLDP)',
       info: 'anúncio de vizinho (LLDP)',
       about: 'O destino 01-80-C2-00-00-0E é o de grupo do LLDP, também reservado: descobre só o vizinho direto, e por isso a ponte não o repassa.',
-      body: [{ sec: 'LLDP' }, ['Chassis ID', HOSTS.a.mac, '']],
+      body: [{ sec: 'LLDP (IEEE 802.1AB)' }, ['Chassis ID', HOSTS.a.mac, 'TLV de 9 bytes (subtipo 4, endereço MAC)'], ['Port ID', '1', 'TLV de 4 bytes (subtipo 7, atribuído localmente)'], ['Time To Live', '120 s', 'TLV de 4 bytes'], ['Fim do LLDPDU', '-', 'TLV de 2 bytes']],
     };
     sendFrame(tr, sw, decs, 'a', lldp, { phaseName: 'Reservado', consume: 'Endereço reservado 01-80-C2-00-00-0E: a ponte processa e não encaminha' });
     phase('2. Para comparar: unicast desconhecido', 'inundação');

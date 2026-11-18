@@ -289,13 +289,13 @@
     "i-restrict": "af918a0b0077ff3b",
     "i-shutdown": "564df752517a9457",
     "e-bcast": "1f4380a9ddc34f96",
-    "e-mc-flood": "c0160e96f8446f5d",
-    "e-mc-snoop": "2ecd3e43c6531ee4",
+    "e-mc-flood": "76bbf6663059466c",
+    "e-mc-snoop": "0b6ff9b6f0dede9e",
     "e-mc-none": "b6063a0b1142f2da",
-    "e-reserved": "46003f4c78dc9ffe",
+    "e-reserved": "c7e1ff71f892baf5",
     "amostra:apr": "13884611dd99914a",
     "amostra:inu": "e19a420001af5e94",
-    "amostra:esp": "4a98e7bbf412bea8",
+    "amostra:esp": "516b78a3d67794cd",
     "textos": "5966958e3e401455"
   },
   "stp": {
@@ -309,8 +309,8 @@
     "r-fail-link": "f0c348e73aa7c108",
     "r-fail-root": "00b30b2bb57096f9",
     "r-legacy": "ea0e8cf21a7c58ca",
-    "m-one": "9d97b1be0669785f",
-    "m-two": "cce541a3ec302bf8",
+    "m-one": "0e4774dc692b65ac",
+    "m-two": "b2a010535a3452b7",
     "l-nostp": "ff13fb78812ce74d",
     "l-stp": "a9fe71a045dfca2f",
     "p-none": "416276e69fb8afa2",
@@ -318,10 +318,10 @@
     "p-root": "abdf69e6b1cb05a4",
     "amostra:stp": "df7a1995e4316515",
     "amostra:rstp": "620aa8586991579f",
-    "amostra:mstp": "12d1c7aadea8aa04",
+    "amostra:mstp": "45f5ba100044bb43",
     "amostra:laco": "725f4dd0d7cf26bd",
     "amostra:prot": "907143662443c480",
-    "textos": "3d7ba3649195c06d"
+    "textos": "b3705efd03e158a3"
   },
   "vlan": {
     "v-tag": "2e225873819e44bf",
