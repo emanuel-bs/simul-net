@@ -1404,7 +1404,7 @@ Uma porta que sai do Bloqueio leva **30 s** para encaminhar. Se as BPDUs deixam 
 | Defesa | Onde atua | Observação |
 | --- | --- | --- |
 | BPDU Guard | em portas de acesso (de borda) | desativa a porta que recebe qualquer BPDU; recurso de fabricantes |
-| Root Guard | em portas voltadas para fora do domínio confiável | bloqueia a porta que receberia uma raiz melhor; recurso de fabricantes |
+| Root Guard | em portas voltadas para fora do domínio confiável | bloqueia a porta que receberia uma raiz melhor; o nome é de fabricantes, e o equivalente no padrão é o parâmetro restrictedRole (IEEE 802.1Q-2022, 13.27.64) |
 | Prioridade configurada e raiz de reserva | nas pontes do núcleo | torna a raiz previsível e a troca de raiz menos abrupta |
 | Detecção de enlace unidirecional e Loop Guard | nos enlaces entre pontes | evitam laços quando as BPDUs param de chegar sem queda do enlace; recursos de fabricantes, fora do simulador |
 | Limite de broadcast (storm control) | nas portas | reduz o estrago de uma tempestade, sem impedir o laço |

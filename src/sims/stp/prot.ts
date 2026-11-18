@@ -1,6 +1,6 @@
 // Motor do modo Proteções do spanning tree (nível defensivo). Um switch não autorizado, de prioridade 0, é ligado a uma
 // porta de acesso do SW1 e anuncia uma BPDU "superior". Sem proteção, ele vira a raiz e a rede reconverge ao redor dele.
-// BPDU Guard e Root Guard são recursos de fabricantes (não são parte do IEEE 802.1D); os nomes seguem os de um fabricante comum.
+// BPDU Guard é recurso de fabricantes (fora do IEEE 802.1Q). Root Guard é o nome comercial do parâmetro restrictedRole do IEEE 802.1Q-2022 (13.27.64).
 import { newTrace, type StateDef, type Trace } from '../../sim-core';
 import { bpdu, cols, compute, makeBridges, makeLinks, portId, portNo, propagate, blockedText, type PortEv } from './model';
 import { FD, diffRoles, sec, setRoles } from './stp';

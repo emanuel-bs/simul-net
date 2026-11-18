@@ -204,9 +204,12 @@ export function bpdu(tr: Trace, from: Bridge, to: Bridge, o: BpduOpts): Message 
     );
     if (o.role) fields.push(['Papel da porta (RSTP)', o.role, 'campo nos bits 2 e 3 das flags']);
     if (o.kind === 'rstp') fields.push(['Versão 1 Length', '0', 'sem campo de versão 1']);
+    if (o.kind === 'mst') fields.push(['Versão 1 Length', '0', 'sem campo de versão 1'], ['Versão 3 Length', String(64 + 16 * (o.msti ?? 0)), '64 bytes fixos (identificador da região, custo interno, ponte e saltos) mais 16 por MSTI']);
   }
   if (o.extra) fields.push(...o.extra);
-  const len = o.kind === 'tcn' ? 21 : o.kind === 'stp' ? 52 : o.kind === 'rstp' ? 53 : 151;
+  // Ethernet 14 + LLC 3 + BPDU: Config 35, TCN 4, RST 36, MST 102 mais 16 por MSTI (IEEE 802.1Q-2022, Figuras 14-1 e 14-2).
+  const nMsti = o.msti ?? 0;
+  const len = o.kind === 'tcn' ? 21 : o.kind === 'stp' ? 52 : o.kind === 'rstp' ? 53 : 14 + 3 + 102 + 16 * nMsti;
   return tr.add(from.key, to.key, {
     label: o.label || LABEL[o.kind], proto: o.kind === 'stp' || o.kind === 'tcn' ? 'STP' : o.kind === 'rstp' ? 'RSTP' : 'MSTP', color: o.lost ? C0.bad : o.color || C0.plain, len,
     info: o.info, about: o.about, fields, phaseName: o.phaseName || 'BPDU', lost: !!o.lost, par: !!o.par, at: o.at, tags: o.tags || [],
@@ -220,6 +223,8 @@ export interface ElectOpts {
   /** Ponte que só fala STP (BPDUs de configuração nos enlaces dela). */
   legacy?: number;
   extra?: (b: Bridge) => Field[];
+  /** Número de MSTIs levadas na BPDU MST (16 bytes cada). */
+  msti?: number;
   /** Linhas do log e dos eventos em português para cada mudança. */
   quiet?: boolean;
 }
@@ -265,7 +270,7 @@ export function elect(tr: Trace, brs: Bridge[], links: Link[], o: ElectOpts): Tr
         kind, root: rb, cost: s.cost, port: portId(links, s.b.n, s.l), at: t0, par: true, age: s.root === s.b.n ? 0 : 1, flags: kind === 'rstp' ? ['porta designada'] : [], role: kind === 'rstp' ? 'designada' : undefined,
         info: s.root === s.b.n ? s.b.name + ' anuncia: "a raiz sou eu" (custo 0)' : s.b.name + ' anuncia a raiz ' + rb.name + ' (custo ' + s.cost + ')',
         about: s.root === s.b.n ? 'Toda ponte começa achando que é a raiz e anuncia isso em todas as portas.' : 'A ponte repassa, pelas portas que não levam à raiz, o que aprendeu: quem é a raiz e quanto custa chegar a ela.',
-        extra: o.extra ? o.extra(s.b) : undefined, phaseName: 'Eleição',
+        extra: o.extra ? o.extra(s.b) : undefined, msti: o.msti, phaseName: 'Eleição',
       });
     });
     tr.t = t0 + tr.ow + 0.4;
@@ -290,7 +295,7 @@ export function elect(tr: Trace, brs: Bridge[], links: Link[], o: ElectOpts): Tr
 }
 
 /** BPDUs descem da raiz pelas portas designadas, onda a onda (o "hello" depois de uma mudança). */
-export function propagate(tr: Trace, brs: Bridge[], links: Link[], tree: Tree, o: { kind: BpduKind; start: number[]; flags?: string[]; label?: string; about: string; phaseName?: string }): void {
+export function propagate(tr: Trace, brs: Bridge[], links: Link[], tree: Tree, o: { kind: BpduKind; start: number[]; flags?: string[]; label?: string; about: string; phaseName?: string; msti?: number }): void {
   const by = (n: number) => brs.find((b) => b.n === n)!;
   const seen = new Set<number>(o.start);
   let wave = o.start;
@@ -305,7 +310,7 @@ export function propagate(tr: Trace, brs: Bridge[], links: Link[], tree: Tree, o
         if (tree.role(n, l.id) !== 'designated' || !nb.alive || !l.up) return;
         const child = tree.rootLink[nb.n] === l.id;
         bpdu(tr, b, nb, {
-          kind: o.kind, root: by(tree.root), cost: tree.cost[n], port: portId(links, n, l), at: t0, par: true, age: n === tree.root ? 0 : 1, flags: o.flags, role: o.kind === 'rstp' ? 'designada' : undefined,
+          kind: o.kind, root: by(tree.root), cost: tree.cost[n], port: portId(links, n, l), at: t0, par: true, age: n === tree.root ? 0 : 1, flags: o.flags, role: o.kind === 'rstp' ? 'designada' : undefined, msti: o.msti,
           info: b.name + ' → ' + nb.name + ': raiz ' + by(tree.root).name + ', custo ' + tree.cost[n], about: o.about, phaseName: o.phaseName || 'Hello',
         });
         sent++;

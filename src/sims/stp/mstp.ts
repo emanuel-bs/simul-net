@@ -62,7 +62,7 @@ export function buildMstp(P: MstpParams): Trace {
   tr.st(0, 'ports', '-', 'closed');
   tr.st(0, 'conv', '-', 'closed');
   setRoles(pe, compute(brs, links), brs, links, 0, () => 'Descarte');
-  const tree = elect(tr, brs, links, { kind: 'mst', extra });
+  const tree = elect(tr, brs, links, { kind: 'mst', extra, msti: two ? 2 : 0 });
   R.root0 = tree.root;
   const tE = tr.t;
   tr.st(tE, 'root', 'CIST: ' + by(tree.root).name + (two ? '; MSTI 1: SW1; MSTI 2: SW3' : ''), 'est');
@@ -77,7 +77,7 @@ export function buildMstp(P: MstpParams): Trace {
 
   tr.phase('2. Sincronização rápida (proposta e acordo, como no RSTP)', 'sincronização');
   tr.st(tr.t, 'phase', 'sincronização', 'warn');
-  propagate(tr, brs, links, tree, { kind: 'mst', start: [tree.root], flags: ['proposta', 'porta designada'], about: 'O MSTP usa o mesmo handshake de proposta e acordo do RSTP, por instância. O simulador mostra só o CIST; as instâncias seguem a mesma lógica.', phaseName: 'Sincronização' });
+  propagate(tr, brs, links, tree, { kind: 'mst', start: [tree.root], msti: two ? 2 : 0, flags: ['proposta', 'porta designada'], about: 'O MSTP usa o mesmo handshake de proposta e acordo do RSTP, por instância. O simulador mostra só o CIST; as instâncias seguem a mesma lógica.', phaseName: 'Sincronização' });
   setRoles(pe, tree, brs, links, tr.t, (r) => (r === 'alternate' ? 'Descarte' : 'Encaminhamento'));
   tr.phase('3. Regiões convergidas', 'convergida');
   tr.st(tr.t, 'phase', 'convergida', 'est');

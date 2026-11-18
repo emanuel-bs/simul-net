@@ -39,7 +39,7 @@ export const reference: string = [
     '<li><b>Aviso:</b> este modo explica o mecanismo para fins de defesa. Interferir na rede de terceiros pode configurar crime; pratique apenas em laboratório isolado, com autorização.</li></ul>' +
     '<h3>Defesas</h3><table class="sc-msgs"><thead><tr><th>Defesa</th><th>Onde atua</th><th>Observação</th></tr></thead><tbody>' +
     '<tr><td>BPDU Guard</td><td class="meaning">em portas de acesso (de borda)</td><td class="meaning">desativa a porta que recebe qualquer BPDU; recurso de fabricantes</td></tr>' +
-    '<tr><td>Root Guard</td><td class="meaning">em portas voltadas para fora do domínio confiável</td><td class="meaning">bloqueia a porta que receberia uma raiz melhor; recurso de fabricantes</td></tr>' +
+    '<tr><td>Root Guard</td><td class="meaning">em portas voltadas para fora do domínio confiável</td><td class="meaning">bloqueia a porta que receberia uma raiz melhor; o nome é de fabricantes, e o equivalente no padrão é o parâmetro restrictedRole (IEEE 802.1Q-2022, 13.27.64)</td></tr>' +
     '<tr><td>Prioridade configurada e raiz de reserva</td><td class="meaning">nas pontes do núcleo</td><td class="meaning">torna a raiz previsível e a troca de raiz menos abrupta</td></tr>' +
     '<tr><td>Detecção de enlace unidirecional e Loop Guard</td><td class="meaning">nos enlaces entre pontes</td><td class="meaning">evitam laços quando as BPDUs param de chegar sem queda do enlace; recursos de fabricantes, fora do simulador</td></tr>' +
     '<tr><td>Limite de broadcast (storm control)</td><td class="meaning">nas portas</td><td class="meaning">reduz o estrago de uma tempestade, sem impedir o laço</td></tr></tbody></table>',
