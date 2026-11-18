@@ -60,3 +60,30 @@ describe('RADIUS: reautenticação e Access-Reject', () => {
     });
   });
 });
+
+describe('EAPOL (IEEE 802.1X-2020, cláusula 11)', () => {
+  const todas = () => x8021Protocol.scenarios.flatMap((s) => x8021Protocol.build(scenarioParams(x8021Protocol.controls, s), s.sub).msgs.filter((m) => m.proto === 'EAPOL').map((m) => ({ s, m })));
+  // Tabela 11-1 e seção 11.1: EtherType 0x888E (EAPOL).
+  it('o EtherType é 0x888E', () => {
+    const l = todas();
+    expect(l.length).toBeGreaterThan(0);
+    l.forEach(({ s, m }) => expect(campo(m, 'EtherType'), s.id).toBe('0x888E'));
+  });
+  // 11.3.1: "An implementation conforming to this specification shall use the value 0x03."
+  it('a versão do protocolo é 3 (0x03, seção 11.3.1)', () => {
+    todas().forEach(({ s, m }) => expect(campo(m, 'Versão do protocolo'), s.id).toMatch(/^3\b/));
+  });
+  // Tabela 11-3: EAPOL-EAP 0, Start 1, Logoff 2. Tabela 11-4: o suplicante transmite sempre ao endereço de grupo.
+  it('Start e Logoff têm tipo 1 e 2, não têm corpo e o suplicante os envia ao endereço de grupo do PAE', () => {
+    todas().filter(({ m }) => /^EAPOL-(Start|Logoff)/.test(String(m.label))).forEach(({ s, m }) => {
+      expect(campo(m, 'Tipo do pacote'), s.id).toMatch(String(m.label).includes('Start') ? /^1 / : /^2 /);
+      expect(campo(m, 'Comprimento do corpo'), s.id).toBe('0');
+      expect(campo(m, 'Destino'), s.id).toBe('01:80:c2:00:00:03');
+      expect(m.len, s.id).toBe(18);
+    });
+  });
+  // Figura 11-11: o cabeçalho tem 4 octetos (versão, tipo e comprimento do corpo); frame = 14 + 4 + pacote EAP.
+  it('o frame EAPOL tem 14 + 4 + o comprimento do corpo', () => {
+    todas().forEach(({ s, m }) => expect(m.len, s.id).toBe(18 + Number(campo(m, 'Comprimento do corpo'))));
+  });
+});

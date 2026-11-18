@@ -118,12 +118,11 @@ Itens da auditoria de conformidade (NC-01 a NC-33) que não foram encerrados. Ca
 
 ### NC-04 (P2): oráculo de teste dependente da implementação
 
-- **Situação:** atendida, com ressalvas. O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. Os testes de `tests/conformidade/` existem para 802-1x, arp, bgp, dhcp, dns, ftp, http, https (que cobre o TLS), ipv4, ipv6, mpls, nat, rip, ssh, tcp (mais `tamanhos`) e, a partir do texto do IEEE 802.1Q-2022 e do IEEE 802.11-2024, para stp, vlan, switching e wifi (este em parte).
+- **Situação:** atendida, com ressalvas. O 802-1x foi conferido também contra o IEEE 802.1X-2020 (EAPOL, cláusula 11). O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. Os testes de `tests/conformidade/` existem para 802-1x, arp, bgp, dhcp, dns, ftp, http, https (que cobre o TLS), ipv4, ipv6, mpls, nat, rip, ssh, tcp (mais `tamanhos`) e, a partir do texto do IEEE 802.1Q-2022 e do IEEE 802.11-2024, para stp, vlan, switching e wifi (este em parte).
 - **Ressalvas:**
   - os estados Escuta e Aprendizado e o tempo de 35 s do TC no STP clássico vêm do IEEE 802.1D-1998, que não foi consultado;
   - os tamanhos dos TLVs do LLDP seguem o IEEE 802.1AB, também não consultado;
   - o wifi ainda não tem testes de Frame Control, NAV/Duration e da sequência de autenticação e associação;
-  - o 802-1x não foi conferido contra o IEEE 802.1X-2020.
 - **Como fechar:** conferir os itens acima a partir do texto da norma, escrevendo o teste, vendo-o falhar e só então corrigindo (ver seção 7).
 
 ### NC-32 (P3): Wi-Fi, Address 3 e temporizações

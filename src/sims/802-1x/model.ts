@@ -162,7 +162,7 @@ export function eapolFields(o: EapolOpts): Field[] {
     ['Origem', o.from, ''],
     ['EtherType', '0x888E', 'EAPOL (EAP sobre LAN)'],
     { sec: 'EAPOL (IEEE 802.1X)' },
-    ['Versão do protocolo', '2 ou 3', 'conforme a edição do IEEE 802.1X implementada'],
+    ['Versão do protocolo', '3 (0x03)', 'valor exigido pelo IEEE 802.1X-2020, seção 11.3.1; edições anteriores usaram valores menores'],
     ['Tipo do pacote', PKT[o.pkt][0] + ' (' + PKT[o.pkt][1] + ')', o.pkt === 'eap' ? 'carrega um pacote EAP' : o.pkt === 'start' ? 'o suplicante pede que a autenticação comece' : 'o suplicante encerra a sessão'],
     ['Comprimento do corpo', String(body), o.pkt === 'eap' ? 'tamanho do pacote EAP' : 'sem corpo'],
   ];
