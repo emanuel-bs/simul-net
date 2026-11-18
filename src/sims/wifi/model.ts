@@ -17,6 +17,8 @@ export const MAC: Record<string, string> = {
   ap: '00:00:5e:00:53:a1',
   ap1: '00:00:5e:00:53:a1',
   ap2: '00:00:5e:00:53:a2',
+  /** Roteador na rede cabeada: o outro lado do AP, destino (DA) dos dados do cliente e origem (SA) dos dados que chegam a ele. */
+  gw: '00:00:5e:00:53:01',
 };
 export const BROADCAST = 'ff:ff:ff:ff:ff:ff';
 
@@ -92,7 +94,7 @@ export function dot11Fields(o: Dot11): Field[] {
     ['Address 1 (RA)', o.ra, 'receptor do frame'],
   ];
   if (o.ta) f.push(['Address 2 (TA)', o.ta, 'transmissor do frame']);
-  if (o.bssid) f.push(['Address 3', o.bssid, o.type === 'mgmt' ? 'BSSID: o endereço do AP' : 'BSSID ou destino final, conforme To DS e From DS']);
+  if (o.bssid) f.push(['Address 3', o.bssid, o.type === 'mgmt' ? 'BSSID: o endereço do AP' : o.toDs && !o.fromDs ? 'DA: o destino final, do outro lado do AP (To DS=1)' : o.fromDs && !o.toDs ? 'SA: a origem original, do outro lado do AP (From DS=1)' : 'BSSID ou destino final, conforme To DS e From DS']);
   if (o.seq !== undefined) f.push(['Sequence Control', 'número ' + o.seq + ', fragmento 0', 'o receptor descarta repetições com o mesmo número']);
   if (o.body && o.body.length) f.push(...o.body);
   f.push({ sec: 'Verificação' }, ['FCS', hex('fcs' + o.sub + (o.seq ?? 0) + o.ra, 4), 'CRC-32: sem FCS válido, o frame é descartado e não é confirmado']);

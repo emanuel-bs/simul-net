@@ -46,7 +46,7 @@ export const reference: string = [
     '<tr><td>Probe Requests com os nomes das redes salvas</td><td class="meaning">revelam onde o aparelho já esteve</td><td class="meaning">sistemas modernos limitam isso e usam endereços MAC aleatórios; mantenha o recurso ativo</td></tr></tbody></table>',
   '<h3>O que o simulador simplifica</h3><ul>' +
     '<li>Um BSS por vez (ou duas redes vizinhas, no modo Canais), um fluxo por cliente e taxas fixas: 54 Mb/s nos dados e 6 Mb/s nos frames de controle e de gerência. Sem agregação de frames, sem fragmentação, sem QoS (EDCA) e sem camada física detalhada.</li>' +
-    '<li>Os tempos usam os valores do OFDM em 5 GHz (SIFS de 16 µs, slot de 9 µs) em todos os cenários, inclusive nos de 2,4 GHz, onde o SIFS é de 10 µs. O foco são as proporções.</li>' +
+    '<li>Os tempos usam os valores do OFDM em 5 GHz (SIFS de 16 µs, slot de 9 µs) em todos os cenários, inclusive nos de 2,4 GHz, onde o SIFS é de 10 µs e o DIFS, com slot curto de 9 µs, é de 28 µs (IEEE 802.11-2024, Tabelas 17-24 e 18-5). O foco são as proporções.</li>' +
     '<li>Os sorteios do backoff são fixos por cenário, para o resultado ser reproduzível. No mundo real eles são aleatórios.</li>' +
     '<li>A interferência entre canais sobrepostos é representada no caso desfavorável. A potência, a distância e os obstáculos mudam o efeito real.</li>' +
     '<li>As durações de varredura, roaming e handshake são ilustrativas e menores que as de equipamentos reais, em que a varredura e o handshake somam dezenas de milissegundos ou mais.</li>' +

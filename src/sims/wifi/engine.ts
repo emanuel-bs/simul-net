@@ -405,7 +405,7 @@ export function buildMeio(P: MeioParams): Trace {
   const other = (k: string) => (k === 'a' ? 'c' : 'a');
   const log = (t: number, k: string, cw: number, bo: number, result: string) => (R.attempts as any[]).push({ t, who: who(k), cw, bo, result });
 
-  const dataD = (k: string, seq: number, retry: boolean): Dot11 => ({ type: 'data', sub: 'Data', subNum: 0, ra: MAC.ap, ta: MAC[k], bssid: '00:00:5e:00:53:01', dur: String(us(SIFS + T_ACK)), toDs: true, retry, seq, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'frame de dados do usuário']] });
+  const dataD = (k: string, seq: number, retry: boolean): Dot11 => ({ type: 'data', sub: 'Data', subNum: 0, ra: MAC.ap, ta: MAC[k], bssid: MAC.gw, dur: String(us(SIFS + T_ACK)), toDs: true, retry, seq, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'frame de dados do usuário']] });
 
   /** Troca completa de um cliente com o AP, a partir do instante dado. Devolve o fim dos dados e o fim da troca. */
   function exchange(k: string, start: number, o: { seq: number; retry?: boolean; ackLost?: boolean; nav?: boolean }): { dataEnd: number; end: number } {
@@ -584,7 +584,7 @@ export function buildMov(P: MovParams): Trace {
   const rssi = (t: number, a: number, b: number) => (R.rssi as any[]).push({ t, ap1: a, ap2: b });
   const dataVia = (ap: string, mbps: number, ph: string) => {
     const d = dataTime(mbps);
-    tx(c, 'sta', ap, { label: 'Dados (' + mbps + ' Mb/s)', gap: DIFS + 3 * SLOT, d: { type: 'data', sub: 'Data', subNum: 0, ra: MAC[ap], ta: MAC.sta, bssid: BROADCAST, dur: String(us(SIFS + T_ACK)), toDs: true, seq: c.seq++, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'a ' + mbps + ' Mb/s o frame ocupa o meio por ' + fmtTime(d)]] }, len: LEN.data, dur: d, info: 'ocupa o meio por ' + fmtTime(d), about: 'Quanto pior o sinal, menor a taxa que o cliente consegue usar, e o mesmo frame passa a ocupar o meio por mais tempo.', phaseName: ph });
+    tx(c, 'sta', ap, { label: 'Dados (' + mbps + ' Mb/s)', gap: DIFS + 3 * SLOT, d: { type: 'data', sub: 'Data', subNum: 0, ra: MAC[ap], ta: MAC.sta, bssid: MAC.gw, dur: String(us(SIFS + T_ACK)), toDs: true, seq: c.seq++, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'a ' + mbps + ' Mb/s o frame ocupa o meio por ' + fmtTime(d)]] }, len: LEN.data, dur: d, info: 'ocupa o meio por ' + fmtTime(d), about: 'Quanto pior o sinal, menor a taxa que o cliente consegue usar, e o mesmo frame passa a ocupar o meio por mais tempo.', phaseName: ph });
     ack(c, ap, 'sta');
   };
   setSta(c, 3, 'associado ao AP-01');
@@ -689,7 +689,7 @@ function roamTo(c: Ctx, ft: boolean) {
   tr.st(tr.t, 'phase', 'conectado ao AP-02', 'est');
   tr.add('ap2', 'lan', { at: tr.t + 0.02, dur: 0.05, proc: 0, label: 'Anúncio do MAC do cliente', proto: 'Ethernet', color: C0.data, len: 64, fields: [{ sec: 'Ethernet II' }, ['Origem', MAC.sta, 'o MAC do cliente, agora atrás do AP-02'], ['EtherType', '0x0800', '(frame de anúncio, conteúdo ilustrativo)']], info: 'atualiza a tabela MAC do switch', about: 'O AP-02 envia um frame com o MAC do cliente à rede cabeada. Sem isso, o switch continuaria enviando o tráfego de volta pelo AP-01 até aprender a nova porta.' });
   R.tFirstNew = tr.t + DIFS + 3 * SLOT;
-  const dm = tx(c, 'sta', 'ap2', { label: 'Dados (54 Mb/s)', gap: DIFS + 3 * SLOT, d: { type: 'data', sub: 'Data', subNum: 0, ra: MAC.ap2, ta: MAC.sta, bssid: BROADCAST, dur: String(us(SIFS + T_ACK)), toDs: true, seq: c.seq++, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'primeiro frame pelo AP-02']] }, len: LEN.data, dur: T_DATA, info: 'volta a trafegar, a 54 Mb/s', about: 'O tráfego volta pelo novo AP, com sinal forte e taxa alta.', phaseName: 'AP-02' });
+  const dm = tx(c, 'sta', 'ap2', { label: 'Dados (54 Mb/s)', gap: DIFS + 3 * SLOT, d: { type: 'data', sub: 'Data', subNum: 0, ra: MAC.ap2, ta: MAC.sta, bssid: MAC.gw, dur: String(us(SIFS + T_ACK)), toDs: true, seq: c.seq++, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'primeiro frame pelo AP-02']] }, len: LEN.data, dur: T_DATA, info: 'volta a trafegar, a 54 Mb/s', about: 'O tráfego volta pelo novo AP, com sinal forte e taxa alta.', phaseName: 'AP-02' });
   R.tFirstNew = dm.tSend;
   ack(c, 'ap2', 'sta');
   R.rssi.push({ t: tr.t, ap1: -78, ap2: -58 });
@@ -747,7 +747,7 @@ function buildPs(P: MovParams): Trace {
   tr.st(tr.t, 'phase', 'buscando o frame', 'warn');
   tr.st(tr.t, 'sta', 'acordado: buscando o frame', 'warn');
   tx(c, 'sta', 'ap1', { label: 'PS-Poll', gap: DIFS + 2 * SLOT, d: { type: 'ctrl', sub: 'PS-Poll', subNum: 10, ra: MAC.ap1, ta: MAC.sta, dur: 'AID 1 (bits 14 e 15 ligados: 0xC001)' }, len: LEN.psPoll, dur: T_ACK, info: 'pede o frame guardado', about: 'O cliente pede ao AP, por controle, que entregue o frame guardado. O campo Duration/ID leva o AID, e não uma duração.', phaseName: 'PS-Poll' });
-  const delivery = tx(c, 'ap1', 'sta', { label: 'Dados guardados', gap: SIFS, d: { type: 'data', sub: 'Data', subNum: 0, ra: MAC.sta, ta: MAC.ap1, bssid: MAC.ap1, dur: String(us(SIFS + T_ACK)), fromDs: true, more: false, seq: c.seq++, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'o pacote que chegou durante o sono']] }, len: LEN.data, dur: T_DATA, info: 'More Data=0: era o último', about: 'O AP entrega o frame guardado. Com More Data=0 o cliente sabe que não há mais nada e pode voltar a dormir. O frame de dados serve também de confirmação do PS-Poll.', phaseName: 'Entrega' });
+  const delivery = tx(c, 'ap1', 'sta', { label: 'Dados guardados', gap: SIFS, d: { type: 'data', sub: 'Data', subNum: 0, ra: MAC.sta, ta: MAC.ap1, bssid: MAC.gw, dur: String(us(SIFS + T_ACK)), fromDs: true, more: false, seq: c.seq++, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', 'o pacote que chegou durante o sono']] }, len: LEN.data, dur: T_DATA, info: 'More Data=0: era o último', about: 'O AP entrega o frame guardado. Com More Data=0 o cliente sabe que não há mais nada e pode voltar a dormir. O frame de dados serve também de confirmação do PS-Poll.', phaseName: 'Entrega' });
   ack(c, 'sta', 'ap1');
   tr.ev(tr.t, 'sta', 'Recebeu o frame e viu More Data=0: volta a dormir, ainda em economia de energia', 'ok');
   tr.st(tr.t, 'sta', 'dormindo (PM=1)', 'closed');
@@ -797,7 +797,7 @@ export function buildCanal(P: CanalParams): Trace {
   const REL_TXT: Record<CanalRel, [string, string]> = { indep: ['independentes', 'est'], co: ['mesmo canal: dividem o tempo', 'warn'], adj: ['canais sobrepostos: interferem', 'bad'] };
   tr.st(0, 'rel', REL_TXT[rel][0], REL_TXT[rel][1]);
   tr.st(0, 'phase', 'esperando o meio', 'warn');
-  const dataD = (k: string, ap: string, seq: number, retry: boolean): Dot11 => ({ type: 'data', sub: 'Data', subNum: 0, ra: MAC[ap], ta: MAC[k], bssid: MAC[ap], dur: String(us(SIFS + T_ACK)), toDs: true, retry, seq, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', '']] });
+  const dataD = (k: string, ap: string, seq: number, retry: boolean): Dot11 => ({ type: 'data', sub: 'Data', subNum: 0, ra: MAC[ap], ta: MAC[k], bssid: MAC.gw, dur: String(us(SIFS + T_ACK)), toDs: true, retry, seq, body: [{ sec: 'Corpo' }, ['Payload', '1500 bytes (IP)', '']] });
   const ex = (k: string, ap: string, start: number, seq: number, retry = false): number => {
     tr.t = start;
     tx(c, k, ap, { label: 'Dados' + (retry ? ' (repetição)' : ''), d: dataD(k, ap, seq, retry), len: LEN.data, dur: T_DATA, info: 'rede de ' + (k === 'sta1' ? 'canal 1' : 'canal ' + P.ch2), about: 'Um frame de dados de 1500 bytes na rede ' + (k === 'sta1' ? '1' : '2') + '.' });
