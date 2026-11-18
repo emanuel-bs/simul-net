@@ -118,13 +118,16 @@ Itens da auditoria de conformidade (NC-01 a NC-33) que não foram encerrados. Ca
 
 ### NC-04 (P2): oráculo de teste dependente da implementação
 
-- **Situação:** atendida só em parte. O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. A correção prevista, os testes de `tests/conformidade/`, existe para 802-1x, arp, bgp, dhcp, dns, ftp, http, https (que cobre o TLS), ipv4, ipv6, mpls, nat, rip, ssh e tcp (mais `tamanhos`).
-- **Falta:** arquivo de conformidade para os simuladores cuja norma é do IEEE e não é pública: wifi (802.11), stp (802.1D), vlan (802.1Q) e switching. Sem o texto da norma não há como escrever o teste a partir dela.
-- **Como fechar:** para cada simulador, escrever os testes a partir do texto da RFC (citando a seção), vê-los falhar com o comportamento incorreto, e só então corrigir (ver seção 7).
+- **Situação:** atendida, com ressalvas. O golden (`tests/sim-core/golden.json`) compara o trace com o hash gravado pelo próprio motor, então não prova conformidade. Os testes de `tests/conformidade/` existem para 802-1x, arp, bgp, dhcp, dns, ftp, http, https (que cobre o TLS), ipv4, ipv6, mpls, nat, rip, ssh, tcp (mais `tamanhos`) e, a partir do texto do IEEE 802.1Q-2022 e do IEEE 802.11-2024, para stp, vlan, switching e wifi (este em parte).
+- **Ressalvas:**
+  - os estados Escuta e Aprendizado e o tempo de 35 s do TC no STP clássico vêm do IEEE 802.1D-1998, que não foi consultado;
+  - os tamanhos dos TLVs do LLDP seguem o IEEE 802.1AB, também não consultado;
+  - o wifi ainda não tem testes de Frame Control, NAV/Duration e da sequência de autenticação e associação;
+  - o 802-1x não foi conferido contra o IEEE 802.1X-2020.
+- **Como fechar:** conferir os itens acima a partir do texto da norma, escrevendo o teste, vendo-o falhar e só então corrigindo (ver seção 7).
 
-### NC-32 (P3): Wi-Fi, Address 3 e temporizações de 5 GHz
+### NC-32 (P3): Wi-Fi, Address 3 e temporizações
 
-- **Situação:** aberta. Depende do texto do IEEE 802.11, que não é público e não foi consultado, então não foi corrigida nem testada.
-- **Address 3 (`src/sims/wifi/engine.ts`, quadros de dados nas linhas 363, 587 e 692):** em quadros com To DS=1 o campo recebe o endereço de broadcast. O rótulo do campo (`model.ts`, "BSSID ou destino final, conforme To DS e From DS") exige que o valor corresponda ao destino final nesses quadros. Na linha 750 (From DS=1) o campo recebe o endereço do AP, quando deveria ser o originador (SA). A tabela de endereços por To DS e From DS do padrão precisa ser conferida.
-- **Temporizações (`src/sims/wifi/model.ts`):** SLOT 9 µs, SIFS 16 µs e DIFS 34 µs são valores OFDM de 5 GHz, mas os cenários usam os canais 1, 6 e 11 (2,4 GHz), onde o SIFS é de 10 µs. Os valores corretos por faixa e modo de transmissão também dependem do padrão.
-- **Como fechar:** obter o trecho do IEEE 802.11 (tabela de endereços e parâmetros de temporização da camada física), escrever `tests/conformidade/wifi.test.ts` e então corrigir. Até lá, a aba Referência do Wi-Fi deve manter o aviso de que os valores de 5 GHz são usados em todo o simulador.
+- **Situação:** atendida, com uma limitação declarada. O Address 3 foi corrigido conforme o IEEE 802.11-2024, Tabela 9-60: nos dados com To DS=1 ele é o destino final (DA) e com From DS=1 é a origem original (SA), ambos do outro lado do AP (`MAC.gw` em `src/sims/wifi/model.ts`). Testes em `tests/conformidade/wifi.test.ts`.
+- **Temporizações:** SLOT 9 µs, SIFS 16 µs e DIFS 34 µs são valores OFDM de 5 GHz (Tabela 17-24), mas os cenários usam os canais 1, 6 e 11 (2,4 GHz), onde o SIFS é de 10 µs e o DIFS, com slot curto de 9 µs, é de 28 µs (Tabela 18-5). A escolha foi manter os valores e declarar a limitação na aba Referência do Wi-Fi, pois o foco são as proporções.
+- **Em aberto:** o Address 3 do quadro Null (`engine.ts`, linha 708) não foi verificado.
